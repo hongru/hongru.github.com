@@ -1,0 +1,30 @@
+<!DOCTYPE HTML>
+<meta charset="utf-8" />
+<style>
+	canvas {display:block; margin: 60px auto; border: 2px solid #ccc}
+</style>
+<script src="http://hongru.github.com/js/JCanvas.js"></script>
+<canvas id="canvas" width="600" height="400"></canvas>
+<script>
+	var system = new ParticleSystem(), 
+	dt = .01;
+	var randomDirection = function () {
+		var theta = Math.random()*2*Math.PI;
+		return new Vector2(Math.cos(theta), Math.sin(theta));
+	}
+
+	var stage = new Stage(document.getElementById('canvas'), {
+		draw: function () {
+			system.emit( new Particle({
+				position: new Vector2(300, 200),
+				velocity: randomDirection().multiply(100),
+				life: 1,
+				color: Color.red,
+				size: 5
+			}) );
+			system.simulate(dt);
+			system.render(this.ctx);
+		}
+	});
+	stage.start();
+</script>

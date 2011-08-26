@@ -22,6 +22,7 @@ textarea {
     font-family:Consolas, Lucida Console, monospace;
     min-height: 300px;
 }
+canvas {display:block; border: 2px solid #333}
 </style>
 </head>
 
@@ -1103,6 +1104,106 @@ onload = init;
 </section>
 </div>
 
+<div class="page">
+<section style="padding-top:2%">
+
+            <h2>公开的 Stage｛Class｝ 舞台类</h2>
+            <h3>--一个canvas画布对应一个stage，可以向其中添加舞台元素。(sprite)</h3>
+            <img alt="Stage api" src="images/stage_api.png" />
+
+                  
+ 
+</section>
+</div>
+
+<div class="page">
+<section style="padding-top:2%">
+
+            <h2>公开的 Sprite｛Class｝ 舞台精灵类</h2>
+            <h3>--作为舞台元素被添加到舞台中展现，初始化有它自己的位置和宽高。也可以添加别的sprite作为自己的child</h3>
+            <img alt="Stage api" src="images/sprite_api.png" />
+
+                  
+ 
+</section>
+</div>
+
+<div class="page">
+<section style="padding-top:2%">
+
+            <h2>Demo [Stage, Sprite]</h2>
+            <textarea id="stage-demo">
+	var canvas = document.getElementById('stage-demo-canvas');
+	var stage = new Stage(canvas);
+
+	var A = new Sprite(stage.ctx, {
+		x: 50,
+		y: 50,
+		width: 50,
+		height: 50,
+		draw: function () { 
+			this.ctx.beginPath();
+			this.ctx.arc(0, 0, this.width/2, 0, Math.PI*2, true);
+			this.ctx.closePath();
+			this.ctx.fillStyle = 'black';
+			this.ctx.fill();
+		}
+	})
+	var B = new Sprite(stage.ctx, {
+		x: 100,
+		y: 100,
+		width: 40,
+		height: 40,
+		draw: function () {
+			this.ctx.beginPath();
+			this.ctx.rect(0, 0, this.width, this.height);
+			this.ctx.closePath();
+			this.ctx.fillStyle = 'red';
+			this.ctx.fill();
+		}
+	});
+	var C = new Sprite(stage.ctx, {
+		x: stage.width/2,
+		y: stage.height/2,
+		width: 100,
+		height: 50,
+		draw: function () {
+			this.ctx.beginPath();
+			this.ctx.rect(0, 0, this.width, this.height);
+			this.ctx.closePath();
+			if (this.mouseState == 'over') { this.ctx.fillStyle = 'yellow' } 
+			else { this.ctx.fillStyle = '#CCCCCC' }
+			this.ctx.fill();
+		}
+	})
+
+	
+	stage.addChild(A);
+	stage.addChild(B);
+	stage.addChild(C);
+	stage.onRefresh = function () {
+		B.x += (A.x - B.x)*.1;
+		B.y += (A.y - B.y)*.1;
+	};
+	stage.addEventListener('mousemove', function (x, y) {
+		A.x = x;
+		A.y = y;
+	});
+	C.addEventListener('mouseover', function () {
+		C.mouseState = 'over';
+	});
+	C.addEventListener('mouseout', function () {
+		C.mouseState = 'out';
+	});
+	C.addEventListener('click', function () { alert('click C') })
+	stage.start();
+            </textarea>
+            <button class="draw-canvas" code-target="#stage-demo"> Go </button>
+                  
+ 
+</section>
+</div>
+
 </article>
 </body>
 <script>
@@ -1155,6 +1256,7 @@ $(function () {
         var v = $($(this).attr('code-target')).val();
         runCode(v);
     })
+
 })
 </script>
 </html>
