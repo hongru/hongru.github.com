@@ -4,7 +4,7 @@
 <meta charset="utf-8" />
 <title>Canvas 编程模式</title>
 <script src="http://code.jquery.com/jquery.min.js"></script>
-<script src="../js/JCanvas.js"></script>
+<script src="http://hongru.github.com/js/JCanvas.js"></script>
 <style>
 html,body {position:absolute; height:100%;width:100%;overflow-x:hidden; text-shadow:1px 1px #fff}
 body {margin:0; background: #f3f3f3; font-family:微软雅黑; color:#464646}
@@ -23,10 +23,30 @@ textarea {
     min-height: 300px;
 }
 canvas {display:block; border: 2px solid #333}
+#prev, #next {
+    position: fixed;z-index: 100;top: 50%;
+    margin-top:-30px;width: 80px;
+    height: 60px;
+    border-radius: 5px;
+    background: #333;
+    opacity: 0.2;
+    text-align: center;
+    line-height: 54px;
+    font-size: 22px;
+    font-weight: bold;
+    text-decoration: none;
+}
+#prev { 
+    left:20px; 
+}
+#next { right: 20px }
+#prev:hover, #next:hover {opacity:0.5}
 </style>
 </head>
 
 <body>
+<a href="#" id="prev">Prev</a>
+<a href="#" id="next">Next</a>
 <article id="ppt" style="position:absolute">
 <div class="page">
 <section>
@@ -1109,7 +1129,7 @@ onload = init;
 
             <h2>公开的 Stage｛Class｝ 舞台类</h2>
             <h3>--一个canvas画布对应一个stage，可以向其中添加舞台元素。(sprite)</h3>
-            <img alt="Stage api" src="images/stage_api.png" />
+            <img alt="Stage api" src="http://hongru.github.com/resource/images/stage_api.png" />
 
                   
  
@@ -1121,7 +1141,7 @@ onload = init;
 
             <h2>公开的 Sprite｛Class｝ 舞台精灵类</h2>
             <h3>--作为舞台元素被添加到舞台中展现，初始化有它自己的位置和宽高。也可以添加别的sprite作为自己的child</h3>
-            <img alt="Stage api" src="images/sprite_api.png" />
+            <img alt="Stage api" src="http://hongru.github.com/resource/images/sprite_api.png" />
 
                   
  
@@ -1416,25 +1436,39 @@ $(function () {
         win.document.write(v);
         win.document.close();
     }
-    resize();
-    $(window).resize(resize);
-    $(document).keyup(function (e) {
-        if (e.keyCode == 37) {
-            var l = parseInt($w.css('left'), 10) + winW;
+    function prev () {
+        var l = parseInt($w.css('left'), 10) + winW;
             if (l <= 10 && !isAniming) {
                 isAniming = true;
                 $w.animate({left: l}, function () { isAniming = false });
                 ind--;
             }
-        }
-        if (e.keyCode == 39) {
-            var l = parseInt($w.css('left'), 10) - winW;
+    }
+    function next () {
+        var l = parseInt($w.css('left'), 10) - winW;
             if (l >= (1-n)*winW && !isAniming) {
                 isAniming = true;
                 $w.animate({left: l}, function () { isAniming = false });
                 ind++;
             }
+    }
+    resize();
+    $(window).resize(resize);
+    $(document).keyup(function (e) {
+        if (e.keyCode == 37) {
+            prev();
         }
+        if (e.keyCode == 39) {
+            next();
+        }
+    })
+    $('#prev').click(function (e) {
+        e.preventDefault();
+        prev();
+    })
+    $('#next').click(function (e) {
+        e.preventDefault();
+        next();
     })
     
     // runCode
