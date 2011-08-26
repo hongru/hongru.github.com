@@ -1132,8 +1132,16 @@ onload = init;
 <section style="padding-top:2%">
 
             <h2>Demo [Stage, Sprite]</h2>
-            <textarea id="stage-demo">
-	var canvas = document.getElementById('stage-demo-canvas');
+                                <textarea id="stage-demo">
+<!DOCTYPE HTML>
+<meta charset="utf-8" />
+<style>
+	canvas {display:block; margin: 60px auto; border: 2px solid #ccc}
+</style>
+<script src="http://hongru.github.com/js/JCanvas.js"></script>
+<canvas id="canvas" width="600" height="400"></canvas>
+<script>
+	var canvas = document.getElementById('canvas');
 	var stage = new Stage(canvas);
 
 	var A = new Sprite(stage.ctx, {
@@ -1197,10 +1205,189 @@ onload = init;
 	});
 	C.addEventListener('click', function () { alert('click C') })
 	stage.start();
-            </textarea>
-            <button class="draw-canvas" code-target="#stage-demo"> Go </button>
+</script>
+
+                        
+                    </textarea>
+                    <button class="runcode" code-target="#stage-demo">Go</button>
+
                   
  
+</section>
+</div>
+
+
+<div class="page">
+<section>
+
+            <h2>最后一部分，基于矢量变换的粒子系统</h2>
+            <h3>通常，大部分需求不会说只操作一个图形。而是多个图形一起变换。<br/>
+            对于有部分相同特性的多个元素共同变换的情况，可以抽象出一个基本的粒子系统模型。
+            </h3>
+            <ul>
+                <li>运动的矢量表示：位移，速度，加速度，时间微分。 最后随着画布一帧帧的时间累积，自然积分</li>
+                <li>每个可视粒子的基本特性：[大小，颜色，寿命，当前岁数，初始位置，初始速度...]</li>
+                <li>粒子的搜集管理器collection</li>
+                <li>边界的处理...</li>
+            </ul>
+                                
+ 
+</section>
+</div>
+
+<div class="page">
+<section>
+
+            <h2>Demo - Vector2</h2>
+                    <textarea id="vector-demo">
+<!DOCTYPE HTML>
+<meta charset="utf-8" />
+<style>
+	canvas {display:block; margin: 60px auto; border: 2px solid #ccc}
+</style>
+<script src="http://hongru.github.com/js/JCanvas.js"></script>
+<canvas id="canvas" width="600" height="400"></canvas>
+<script>
+	var position = new Vector2(0, 200), // 初始位置
+		velocity = new Vector2(50, -50), // 初始速度
+		acceleration = new Vector2(0, 10), // 加速度
+		dt = .1; //单位时间（微分）
+		var stage = new Stage(document.getElementById('canvas'), {
+			draw: function () {
+				position = position.add(velocity.multiply(dt));
+				velocity = velocity.add(acceleration.multiply(dt));
+
+				this.ctx.beginPath();
+				this.ctx.arc(position.x, position.y, 5, 0, Math.PI*2, true);
+				this.ctx.closePath();
+				this.ctx.fill();
+			}
+		}); 	
+
+		stage.CONFIG.isClear = false;
+		stage.start();
+</script>
+
+                    </textarea>
+                    <button class="runcode" code-target="#vector-demo">Go</button>
+                                
+ 
+</section>
+</div>
+
+<div class="page">
+<section>
+
+            <h2>Demo - BaseParticle</h2>
+                    <textarea id="particle-demo">
+<!DOCTYPE HTML>
+<meta charset="utf-8" />
+<style>
+	canvas {display:block; margin: 60px auto; border: 2px solid #ccc}
+</style>
+<script src="http://hongru.github.com/js/JCanvas.js"></script>
+<canvas id="canvas" width="600" height="400"></canvas>
+<script>
+	var system = new ParticleSystem(), 
+	dt = .01;
+	var randomDirection = function () {
+		var theta = Math.random()*2*Math.PI;
+		return new Vector2(Math.cos(theta), Math.sin(theta));
+	}
+
+	var stage = new Stage(document.getElementById('canvas'), {
+		draw: function () {
+			system.emit( new Particle({
+				position: new Vector2(300, 200),
+				velocity: randomDirection().multiply(100),
+				life: 1,
+				color: Color.red,
+				size: 5
+			}) );
+			system.simulate(dt);
+			system.render(this.ctx);
+		}
+	});
+	stage.start();
+</script>
+
+
+                    </textarea>
+                    <button class="runcode" code-target="#particle-demo">Go</button>
+                                
+ 
+</section>
+</div>
+
+<div class="page">
+<section>
+
+            <h2>Demo - ParticleSystem</h2>
+                    <textarea id="particlesys-demo">
+<!DOCTYPE HTML>
+<meta charset="utf-8" />
+<style>
+	canvas {display:block; margin: 60px auto; border: 2px solid #ccc}
+</style>
+<script src="http://hongru.github.com/js/JCanvas.js"></script>
+<canvas id="canvas" width="600" height="400"></canvas>
+<script>
+	var system = new ParticleSystem(), 
+		dt = .01,
+		newMousePos = Vector2.zero,
+		oldMousePos = Vector2.zero;
+
+	system.effectors.push(new ParticleBlock(0, 0, 600, 400));
+	var randomDirection = function () {
+		var theta = Math.random()*2*Math.PI;
+		return new Vector2(Math.cos(theta), Math.sin(theta));
+	}
+	var randomColor = function (c1, c2) {
+		var t = Math.random();
+		return c1.multiply(t).add(c2.multiply(1-t));
+	}
+
+	var stage = new Stage(document.getElementById('canvas'), {
+		draw: function () {
+			var v = newMousePos.subtract(oldMousePos).multiply(5);
+			v = v.add(randomDirection().multiply(10)).multiply(5);
+			system.emit( new Particle({
+				position: newMousePos,
+				velocity: v,
+				life: 2,
+				color: randomColor(Color.red, Color.yellow),
+				size: 5
+			}) );
+			system.simulate(dt);
+			oldMousePos = newMousePos;
+			// 每帧让背景黑色半透，可以实现动态模糊的效果
+			this.ctx.fillStyle = 'rgba(0, 0, 0, 0.1)';
+			this.ctx.fillRect(0, 0, 600, 400);
+			system.render(this.ctx);
+		}
+	});
+	stage.CONFIG.isClear = false;
+	// 加上鼠标控制
+	stage.addEventListener('mousemove', function (x, y) {
+		newMousePos = new Vector2(x, y);
+	})
+	stage.start();
+</script>
+
+
+
+                    </textarea>
+                    <button class="runcode" code-target="#particlesys-demo">Go</button>
+                                
+ 
+</section>
+</div>
+
+<div class="page">
+<section>
+
+            <h1>Thanks!</h1>
+
 </section>
 </div>
 
