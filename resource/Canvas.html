@@ -1,0 +1,1160 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8" />
+<title>Canvas 编程模式</title>
+<script src="http://code.jquery.com/jquery.min.js"></script>
+<script src="../js/JCanvas.js"></script>
+<style>
+html,body {position:absolute; height:100%;width:100%;overflow-x:hidden; text-shadow:1px 1px #fff}
+body {margin:0; background: #f3f3f3; font-family:微软雅黑; color:#464646}
+#ppt .page {width:100%;float:left;padding-bottom:100px}
+section {width:70%; margin: 0 auto; padding-top:8%}
+h1,h2,h3,h4,h5,h6 {text-shadow:2px 2px 0 #fff}
+h1 {font-size: 2.4em}
+li {margin: 1em 0}
+textarea {
+    overflow: auto;
+    width: 80%;
+    background: #363636;
+    color: #f0f0f0;
+    font-size: 14px;
+    font-family:Consolas, Lucida Console, monospace;
+    min-height: 300px;
+}
+</style>
+</head>
+
+<body>
+<article id="ppt" style="position:absolute">
+<div class="page">
+<section>
+    <hgroup>
+        <h1>Canvas编程模式</h1>
+        <h2>-- 与熟知的Dom操作编程模式的区别</h2>
+    </hgroup>
+    
+    <p style="padding-top: 100px">
+        [by] Horizon<br/>
+        2011-08-26
+        
+    </p>
+</section>
+</div>
+
+<div class="page">
+<section>
+
+            <h2>Canvas在实际项目中的应用？</h2>
+            <ul>
+                <li>移动终端
+                    <ul>
+                        <li>游戏</li>
+                        <li>动态桌面，动态背景</li>
+                        <li>...</li>
+                    </ul>
+                </li>
+                <li>PC(现代浏览器)
+                    <ul>
+                        <li>继承【移动终端】</li>
+                        <li>图片处理</li>
+                        <li>...</li>
+                    </ul>
+                </li>
+            </ul>
+
+</section>
+</div>
+
+<div class="page">
+<section>
+
+            <h2>编程模式区别？</h2>
+            <ul>
+                <li>
+                    <b>弄个方块出来 --></b>
+                    <ul>
+                        <li>生成个节点(div,p,span ... ),append到Dom树 [DOM]</li>
+                        <li>画个矩形 (rect |fillRect | strokeRect ?) [Canvas 上面]</li>
+                    </ul>
+                </li>
+                <li><b>让这个方块动起来 --></b>
+                    <ul>
+                        <li>计时器，获取到这个Element，不断改变这个方块的style[left, top, width, height ... ] [DOM]</li>
+                        <li>只有一张画布，擦掉之前的方块，换个位置重画一个？不断擦，不断重画？ [Canvas]</li>
+                    </ul>
+                </li>
+                <li><b>这个方块木有鼠标或者键盘交互的handle ？</b>
+                    <ul>
+                        <li>事件监听，浏览器帮我们干了很多事 [click, mouseover, mousemove, mouseout, keyup, keydown ... ]  [DOM]</li>
+                        <li>只能监听&lt;canvas&gt; 这个element，里面的方块怎么办？ 用坐标各种判断？ [Canvas]</li>
+                    </ul>
+                </li>
+ 
+            </ul>
+ 
+</section>
+</div>
+
+<div class="page">
+<section>
+
+            <h2>动嘴不如动手,一个简单的实践</h2>
+                    <p>画个小球</p>
+                    <textarea id="code1">
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+body {margin:0; position:absolute; width:100%; height:100%}
+canvas {display: block; margin: 20px auto; border: 2px solid #333}
+</style>
+<script>
+var init = function () {
+    var canvas = document.getElementById('canvas'),
+    ctx = canvas.getContext('2d');
+    ctx.beginPath();
+    ctx.arc(200, 200, 8, 0, Math.PI*2, true);
+    ctx.closePath();
+    ctx.fill();
+}
+onload = init;
+</script></head>
+<body>
+<canvas id="canvas" width="600" height="400">Your Broswer don't support html5 canvas<canvas>
+</body>
+</html>
+
+                        
+                    </textarea>
+                    <button class="runcode" code-target="#code1">Go</button>
+ 
+</section>
+</div>
+
+<div class="page">
+<section>
+
+            <h3>如果想让小球动，针对当前这张画布，只能不断擦掉再重绘（全部或局部）</h3>
+
+                    <textarea id="code2">
+<!DOCTYPE html>
+<html>
+    
+    <head>
+        <style>
+            body {margin:0; position:absolute; width:100%; height:100%} canvas {display:
+            block; margin: 20px auto; border: 2px solid #333}
+        </style>
+        <script>
+            var BounceBall = function() {
+                var ctx, W, H;
+                var init = function(id) {
+                    var canvas = document.getElementById(id);
+                    ctx = canvas.getContext('2d');
+                    W = canvas.width || 600;
+                    H = canvas.height || 400;
+                    
+                    this.circle(200, 300, 8);
+                    this.rect(300, 300, 100, 50);
+                }
+                init.prototype = {
+                    clear: function() {
+                        ctx.clearRect(0, 0, W, H);
+                    },
+                    circle: function(x, y, r) {
+                        ctx.beginPath();
+                        ctx.arc(x, y, r, 0, Math.PI * 2, true);
+                        ctx.closePath();
+                        ctx.fill();
+                    },
+                    rect: function(x, y, w, h) {
+                        ctx.beginPath();
+                        ctx.rect(x, y, w, h);
+                        ctx.closePath();
+                        ctx.fill();
+                    }
+                }
+                return init;
+            } ();
+            onload = function() {
+                new BounceBall('canvas')
+            }
+        </script>
+    </head>
+    
+    <body>
+        <canvas id="canvas" width="600" height="400">
+            Your Broswer don't support html5 canvas
+            <canvas>
+    </body>
+
+</html>
+
+                        
+                    </textarea>
+                    <button class="runcode" code-target="#code2">Go</button>
+ 
+</section>
+</div>
+
+<div class="page">
+<section>
+
+            <h3>类似“帧”的概念，不断重绘某个区域</h3>
+
+                    <textarea id="code3">
+<!DOCTYPE html>
+<html>
+    
+    <head>
+        <style>
+            body {margin:0; position:absolute; width:100%; height:100%} canvas {display:
+            block; margin: 20px auto; border: 2px solid #333}
+        </style>
+        <script>
+            var BounceBall = function() {
+                var ctx, W, H, dx = 2,
+                dy = 4,
+                x = 100,
+                y = 10;
+                var init = function(id) {
+                    var canvas = document.getElementById(id);
+                    ctx = canvas.getContext('2d');
+                    W = canvas.width || 600;
+                    H = canvas.height || 400;
+                    this.run();
+                }
+                init.prototype = {
+                    run: function() {
+                        var _this = this;
+                        this.st = setInterval(function() {
+                            _this.draw();
+                        },
+                        16)
+                    },
+                    draw: function() {
+                        this.clear(); //清除画布，以便重绘
+                        this.circle(x, y, 8); //重绘小球
+                        x += dx; // x 方向变化
+                        y += dy; // y 方向变化
+                    },
+                    clear: function() {
+                        ctx.clearRect(0, 0, W, H);
+                    },
+                    circle: function(x, y, r) {
+                        ctx.beginPath();
+                        ctx.arc(x, y, r, 0, Math.PI * 2, true);
+                        ctx.closePath();
+                        ctx.fill();
+                    },
+                    rect: function(x, y, w, h) {
+                        ctx.beginPath();
+                        ctx.rect(x, y, w, h);
+                        ctx.closePath();
+                        ctx.fill();
+                    }
+                }
+                return init;
+            } ();
+            onload = function() {
+                new BounceBall('canvas')
+            }
+        </script>
+    </head>
+    
+    <body>
+        <canvas id="canvas" width="600" height="400">
+            Your Broswer don't support html5 canvas
+            <canvas>
+    </body>
+
+</html>
+
+                        
+                    </textarea>
+                    <button class="runcode" code-target="#code3">Go</button>
+ 
+</section>
+</div>
+
+<div class="page">
+<section>
+
+            <h3>碰撞监测，判断当前位置，和边界之间关系（最简单的碰撞模式，对dom操作在碰撞这一块是类似的思路）</h3>
+            <p>镜面反弹，如果碰到边界，让变化量反向即可</p>
+
+                    <textarea id="code4">
+<!DOCTYPE html>
+<html>
+    
+    <head>
+        <style>
+            body {margin:0; position:absolute; width:100%; height:100%} canvas {display:
+            block; margin: 20px auto; border: 2px solid #333}
+        </style>
+        <script>
+            var BounceBall = function() {
+                var ctx, W, H, dx = 2,
+                dy = 4,
+                x = 200,
+                y = 200;
+                var init = function(id) {
+                    var canvas = document.getElementById(id);
+                    ctx = canvas.getContext('2d');
+                    W = canvas.width || 600; //画布总宽
+                    H = canvas.height || 400; // 画布总高
+                    this.run();
+                }
+                init.prototype = {
+                    run: function() {
+                        var _this = this;
+                        this.st = setInterval(function() {
+                            _this.draw();
+                        },
+                        16)
+                    },
+                    draw: function() {
+                        this.clear(); //清除画布，以便重绘
+                        this.circle(x, y, 8); //重绘小球
+                        // 边界碰撞
+                        if (x + dx > W || x + dx < 0) dx = -dx;
+                        if (y + dy > H || y + dy < 0) dy = -dy;
+                        x += dx; // x 方向变化
+                        y += dy; // y 方向变化
+                    },
+                    clear: function() {
+                        ctx.clearRect(0, 0, W, H);
+                    },
+                    circle: function(x, y, r) {
+                        ctx.beginPath();
+                        ctx.arc(x, y, r, 0, Math.PI * 2, true);
+                        ctx.closePath();
+                        ctx.fill();
+                    },
+                    rect: function(x, y, w, h) {
+                        ctx.beginPath();
+                        ctx.rect(x, y, w, h);
+                        ctx.closePath();
+                        ctx.fill();
+                    }
+                }
+                return init;
+            } ();
+            onload = function() {
+                new BounceBall('canvas')
+            }
+        </script>
+    </head>
+    
+    <body>
+        <canvas id="canvas" width="600" height="400">
+            Your Broswer don't support html5 canvas
+            <canvas>
+    </body>
+
+</html>
+
+                        
+                    </textarea>
+                    <button class="runcode" code-target="#code4">Go</button>
+ 
+</section>
+</div>
+
+<div class="page">
+<section>
+
+            <h3>小球动起来了，也了解了在canvas里画东西和普通的操作dom动起来的大致区别...</h3>
+            <p>假如我们来了兴致，想就着上面的小球接着做个简单的打砖块的小游戏...<br/>
+                那么接下来，绘制打砖块的挡板。
+            </p>
+
+                    <textarea id="code5">
+<!DOCTYPE html>
+<html>
+    
+    <head>
+        <style>
+            body {margin:0; position:absolute; width:100%; height:100%} canvas {display:
+            block; margin: 20px auto; border: 2px solid #333}
+        </style>
+        <script>
+            var BounceBall = function() {
+                var ctx, W, H, dx = 2,
+                dy = 4,
+                x = 200,
+                y = 200,
+                X, rd = false;
+                ld = false;
+                var init = function(id) {
+                    var canvas = document.getElementById(id);
+                    ctx = canvas.getContext('2d');
+                    W = canvas.width || 600; //画布总宽
+                    H = canvas.height || 400; // 画布总高
+                    X = (W - 100) / 2; //初始挡板x坐标
+                    this.run();
+                    this.evListen(); //绑定事件
+                }
+                init.prototype = {
+                    run: function() {
+                        var _this = this;
+                        this.st = setInterval(function() {
+                            _this.draw();
+                        },
+                        16)
+                    },
+                    draw: function() {
+                        this.clear(); //清除画布，以便重绘
+                        this.circle(x, y, 8); //重绘小球
+                        this.paddle(X, 100); //重绘挡板
+                        // 边界碰撞
+                        if (x + dx > W || x + dx < 0) dx = -dx;
+                        if (y + dy > H || y + dy < 0) dy = -dy;
+                        // 挡板控制
+                        if (rd && X < W - this.paddleW) {
+                            X += 10
+                        } else if (ld && X > 0) {
+                            X -= 10
+                        }
+                        x += dx; // x 方向变化
+                        y += dy; // y 方向变化
+                    },
+                    clear: function() {
+                        ctx.clearRect(0, 0, W, H);
+                    },
+                    circle: function(x, y, r) {
+                        ctx.beginPath();
+                        ctx.arc(x, y, r, 0, Math.PI * 2, true);
+                        ctx.closePath();
+                        ctx.fill();
+                    },
+                    rect: function(x, y, w, h) {
+                        ctx.beginPath();
+                        ctx.rect(x, y, w, h);
+                        ctx.closePath();
+                        ctx.fill();
+                    },
+                    // 绘制挡板
+                    paddle: function(l, w) {
+                        this.paddleW = w;
+                        this.rect(l, H - 10, w, 10);
+                    },
+                    // 键盘事件绑定
+                    evListen: function() {
+                        document.addEventListener('keydown',
+                        function(e) {
+                            if (e.keyCode == 39) rd = true;
+                            else if (e.keyCode == 37) ld = true;
+                        },
+                        false);
+                        document.addEventListener('keyup',
+                        function(e) {
+                            if (e.keyCode == 39) rd = false;
+                            else if (e.keyCode == 37) ld = false;
+                        },
+                        false);
+                    }
+                }
+                return init;
+            } ();
+            onload = function() {
+                new BounceBall('canvas')
+            }
+        </script>
+    </head>
+    
+    <body>
+        <canvas id="canvas" width="600" height="400">
+            Your Broswer don't support html5 canvas
+            <canvas>
+    </body>
+
+</html>
+                        
+                    </textarea>
+                    <button class="runcode" code-target="#code5">Go</button>
+ 
+</section>
+</div>
+
+<div class="page">
+<section>
+
+            <h3>判断游戏结束条件，没落到挡板上即结束</h3>
+            <p>貌似有点偏题了...<br/>
+            修改撞击下边界的条件。即当球的y坐标大于画布总高度减去挡板厚度时，判断此时球的x坐标是否在挡板范围内。如果是那么小球弹回，游戏继续，否则游戏结束。
+            </p>
+
+                    <textarea id="code6">
+<!DOCTYPE html>
+<html>
+    
+    <head>
+        <style>
+            body {margin:0; position:absolute; width:100%; height:100%} canvas {display:
+            block; margin: 20px auto; border: 2px solid #333}
+        </style>
+        <script>
+            var BounceBall = function() {
+                var ctx, W, H, dx = 2,
+                dy = 4,
+                x = 200,
+                y = 200,
+                X, rd = false;
+                ld = false;
+                var init = function(id) {
+                    var canvas = document.getElementById(id);
+                    ctx = canvas.getContext('2d');
+                    W = canvas.width || 600; //画布总宽
+                    H = canvas.height || 400; // 画布总高
+                    X = (W - 100) / 2; //初始挡板x坐标
+                    this.run();
+                    this.evListen(); //绑定事件
+                }
+                init.prototype = {
+                    run: function() {
+                        var _this = this;
+                        this.st = setInterval(function() {
+                            _this.draw();
+                        },
+                        16)
+                    },
+                    draw: function() {
+                        this.clear(); //清除画布，以便重绘
+                        this.circle(x, y, 8); //重绘小球
+                        this.paddle(X, 100); //重绘挡板
+                        // 边界碰撞
+                        if (x + dx > W || x + dx < 0) dx = -dx;
+                        if (y + dy < 0) {
+                            dy = -dy
+                        }
+                        // 下边界时，加上游戏结束条件的判断
+                        else if (y + dy > H - 10) {
+                            x > X - 4 && x < X + this.paddleW + 4 ? dy = -dy: this.stop();
+                        }
+                        // 挡板控制
+                        if (rd && X < W - this.paddleW) {
+                            X += 10
+                        } else if (ld && X > 0) {
+                            X -= 10
+                        }
+                        x += dx; // x 方向变化
+                        y += dy; // y 方向变化
+                    },
+                    clear: function() {
+                        ctx.clearRect(0, 0, W, H);
+                    },
+                    circle: function(x, y, r) {
+                        ctx.beginPath();
+                        ctx.arc(x, y, r, 0, Math.PI * 2, true);
+                        ctx.closePath();
+                        ctx.fill();
+                    },
+                    rect: function(x, y, w, h) {
+                        ctx.beginPath();
+                        ctx.rect(x, y, w, h);
+                        ctx.closePath();
+                        ctx.fill();
+                    },
+                    // 绘制挡板
+                    paddle: function(l, w) {
+                        this.paddleW = w;
+                        this.rect(l, H - 10, w, 10);
+                    },
+                    // 键盘事件绑定
+                    evListen: function() {
+                        document.addEventListener('keydown',
+                        function(e) {
+                            if (e.keyCode == 39) rd = true;
+                            else if (e.keyCode == 37) ld = true;
+                        },
+                        false);
+                        document.addEventListener('keyup',
+                        function(e) {
+                            if (e.keyCode == 39) rd = false;
+                            else if (e.keyCode == 37) ld = false;
+                        },
+                        false);
+                    },
+                    stop: function() {
+                        clearInterval(this.st);
+                    }
+                }
+                return init;
+            } ();
+            onload = function() {
+                new BounceBall('canvas')
+            }
+        </script>
+    </head>
+    
+    <body>
+        <canvas id="canvas" width="600" height="400">
+            Your Broswer don't support html5 canvas
+            <canvas>
+    </body>
+
+</html>
+                        
+                    </textarea>
+                    <button class="runcode" code-target="#code6">Go</button>
+ 
+</section>
+</div>
+
+<div class="page">
+<section>
+
+            <h3>小球和挡板画完了，接下来画砖块</h3>
+            <p>定义一个二维的矩阵，根据行列数，算好每个砖块的宽度，通过之前写好的rect把这个二维矩阵转换成小方块
+            </p>
+
+                    <textarea id="code7">
+<!DOCTYPE html>
+<html>
+    
+    <head>
+        <style>
+            body {margin:0; position:absolute; width:100%; height:100%} canvas {display:
+            block; margin: 20px auto; border: 2px solid #333}
+        </style>
+        <script>
+            var BounceBall = function() {
+                var ctx, W, H, dx = 2,
+                dy = 4,
+                x = 200,
+                y = 200,
+                X, rd = false;
+                ld = false,
+                B = {};
+                var init = function(id) {
+                    var canvas = document.getElementById(id);
+                    ctx = canvas.getContext('2d');
+                    W = canvas.width || 600; //画布总宽
+                    H = canvas.height || 400; // 画布总高
+                    X = (W - 100) / 2; //初始挡板x坐标
+                    this.initBricks(8, 8); //初始化砖块的二位矩阵
+                    this.run();
+                    this.evListen(); //绑定事件
+                }
+                init.prototype = {
+                    run: function() {
+                        var _this = this;
+                        this.st = setInterval(function() {
+                            _this.draw();
+                        },
+                        16)
+                    },
+                    draw: function() {
+                        this.clear(); //清除画布，以便重绘
+                        this.circle(x, y, 8); //重绘小球
+                        this.paddle(X, 100); //重绘挡板
+                        this.drawBricks(); //重绘砖块
+                        // 边界碰撞
+                        if (x + dx > W || x + dx < 0) dx = -dx;
+                        if (y + dy < 0) {
+                            dy = -dy
+                        }
+                        else if (y + dy > H - 10) {
+                            x > X - 4 && x < X + this.paddleW + 4 ? dy = -dy: this.stop();
+                        }
+                        // 挡板控制
+                        if (rd && X < W - this.paddleW) {
+                            X += 10
+                        } else if (ld && X > 0) {
+                            X -= 10
+                        }
+                        x += dx; // x 方向变化
+                        y += dy; // y 方向变化
+                    },
+                    clear: function() {
+                        ctx.clearRect(0, 0, W, H);
+                    },
+                    circle: function(x, y, r) {
+                        ctx.beginPath();
+                        ctx.arc(x, y, r, 0, Math.PI * 2, true);
+                        ctx.closePath();
+                        ctx.fill();
+                    },
+                    rect: function(x, y, w, h) {
+                        ctx.beginPath();
+                        ctx.rect(x, y, w, h);
+                        ctx.closePath();
+                        ctx.fill();
+                    },
+                    // 绘制挡板
+                    paddle: function(l, w) {
+                        this.paddleW = w;
+                        this.rect(l, H - 10, w, 10);
+                    },
+                    // 键盘事件绑定
+                    evListen: function() {
+                        document.addEventListener('keydown',
+                        function(e) {
+                            if (e.keyCode == 39) rd = true;
+                            else if (e.keyCode == 37) ld = true;
+                        },
+                        false);
+                        document.addEventListener('keyup',
+                        function(e) {
+                            if (e.keyCode == 39) rd = false;
+                            else if (e.keyCode == 37) ld = false;
+                        },
+                        false);
+                    },
+                    stop: function() {
+                        clearInterval(this.st);
+                    },
+                    // 初始化和绘制砖块
+                    initBricks: function(row, col) {
+                        B.row = row;
+                        B.col = col;
+                        B.w = W / col - 1;
+                        B.h = 15;
+                        B.pad = 1;
+                        B.bricks = new Array(row);
+                        for (var i = 0; i < row; i++) {
+                            B.bricks[i] = new Array(col);
+                            for (var j = 0; j < col; j++) {
+                                B.bricks[i][j] = 1;
+                            }
+                        }
+                    },
+                    drawBricks: function() {
+                        for (var i = 0; i < B.row; i++) {
+                            for (var j = 0; j < B.col; j++) {
+                                B.bricks[i][j] === 1 && this.rect(j * (B.w + B.pad) + B.pad, i * (B.h + B.pad) + B.pad, B.w, B.h);
+                            }
+                        }
+                    }
+                }
+                return init;
+            } ();
+            onload = function() {
+                new BounceBall('canvas')
+            }
+        </script>
+    </head>
+    
+    <body>
+        <canvas id="canvas" width="600" height="400">
+            Your Broswer don't support html5 canvas
+            <canvas>
+    </body>
+
+</html>
+                        
+                    </textarea>
+                    <button class="runcode" code-target="#code7">Go</button>
+ 
+</section>
+</div>
+
+<div class="page">
+<section>
+
+            <h3>小球与砖块碰撞条件的判断</h3>
+            <p>监控小球的y坐标，当满足小球坐标在砖块区并且砖块存在，那么就表示小球有和砖块碰撞，那么清除当前碰撞砖块，小球反向即可<br/>
+            (这里只做粗糙的碰撞监测，而且由于砖块厚度太低，dy都比砖块厚度更大，所以侧向的碰撞这里没做考虑。)
+            </p>
+
+                    <textarea id="code8">
+<!DOCTYPE html>
+<html>
+    
+    <head>
+        <style>
+            body {margin:0; position:absolute; width:100%; height:100%} canvas {display:
+            block; margin: 20px auto; border: 2px solid #333}
+        </style>
+        <script>
+            var BounceBall = function() {
+                var ctx, W, H, dx = 2,
+                dy = 4,
+                x = 200,
+                y = 200,
+                X, rd = false;
+                ld = false,
+                B = {};
+                var init = function(id) {
+                    var canvas = document.getElementById(id);
+                    ctx = canvas.getContext('2d');
+                    W = canvas.width || 600; //画布总宽
+                    H = canvas.height || 400; // 画布总高
+                    X = (W - 100) / 2; //初始挡板x坐标
+                    this.initBricks(8, 8); //初始化砖块的二位矩阵
+                    this.run();
+                    this.evListen(); //绑定事件
+                }
+                init.prototype = {
+                    run: function() {
+                        var _this = this;
+                        this.st = setInterval(function() {
+                            _this.draw();
+                        },
+                        16)
+                    },
+                    draw: function() {
+                        this.clear(); //清除画布，以便重绘
+                        this.circle(x, y, 8); //重绘小球
+                        this.paddle(X, 100); //重绘挡板
+                        this.drawBricks(); //重绘砖块
+                        this.hitBrick(x, y); //砖块碰撞
+                        // 边界碰撞
+                        if (x + dx > W || x + dx < 0) dx = -dx;
+                        if (y + dy < 0) {
+                            dy = -dy
+                        }
+                        else if (y + dy > H - 10) {
+                            x > X - 4 && x < X + this.paddleW + 4 ? dy = -dy: this.stop();
+                        }
+                        // 挡板控制
+                        if (rd && X < W - this.paddleW) {
+                            X += 10
+                        } else if (ld && X > 0) {
+                            X -= 10
+                        }
+                        x += dx; // x 方向变化
+                        y += dy; // y 方向变化
+                    },
+                    clear: function() {
+                        ctx.clearRect(0, 0, W, H);
+                    },
+                    circle: function(x, y, r) {
+                        ctx.beginPath();
+                        ctx.arc(x, y, r, 0, Math.PI * 2, true);
+                        ctx.closePath();
+                        ctx.fill();
+                    },
+                    rect: function(x, y, w, h) {
+                        ctx.beginPath();
+                        ctx.rect(x, y, w, h);
+                        ctx.closePath();
+                        ctx.fill();
+                    },
+                    // 绘制挡板
+                    paddle: function(l, w) {
+                        this.paddleW = w;
+                        this.rect(l, H - 10, w, 10);
+                    },
+                    // 键盘事件绑定
+                    evListen: function() {
+                        document.addEventListener('keydown',
+                        function(e) {
+                            if (e.keyCode == 39) rd = true;
+                            else if (e.keyCode == 37) ld = true;
+                        },
+                        false);
+                        document.addEventListener('keyup',
+                        function(e) {
+                            if (e.keyCode == 39) rd = false;
+                            else if (e.keyCode == 37) ld = false;
+                        },
+                        false);
+                    },
+                    stop: function() {
+                        clearInterval(this.st);
+                    },
+                    initBricks: function(row, col) {
+                        B.row = row;
+                        B.col = col;
+                        B.w = W / col - 1;
+                        B.h = 15;
+                        B.pad = 1;
+                        B.bricks = new Array(row);
+                        for (var i = 0; i < row; i++) {
+                            B.bricks[i] = new Array(col);
+                            for (var j = 0; j < col; j++) {
+                                B.bricks[i][j] = 1;
+                            }
+                        }
+                    },
+                    drawBricks: function() {
+                        for (var i = 0; i < B.row; i++) {
+                            for (var j = 0; j < B.col; j++) {
+                                B.bricks[i][j] === 1 && this.rect(j * (B.w + B.pad) + B.pad, i * (B.h + B.pad) + B.pad, B.w, B.h);
+                            }
+                        }
+                    },
+                    hitBrick: function(x, y) {
+                        var rh = B.h + B.pad,
+                        cw = B.w + B.pad,
+                        row = Math.floor(y / rh),
+                        col = Math.floor(x / cw);
+                        if (y < B.row * rh && row >= 0 && col >= 0 && B.bricks[row][col] === 1) {
+                            dy = -dy;
+                            B.bricks[row][col] = 0;
+                        }
+                    }
+                }
+                return init;
+            } ();
+            onload = function() {
+                new BounceBall('canvas')
+            }
+        </script>
+    </head>
+    
+    <body>
+        <canvas id="canvas" width="600" height="400">
+            Your Broswer don't support html5 canvas
+            <canvas>
+    </body>
+
+</html>
+                        
+                    </textarea>
+                    <button class="runcode" code-target="#code8">Go</button>
+ 
+</section>
+</div>
+
+<div class="page">
+<section>
+
+            <h3>可玩性的优化</h3>
+            <p>可以自己再加其他的元素，增加其可玩性，比如我最开始那个加了暂停功能，加了颜色，加了结束画面。甚至你可以自己去加砖块道具，设置不同关卡，增加不同砖块属性，增加各种玩法来增强其可玩性。
+            </p>
+
+                    <textarea id="code9">
+<!DOCTYPE html>
+<html>
+    
+    <head>
+        <style>
+            body {margin:0; position:absolute; width:100%; height:100%} canvas {display:
+            block; margin: 20px auto; border: 2px solid #333} .info {width: 600px;
+            margin: 0 auto; color: #666; text-align:center}
+        </style>
+        <script>
+            var Bombule = function() {
+                var ctx, x = 295,
+                y = 385,
+                dx = 2,
+                dy = 4,
+                W, H, rd = false,
+                ld = false,
+                pause = true,
+                X, B = {},
+                rowColor = ["#FF1C0A", "#FFFD0A", "#00A308", "#0008DB", "#EB0093", "#00A308", "#0008DB", "#EB0093"];
+                var init = function(id) {
+                    var canvas = document.getElementById(id);
+                    W = canvas.width || 600;
+                    H = canvas.height || 400;
+                    X = (W - 100) / 2;
+                    ctx = canvas.getContext('2d');
+                    this.initBricks(8, 8);
+                    this.run();
+                    this.evListen();
+                }
+                init.prototype = {
+                    run: function() {
+                        var _this = this;
+                        this.st = setInterval(function() {
+                            _this.draw();
+                        },
+                        16)
+                    },
+                    draw: function() {
+                        this.clear();
+                        this.circle(x, y, 8);
+                        if (rd && !pause && X < W - this.paddleW) {
+                            X += 10
+                        } else if (ld && !pause && X > 0) {
+                            X -= 10
+                        }
+                        this.paddle(X, 100);
+                        this.drawBricks();
+                        this.hitBrick(x, y);
+                        if (x + dx > W || x + dx < 0) dx = -dx;
+                        if (y + dy < 0) {
+                            dy = -dy
+                        }
+                        else if (y + dy > H - 10) {
+                            x > X - 4 && x < X + this.paddleW + 4 ? this.hitPaddle(x) : this.stop();
+                        }
+                        if (!pause) {
+                            x += dx;
+                            y += dy;
+                        }
+                    },
+                    clear: function() {
+                        ctx.clearRect(0, 0, W, H);
+                    },
+                    circle: function(x, y, r) {
+                        ctx.beginPath();
+                        ctx.arc(x, y, r, 0, Math.PI * 2, true);
+                        ctx.closePath();
+                        ctx.fill();
+                    },
+                    rect: function(x, y, w, h) {
+                        ctx.beginPath();
+                        ctx.rect(x, y, w, h);
+                        ctx.closePath();
+                        ctx.fill();
+                    },
+                    stop: function() {
+                        clearInterval(this.st);
+                        this.showInfo('Game Over')
+                    },
+                    paddle: function(l, w) {
+                        this.paddleW = w;
+                        this.rect(l, H - 10, w, 10);
+                    },
+                    evListen: function() {
+                        document.addEventListener('keydown',
+                        function(e) {
+                            if (e.keyCode == 39) rd = true;
+                            else if (e.keyCode == 37) ld = true;
+                        },
+                        false);
+                        document.addEventListener('keyup',
+                        function(e) {
+                            if (e.keyCode == 39) rd = false;
+                            else if (e.keyCode == 37) ld = false;
+                            else if (e.keyCode == 32) pause = !pause ? true: false;
+                        },
+                        false);
+                    },
+                    initBricks: function(row, col) {
+                        B.row = row;
+                        B.col = col;
+                        B.w = W / col - 1;
+                        B.h = 15;
+                        B.pad = 1;
+                        B.bricks = new Array(row);
+                        for (var i = 0; i < row; i++) {
+                            B.bricks[i] = new Array(col);
+                            for (var j = 0; j < col; j++) {
+                                B.bricks[i][j] = 1;
+                            }
+                        }
+                    },
+                    drawBricks: function() {
+                        for (var i = 0; i < B.row; i++) {
+                            ctx.fillStyle = rowColor[i];
+                            for (var j = 0; j < B.col; j++) {
+                                B.bricks[i][j] === 1 && this.rect(j * (B.w + B.pad) + B.pad, i * (B.h + B.pad) + B.pad, B.w, B.h);
+                            }
+                        }
+                    },
+                    hitBrick: function(x, y) {
+                        var rh = B.h + B.pad,
+                        cw = B.w + B.pad,
+                        row = Math.floor(y / rh),
+                        col = Math.floor(x / cw);
+                        if (y < B.row * rh && row >= 0 && col >= 0 && B.bricks[row][col] === 1) {
+                            dy = -dy;
+                            B.bricks[row][col] = 0;
+                        }
+                    },
+                    hitPaddle: function(x) {
+                        dy = -dy;
+                        dx = 10 * ((x - (X + this.paddleW / 2)) / this.paddleW);
+                    },
+                    showInfo: function(text) {
+                        ctx.font = '60pt Calibri';
+                        ctx.fillStyle = '#999';
+                        ctx.fillText(text, 130, 200);
+                    }
+                }
+                return init;
+            } ();
+            onload = function() {
+                new Bombule('canvas');
+            }
+        </script>
+    </head>
+    
+    <body>
+        <canvas id="canvas" width="600" height="400">
+            Your Broswer don't support html5 canvas
+        </canvas>
+        <p class="info">
+            空格-开始/暂停 | 方向键控制挡板左右
+        </p>
+        <!--<audio src="http://www.w3schools.com/html5/horse.ogg" autoplay="true">
+        Your browser does not support the audio element.
+        </audio>-->
+    </body>
+
+</html>
+                        
+                    </textarea>
+                    <button class="runcode" code-target="#code9">Go</button>
+ 
+</section>
+</div>
+
+<div class="page">
+<section>
+
+            <h2>编程模型化</h2>
+            <h3>--让canvas画布里面的各种图形也拥有自己的常用的“事件”</h3>
+            <ul>
+                <li>--创建一个collection来管理每次创建的图形</li>
+                <li>--把canvasNode本身的鼠标键盘事件过渡到collection中每个图形实例</li>
+                <li>--通过mousemove结合鼠标位置以及图形宽高处理mouseenter，mouseleave事件</li>
+            </ul>
+
+                  
+ 
+</section>
+</div>
+
+</article>
+</body>
+<script>
+$(function () {
+    var $w = $('#ppt'),
+        $p = $w.find('.page'),
+        n = $p.size(),
+        ind = 0, isAniming = false,
+        winW, winH;
+    
+    function resize () {
+        winW = $(window).width();
+        winH = $(window).height();
+        $p.css('width', winW);
+        $w.css({
+            width: n*winW,
+            left: -ind*winW
+        })
+    }
+    function runCode(v) {
+        var win = open('');
+        win.opener = null;
+        win.document.write(v);
+        win.document.close();
+    }
+    resize();
+    $(window).resize(resize);
+    $(document).keyup(function (e) {
+        if (e.keyCode == 37) {
+            var l = parseInt($w.css('left'), 10) + winW;
+            if (l <= 10 && !isAniming) {
+                isAniming = true;
+                $w.animate({left: l}, function () { isAniming = false });
+                ind--;
+            }
+        }
+        if (e.keyCode == 39) {
+            var l = parseInt($w.css('left'), 10) - winW;
+            if (l >= (1-n)*winW && !isAniming) {
+                isAniming = true;
+                $w.animate({left: l}, function () { isAniming = false });
+                ind++;
+            }
+        }
+    })
+    
+    // runCode
+    $('button.runcode').click(function (e) {
+        e.preventDefault();
+        var v = $($(this).attr('code-target')).val();
+        runCode(v);
+    })
+})
+</script>
+</html>
