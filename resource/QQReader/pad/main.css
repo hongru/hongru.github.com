@@ -36,6 +36,9 @@ body {
     margin-left: -1620px;
     -webkit-box-shadow: 0 0 6px #bababa;
 }
+.touchdevice .book {
+
+}
 section {
     position: absolute;
     width: 1066px;
@@ -44,9 +47,19 @@ section {
     left: 1080px;
     overflow: hidden;
 }
+.touchdevice section {
+	width: 800px;
+	height: 500px;
+	left: 814px;
+}
+
 section .fix-width {
     width: 1066px;
     height: 720px;
+}
+.touchdevice section .fix-width {
+	width: 800px;
+	height: 500px;
 }
 .paddiv {
     padding: 60px 80px 40px 60px;
