@@ -113,7 +113,7 @@ Jx().$package('QReader.preload', function (J) {
 			QReader.PAGE_MARGIN_X = 14;
 			QReader.PAGE_MARGIN_Y = 0;
 			QReader.BOOK_WIDTH = (QReader.PAGE_WIDTH + QReader.PAGE_MARGIN_X) * 2;
-			QReader.BOOK_HEIGHT = (QReader.PAGE_HEIGHT + QReader.PAGE_MARGIN_Y) * 2;
+			QReader.BOOK_HEIGHT = QReader.PAGE_HEIGHT + (QReader.PAGE_MARGIN_Y * 2);
 
 			QReader.pageflip.CANVAS_V_PADDING = 80;
 			QReader.pageflip.CANVAS_H_PADDING = 20;
