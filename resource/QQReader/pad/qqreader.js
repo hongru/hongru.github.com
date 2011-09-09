@@ -307,7 +307,8 @@ Jx().$package('QReader.pageflip', function (J) {
 		if (flip.direction == -1) {
 			currentPage = flip.targetPage;
 		} else {
-			flip.targetPage.width(QReader.PAGE_WIDTH);
+			//flip.targetPage.width(QReader.PAGE_WIDTH);
+			$D.setStyle(flip.targetPage, 'width', QReader.PAGE_WIDTH);
 		}
 
 		if (this.dragging && !flip.consumed) {
@@ -787,6 +788,9 @@ Jx().$package('QReader.pageflip', function (J) {
  * 处理页面导航逻辑
  */
 Jx().$package('QReader.navigation', function (J) {
+	
+	var $D = J.dom,
+		$E = J.event;
 
 	this.isCreditsPage = function () {
 		return false;
@@ -805,8 +809,53 @@ Jx().$package('QReader.navigation', function (J) {
 	}
 	
 	this.goToNextPage = function () {
-		return false;
+		this.cleanUpTransitions();
+		if (this.transitioningFromHardCover) {
+			return false;
+		}
+		if (this.isLastPage() || this.isCreditsPage()) {
+			if (!this.isCreditsPage() || (this.isCreditsPage() && this.isBookOpen())) {
+				QReader.pageflip.completeCurrentTurn();
+				this.goToCredits();
+			}
+			return false;
+		}
+
+		//普通翻页情况
+		QReader.pageflip.completeCurrentTurn();
+		var currentPage = $D.mini('#pages section.current')[0];
+		var prevArticle,
+			prevPage,
+			nextArticle,
+			nextPage;
+		
+		if (this.isHomePage()) {
+		//	nextArticle = this.classToArticle($D.getClass(currentPage));
+		//	nextPage = this.classToArticlePage($D.getClass(currentPage));
+		} else {
+			QReader.pageflip.completeCurrentTurn();
+		//	var cls = $D.getClass($D.getNextElement(currentPage));
+		//	nextArticle = this.classToArticle(cls);
+		//	nextPage = this.classToArticlePage(cls);
+		}
+
+		this.goToPage(nextArticle, nextPage);
 	}
+
+	this.goToPage = function (articleId, pageNum) {
+		var currentPage = $D.mini('#pages section.current')[0],
+			targetPage = $D.getNextElement(currentPage);
+		QReader.pageflip.turnToPage(currentPage, targetPage, 1, 'soft');
+	}
+
+
+	this.cleanUpTransitions = function () {
+		
+	}
+
+	this.updateCurrentPointer = function () {}
+
+	this.goToCredits = function () {}
 
 	this.isLastPage = function () {
 		return false;
