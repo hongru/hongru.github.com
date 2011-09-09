@@ -11,6 +11,8 @@ Jx().$package('QReader', function (J) {
 		$id = $D.id,
 		$ = $D.mini;
 	
+	this.WIN_WIDTH = window.innerWidth;
+	this.WIN_HEIGHT = window.innerHeight;
 	// 单页宽度
 	this.PAGE_WIDTH = 1066;
 	// 单页高度
@@ -30,6 +32,7 @@ Jx().$package('QReader', function (J) {
 	// ua 判断
 	this.UA = navigator.userAgent.toLowerCase();
 	this.isTouchDevice = (/android|iphone|ipad/.test(this.UA));
+	if (this.isTouchDevice) { $D.addClass(document.documentElement, 'touchdevice') }
 
 	this.time = function () {
 		return new Date().getTime();
@@ -75,6 +78,55 @@ Jx().$package('QReader', function (J) {
 		if (window.console && s) {
 			window.console.log(s);
 		}
+	};
+
+	this.initialize = function () {
+		QReader.preload.initialize();
+		QReader.pageflip.initialize();
+
+	}
+
+});
+
+
+/**
+ * package {QReader.preload}
+ * 资源预加载，初始化设置
+ */
+Jx().$package('QReader.preload', function (J) {
+	
+	var packageContext = this,
+		$D = J.dom,
+		$E = J.event;
+
+
+	this.initialize = function () {
+		this.resetConst();
+		this.resetBookStyle();
+	}
+
+	this.resetConst = function () {
+		if (QReader.isTouchDevice) {
+			// 重置const 为pad版本
+			QReader.PAGE_WIDTH = 800;
+			QReader.PAGE_HEIGHT = 500;
+			QReader.PAGE_MARGIN_X = 14;
+			QReader.PAGE_MARGIN_Y = 0;
+			QReader.BOOK_WIDTH = (QReader.PAGE_WIDTH + QReader.PAGE_MARGIN_X) * 2;
+			QReader.BOOK_HEIGHT = (QReader.PAGE_HEIGHT + QReader.PAGE_MARGIN_Y) * 2;
+
+			QReader.pageflip.CANVAS_V_PADDING = 80;
+			QReader.pageflip.CANVAS_H_PADDING = 20;
+			QReader.pageflip.CANVAS_WIDTH = QReader.BOOK_WIDTH + (QReader.pageflip.CANVAS_H_PADDING * 2);
+			QReader.pageflip.CANVAS_HEIGHT = QReader.BOOK_HEIGHT + (QReader.pageflip.CANVAS_V_PADDING * 2);
+		}
+
+	}
+
+	this.resetBookStyle = function () {
+		$D.setStyle(QReader.BOOK, 'width', QReader.BOOK_WIDTH + 'px');
+		$D.setStyle(QReader.BOOK, 'height', QReader.BOOK_HEIGHT + 'px');
+		$D.setStyle(QReader.BOOK, 'marginLeft', -QReader.BOOK_WIDTH*3/4 + 'px');
 	}
 
 })
@@ -763,4 +815,4 @@ Jx().$package('QReader.navigation', function (J) {
 })
 
 
-QReader.pageflip.initialize();
+QReader.initialize();
