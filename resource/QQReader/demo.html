@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+	<title>hello,Flipborad</title>
+	<meta name="viewport" content="user-scalable=no, width=device-width, initial-scale=1.0, maximum-scale=1.0" />
+	<meta name="generator" content="TextMate http://macromates.com/">
+	<meta name="author" content="Du Wei">
+	<link rel="apple-touch-icon" href="icon.bmp"/>
+	<!-- Date: 2010-09-22 -->
+	<style type="text/css" media="screen">
+	* {
+		margin:0;
+		padding:0;
+	}
+	body {
+	}
+	div {
+		font-size:14px;
+		color: rgba(6,6,6,0.6);
+	}
+	.head {
+		line-height:50px;
+		font-size:13px;
+		font-weight:bold;
+		height:50px;
+		border-bottom: 1px solid rgba(9,9,9,0.1);
+		text-align:center;
+	}
+	.frame {
+		-webkit-perspective: 800px; /* For compatibility with iPhone 3.0, we leave off the units here */
+		-webkit-perspective-origin: 50% 275px;
+	}
+	.content {
+		position:relative;
+		overflow:hidden;
+		height:600px;
+    }
+	#desktop {
+	    /* -webkit-transition: -webkit-transform 2s ease-in; */
+	}
+
+
+    @-webkit-keyframes spin {
+      from { -webkit-transform: rotateY(0); }
+      to   { -webkit-transform: rotateY(360deg); }
+    }
+	@-webkit-keyframes middle2right{
+		from {-webkit-transform: rotateY(-72.5deg);}
+		to   {-webkit-transform: rotateY(0deg);}
+	}
+	@-webkit-keyframes left2middle{
+		from   {}
+		to   {-webkit-transform: rotateY(72.5deg);}
+	}
+	.m2r {
+		-webkit-animation-name: middle2right;
+		-webkit-animation-duration: .5s;
+		-webkit-animation-timing-function: ease-out;
+	}
+	.l2m {
+		-webkit-animation-name: left2middle;
+		-webkit-animation-duration: .5s;
+		-webkit-animation-timing-function: ease-in;
+		
+	}
+	.conent-90 {
+		
+	}
+	#left {
+		float:left;
+		height:100%;
+		width:40%;
+	}
+	#right {
+		float:left;
+		height:100%;
+		width:60%;
+	}
+	#left-top,#left-middle,#left-bottom {
+		position:relative;
+		height:33.3%;
+		border-top: 1px solid rgba(9,9,9,0.1);
+		border-right: 1px solid rgba(9,9,9,0.1);
+	}
+	#left-top {
+		border-top:none;
+		margin:auto auto;
+	}
+	.expand-left-top {
+		position:absolute;
+		left:5px;
+		top:-5px;
+		background:#666;
+		z-index:3;
+	}
+	#right-top,#right-bottom {
+		position:relative;
+		height:50%;
+		border-bottom: 1px solid rgba(9,9,9,0.1);
+	}
+	#right-bottom {
+		border-bottom:none;
+	}
+	#left2 {
+		float:left;
+		height:100%;
+		width:40%;
+	}
+	#right2 {
+		float:left;
+		height:100%;
+		width:60%;
+	}
+	#left-top2,#left-middle2,#left-bottom2 {
+		position:relative;
+		height:33.3%;
+		border-top: 1px solid rgba(9,9,9,0.1);
+		border-right: 1px solid rgba(9,9,9,0.1);
+	}
+	#left-top2 {
+		border-top:none;
+		margin:auto auto;
+	}
+	#right-top2,#right-bottom2 {
+		position:relative;
+		height:50%;
+		border-bottom: 1px solid rgba(9,9,9,0.1);
+	}
+	#right-bottom2 {
+		border-bottom:none;
+	}
+	q {
+		margin:auto auto;
+		font-size:1.8em;
+		display:block;
+		overflow:hidden;
+		width:80%;
+		height:80%;
+		padding-top:9%;
+	}
+	.info {
+		height:30px;
+		line-height:30px;
+		font-size:1.1em;
+		color:rgba(9,9,9,0.2);
+		position:absolute;
+		right:9%;
+		bottom:9%;
+	}
+	.info-avatar {
+		height:30px;
+		width:30px;
+	}
+	.dateandname {
+		float:left;
+		height:30px;
+		line-height:30px;
+		font-size:1.1em;	
+		color:rgba(9,9,9,0.2);
+		margin-right:5px;	
+	}
+	</style>
+</head>
+<body>
+	<div id="desktop">
+	<div class="head">
+		<h2>{Hello:"Flipboard"}</h2>
+	</div>
+		<div id="content" class="content">
+			<div id="left">
+				<div class="clip" id="left-top">
+						<q>hello-flipboard,一个模仿flipboard微博聚合web程序</q>
+						<div class="info"><div class="dateandname">1d ago by D</div><img class="info-avatar" avatar="d" /></div>
+				</div>
+				<div class="clip" id="left-middle">
+					<q>还是杯具了，晚了几分钟就错过了最后的大巴。。回不去了</q>
+						<div class="info">
+							<div class="dateandname"> 2d ago by Gin</div> <img class="info-avatar" avatar="gin"/>
+							
+						</div>
+				</div>
+				<div class="clip" id="left-bottom">
+					<q>我不能等你一年零一个月了，我也不能等你到二十五岁了，但是我会等你一辈子.........</q>
+					<div class="info">
+						<div class="dateandname"> 4d ago by Gin</div> <img class="info-avatar" avatar="gin"/>
+						
+					</div>
+				</div>	
+			</div>
+			<div id="right">
+				<div class="clip" id="right-top">					  <q>疯浩子:积攒了30年的小宇宙在二零一零年九月二十一日十四时十七分四十八秒人品喷发,感谢ISD,感谢Qzone,感谢Peter,感谢我的爸爸妈妈,感谢前99楼的烈士,以及所有在140字之内无法感谢得完的朋友们,我爱你们,中秋贼快乐!!!</q>
+					<div class="info">
+						<div class="dateandname"> 3d ago by Gin</div> <img class="info-avatar" avatar="gin"/>
+						
+					</div>
+				</div>
+				<div class="clip" id="right-bottom">
+					<q>腾讯动漫:【献给80后的你！绝对让你落泪的漫画】当你看到这组漫画，你会有何感想呢？时光飞逝，回想起童年那段美好时光，仍然记忆犹新。你还能回想起童年时代的趣闻趣事吗？大家畅所欲言聊一聊#80后童年趣事#吧。希望80后的你一起来转播，一起来留言！<a href="http://url.cn/1a9f3P" target="_blank" >http://url.cn/1a9f3P</a></q>
+					<div class="info">
+						<div class="dateandname"> 4d ago by Gin</div> <img class="info-avatar" avatar="gin"/>
+						
+					</div>
+				</div>			
+			</div>
+
+		</div>
+	</div>
+	<div id="desktop2">
+	<div class="head">
+		<h2>{Hello:"Flipboard"}</h2>
+	</div>
+		<div id="content2" class="content">
+			<div id="left2">
+				<div class="clip" id="left-top2">
+						<q>hello-flipboard,一个模仿flipboard微博聚合web程序</q>
+						<div class="info"><div class="dateandname">1d ago by D</div><img class="info-avatar" avatar="d" /></div>
+				</div>
+				<div class="clip" id="left-middle2">
+					<q>还是杯具了，晚了几分钟就错过了最后的大巴。。回不去了</q>
+						<div class="info">
+							<div class="dateandname"> 2d ago by Gin</div> <img class="info-avatar" avatar="gin"/>
+							
+						</div>
+				</div>
+				<div class="clip" id="left-bottom2">
+					<q>我不能等你一年零一个月了，我也不能等你到二十五岁了，但是我会等你一辈子.........</q>
+					<div class="info">
+						<div class="dateandname"> 4d ago by Gin</div> <img class="info-avatar" avatar="gin"/>
+						
+					</div>
+				</div>	
+			</div>
+			<div id="right2">
+				<div class="clip" id="right-top2">					  <q>疯浩子:积攒了30年的小宇宙在二零一零年九月二十一日十四时十七分四十八秒人品喷发,感谢ISD,感谢Qzone,感谢Peter,感谢我的爸爸妈妈,感谢前99楼的烈士,以及所有在140字之内无法感谢得完的朋友们,我爱你们,中秋贼快乐!!!</q>
+					<div class="info">
+						<div class="dateandname"> 3d ago by Gin</div> <img class="info-avatar" avatar="gin"/>
+						
+					</div>
+				</div>
+				<div class="clip" id="right-bottom2">
+					<q>腾讯动漫:【献给80后的你！绝对让你落泪的漫画】当你看到这组漫画，你会有何感想呢？时光飞逝，回想起童年那段美好时光，仍然记忆犹新。你还能回想起童年时代的趣闻趣事吗？大家畅所欲言聊一聊#80后童年趣事#吧。希望80后的你一起来转播，一起来留言！<a href="http://url.cn/1a9f3P" target="_blank" >http://url.cn/1a9f3P</a></q>
+					<div class="info">
+						<div class="dateandname"> 4d ago by Gin</div> <img class="info-avatar" avatar="gin"/>
+						
+					</div>
+				</div>			
+			</div>
+
+		</div>
+	</div>
+</body>
+</html>
+<script type="text/javascript" charset="utf-8">
+	var DATAURI= {'gin':'data:image/jpeg;base64,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',
+'d':'data:image/bmp;base64,Qk32EgAAAAAAADYAAAAoAAAAKAAAACgAAAABABgAAAAAAMASAADEDgAAxA4AAAAAAAAAAAAAGSy1HC21HyyyICquJzGyJDGyHCywHCyyHSutKTSmLzWEBww4DRIgExQXFhQTGRcWGRcWGBYVEhIQFRYUFBUTFhcVFhcVFxgWGRoYFRUTHx0cUk5NwLy77erp+/37+v37+f37+v/++f79+/39+/z8/Pz8/vz+/v3+HS63GiuxIzC0JC+xHymqJDCzIS6xICyvIy6nLDSaMDV4EhY7DRAcEhMUGRgXFhUUExIRGRgXFhYUGRoYFhcVFRYUExQSFRUUGRkXGhkYQT49vLi37Orp+vn4+vv5+/38+v38+f79+v7++/39/P39/f39/v3+/v3+IDC2HSywIS+vIS6tIyysKjG2Jy6xKjCrLDKcNz2PExdJDA8oERIZExMUFBUTFhcVFxgWFRYUFhcVFxgWFhcVFRYUFxgWFhUUHRsaHBoZdnRz39va9vTz/fz7+Pn4+vz7+Pz6+P38+f79+vz8+/z8/Pz8/v39/v39HiuwIS+wIC+sIi+rKTKxJyutKy6qMTKfKCp/ExVPCw0qERIeHBsdGBgXFhgWEBIQFxkXFxgWGBkXFRYUGBcVGBcWHBsaFRQTGRcWLSopu7e27+zr+vn4+/r5/v79+/37+/79+v79+f79+/39/P39/f39/v39/v39HiuvIS+wIS+sIzCsJjGsKCymNTajKSiBDw5MBwgrGRklenl6dHJwGRoXGRwaERQSFBcVGxwaFhcVFxgWHhwbFhQTFxUUGxkYGRcWVFBP4Nzb8+/u/fz7/v388/Ty/f79+vz8+Pz7+f79+/39/P39/f39/v39/vz8Iy60IS6xHy2sJDGsJC6jMjmhIiV5CQhDDQstNjRBuLW17enm4dzbUlBQExUVFxkZFxkZFRcXFhYWGBgYGBYWHBoaHBoaIR0eGBMUoZyd7enp+/n4/vz7/v38/f39+Pj4+fv7+fv7+/39+/39/P39/f39/f39/Pz8Iiy1ICyyIS6uJjOrJzOeLDSHCAxHDQ8yT05dwL2/8O3p+vf0/Pf3lZSUGhwcFRcXFxkZERMTHR0dGRkZHBoaGxkZGRcXHxscMy4v2tXW8+/v/vv7/vz8/fv7/f39/f7++/39+/39/P7+/P7+/P7+/f79/f38/Pz8ISy2Ii20JC+wJjGjKzeTDxZSDBEzXGFuxMXH8e7q+ff1/fr6/fv84uLiSkxMExUVFxkZExUVFxcXGhoaHBoaHhwcHBoaGxcXcWxt6+bn+vf3/fv7/f39+vn5+vr6/v7+/f39+/z8+/39+fv7+fr6/Pz7/P37+fr4ICqzISuvJi+pLDWbFh9rAgguOkRSvsXD8vTv+/n1+/j6/Pj7+/r7+/z9n6GhDhAQGBoaGxwcGxwcGRkZIB4eIB4eHRsbJiQks7Cw+PP0//3+/Pv7/fz8+/v7/Pz8+/v7/v7+/f39/f39+/z7+Pr4+vz6/P78+fv5Ji+0JzCtLjajIyp/BQlBHyc9qrKz7fTr+vz19/f1/vz9/Pv9+/n8/v7+7e/vQUNDFxkZFRUVLy8vdHR0FRMTHx0dGRcXV1VV5OTk/fj5/Pn6/Pv7/fv7/v7+9vb2/f39+/v7+/v7+/v79PTzq62rfH99bG9tjpGPIyypKjOjMTaQDxFQBwcqlJef9/n3/P34+/z5/P39+Pj7/Pv+/Pv8+fn5+vr6ysrKPj4+MTExjIyM8fHxnZ2dPDw8RUVFtrS08O/v7+/v9PPz+vn5+/n5/Pr6/f39/f39/v7++fn4uru5Ozw6FRYUCw4MDxIQFRgWKTGpLjWcIiZwCws3Skhc9PH0+/n4/fv6/Pz9+Pr8+fr7+/v7/Pv5/fz7/Pz8+vr62djY0M/P8fHx+vr6+Pj429vbzc3Nvr29jIuLc3JykI+Pubi56+rr+fj4+/v7+vr6+Pj4tba1ODk3EhMRHyAeGx4cGh0bGRwaKTCfLDOMDhJLGBk1s7C4/vr7/vr7/vv++/v/+Pn++vz8/f38/v77/Pv5/v7+/fz8/Pr6/fv7/f39/Pz8+/v70dHRbW1tLi4uGRkZGxsbHBwcLy4vd3Z33Nzc+vn5/Pv71tbWTU5NGhsZGxwaGBoYFxoYGBsZGBsZNDiUJClvAwUtUlVj5ebl/fr5/vv7/vv+/Pr/+vr/+vr9+/r9/v38+/v6/v7++Pf3+/v7/Pv7/Pv7+vr67u7ucXFxGxsbHR0dXFxckJCQd3d3PT49Hh8dY2Ri7e3s9/f2mJmYJCUjGRoYGRoYGBkXGBoYGhwaGBkXREWQExZMCQ4ol52k9vj2/fz7/Pj5/vz+/vz//Pv/+/r++vr++/z9+vr6+vr6/f39/f39+/v79/f3+vr6wcHBJycnHx8fgYGB0dHR9fX17+/ux8fGU1RSFBUTmpuZ3t/dWVpYGRoYHB0bGhsZGRoYGRoZGRoZGRoYODd4Cgs4NDdLx8zR+/37+vj4/v39/v39/v7+/fz++vr+/P3+/P38/v795+fnvr6+r6+v0tLS8PDw/f39bm5uFBQUW1tb3t7e/f39+vr6+/v7+vv5y8vKSktJmpuZu7y6MDEvGxwaHR4cGxwaGRoYGRoYGRoZGRoYKSdcBwgsSk1c19ve+fr6/fr8/fv8/Pz6/f37/f79+vv7/f79/f363d3bZGRkICAgHBwcNzc3jo6O6urqPT09ISEhn5+f9fX1+fn5+vr6/P38+vv5/Pz76ero9vf1p6imIiMhGhsZGhsZGRkXGRoYGRoYGRoZGRoYExI4BwgiZGdv5ujp+fn6/vv+/fv8/Pz5+/34/P/6+/z6/f379PPvenp3GRkZLy8vT09PKioqIiIijIyMMjIyOTk5z8/P/Pz8/v7++/v7/Pz8+/z6+/z6/Pz7+Pn3p6imISIgGBkXGRoYGRoYGRoYGhsZGhsZGRoYDAwmDQ4cfH+B8/X0/fv8/fn+/Pr8+/35+/33+v72/P37/Pz64eDeUlFQEhISjY2N19fXmJiYNTU1JiYmICAgUlJS4uLi+/v7/f39/Pz8/f39/P38+fn4/f39+vr6u7u6LC0sGRkZGxsbGhoaGhoZGhoaGhoZGRoZDAweEBIag4aD9ffz/fv7/fr+/fz9+fz5+/74+Pz1/v79/fz80c/PPz49FRUVu7u7+Pj48fHxi4uLICAgHx8fVlZW5eXl/f39/Pz8+fn5/v7+/Pz8/Pz8+/v7/Pz8yMjIOjo6FxcXGxsbGRkZGRkZGRkZGhoaGhoaBwgXDA8VcXRx7O7p/Pz7+vj8/f3++fz6+vz49/v3+vn6+/j94NzgU1BSDAwMrKys/Pz8+fn56enpS0tLGRkZVlZW5+fn+vr6/f39/f39/f39/v7++Pj4+/v7/f394+PjZGRkFxcXGRkZHR0dGxsbHBwcFxcXSUlJCQojBwoYQkZG0tbT9PX1/fz++fj7+Pr48/bz5Obl5uXo6+nu9fH1enh7HBwcr6+v/f39+/v7+vr6oqKiJCQkb29v7+/v/v7+/Pz8/f39+/v7+/v7/f39/f39/f399vb2pKSkLCwsGBgYGhoaGRkZHh4eVFRUzMzMDxA4BgokHiMss7i5+Pr69/b6+/v94uLhnaCeXmBgY2Jnenh9tLG1wL7BoqKj6urq+/v7+vr6/Pz88PDwsLCwy8vL+vr6+vr6/f39/f39+/v7/Pz8/f39+fn5/f399/f36+vrm5ubU1NTREREWFhYjIyM1dXV+vr6JSRiCg06BgwiY2lx5enq+fn85ubneHh3JygmGBkZFBMXHx0hLy0vfX195+fn+vr6/Pz8+/v7/Pz8+fn5+/v7+vr6/f39+/v7/v7++/v7/f39/v7+/v7++fn5+/v7+/v7+Pj48/Pz1dXV1dXV2dnZ9PT0+/v7/f39PDuODg9NBAgrExkqnaCm9vb6xcXGMzQzFRYUFxcXGhkbFhYXGBkWGBkXWlpa9PT0/Pz8+Pj4/Pz8/f39/f39/f39/Pz8/f39+vr6/f39/f39+/v7+/v7/v7++Pj4+fn5/f39/f39+fn5+/v7/f39/v7++fn5+vr6NjSbKSt8CxBCBw0oDhIei4uSnp2fHh0bFBUSFxgXExUVFRgVFxwUGhwYDw8Pb29v7+/v/f399/f3/Pz8/f39/f38+/v7/Pz8+/v7/v7++vr6+/v7/v7+/f39/v3+/f39+fn5+vv7+/z8/Pz8+vr6+/v7/f39/v7+LS+jMTWYKS15DRFJCAsxDAwjLjI6Gh4cFBcUEhQUFhUYFhUVFRURFBQSHh4eIiIjpKSl/f79+vz6/f78/P37/f78/P39/P39/f7+/v7+/Pz8/Pv7+/r6/fz9/Pv9/Pz++/z9+/7++/79+/79+fz6/P79/f79+/36JzCtKC+kLzWcJyqFGBliDA4+Bw0mDBQbDhUYERQZExIbGhUbGxcXGRcWGhkZGBcZbm5w9Pb1+v36+fz4+v75+/77/P79/P7+/P7+/v7+/v39/v37/v38/v3+/fz+/Pz++vz++Pz99vv6+v79+P36+f37+fz5+/77IS6vJjKtKjKnLTGgMzWYKix5Fx5TCA8yBQwnDREoDg4jERIdFBUUFhYVHBwdGxocXl1f7e3u/f79/P36+/36/P77/P39/Pz9/f3+/v7+/v79/f36/f38/P3+/Pz++/z++/3++v39+v39+/79+Pz5+vz7+vv7/f39GyquIC+vIy6qJi2oLTGnMzeeNTuRKTF2GB5ZBQk8AwQsCxEmDhUZEBQUEA8RGxockpGT+/r89/f3/f38/f38/f39/f39/f39/fz9/f39/P38+f36+P37+v39+/z++/z9/P39/Pz7/fz7+/r3+vr3/fz8/Pr7/fr8HS6zHC2wHy2wJC+zJC2xJCyqKDGmLDWeNTudMjaPIyhtCxI/CRInDhQcRUZKsbO09PX2+Pf5/Pv9+fj6/fr9/vz+/v7+/v79/v38/fz8+vz8+P38+P39+f39+/39/f37/v76/v75/v74/v72/v75/v37/fv79/X2Gyy0HCyyHi2xHy2xIS60IS60IC2uJDCsKTGqKS2fODuaMzl/HydQDhIkFxkcW15dpKWl3Nzc+vn6+ff7/fn+/vr+/v38/v37/vz6/vz8+/z++Pz++fz++vz+/vz+/v39/v37/v33/v73/vz2/fv2+vj38vH01tXZHiy3GimwHy+xHS6vHS6vHzG0Gy2wHSyvIy2zKC2wMDCkNzmVLDFtDxItFBYZDhEOJCYjXV5cqaep5uPo/vv+/vv+/vz6/fz3/fz4/vz8/Pv++Pn++fn++/n+/vr+/vr+/vv8/vv6/v77/v369fX14+Xpu7zGaGl1ISi4ICqyIjCwIDCtHS+rHTGvHC+vHS2wIi22JyuzKyqkNjeaHB9iBgknFRkbFRkUGRwXGBkVLSssW1dcnJeb1tPT9/bx/f33/fz4/f39/Pz++vz9+/3++/v8/fv7/vz9/v37/v369PXyzdDPqq2yeH2JOj5PExgtJym6JSq1Iy6vIjCsIDGrHjCuHTCuHS6vIi6zJy2yLC6mLTGRDhFSBgknExgbFBgTFxsTGBsUFxcVHxsgIBsfNzQ0ZGRdpKWd19jT9fT49ff59Pn29vr29vn19Pb04uLivr+/k5WXZmhuKzE8GiEzDxQvAworFiBFKSm5Jyq1Ji2wJi6vJC6vIC+vHy+vIC+uIi6vJy+sLzajJi2CBAxECA0pExYdExcRFBkOGRwSHR0aHRoeJCAlHhwcGhsVERQNFxkZNDM9ODpDOUBDP0dKNTxAJiw2HyMyEhYpBgkhAgclCBE4DhhIFyFbKjV2NkGHJym2JiqzJiuwJiyxJS2zIi60IC2xIjCwIi6vJi+rLjaiKjOGChNLCQ0tERMfExYSFhsQGBsRHBsZHBgeGhcdGBcZGx0ZGR0ZFxsfEhIkEBIsDxU1DRI2DA40DBE9EhhJERdNGB5ZGiFjHyZzJi2CLzaUMzqgKjKbJiu0JCyyJCywJSyzJCu1Iiu3HyqyIS6xIy6yJzCvKjKlLjiTEx5eBwsyEREiFBYVGBwTFxoRGBcXHBcgFhMcGRgdFxoYFxwbFBchEhAsKClbMDR6LTB+LC+CKS2EKS6ILDKPLTSVLTSbLDOhLDKnKS6qJCmrKS60JS6yIi6wIy6wIy2yIiu0ISu2HyuyHyywIi60Iy2xKS+tLTWgHyh5Cgw+EhAnEhQWFRkSFxoSFhYXGhUfGBQfHRwjFhkaEhYbFRgnFhU5MzN2NjmbLTGdLTKgMDWnLTSnJzClJTCmKDOqJS+qIy2rJS6xJCyzIym0IS6uIS6tIS6tIS2xIiy1ISy2IS20Hi2yIS21HiawKi20KzCnLTKQEBBLFBErEREYEhUQGBsTGBcZGBQfGBQiFRUdGBseFxohEhYnHBtDOzyILjKiKjCsJy6rJC2sJC+tIi6tIjCuHi2qHi2rIC6tIC2vIi6yISux'};
+
+var aimgs= document.getElementsByTagName("img");
+var i=0,
+	len=aimgs.length;
+for(;len--;) {
+	var img= aimgs[len];
+	var avatar= img.getAttribute("avatar");
+	if(avatar) {
+		img.src= DATAURI[avatar]
+	}
+}
+var left_top = document.getElementById("left-top");
+var right_bottom = document.getElementById("right-bottom");
+var content = document.getElementById("content");
+var desktop = document.getElementById("desktop");
+
+var _clone= function(option) {
+	var pos_x= this.offsetLeft;
+	var pos_y= this.offsetTop;
+	var clone= this.cloneNode(true);
+	clone.style.position= "absolute";
+	clone.style.height= this.offsetHeight+"px";
+	clone.style.width= this.offsetWidth+"px";
+	clone.style.background= "white";
+	clone_dup= clone.cloneNode(true);
+	clone_dup.style.left= -(this.offsetWidth)/2+"px";
+	/*
+	var s=1,r=0,s1=0,r1=0;
+	
+	clone.addEventListener('gesturechange', function(event) {
+		event.preventDefault();
+		//-webkit-transform 2s ease-in
+	    this.style.webkitTransform = 'scale(' + s*event.scale + ') ' +
+	       'rotate('+ (r+event.rotation)%360 + 'deg)';
+		s1= s*event.scale;
+		r1= r+event.rotation;
+	}, false);
+	clone.addEventListener('gestureend', function(event) {
+		s= s1;
+		r= r1;
+	}, false);
+	*/
+	var _frame_l= document.createElement('div');
+	_frame_l.className= 'frame';
+	_frame_l.style.left= pos_x+"px";
+	_frame_l.style.top= (pos_y)+"px";
+	_frame_l.style.height= this.offsetHeight+"px";
+	_frame_l.style.width= (this.offsetWidth)/2+"px";
+	_frame_l.style.zIndex= 2;
+	_frame_l.style.position= 'absolute';
+	_frame_l.style.overflow= 'hidden';
+	
+	_frame_l.appendChild(clone);
+	_frame_l.addEventListener('click',function(event){
+		event.preventDefault();
+		clone_dup.style.display= "none";
+		clone.style.webkitTransition= '-webkit-transform .5s ease-in';
+		clone.style.borderLeft= '1px solid #666';
+		clone.style.backgroundColor= "rgba(245,245,245,1)";
+		//clone.className= "l2m";
+		clone.style.webkitTransform='rotateY(72.5deg)';
+		clone.addEventListener('webkitTransitionEnd', function(event){
+			event.preventDefault();
+			clone_dup.style.display= "block";
+			this.style.display= "none";
+			clone_dup.style.borderRight= '1px solid #666';
+			clone_dup.style.backgroundColor= "rgba(245,245,245,1)";
+			clone_dup.className= "m2r";
+			//clone_dup.style.webkitTransition= '-webkit-transform .3s ease-out';
+			//clone_dup.style.webkitTransform='rotateY(0deg)';
+			
+			clone_dup.addEventListener('webkitTransitionEnd', function(){
+				event.preventDefault();
+				this.style.backgroundColor= "white";
+				this.style.display= "none";
+			}, false);
+		}, false);
+		
+	}, false)
+	var _frame_r= document.createElement('div');
+	_frame_r.className= 'frame';
+	_frame_r.style.left= pos_x+(this.offsetWidth)/2+"px";
+	_frame_r.style.top= (pos_y)+"px";
+	_frame_r.style.height= this.offsetHeight+"px";
+	_frame_r.style.width= (this.offsetWidth)/2+"px";
+	_frame_r.style.zIndex= 2;
+	_frame_r.style.position= 'absolute';
+	_frame_r.style.overflow= 'hidden';
+	_frame_r.appendChild(clone_dup);
+	return [_frame_l,_frame_r];
+};
+var lr= _clone.call(desktop);
+document.body.appendChild(lr[0]);
+document.body.appendChild(lr[1]);
+left_top.addEventListener('click',function(event){
+	event.preventDefault();
+	//content.style.webkitTransform='rotateY(45deg) translateZ(120px)';
+}, false)
+right_bottom.addEventListener('click',_clone, false);
+right_bottom.addEventListener('click',function(){
+	content.style.webkitTransform='rotateY(45deg) translateZ(240px) translateX(-1200px) ';
+}, false)
+if(window.orientation%180==0) {
+	//content.style.height= "850px";
+}
+
+window.onorientationchange= function() {
+	if(window.orientation%180==0) {
+		//content.style.height= "800px";
+	}
+	else {
+		//content.style.height= "600px";
+	}
+};
+//matrix3d(1.2, 0, 0, 0, 0, 1.2, 0, 0, 0, 0, 1.2, 0, 0, 0, 120, 1)
+//(new Image()).src = 'ui/back_button_touched.png';//preload
+//ring.addEventListener('webkitTransitionEnd', this, false); 
+// title.textContent = item_data.title;
+// this.startY = event.touches[0].pageY;
+//.style.webkitTransitionDuration = '0.5s';
+</script>

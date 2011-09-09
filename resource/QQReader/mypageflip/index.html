@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+    <head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <!--[if lt IE 9]>
+        <script src="html5-shim.js"></script>
+        <![endif]-->
+		<link type="text/css" href="main.css" rel="stylesheet" media="screen" />
+	</head>
+	<body>
+		<div id="book">
+			<div id="pages">
+				<section>
+					<div>
+						<h2>History</h2>
+						<p>接上一篇的依靠像素模拟的球面的曲线图，通过不同的数学曲线，表现了一点点数学之美的皮毛（我甚至不能妄称了解了数学之美，因为自己深深地明白，数学的博大精深恐怕是我这辈子也难以企及的）。因为还是有一些同学比较感兴趣，所以这里稍作一点分解。既然我们不能参悟高深的数学，那就让我们以娱乐的心态去编码，去学习。　　上一篇随笔的评论里我看有童鞋在问具体用了什么数学公式。其实基本上核心的就用了一个数学公式，即球坐标相关的东西。具体可以参考百度百科或者维基百科的球坐标相关释义。我自己恐怕是讲不清楚，所以这里暂就附上《维基百科》上关于球坐标系的解析吧：球坐标系维基百科</p>
+					</div>
+				</section>
+				<section>
+					<div>
+						<h2>第二页</h2>
+						<p>工作一段时间之后，即使做的还是编码的工作，但是几乎已经不和数学打交道了，基本都是和dom在打交道。所以基本不再有可能发现数学的美丽之处了。。（其实说这句话心里也是虚虚的。当时上学的时候高数也是烂的一沓糊涂，唉，往事不堪回首）。　　再加上前一段时间一位同仁说：js玩3D能玩出什么呢？</p>
+					</div>
+				</section>
+				<section>
+					<div>
+						<h2>第三页</h2>
+						<p>At the time of its introduction the canvas element was met with mixed reactions from the web standards community. There havte been arguments against Apple's decision to create a new proprietary element instead of supporting the SVG standard. There are other concerns about syntax e.g. the absence of a namespace.</p>
+					</div>
+				</section>
+				<section>
+					<div>
+						<h2>Support</h2>
+						<p>The element is currently supported by the latest versions of Mozilla Firefox, Google Chrome, Safari, and Opera. It is not natively implemented by Internet Explorer (IE) as of version 8, though support is in development for Internet Explorer 9; however, many of the Canvas element's features can be supported in IE, for example by using Google or Mozilla plugins, JavaScript libraries and either Adobe Flash or IE's proprietary VML.</p>
+					</div>
+				</section>
+			</div>
+		</div>
+		<script>
+			/*var s = document.getElementById('pages').innerHTML;
+			var r = '';
+			for (var i=0; i<15; i++) {
+				r += s;
+			}
+			document.getElementById('pages').innerHTML = r;*/
+		</script>
+		<script type="text/javascript" src="pageflip.horizon.js"></script>
+		<script>
+			new PageFlip({
+				book: 'book',
+				bookWidth: 912,
+				bookHeight: 583,
+				pageWidth: 396,
+				pageHeight: 511,
+				topSpace: 33
+			})
+		</script>
+	</body>
+<html>

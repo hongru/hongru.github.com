@@ -1,0 +1,1850 @@
+
+<!DOCTYPE html>
+
+<html lang="en" manifest="/zh-CN/cache.manifest?v=49">
+
+  <head>
+
+  <!-- 
+
+    20 Things I Learned About Browsers and the Web
+
+    Built by Fi (www.f-i.com) for the Google Chrome Team.
+
+    
+
+    @author Hakim El Hattab
+
+    @author Erik Kallevig
+
+    @author Jon Gray
+
+    -->
+
+    
+
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+
+  <meta name="keywords" content="浏览器, 网络, Google, Cookie, 云计算, HTML5 图书, 网络应用程序, Javascript, 网上诱骗, 恶意软件, 互联网, 在线安全, HTML, HTML5, 插件, 浏览器扩展程序, 在线隐私, 开放源代码, 克里斯托弗·尼曼, 什么是网络, 什么是互联网">
+
+  <meta name="author" content="Google, inc.">
+
+  <meta name="apple-mobile-web-app-capable" content="yes">
+
+  <meta name="viewport" content="width = 1000">
+
+  <meta name="description" content="浏览器大合唱 (新老浏览器的对决)">
+
+  
+
+      
+
+      
+
+  <link rel="image_src" href="http://www.20thingsilearned.com/css/images/front-cover.jpg" />
+
+  
+
+  <title>关于浏览器和网络的 20 项须知</title>
+
+  
+    <style>
+        #book, #chapter-nav {
+            display: none;
+        }
+        header,
+#search-dropdown,
+#grey-mask,
+#chapter-nav,
+#overlay,
+#credits,
+#pagination-prev,
+#pagination-next,
+#table-of-contents,
+#sharer,
+#left-page,
+#right-page,
+canvas,
+.pageNumber,
+#pages section,
+.right-side,
+#currentPage,
+#articleId,
+#pageNumber
+{
+    display: none !important;
+}
+
+#pages section.current
+{
+    display: block !important;
+}
+
+body,
+html,
+#pages section,
+footer,
+footer span.curator
+{
+    background: none !important;
+    overflow: auto !important;
+    margin: 0 !important;
+}
+
+body {
+    font-family: "Times New Roman", Times, serif;
+    padding: 30px!important;
+}
+
+h2 {
+    padding: 0px;
+    margin: 0px;
+}
+
+h3 {
+    padding: 0px 0px 15px 0px;
+    margin: 0px;
+}
+
+
+#book,
+#pages,
+#pages section,
+#pages section div.page
+{
+    position: static !important;
+    width: auto !important;
+    height: auto !important;
+}
+
+footer {
+    position: static;
+}
+footer span.curator {
+    border-top: 1px solid #000;
+    margin-top: 40px;
+    padding-top: 10px;
+    font-size: 10px;
+    float: none;
+    display: block;
+    width: 100%;
+}
+@import url(http://fonts.googleapis.com/css?family=Cantarell);@import url(http://fonts.googleapis.com/css?family=Crimson+Text);html{color:#000;background:#fff;}a{cursor:pointer;}html,body,div,dl,dt,dd,ul,ol,li,h1,h2,h3,h4,h5,h6,pre,code,form,fieldset,legend,input,textarea,p,blockquote,th,td{margin:0;padding:0;}table{border-collapse:collapse;border-spacing:0;}fieldset,img{border:0;}address,caption,cite,code,dfn,em,strong,th,var{font-style:normal;font-weight:normal;}li{list-style:none;}caption,th{text-align:left;}q:before,q:after{content:'';}abbr,acronym{border:0;font-variant:normal;}sup{vertical-align:text-top;}sub{vertical-align:text-bottom;}input,textarea,select{font-family:inherit;font-size:inherit;font-weight:inherit;outline-style:none;outline-width:0;}legend{color:#000;}a:focus,object,h1,h2,h3,h4,h5,h6{-moz-outline-style:none;border:0;}strong{font-weight:bold;}html,body,div,span,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,abbr,address,cite,code,del,dfn,em,img,ins,kbd,q,samp,small,strong,sub,sup,var,b,i,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td,article,aside,canvas,details,figcaption,figure,footer,header,hgroup,menu,nav,section,summary,time,mark,audio,video{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent;}body{line-height:1;}:focus{outline:1;}article,aside,canvas,details,figcaption,figure,footer,header,hgroup,menu,nav,section,summary{display:block;}nav ul{list-style:none;}blockquote,q{quotes:none;}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none;}a{margin:0;padding:0;border:0;font-size:100%;vertical-align:baseline;background:transparent;}ins{background-color:#ff9;color:#000;text-decoration:none;}mark{background-color:#ff9;color:#000;font-style:italic;font-weight:bold;}del{text-decoration:line-through;}abbr[title],dfn[title]{border-bottom:1px dotted #000;cursor:help;}table{border-collapse:collapse;border-spacing:0;}input,select{vertical-align:middle;}@font-face{font-family:'MolengoRegular';src:url('fonts/molengo-regular-webfont.eot');src:local('☺'),url('fonts/molengo-regular-webfont.woff') format('woff'),url('fonts/molengo-regular-webfont.ttf') format('truetype');font-weight:normal;font-style:normal;}@font-face{font-family:'DroidSerif';src:url('fonts/droidserif-webfont.eot');src:local('☺'),url('fonts/droidserif-webfont.woff') format('woff'),url('fonts/droidserif-webfont.ttf') format('truetype');font-weight:normal;font-style:normal;}@font-face{font-family:'DroidSerif';src:url('fonts/droidserif-italic-webfont.eot');src:local('☺'),url('fonts/droidserif-italic-webfont.woff') format('woff'),url('fonts/droidserif-italic-webfont.ttf') format('truetype');font-weight:normal;font-style:italic;}@font-face{font-family:'DroidSerif';src:url('fonts/droidserif-bolditalic-webfont.eot');src:local('☺'),url('fonts/droidserif-bolditalic-webfont.woff') format('woff'),url('fonts/droidserif-bolditalic-webfont.ttf') format('truetype');font-weight:bold;font-style:italic;}@font-face{font-family:'DroidSerif';src:url('fonts/droidserif-bold-webfont.eot');src:local('☺'),url('fonts/droidserif-bold-webfont.woff') format('woff'),url('fonts/droidserif-bold-webfont.ttf') format('truetype');font-weight:bold;font-style:normal;}@font-face{font-family:'DroidSans';src:url('fonts/droidsans-webfont.eot');src:local('☺'),url('fonts/droidsans-webfont.woff') format('woff'),url('fonts/droidsans-webfont.ttf') format('truetype');font-weight:normal;font-style:normal;}@font-face{font-family:'DroidSans';src:url('fonts/droidsans-bold-webfont.eot');src:local('☺'),url('fonts/droidsans-bold-webfont.woff') format('woff'),url('fonts/droidsans-bold-webfont.ttf') format('truetype');font-weight:bold;font-style:normal;}html,body{background-color:#eee;transition:background-color .4s linear;-o-transition:background-color .4s linear;-moz-transition:background-color .4s linear;-webkit-transition:background-color .4s linear;min-height:650px;font-family:DroidSans,Arial,Helvetica,sans-serif;color:#333;height:100%;user-select:none;-o-user-select:none;-moz-user-select:none;-webkit-user-select:none;}body.cs-CZ,body.pl-PL{font-family:'Cantarell',Arial,sans-serif;}section p,section span,section h2,section h3,#credits p,#credits h2,#credits ul li,#front-cover-bookmark p{user-select:text;-o-user-select:text;-moz-user-select:text;-webkit-user-select:text;}a,a:hover,a:active{outline:none;color:#333;text-decoration:none;transition:color .12s linear;-o-transition:color .12s linear;-moz-transition:color .12s linear;-webkit-transition:color .12s linear;}#preloader{background-color:#eee;width:100%;height:100%;position:absolute;z-index:100000;}#preloader .contents{width:300px;height:200px;position:relative;left:50%;top:50%;margin-left:-150px;margin-top:-100px;opacity:0;}#preloader .contents .animation{width:91px;text-align:center;position:relative;left:50%;margin-left:-45px;}#preloader .contents .progress{height:7px;width:302px;background-color:#fefefe;border-radius:2px;margin-top:10px;box-shadow:0 1px 3px #ccc;-o-box-shadow:0 1px 3px #ccc;-moz-box-shadow:0 1px 3px #ccc;-webkit-box-shadow:0 1px 3px #ccc;}#preloader .contents .progress .fill{background-color:#d7464b;transition:width .5s ease-out;-o-transition:width .5s ease-out;-moz-transition:width .5s ease-out;-webkit-transition:width .5s ease-out;background-image:gradient(linear,0% 100%,0% 0,from(#af282d),to(#d7464b));background-image:-o-gradient(linear,0% 100%,0% 0,from(#af282d),to(#d7464b));background-image:-moz-gradient(linear,0% 100%,0% 0,from(#af282d),to(#d7464b));background-image:-webkit-gradient(linear,0% 100%,0% 0,from(#af282d),to(#d7464b));border-radius:2px;height:7px;width:0;}header,header a.logo,header nav ul li.table-of-things a,header input[type="text"],footer,footer div.sharing a,footer div.print a span.icon,footer div.lights a,.lights a span.icon,div.lights.clone,div.lights.clone a,.lights.clone a span.icon,.fullscreen a span.icon,div.fullscreen.clone,div.fullscreen.clone a,.fullscreen.clone a span.icon,footer div.fullscreen a,#shadow .shadow-left,#shadow .shadow-right,#search-dropdown div.background-top,#search-dropdown div.background-bottom,#spine div,#chapter-nav ul li,#chapter-nav a.over div.small-book,#table-of-contents ul li div.medium-book,#table-of-contents a.go-back,#pagination-prev div.arrow,#pagination-next div.arrow,#overlay div.bookmark,#overlay div.bookmark .content a.close,#overlay div.print,#overlay div.print a.close,#overlay div.print p,#overlay div.print a.downloadPdf:hover,#overlay div.print a.printBook:hover,#credits div.people ul li h3,#credits div.share ul li span.icon,#front-cover-bookmark,#sharer div.background-top,#sharer div.background-bottom,#sharer div.content ul li a,#sharer div.content p.instruction span,#sharer div.content ul li.print #front-cover-arrow,#paperstack .shadow,#overlay div.print a.disabled,#language-selector-title>a{background:transparent url('images/sprites.png?v=15') no-repeat top left;}#book{width:1660px;height:520px;position:absolute;left:50%;top:50%;margin:-270px 0 0 -1220px;z-index:2px;}#grey-mask{background:url('images/grey-mask.png') repeat-y top left;position:absolute;display:block;z-index:1100;height:100%;width:60px;}#left-page{position:absolute;overflow:hidden;background-color:#fff;height:520px;}body.home #left-page{width:0;}#right-page{position:absolute;overflow:hidden;left:830px;z-index:10;background-color:#fff;height:520px;}body.credits #right-page{width:0;}#paperstack{position:absolute;width:34px;height:500px;top:10px;left:800px;}#paperstack .paper{width:1px;float:left;z-index:2;}#paperstack .paper.s1{height:500px;margin-top:0;background-color:#b6d6d6;}#paperstack .paper.s2{height:498px;margin-top:1px;background-color:#c8c9c9;}#paperstack .paper.s3{height:496px;margin-top:2px;background-color:#d6d6d6;}#paperstack .paper.s4{height:494px;margin-top:3px;background-color:#c8c9c9;}#paperstack .paper.s5{height:492px;margin-top:4px;background-color:#d6d6d6;}#paperstack .paper.s6{height:490px;margin-top:5px;background-color:#c8c9c9;}#paperstack .paper.s7{height:488px;margin-top:6px;background-color:#d6d6d6;}#paperstack .shadow{background-position:-1018px -169px;width:30px;height:500px;margin-left:0;}#paperstack .paper,#paperstack .shadow{transition:opacity .15s linear;-o-transition:opacity .15s linear;-moz-transition:opacity .15s linear;-webkit-transition:opacity .15s linear;}#front-cover{display:none;position:absolute;left:830px;top:0;height:520px;z-index:1000;background-color:#7893c1;}body.home #front-cover{display:block;}#back-cover{display:block;position:absolute;left:0;top:0;height:520px;z-index:1001;background-color:#7893c1;}body.credits #back-cover{display:block;}#page-shadow-overlay{display:none;position:absolute;z-index:999;left:831px;top:10px;width:800px;height:500px;opacity:0;background-color:#000;}#front-cover-bookmark{background-position:-790px -152px;width:205px;height:630px;display:block;position:absolute;left:840px;top:-41px;z-index:1100;}body.overlay #front-cover-bookmark{opacity:0;transition:opacity .2s linear;-o-transition:opacity .2s linear;-moz-transition:opacity .2s linear;-webkit-transition:opacity .2s linear;}#front-cover-bookmark div.content{text-align:center;padding:0 40px;line-height:1.05em;width:117px;}#front-cover-bookmark div.content h3{font-weight:bold;font-size:11px;text-transform:uppercase;position:relative;top:170px;}#front-cover-bookmark div.content p{font-size:12px;color:#666;position:relative;top:172px;margin-bottom:12px;line-height:1.5em;}#front-cover-bookmark a.open-book{position:absolute;top:440px;left:43px;color:#fff;padding:4px 6px 3px 6px;width:97px;border-radius:3px;font-size:12px;font-weight:bold;background-color:#a22;background-image:gradient(linear,0% 100%,0% 0,from(#af282d),to(#d7464b));background-image:-o-gradient(linear,0% 100%,0% 0,from(#af282d),to(#d7464b));background-image:-moz-gradient(linear,0% 100%,0% 0,from(#af282d),to(#d7464b));background-image:-webkit-gradient(linear,0% 100%,0% 0,from(#af282d),to(#d7464b));box-shadow:0 1px 3px #333;-o-box-shadow:0 1px 3px #333;-moz-box-shadow:0 1px 3px #333;-webkit-box-shadow:0 1px 2px #333;text-shadow:0 1px 1px #666;-o-text-shadow:0 1px 1px #666;-moz-text-shadow:0 1px 1px #666;-webkit-text-shadow:0 1px 1px #666;}#front-cover-bookmark a.open-book:hover{background-image:gradient(linear,0% 100%,0% 0,from(#af282d),to(#eb555a));background-image:-o-gradient(linear,0% 100%,0% 0,from(#af282d),to(#eb555a));background-image:-moz-gradient(linear,0% 100%,0% 0,from(#af282d),to(#eb555a));background-image:-webkit-gradient(linear,0% 100%,0% 0,from(#af282d),to(#eb555a));}#front-cover-bookmark a.open-book:active{background-image:gradient(linear,0% 100%,0% 0,to(#a5282d),from(#af282d));background-image:-o-gradient(linear,0% 100%,0% 0,to(#a5282d),from(#af282d));background-image:-moz-gradient(linear,0% 100%,0% 0,to(#a5282d),from(#af282d));background-image:-webkit-gradient(linear,0% 100%,0% 0,to(#a5282d),from(#af282d));}#front-cover-bookmark #flip-intro{position:absolute;top:486px;left:54px;}header{background-repeat:repeat-x;width:100%;height:53px;display:block;position:absolute;top:0;left:0;min-width:950px;z-index:2000;}header h1{text-indent:-10000em;}header a.logo{background-position:left -62px;width:159px;height:32px;display:block;margin-top:9px;margin-left:13px;float:left;}header nav{display:block;float:left;margin:14px 0 0 24px;height:40px;}header nav ul li{position:relative;padding:1px 6px;height:21px;display:block;float:left;z-index:10;transition:background-color .14s linear;-o-transition:background-color .14s linear;-moz-transition:background-color .14s linear;-webkit-transition:background-color .14s linear;}body:not(.tot).credits header nav ul li.credits,body.tot header nav ul li.table-of-things{padding:0 5px;height:23px;background-color:#f1f1f1;border-radius:3px;border-top:1px #d3d3d3 solid;border-bottom:1px #f8f8f8 solid;border-left:1px #e9e9e9 solid;border-right:1px #e9e9e9 solid;}header nav ul li.about{left:-4px;}header nav ul li.credits{left:-8px;}header nav ul li.divider1,header nav ul li.divider2{position:relative;width:1px;height:20px;background-color:#e9e9e9;border:1px solid white;margin:0;padding:0;z-index:1;}header nav ul li.divider1{left:-2px;}header nav ul li.divider2{left:-6px;}header nav a{text-decoration:none;color:#333;font-size:11px;padding:4px;}.cs-CZ header nav a,.pl-PL header nav a{font-size:13px;}header nav ul li.table-of-things a{background-position:-174px -64px;padding-left:42px;}.cs-CZ header nav ul li.table-of-things a,.pl-PL header nav ul li.table-of-things a{background-position:-174px -60px;padding-left:42px;}header nav a:hover{color:#b41e21;}header input[type="text"]{background-position:-405px -56px;position:absolute;display:block;top:9px;right:5px;width:204px;height:32px;border:none;outline:none;margin:0;padding:0 0 0 26px;font-size:11px;-webkit-appearance:textfield;-moz-appearance:textfield;color:#888;z-index:2001;}header input:focus[type="text"]{background-position:-652px -56px;color:#333;}.cs-CZ header input[type="text"],.pl-PL header input[type="text"]{font-size:12px;}#language-selector{display:inline-block;}#language-selector-title{display:inline-block;font-size:11px;margin-top:14px;width:100%;cursor:pointer;}#language-selector-title:hover,#language-selector-title.open{background:gradient(linear,0% 100%,0% 0,from(#e6e6e6),to(#fff));background:-o-gradient(linear,0% 100%,0% 0,from(#e6e6e6),to(#fff));background:-moz-gradient(linear,0% 100%,0% 0,from(#e6e6e6),to(#fff));background:-webkit-gradient(linear,0% 100%,0% 0,from(#f5f5f5),to(#fff));border:1px #bbb solid;border-radius:3px;}#language-selector-title.open{border-bottom-left-radius:0;border-bottom-right-radius:0;}#language-selector-title>a{display:block;padding:6px 20px 6px 6px;background-position:100% -58px;}#language-selector-title:hover>a,#language-selector-title.open>a{display:block;padding:5px 18px 5px 5px;background-position:100% -59px;}.cs-CZ #language-selector a,.pl-PL #language-selector a{font-size:12px;}#language-selector-list{font-size:11px;width:100%;background:#fff;border-bottom-left-radius:3px;border-bottom-right-radius:3px;border:1px #bbb solid;border-top:none;padding:2px 0;display:none;}#language-selector-list.open{display:block;}#language-selector-list ul li a{display:block;padding:5px 5px 4px;transition:background-color,color .03s,.03s linear;-o-transition:background-color,color .03s,.03s linear;-moz-transition:background-color,color .03s,.03s linear;-webkit-transition:background-color,color .03s,.03s linear;}#language-selector-list ul li a:hover{background:#82b8f4;color:#fff;}#search-dropdown{width:222px;position:absolute;z-index:2001;opacity:0;}#search-dropdown.open{opacity:1;}#search-dropdown .fader{display:none;height:100%;}#search-dropdown.open .fader{display:block;}#search-dropdown div.background-top{background-position:-1048px -152px;position:relative;width:100%;height:100%;}#search-dropdown div.background-bottom{background-position:-1048px -704px;position:relative;width:100%;height:50px;}#search-dropdown div.results{width:204px;margin:10px;position:absolute;top:0;}#search-dropdown div.results .empty{display:none;font-size:14px;margin:5px;}#search-dropdown.no-results div.results .empty{display:block;}#search-dropdown.no-results div.results .things,#search-dropdown.no-results div.results .keywords{display:none;}#search-dropdown div.results h4{font-size:10px;font-weight:bold;color:#666;text-align:center;margin:6px 0 8px 0;}#search-dropdown div.results h4 span{background-color:#fff;position:relative;z-index:5;padding:0 6px;}#search-dropdown div.results hr{width:190px;border-color:#fff;color:#eee;margin-top:-6px;z-index:1;}#search-dropdown div.results li{cursor:pointer;font-size:12px;margin:4px;}#search-dropdown div.results .things li{height:62px;}#search-dropdown div.results li p strong{background-color:#fff5b4;}#search-dropdown div.results .things li .illustration{width:60px;height:60px;float:left;margin-right:7px;background-color:#fff;}#search-dropdown div.results .things li:hover .illustration{background-color:#f4f4f4;border-radius:4px;}#search-dropdown div.results .keywords li{padding:4px 5px;}#search-dropdown div.results .things li .title{font-weight:bold;margin-top:15px;}#search-dropdown div.results .things li:hover .title,#search-dropdown div.results .keywords li:hover .snippet{color:#b41e21;}#search-dropdown div.results .things li .pages,#search-dropdown div.results .keywords li .pages{font-size:11px;color:#666;}.cs-CZ #search-dropdown div.results .things li .pages,.cs-CZ #search-dropdown div.results .keywords li .pages,.pl-PL #search-dropdown div.results .things li .pages,.pl-PL #search-dropdown div.results .keywords li .pages{font-size:10px;}#search-dropdown div.results .things li:hover .pages,#search-dropdown div.results .keywords li:hover .pages{color:#333;}#search-dropdown div.results li .title,#search-dropdown div.results li .pages,#search-dropdown div.results .keywords li .snippet,#search-dropdown div.results .keywords li .pages{transition:color .11s linear;-o-transition:color .11s linear;-moz-transition:color .11s linear;-webkit-transition:color .11s linear;}#search-dropdown div.results .things li .illustration,#search-dropdown div.results .things li:hover .illustration{transition:background-color .15s linear;-o-transition:background-color .15s linear;-moz-transition:background-color .15s linear;-webkit-transition:background-color .15s linear;}#search-dropdown,#search-dropdown.open{transition:opacity .2s linear;-o-transition:opacity .2s linear;-moz-transition:opacity .2s linear;-webkit-transition:opacity .2s linear;}#chapter-nav ul li,#chapter-nav ul li a.over,#chapter-nav ul li:hover a.over{transition:opacity .21s linear;-o-transition:opacity .21s linear;-moz-transition:opacity .21s linear;-webkit-transition:opacity .21s linear;}#chapter-nav{display:block;position:absolute;width:830px;z-index:1015;padding:20px 0;z-index:1998;}#chapter-nav>p{font-size:10px;font-weight:bold;color:#999;position:absolute;left:-108px;margin-top:5px;width:100px;text-align:right;text-shadow:0 1px 1px #fff;-o-text-shadow:0 1px 1px #fff;-moz-text-shadow:0 1px 1px #fff;-webkit-text-shadow:0 1px 1px #fff;}#chapter-nav ul li{background-position:-9px -227px;display:block;width:35px;height:20px;list-style:none;float:left;margin:0 3px;opacity:.5;position:relative;z-index:1;}#chapter-nav ul li:hover{z-index:10;opacity:1;}#chapter-nav ul li.selected,#chapter-nav:hover ul li{opacity:1;}#chapter-nav ul li.read{background-position:-64px -227px;}#chapter-nav ul li.disabled{background-position:-119px -227px;}#chapter-nav ul li.disabled a,#chapter-nav ul li.disabled a span{cursor:default;}#chapter-nav ul li.disabled a span{color:#ccc;}#chapter-nav ul li .cnItem span{float:right;}#chapter-nav ul li .cnItem .illustration{width:16px;height:16px;float:left;margin:2px 0 0 0;}#chapter-nav ul li.disabled .illustration{display:none;}#chapter-nav ul li.selected .cnItem{border:2px solid #e2494f;margin:-2px 0 -2px 0;border-radius:2px;width:32px;}#chapter-nav ul li.selected .cnItem .illustration{margin-left:-2px;}#chapter-nav ul li .cnItem{display:block;font-size:8px;text-decoration:none;color:#8a8a8a;text-align:right;width:34px;height:20px;}#chapter-nav ul li .cnItem span{position:relative;top:6px;right:5px;}#chapter-nav ul li .over{position:relative;margin-left:3px;width:87px;cursor:pointer;overflow:visible;left:-28px;display:none;}#chapter-nav ul li:hover .over{display:block;border-radius:2px;}#chapter-nav ul li.disabled .over{display:none!important;}#chapter-nav ul li .over div.description{background-color:#eee;padding:3px;text-align:center;width:170px;margin-left:-43px;border-radius:3px;-webkit-border-radius:3px;-moz-border-radius:3px;margin-bottom:2px;}#chapter-nav ul li .over p.title{width:170px;display:block;color:#333;font-weight:bold;font-size:11px;margin-bottom:2px;text-transform:uppercase;text-shadow:0 0 4px #eee;-o-text-shadow:0 0 4px #eee;-moz-text-shadow:0 0 4px #eee;-webkit-text-shadow:0 0 4px #eee;}#chapter-nav ul li .over p.title span{padding:3px;border-radius:2px;}#chapter-nav ul li .over p.pagenumber{font-size:10px;color:#858585;text-align:center;margin-bottom:4px;}#chapter-nav ul li .over div.small-book{background-position:-190px -227px;display:block;width:87px;height:30px;}#chapter-nav ul li.selected .over div.small-book{outline:2px solid #e2494f;}#chapter-nav ul li .over div.small-book p{width:40px;font-size:11px;color:#333;text-align:center;position:relative;top:9px;float:right;}#chapter-nav ul li .over div.small-book .illustration{width:28px;height:28px;float:left;margin:1px 0 0 8px;}#pagination-prev{position:absolute;z-index:1500;top:50%;left:0;opacity:1;transition:opacity .4s linear;-o-transition:opacity .4s linear;-moz-transition:opacity .4s linear;-webkit-transition:opacity .4s linear;}.home #pagination-prev{opacity:0;}#pagination-prev div.arrow{background-position:-366px -189px;width:42px;height:70px;text-indent:-10000em;}#pagination-prev:hover div.arrow{background-position:-366px -290px;}#pagination-prev:active div.arrow{background-position:-366px -390px;}#pagination-prev.inactive div.arrow{background-position:-366px -490px;cursor:default;}#pagination-next{position:absolute;z-index:1500;top:50%;right:0;opacity:1;transition:opacity .4s linear;-o-transition:opacity .4s linear;-moz-transition:opacity .4s linear;-webkit-transition:opacity .4s linear;}.credits #pagination-next{opacity:0;}#pagination-next div.arrow{background-position:-471px -189px;width:42px;height:70px;text-indent:-10000em;}#pagination-next:hover div.arrow{background-position:-471px -290px;}#pagination-next:active div.arrow{background-position:-471px -390px;}#pagination-next.inactive div.arrow{background-position:-471px -490px;cursor:default;}div.page-progress{background-color:#eee;position:absolute;right:50px;top:16px;padding:6px;width:auto;visibility:hidden;opacity:0;}div.page-progress p.thing{display:block;font-size:10px;font-weight:bold;white-space:nowrap;}div.page-progress p.number{display:block;font-size:9px;white-space:nowrap;}.cs-CZ div.page-progress p.number,.pl-PL div.page-progress p.number{font-size:12px;}#pagination-next div.page-progress{right:50px;top:17px;text-align:right;}#pagination-next div.page-progress,#pagination-next:hover div.page-progress{transition:opacity .21s linear;-o-transition:opacity .21s linear;-moz-transition:opacity .21s linear;-webkit-transition:opacity .21s linear;}#pagination-next:hover div.page-progress{visibility:visible;opacity:1;}#pagination-prev div.page-progress{left:50px;right:auto;top:18px;text-align:left;}#pagination-prev div.page-progress,#pagination-prev:hover div.page-progress{transition:opacity .21s linear;-o-transition:opacity .21s linear;-moz-transition:opacity .21s linear;-webkit-transition:opacity .21s linear;}#pagination-prev:hover div.page-progress{visibility:visible;opacity:1;}#table-of-contents{display:none;width:100%;height:100%;background-color:#eee;z-index:1999;position:absolute;left:0;top:0;opacity:0;transition:background-color .4s linear;-o-transition:background-color .4s linear;-moz-transition:background-color .4s linear;-webkit-transition:background-color .4s linear;}body.tot #table-of-contents{opacity:1;display:block;}#table-of-contents div.center{position:relative;width:966px;height:550px;left:50%;top:50%;margin:-295px 0 0 -483px;}#table-of-contents a.go-back{background-position:-236px -306px;height:24px;padding:5px 10px 0 28px;display:block;font-size:12px;float:left;left:4px;top:3px;position:absolute;background-color:#eee;transition:background-color .4s linear;-o-transition:background-color .4s linear;-moz-transition:background-color .4s linear;-webkit-transition:background-color .4s linear;z-index:1;}#table-of-contents a.go-back:hover{background-position:-236px -336px;color:#000;}#table-of-contents a.go-back:active{background-position:-236px -366px;}#table-of-contents hr{width:948px;border-color:#fff;color:#eee;position:absolute;top:6px;left:6px;}#table-of-contents h2{font-size:26px;width:100%;text-align:center;text-shadow:0 1px 1px #fff;-o-text-shadow:0 1px 1px #fff;-moz-text-shadow:0 1px 1px #fff;-webkit-text-shadow:0 1px 1px #fff;}#table-of-contents h2 span{padding:0 8px;background-color:#eee;position:relative;z-index:1;text-transform:uppercase;transition:background-color .4s linear;-o-transition:background-color .4s linear;-moz-transition:background-color .4s linear;-webkit-transition:background-color .4s linear;}#table-of-contents ul{margin-top:10px;}#table-of-contents ul li{display:block;width:188px;height:130px;float:left;margin:0 2px 4px 2px;text-align:center;position:relative;}#table-of-contents ul li a{padding:0 2px;display:block;width:184px;min-height:130px;background-color:#eee;transition:background-color .4s linear;-o-transition:background-color .4s linear;-moz-transition:background-color .4s linear;-webkit-transition:background-color .4s linear;}#table-of-contents ul li a:hover{background-color:#f7f7f7;border-radius:4px;transition:background-color .11s linear;-o-transition:background-color .11s linear;-moz-transition:background-color .11s linear;-webkit-transition:background-color .11s linear;box-shadow:0 2px 4px #cdcdcd;-o-box-shadow:0 2px 4px #cdcdcd;-moz-box-shadow:0 2px 4px #cdcdcd;-webkit-box-shadow:0 2px 4px #cdcdcd;}#table-of-contents ul li.disabled a{cursor:default;}#table-of-contents ul li div.medium-book{background-position:-12px -304px;width:187px;height:66px;}#table-of-contents ul li.read div.medium-book{background-position:-12px -378px;}#table-of-contents ul li.disabled div.medium-book{background-position:-12px -460px;}#table-of-contents ul li div.medium-book p{text-align:left;position:relative;top:26px;left:15px;}#table-of-contents ul li div.medium-book .illustration{width:60px;height:60px;float:right;margin:3px 24px 0 0;}#table-of-contents ul li.disabled .illustration{display:none;}#table-of-contents ul li h3{font-size:13px;font-weight:bold;width:90%;margin:5px 0 4px 5%;transition:color .18s linear;-o-transition:color .18s linear;-moz-transition:color .18s linear;-webkit-transition:color .18s linear;}.cs-CZ #table-of-contents ul li h3,.pl-PL #table-of-contents ul li h3{font-size:12px;}#table-of-contents ul li:hover h3,#table-of-contents ul li.selected h3{color:#b41e21;}#table-of-contents ul li.disabled h3{color:#777;}#table-of-contents ul li p{font-size:11px;width:90%;margin-left:5%;color:#999;padding-bottom:5px;}.cs-CZ #table-of-contents ul li p,.pl-PL #table-of-contents ul li p{font-size:12px;}#credits{position:absolute;width:640px;height:510px;left:50%;top:50%;margin:-255px 0 0 -320px;text-align:center;display:none;z-index:1;}body.credits #credits{display:block;}#credits hr{width:640px;border-color:#fff;color:#eee;}#credits div.header h2{font-size:26px;font-weight:bold;text-shadow:0 1px 1px #fff;-o-text-shadow:0 1px 1px #fff;-moz-text-shadow:0 1px 1px #fff;-webkit-text-shadow:0 1px 1px #fff;}#credits div.header h2 span{padding:0 8px;background-color:#eee;position:relative;z-index:1;transition:background-color .4s linear;-o-transition:background-color .4s linear;-moz-transition:background-color .4s linear;-webkit-transition:background-color .4s linear;}#credits div.header hr{position:absolute;top:6px;}#credits div.people{margin:30px 0 15px 0;}#credits div.people ul li{display:inline-block;width:184px;height 65px;color:#666;margin:0 13px 18px 13px;font-size:12px;line-height:16px;vertical-align:top;}#credits div.people ul li h3{background-position:-10px -549px;width:184px;height:26px;display:block;color:#fff;font-weight:bold;padding-top:5px;font-size:10px;}#credits div.people h4{font-size:14px;font-weight:bold;clear:both;margin-top:6px;}#credits div.people p{margin-top:7px;font-size:12px;color:#666;line-height:1.7em;width:640px;}#credits div.share{margin-top:20px;text-align:left;}#credits div.share p{color:#999;font-size:11px;width:240px;float:left;line-height:15px;}.cs-CZ #credits div.share p,.pl-PL #credits div.share p{font-size:10px;}#credits div.share ul{float:right;margin-top:-4px;}#credits div.share ul li{font-size:10px;font-weight:bold;float:left;margin-left:8px;padding:10px 0 0 10px;width:41px;height:41px;outline:1px solid #eee;cursor:pointer;border-radius:4px;background-color:#eee;transition:background-color,outline .1s,.1s linear;-o-transition:background-color,outline .1s,.1s linear;-moz-transition:background-color,outline .1s,.1s linear;-webkit-transition:background-color,outline .1s,.1s linear;}#credits div.share ul li.facebook{margin-left:0;}#credits div.share ul li:hover{background-color:#f7f7f7;outline:1px solid #ddd;}#credits div.share ul li span.text{display:none;float:left;margin-top:4px;}#credits div.share ul li a:hover{color:#000;}#credits div.share ul li span.icon{display:block;width:31px;height:31px;float:left;}#credits div.share ul li.facebook span.icon{background-position:-28px -609px;}#credits div.share ul li.twitter span.icon{background-position:-82px -609px;}#credits div.share ul li.gplus{cursor:default;width:48px;padding-top:14px;height:37px;}#credits div.people p.html5-logo{margin:4px 0 24px 0;}#credits div.people p.html5-logo img{position:relative;top:11px;}#overlay{background:url('images/overlay-pattern.png') repeat top left;display:none;width:100%;height:100%;position:absolute;z-index:2200;}#overlay div.bookmark{background-position:-585px -160px;width:190px;height:600px;position:absolute;left:50%;top:50%;margin:-300px 0 0 -95px;}#overlay div.bookmark .content{margin:20px;text-align:center;color:#fff;}#overlay div.bookmark .content a.close,#overlay div.print a.close{display:inline-block;background:#fff;font-size:11px;font-weight:bold;color:#b41e21;padding:6px 8px 5px 8px;margin:22px 0 0 5px;border-radius:6px;opacity:.7;transition:opacity .1s linear;-o-transition:opacity .1s linear;-moz-transition:opacity .1s linear;-webkit-transition:opacity .1s linear;}#overlay div.bookmark .content a.close:hover{opacity:1;}#overlay div.bookmark .content h3{font-size:22px;font-weight:bold;line-height:1.3em;margin-top:70px;letter-spacing:-1px;padding:0 8px;}#overlay div.bookmark .content p{font-size:13px;line-height:1.3em;margin-top:18px;color:#daa8a9;padding:0 16px;}#overlay div.bookmark .content a.action{color:#fff;background-color:#a52c23;font-size:16px;display:block;font-weight:bold;position:relative;left:20px;width:90px;transition:background-color .1s linear;-o-transition:background-color .1s linear;-moz-transition:background-color .1s linear;-webkit-transition:background-color .1s linear;border:1px #9c2325 solid;border-radius:6px;padding:9px 9px;}#overlay div.bookmark .content a.action:hover{background-color:#b83436;border:1px #9c2325 solid;border-radius:6px;padding:9px 9px;}#overlay div.bookmark .content a.action:active{background-color:#ab383a;border:1px #9c2325 solid;border-radius:6px;padding:9px 9px;}#overlay div.bookmark .content a.action.resume{margin-top:24px;}#overlay div.bookmark .content a.action.restart{margin-top:16px;}#overlay div.print{background-position:-565px -794px;width:705px;height:200px;position:absolute;left:50%;top:50%;margin:-74px 0 0 -352px;}#overlay div.print a.close{color:#fff;margin:3px 0 0 323px;width:45px;height:16px;padding:7px 0 0 12px;position:absolute;z-index:5000;opacity:1;background:#333;}#overlay div.print a.close:hover{color:#333;background:#fff;}#overlay div.print a.printBook,#overlay div.print a.downloadPdf{display:block;width:352px;height:166px;float:left;margin-top:7px;}#overlay div.print a.printBook:hover{background-position:-566px -996px;}#overlay div.print a.downloadPdf:hover{background-position:-917px -996px;}#overlay div.print a.downloadPdf.disabled,#overlay div.print a.downloadPdf.disabled:hover{background-position:-917px -1176px;cursor:default;}#overlay div.print h2{text-transform:uppercase;font-size:30px;margin:38px 0 0 109px;letter-spacing:-1px;}#overlay div.print a.downloadPdf h2{margin-left:43px;}#overlay div.print a.disabled h2{color:#999;}#overlay div.print p{font-size:11px;width:124px;color:#666;margin:15px 0 0 78px;padding:20px 20px 15px 110px;background-position:-1156px -1487px;}#overlay div.print a.downloadPdf p{margin-left:35px;padding-right:0;padding-left:100px;width:144px;background-position:-1174px -1424px;}#overlay div.print a.downloadPdf.disabled p{background-position:-1174px -1364px;}#overlay div.print a:hover h2,#overlay div.print a:hover p{color:#fff;}#overlay div.print a.disabled:hover h2{color:#999;}#overlay div.print a.disabled:hover p{color:#666;}footer{background-position:0 -117px;background-repeat:repeat-x;display:block;width:100%;height:25px;min-width:950px;position:absolute;top:100%;margin-top:-25px;font-size:11px;color:#666;z-index:2000;}footer span.curator{margin:8px 0 0 13px;float:left;}.cs-CZ footer span.curator,.pl-PL footer span.curator{font-size:10px;}footer div.print a,footer div.print a:hover,footer div.lights a,footer div.lights a:hover,footer div.fullscreen a,footer div.fullscreen a:hover,footer div.sharing,footer div.sharing:hover{transition:background-color,color .1s,0.1s linear;-o-transition:background-color,color .1s,0.1s linear;-moz-transition:background-color,color .1s,0.1s linear;-webkit-transition:background-color,color .1s,0.1s linear;}footer div.right-side{float:right;margin-right:0;}footer div.right-side div{display:block;float:left;}footer div.right-side div.divider{position:relative;top:1px;width:1px;height:24px;background-color:#d2d2d2;display:inline-block;border:solid white 1px;border-bottom:none;border-top:none;}footer div.sharing{padding:7px 18px 0;margin-top:1px;}footer div.sharing:hover{color:#b41e21;background-color:rgba(255,255,255,0.7);}footer div.sharing input.clipboard-notification{display:none;width:160px;height:14px;padding:7px 5px;text-align:center;border-radius:3px;border:1px solid #999;background-color:#faffca;position:absolute;top:-40px;margin-left:-10px;font-size:12px;color:#333;}footer div.sharing p{float:left;}.cs-CZ footer p,.cs-CZ footer div,.pl-PL footer p,.pl-PL footer div{font-size:10px;}footer div.sharing ul{margin-left:2px;width:92px;float:left;}footer div.sharing ul li{margin:-3px 0 0 5px;float:left;}footer div.sharing ul li a{width:16px;height:21px;display:block;}footer div.sharing ul li.facebook a{background-position:-7px -150px;}footer div.sharing ul li.facebook a:hover{background-position:-7px -174px;}footer div.sharing ul li.facebook a:active{background-position:-7px -198px;}footer div.sharing ul li.twitter a{background-position:-26px -150px;}footer div.sharing ul li.twitter a:hover{background-position:-26px -174px;}footer div.sharing ul li.twitter a:active{background-position:-26px -198px;}footer div.sharing ul li.url a{background-position:-63px -150px;}footer div.sharing ul li.url a:hover{background-position:-63px -174px;}footer div.sharing ul li.url a:active{background-position:-63px -198px;}footer div.print{margin:0;}footer div.print a{float:left;margin:0;padding:7px 14px 0;margin-top:1px;height:17px;color:#666;text-decoration:none;}footer div.print a:hover{color:#b41e21;background-color:rgba(255,255,255,0.7);}footer div.print a span.icon{background-position:-102px -161px;width:20px;height:17px;display:block;margin-top:-3px;float:left;}footer div.lights-wrapper{width:117px;height:17px;}footer div.lights,.dark .lights.clone{margin:0;}footer div.lights a,.dark .lights.clone a{float:left;width:117px;height:17px;margin:0;padding:7px 0 0;margin-top:1px;color:#666;position:relative;text-decoration:none;text-indent:-10000em;background-position:-354px -727px;transition:color .4s linear;-o-transition:color .4s linear;-moz-transition:color .4s linear;-webkit-transition:color .4s linear;}.dark .lights.clone a{background-position:-354px -759px;}div.lights.clone{background:none;}.lights a:hover{background-color:rgba(255,255,255,0.7);}.lights a span.icon,.dark .lights a span.icon{background-position:-386px -794px;width:25px;height:14px;display:block;position:absolute;top:6px;transition:left .2s linear;-o-transition:left .2s linear;-moz-transition:left .2s linear;-webkit-transition:left .2s linear;}.lights a span.icon{left:32px;}.lights a span.icon.off{left:57px;transition:left .1s linear;-o-transition:left .1s linear;-moz-transition:left .1s linear;-webkit-transition:left .1s linear;}footer div.fullscreen-wrapper{width:117px;height:17px;}footer div.fullscreen,.fullscreen div.fullscreen.clone{margin:0;}footer div.fullscreen a,div.fullscreen.clone a{float:left;margin:0;padding:7px 0 0;margin-top:1px;height:17px;width:117px;color:#666;position:relative;text-decoration:none;text-indent:-10000em;background-position:-354px -817px;transition:color .4s linear;-o-transition:color .4s linear;-moz-transition:color .4s linear;-webkit-transition:color .4s linear;transition:background-color .13s linear;-o-transition:background-color .13s linear;-moz-transition:background-color .13s linear;-webkit-transition:background-color .13s linear;}div.fullscreen a:hover{background-color:rgba(255,255,255,0.7);}div.fullscreen.clone a:hover{background-color:rgba(255,255,255,0);}div.fullscreen.clone{background:none;}div.fullscreen a span.icon,.fullscreen div.fullscreen a span.icon{background-position:-386px -884px;width:25px;height:14px;display:block;position:absolute;top:6px;transition:left .2s linear;-o-transition:left .2s linear;-moz-transition:left .2s linear;-webkit-transition:left .2s linear;}div.fullscreen a span.icon{left:32px;}div.fullscreen a span.icon.off{left:57px;transition:left .1s linear;-o-transition:left .1s linear;-moz-transition:left .1s linear;-webkit-transition:left .1s linear;}footer ul li{list-style:none;display:inline;margin:5px;}#sharer,#sharer:hover,#sharer div.content ul,#sharer:hover div.content ul,#sharer div.background-bottom,#sharer:hover div.background-bottom,#sharer div.content,#sharer:hover div.content{transition:all .2s cubic-bezier(0.1,0.3,0.58,1.0);-o-transition:all .2s cubic-bezier(0.1,0.3,0.58,1.0);-moz-transition:all .2s cubic-bezier(0.1,0.3,0.58,1.0);-webkit-transition:all .2s cubic-bezier(0.1,0.3,0.58,1.0);}#sharer div.content ul li,#sharer div.content ul li:hover{transition:all .11s cubic-bezier(0.1,0.3,0.58,1.0);-o-transition:all .11s cubic-bezier(0.1,0.3,0.58,1.0);-moz-transition:all .11s cubic-bezier(0.1,0.3,0.58,1.0);-webkit-transition:all .11s cubic-bezier(0.1,0.3,0.58,1.0);}#sharer{width:80px;height:140px;position:absolute;left:723px;top:8px;z-index:10;display:none;overflow:hidden;}#sharer:hover{height:280px;}#sharer div.background-top{background-position:-213px -509px;width:80px;height:7px;}#sharer div.background-bottom{background-position:-213px -682px;width:80px;height:129px;position:absolute;}#sharer:hover div.background-bottom{background-position:-213px -516px;width:80px;height:275px;}#sharer div.content{height:280px;width:47px;position:absolute;margin-left:16px;bottom:0;}#sharer div.content ul{margin-top:10px;opacity:0;}#sharer:hover div.content ul{opacity:1;margin-bottom:44px;}#sharer div.content ul li{margin-bottom:1px;}#sharer div.content ul li:hover{background-color:#cd4446;}#sharer div.content ul li a{width:47px;height:39px;display:block;}#sharer div.content ul li.facebook a{background-position:-289px -519px;}#sharer div.content ul li.twitter a{background-position:-289px -559px;}#sharer div.content ul li.gplus{height:27px;padding:12px 0 0 12px;}#sharer div.content ul li.gplus iframe{top:10px!important;left:10px!important;}#sharer div.content ul li.print{background-position:-289px -639px;}#sharer div.content ul li.print a{background-position:-86px -149px;text-indent:-10000em;}#sharer div.content p.index{margin-top:20px;text-align:center;font-weight:bold;font-size:11px;color:#fff;text-shadow:0 -1px 1px #744041;-o-text-shadow:0 -1px 1px #744041;-moz-text-shadow:0 -1px 1px #744041;-webkit-text-shadow:0 -1px 1px #744041;}#sharer div.content p.index span{font-size:26px;display:block;width:46px;text-align:center;position:absolute;}#sharer div.content p.instruction{margin:60px 0 0 -16px;text-align:center;font-weight:bold;font-size:9px;color:#666;width:80px;}.cs-CZ #sharer div.content p.instruction,.pl-PL #sharer div.content p.instruction{font-size:10px;}#sharer div.content p.instruction span{background-position:-309px -697px;width:6px;height:6px;display:block;margin:5px 0 0 37px;}#pages{width:1600px;height:500px;position:absolute;left:32px;top:10px;}#pages section{width:800px;height:500px;position:absolute;top:0;margin-left:799px;overflow:hidden;background:url('images/right-page-paper.jpg') no-repeat;background-color:#fff;}#pages section div.page{width:715px;height:440px;position:absolute;padding:25px 45px 35px 45px;}body.tot #pagination-prev,body.tot #pagination-next{display:none!important;}#articleId,#pageNumber,#currentPage{display:none;}html.dark,body.dark,.dark #table-of-contents,.dark #table-of-contents ul li,.dark #table-of-contents a.go-back,.dark #pagination-next div.page-progress,.dark #chapter-nav ul li a.over div.description,.dark #credits div.header h2 span,.dark #table-of-contents h2 span{background-color:#272727;transition:background-color .4s linear;-o-transition:background-color .4s linear;-moz-transition:background-color .4s linear;-webkit-transition:background-color .4s linear;}.dark header,.dark footer{opacity:.25;transition:opacity .4s linear;-o-transition:opacity .4s linear;-moz-transition:opacity .4s linear;-webkit-transition:opacity .4s linear;}.dark #chapter-nav,.dark #pagination-next{opacity:.25;transition:opacity .4s linear;-o-transition:opacity .4s linear;-moz-transition:opacity .4s linear;-webkit-transition:opacity .4s linear;}#grey-mask,#chapter-nav,header,footer,#pagination-next,.dark #chapter-nav:hover,.dark footer:hover,.dark header:hover,.dark header.searching,.dark #search-dropdown.searching,.dark #pagination-next:hover,.dark .lights.clone:hover{opacity:1;transition:opacity .4s linear;-o-transition:opacity .4s linear;-moz-transition:opacity .4s linear;-webkit-transition:opacity .4s linear;}.dark #pagination-next div.page-progress p,.dark #chapter-nav>p,.dark #chapter-nav ul li a.over div.description p,.dark #credits div.header h2 span,.dark #table-of-contents h2 span,.dark #credits div.people h4,.dark #credits div.share ul li a,.dark #credits div.share ul li a:hover,.dark #table-of-contents a.go-back{color:#a5a5a5;text-shadow:none;}.dark #credits div.people a{color:#999;}.dark #credits hr,.dark #table-of-contents hr{border-color:#a5a5a5;}.dark #table-of-contents ul li h3{color:#fff;}.dark #table-of-contents ul li a:hover h3{color:#b41e21;}.dark #table-of-contents ul li.disabled{opacity:.5!important;}.dark #table-of-contents ul li.disabled h3,.dark #table-of-contents ul li.disabled p,.dark #table-of-contents ul li.disabled a:hover h3{color:#585858;}.dark #grey-mask{opacity:0;transition:opacity .4s linear;-o-transition:opacity .4s linear;-moz-transition:opacity .4s linear;-webkit-transition:opacity .4s linear;}.dark #credits div.share ul li{background:none;outline:none;}.dark #credits div.share ul li:hover{background-color:#333;}.lights.clone{position:absolute;bottom:0;right:120px;font-size:11px;background-position:0 -117px;background-repeat:repeat-x;height:25px;z-index:2100;margin:0;padding:0;opacity:.7;transition:opacity .2s linear;-o-transition:opacity .2s linear;-moz-transition:opacity .2s linear;-webkit-transition:opacity .2s linear;background:none;}.dark .lights.clone.active{opacity:1;}.dark .lights.clone.active a{background-position:-354px -727px;}.fullscreen.clone{position:absolute;bottom:0;right:0;font-size:11px;height:25px;z-index:2100;margin:0;padding:0;transition:opacity .2s linear;-o-transition:opacity .2s linear;-moz-transition:opacity .2s linear;-webkit-transition:opacity .2s linear;background:none;opacity:.7;}.fullscreen .fullscreen.clone:hover{opacity:1;}.fullscreen #pageflip,.fullscreen #back-cover,.fullscreen #left-page,.fullscreen #right-page,.fullscreen #shadow,.fullscreen #spine,.fullscreen #sharer,.fullscreen #chapter-nav,.fullscreen #page-shadow-overlay,.fullscreen footer,.fullscreen header{display:none!important;}.fullscreen .title-theend{display:block!important;background:#f9f9f9!important;}.fullscreen .title-theend p:after{content:"Thanks joining us!If you found this helpful,don't forget to share this web book with friends and family.";}.fullscreen canvas{opacity:0;}.fullscreen #pages section{background:#f9f9f9;border-radius:2px;}.fullscreen #front-cover-bookmark{margin-left:-100px;}.fullscreen #front-cover,.fullscreen #back-cover,.fullscreen #pages section,.fullscreen #front-cover-bookmark{transform:scale(1.3);-o-transform:scale(1.3);-moz-transform:scale(1.3);-webkit-transform:scale(1.3);}#front-cover,#back-cover,#pages section,#front-cover-bookmark{transition:transform .2s ease-out;-o-transition:-o-transform .2s ease-out;-moz-transition:-moz-transform .2s ease-out;-webkit-transition:-webkit-transform .2s ease-out;}#front-cover-bookmark{transition:all .2s ease-out;-o-transition:all .2s ease-out;-moz-transition:all .2s ease-out;-webkit-transition:all .2s ease-out;}#book-shadow{position:absolute;bottom:5px;right:14px;width:1613px;height:498px;opacity:1;box-shadow:0 0 45px #5f5f5f;-o-box-shadow:0 0 45px #5f5f5f;-moz-box-shadow:0 0 45px #5f5f5f;-webkit-box-shadow:0 0 45px #5f5f5f;}.home #book-shadow{width:803px;right:14px;}.credits #book-shadow{right:850px;}.dark #book-shadow{display:none;}#shadow{height:555px;width:1620px;position:absolute;right:20px;top:-13px;background:url(./images/repeat-x.png) repeat-x;}.home #shadow{width:790px;}.credits #shadow{width:790px;right:auto;left:20px;}#shadow .shadow-left{height:555px;width:37px;position:absolute;left:-37px;background-position:-16px -874px;}#shadow .shadow-right{height:555px;width:37px;position:absolute;right:-37px;background-position:-72px -874px;}#spine{height:522px;width:55px;position:absolute;left:803px;top:-1px;opacity:1;transition:opacity .4s linear;-o-transition:opacity .4s linear;-moz-transition:opacity .4s linear;-webkit-transition:opacity .4s linear;}.home #spine,.credits #spine{opacity:0;transition:opacity .4s linear;-o-transition:opacity .4s linear;-moz-transition:opacity .4s linear;-webkit-transition:opacity .4s linear;}#spine div{width:55px;height:1px;background-position:-28px -773px;position:absolute;top:0;}#spine .spine-bottom{top:auto;bottom:0;}.touch-device #chapter-nav ul li:hover,.touch-device #chapter-nav ul li:hover{opacity:1;}.touch-device #chapter-nav ul li a.over{display:none!important;}#pages section div.page{width:715px;height:440px;position:absolute;padding:35px 45px 35px 45px;}#pages section h2,#pages section h3{font-family:MolengoRegular,Arial,Helvetica,sans-serif;color:#1a1a1a;text-align:center;font-weight:200;}.cs-CZ #pages section h2,.cs-CZ #pages section h3,.pl-PL #pages section h2,.pl-PL #pages section h3{font-family:'Cantarell',Arial,sans-serif;line-height:1.1em;margin-top:-6px;}#pages section h2{font-size:42px;text-transform:uppercase;line-height:.96em;}.ru-RU #pages section h2{font-size:34px;line-height:1.06em;}#pages section h3{font-size:18px;padding:3px 3px 20px 3px;line-height:1.1em;}#pages section h4{font-size:13px;padding:2px 0;line-height:20px;}.ru-RU #pages section h4{font-family:Times,Georgia,serif;}.cs-CZ #pages section h4,.pl-PL #pages section h4{line-height:16px;font-size:12px;}#pages section p{font-family:DroidSerif,Times,serif;font-size:13px;line-height:20px;word-spacing:3px;text-align:justify;}.cs-CZ #pages section p,.pl-PL #pages section p{font-family:'Crimson Text',Georgia,serif;font-size:15px;}.ru-RU #pages section p{font-family:Times,Georgia,serif;}.ja-JP #pages section p,.zh-CN #pages section p{text-align:left;}#pages section em{font-style:normal;}#pages section .page a{color:#1c4c96;border-bottom:dotted #aaa 1px;}#pages section .page a:hover{color:#5e9dff;border-bottom:dotted #5e9dff 1px;}#pages section span{font-family:DroidSerif,Times,serif;}.cs-CZ #pages section span,.pl-PL #pages section span{font-family:'Crimson Text',Georgia,serif;font-size:15px;}#pages section ul li{font-family:DroidSerif,Times,serif;list-style:circle;font-size:13px;line-height:20px;word-spacing:3px;text-align:justify;margin-bottom:10px;}.cs-CZ #pages section ul li,.pl-PL #pages section ul li{font-family:'Crimson Text',Georgia,serif;font-size:15px;}#pages section div.page span.pageNumber{font-family:DroidSerif,Times,serif;font-size:11px;float:right;position:absolute;bottom:22px;right:20px;color:#999;}.cs-CZ #pages section div.page span.pageNumber,.pl-PL #pages section div.page span.pageNumber{font-family:'Crimson Text',Georgia,serif;font-size:15px;}#pages section.title-theend{background:none;}#pages section.title-theend .pageNumber{display:none;}#pages section p.continuation:first-letter{margin:0;}#pages section p.drop-cap:first-letter{font-size:45px;float:left;margin:7px 5px 0 0;vertical-align:text-top;}#pages section p.note{font-style:italic;color:#555;font-size:12px;}#pages section .image-description{font-style:italic;color:#555;font-size:12px;text-align:center;margin:5px 0 0 0;text-indent:0;display:block;}#pages section cite{color:#999;font-size:11px;position:absolute;bottom:24px;left:45px;display:block;}#pages section .ip-address{font-weight:bold;font-size:13px;display:block;margin-bottom:7px;}#pages section span.highlight{color:#960000;}#pages .template-inner-1 p:first-letter,#pages .template-inner-2 p:first-letter,#pages .template-inner-3 p:first-letter,#pages .template-inner-4 p:first-letter,#pages .template-inner-5 p:first-letter,#pages .template-inner-6 p:first-letter,#pages .template-inner-7 p:first-letter,#pages .template-inner-8 p:first-letter,#pages .template-inner-9 p:first-letter,#pages .template-start-1 p:first-letter,#pages .template-start-2 p:first-letter,#pages .template-start-3 p:first-letter,#pages .template-start-5 p:first-letter,#pages .template-start-6 p:first-letter,#pages .template-start-7 p:first-letter,#pages .template-start-8 p:first-letter,#pages .template-start-9 p:first-letter{margin-left:30px;}.ja-JP #pages p:first-letter{margin-left:0;}#pages .template-start-1 h2,#pages .template-start-1 h3{text-align:left;margin-bottom:5px;width:450px;}#pages .template-start-1 p{width:310px;margin-top:15px;}#pages .template-start-1 img{position:absolute;bottom:40px;right:30px;}#pages .template-start-2 h2,#pages .template-start-2 h3{text-align:center;margin-bottom:10px;}#pages .template-start-2 p{width:320px;margin-top:10px;}#pages .template-start-2 h4{width:320px;margin-top:10px;}#pages .template-start-2 .image1{position:absolute;bottom:55px;right:50px;width:350px;text-align:center;}#pages .template-start-3 h2,#pages .template-start-3 h3{text-align:left;margin-bottom:10px;position:relative;top:80px;left:260px;}#pages .template-start-3 h2{margin-bottom:16px;}#pages .template-start-3 h3{margin-bottom:145px;}#pages .template-start-3 .left{float:left;}#pages .template-start-3 .right{float:right;}#pages .template-start-3 p{width:320px;margin-top:20px;}#pages .template-start-3 .image1{position:absolute;top:20px;left:10px;width:320px;text-align:right;}#pages .template-start-4 h2,#pages .template-start-4 h3{text-align:center;}#pages .template-start-4 p{margin-top:10px;}#pages .template-start-4 .image1{text-align:center;}#pages .template-start-5 .page-title{float:left;}#pages .template-start-5 h2,#pages .template-start-5 h3{text-align:left;margin:10px 0 0 0;}#pages .template-start-5 h2{margin-bottom:16px;width:300px;}#pages .template-start-5 h3{margin-bottom:0;width:300px;}#pages .template-start-5 .left{float:left;clear:left;}#pages .template-start-5 .right{overflow:hidden;width:310px;margin-left:405px;}#pages .template-start-5 p{width:310px;clear:both;}#pages .template-start-5 p{margin-top:10px;}#pages .template-start-5 .image1{text-align:center;}#pages .template-start-5 .image2{float:right;margin-bottom:35px;}#pages .template-start-6 h2,#pages .template-start-6 h3{margin:10px 0 0 15px;}#pages .template-start-6 h2{margin:5 0 6px 0;}#pages .template-start-6 h3{margin:0 0 15px 0;}#pages .template-start-6 .left{float:left;width:312px;}#pages .template-start-6 .right{float:right;width:312px;margin-right:10px;}#pages .template-start-7 h2,#pages .template-start-7 h3{text-align:center;margin-bottom:5px;}#pages .template-start-7 h3{margin-bottom:0;}#pages .template-start-7 .left{float:left;}#pages .template-start-7 .right{float:right;}#pages .template-start-7 p{width:320px;margin-bottom:5px;}#pages .template-start-7 .image1{text-align:center;margin:0 0 10px 0;}#pages .template-inner-1 p{margin-bottom:20px;width:300px;}#pages .template-inner-1 img{margin:0 0 15px 35px;float:right;}#pages .template-inner-2 p{margin-bottom:21px;}#pages .template-inner-2 .left{float:left;width:310px;}#pages .template-inner-2 .right{float:right;width:310px;}#pages .template-inner-2 .image1{text-align:center;}#pages .template-inner-3 p{margin-bottom:15px;}#pages .template-inner-3 .image1{text-align:center;margin-bottom:20px;}#pages .template-inner-4 p{width:320px;margin-bottom:15px;}#pages .template-inner-4 .left{float:left;width:320px;}#pages .template-inner-4 .right{float:right;width:320px;}#pages .template-inner-4 .image1,#pages .template-inner-4 .image2{text-align:center;margin:0 10px 10px 0;}#pages .template-inner-5 p{margin-bottom:15px;}#pages .template-inner-5 .left{float:left;width:560px;}#pages .template-inner-5 .right{float:right;width:560px;position:absolute;bottom:40px;right:40px;}#pages .template-inner-6 p{margin-bottom:22px;}#pages .template-inner-6 .left{float:left;width:310px;}#pages .template-inner-6 .right{float:right;width:310px;position:absolute;bottom:28px;right:50px;}#pages .template-inner-7 p{text-align:justify;width:430px;margin-left:135px;margin-top:10px;}#pages section.title-cloud-computing.page-1 .right p{margin-top:0;}#pages section.title-cloud-computing.page-2 .image1{float:right;}#pages section.title-cloud-computing.page-4 p{width:300px;}#pages section.title-html.page-1 h2{padding:0 100px;}#pages section.title-html.page-1 p{width:322px;}#pages section.title-html.page-3 p{width:322px;}#pages section.title-old-vs-new-browsers.page-1 p span{display:block;text-align:center;font-style:italic;font-size:12px;}#pages section.title-old-vs-new-browsers.page-1 p span.reference{font-size:.8em;font-style:normal;}#pages section.title-old-vs-new-browsers.page-3 .image1{margin-bottom:45px;}#pages section.title-old-vs-new-browsers.page-4 .image1{margin:0 0 25px -10px;}#pages section.title-web-apps.page-1 .image1{margin-top:50px;}#pages section.title-malware.page-1 p{margin-top:20px;width:310px;}#pages section.title-browser-privacy.page-1 .image1{margin:20px;}#pages section.title-identity.page-1 .image1{margin-top:25px;}#pages section.title-sync.page-1 .image1{margin:30px 0 35px 0;}#pages section.title-sync.page-2 .left,#pages section.title-sync.page-2 .right{width:320px;}#pages section.title-plugins.page-1 .image1{margin:10px 0;}#pages section.title-browser-protection.page-1 p{width:330px;}#pages section.title-browser-protection.page-1 h2{font-size:36px;}#pages section.title-browser-protection.page-1 p{margin-top:0;}#pages section.title-browser-protection.page-2 .left,#pages section.title-browser-protection.page-2 .right{width:325px;}#pages section.title-dns.page-1 .image1{margin-bottom:25px;}#pages section.title-page-load.page-1 .image1{margin:15px 0 25px 0;}#pages section.title-page-load.page-1 p{margin-bottom:20px;}#pages section.title-url.page-1 .image1{margin:15px 0 25px 0;}#pages section.title-url.page-1 .url-image,#pages section.title-url.page-2 .url-image{margin:24px 0 4px 0;}#pages section.title-url.page-3 .url-breakdown{height:120px;position:relative;background-image:url("../media/illustrations/url_b5.png");background-repeat:no-repeat;background-position:0 20px;}#pages section.title-url.page-3 .url-breakdown .url{font-size:20px;position:relative;top:40px;}#pages section.title-url.page-3 .url-breakdown .figure-1,#pages section.title-url.page-3 .url-breakdown .figure-2,#pages section.title-url.page-3 .url-breakdown .figure-3,#pages section.title-url.page-3 .url-breakdown .figure-4{font-size:12px;}#pages section.title-url.page-3 .url-breakdown .figure-1{position:absolute;left:1px;top:85px;}#pages section.title-url.page-3 .url-breakdown .figure-2{position:absolute;left:115px;top:85px;}#pages section.title-url.page-3 .url-breakdown .figure-3{position:absolute;right:40px;top:85px;}#pages section.title-url.page-3 .url-breakdown .figure-4{position:absolute;right:55px;top:0;}#pages section.title-url.page-5 .image1{margin-bottom:20px;}#pages section.title-conclusion.page-1 ul{width:310px;margin-top:10px;}#pages section.title-conclusion.page-1 .image1{margin-top:15px;margin-bottom:15px;}#pages section.title-url.page-1 h2{font-size:41px;}#pages section.title-url.page-2 .left{width:442px;}#pages section.title-foreword.page-1 .image1{margin-left:20px;margin-bottom:12px;}#pages section.title-foreword.page-1 p{margin-bottom:20px;width:335px;}#pages section.title-foreword.page-2 p{margin-bottom:22px;}#pages section.title-foreword.page-3 .spacer{margin-bottom:44px;}#search-dropdown .illustration,#table-of-contents .illustration,#chapter-nav .illustration{background:url('images/illustrations.png') no-repeat top left;background-position:bottom right;}#search-dropdown li.cloud-computing .illustration,#table-of-contents ul li.cloud-computing .medium-book .illustration{background-position:0 0;}#search-dropdown li.web-apps .illustration,#table-of-contents ul li.web-apps .medium-book .illustration{background-position:-61px 0;}#search-dropdown li.html .illustration,#table-of-contents ul li.html .medium-book .illustration{background-position:-122px 0;}#search-dropdown li.html5 .illustration,#table-of-contents ul li.html5 .medium-book .illustration{background-position:-183px 0;}#search-dropdown li.old-vs-new-browsers .illustration,#table-of-contents ul li.old-vs-new-browsers .medium-book .illustration{background-position:-244px 0;}#search-dropdown li.plugins .illustration,#table-of-contents ul li.plugins .medium-book .illustration{background-position:-305px 0;}#search-dropdown li.browser-extensions .illustration,#table-of-contents ul li.browser-extensions .medium-book .illustration{background-position:-366px 0;}#search-dropdown li.malware .illustration,#table-of-contents ul li.malware .medium-book .illustration{background-position:-427px 0;}#search-dropdown li.browser-protection .illustration,#table-of-contents ul li.browser-protection .medium-book .illustration{background-position:-488px 0;}#search-dropdown li.url .illustration,#table-of-contents ul li.url .medium-book .illustration{background-position:-549px 0;}#search-dropdown li.identity .illustration,#table-of-contents ul li.identity .medium-book .illustration{background-position:-610px 0;}#search-dropdown li.browser-cookies .illustration,#table-of-contents ul li.browser-cookies .medium-book .illustration{background-position:-671px 0;}#search-dropdown li.browser-privacy .illustration,#table-of-contents ul li.browser-privacy .medium-book .illustration{background-position:-732px 0;}#search-dropdown li.open-source .illustration,#table-of-contents ul li.open-source .medium-book .illustration{background-position:-793px 0;}#search-dropdown li.page-load .illustration,#table-of-contents ul li.page-load .medium-book .illustration{background-position:-854px 0;}#search-dropdown li.what-is-the-internet .illustration,#table-of-contents ul li.what-is-the-internet .medium-book .illustration{background-position:-915px 0;}#search-dropdown li.dns .illustration,#table-of-contents ul li.dns .medium-book .illustration{background-position:-976px 0;}#search-dropdown li.threed .illustration,#table-of-contents ul li.threed .medium-book .illustration{background-position:-1037px 0;}#search-dropdown li.sync .illustration,#table-of-contents ul li.sync .medium-book .illustration{background-position:-1098px 0;}#search-dropdown li.conclusion .illustration,#table-of-contents ul li.conclusion .medium-book .illustration{background-position:-1159px 0;}#chapter-nav ul li.cloud-computing .small-book .illustration{background-position:0 -62px;}#chapter-nav ul li.web-apps .small-book .illustration{background-position:-61px -62px;}#chapter-nav ul li.html .small-book .illustration{background-position:-122px -62px;}#chapter-nav ul li.html5 .small-book .illustration{background-position:-183px -62px;}#chapter-nav ul li.old-vs-new-browsers .small-book .illustration{background-position:-244px -62px;}#chapter-nav ul li.plugins .small-book .illustration{background-position:-305px -62px;}#chapter-nav ul li.browser-extensions .small-book .illustration{background-position:-366px -62px;}#chapter-nav ul li.malware .small-book .illustration{background-position:-427px -62px;}#chapter-nav ul li.browser-protection .small-book .illustration{background-position:-488px -62px;}#chapter-nav ul li.url .small-book .illustration{background-position:-549px -62px;}#chapter-nav ul li.identity .small-book .illustration{background-position:-610px -62px;}#chapter-nav ul li.browser-cookies .small-book .illustration{background-position:-671px -62px;}#chapter-nav ul li.browser-privacy .small-book .illustration{background-position:-732px -62px;}#chapter-nav ul li.open-source .small-book .illustration{background-position:-793px -62px;}#chapter-nav ul li.page-load .small-book .illustration{background-position:-854px -62px;}#chapter-nav ul li.what-is-the-internet .small-book .illustration{background-position:-915px -62px;}#chapter-nav ul li.dns .small-book .illustration{background-position:-976px -62px;}#chapter-nav ul li.threed .small-book .illustration{background-position:-1037px -62px;}#chapter-nav ul li.sync .small-book .illustration{background-position:-1098px -62px;}#chapter-nav ul li.conclusion .small-book .illustration{background-position:-1159px -62px;}#chapter-nav ul li.cloud-computing a .illustration{background-position:0 -91px;}#chapter-nav ul li.web-apps a .illustration{background-position:-61px -91px;}#chapter-nav ul li.html a .illustration{background-position:-122px -91px;}#chapter-nav ul li.html5 a .illustration{background-position:-183px -91px;}#chapter-nav ul li.old-vs-new-browsers a .illustration{background-position:-244px -91px;}#chapter-nav ul li.plugins a .illustration{background-position:-305px -91px;}#chapter-nav ul li.browser-extensions a .illustration{background-position:-366px -91px;}#chapter-nav ul li.malware a .illustration{background-position:-427px -91px;}#chapter-nav ul li.browser-protection a .illustration{background-position:-488px -91px;}#chapter-nav ul li.url a .illustration{background-position:-549px -91px;}#chapter-nav ul li.identity a .illustration{background-position:-610px -91px;}#chapter-nav ul li.browser-cookies a .illustration{background-position:-671px -91px;}#chapter-nav ul li.browser-privacy a .illustration{background-position:-732px -91px;}#chapter-nav ul li.open-source a .illustration{background-position:-793px -91px;}#chapter-nav ul li.page-load a .illustration{background-position:-854px -91px;}#chapter-nav ul li.what-is-the-internet a .illustration{background-position:-915px -91px;}#chapter-nav ul li.dns a .illustration{background-position:-976px -91px;}#chapter-nav ul li.threed a .illustration{background-position:-1037px -91px;}#chapter-nav ul li.sync a .illustration{background-position:-1098px -91px;}#chapter-nav ul li.conclusion a .illustration{background-position:-1159px -91px;}
+    </style>
+  <link type="text/css" href="/css/twentythings.min.css?v=49" rel="stylesheet" media="screen" /><link type="text/css" href="/css/print.css?v=49" rel="stylesheet" media="print" />  
+
+    
+
+    <script type="text/javascript"> 
+
+      document.write('<link rel="stylesheet" type="text/css" media="all" href="/css/hideOnLoad.css" />');
+
+      
+
+      if( window.location.hash.match('\/') ) {
+
+        window.location = window.location.protocol + '//' + window.location.hostname + ':' + window.location.port + window.location.hash.slice(1);
+
+      }
+
+
+
+      var SERVER_VARIABLES = {
+
+        PAGE: "页",
+
+        PAGES:  "页",
+
+        THING:  "事情",
+
+        FOREWORD:  "前言",
+
+        LANG: "zh-CN",
+
+        SITE_VERSION: 49,
+
+        FACEBOOK_MESSAGE: "这是本很有趣的指南，介绍了一些关于网络和浏览器的事情，都是您一直想要了解但却不敢问的。",
+
+        FACEBOOK_MESSAGE_SINGLE: "今天，我从 Google 的指南中了解到一件关于浏览器和网络的趣事。",
+
+        TWITTER_MESSAGE: "这是本很有趣的指南，介绍了一些关于网络和浏览器的事情，都是您一直想要了解的。",
+
+        TWITTER_MESSAGE_SINGLE: "今天，我从 Google 的指南中了解到一件关于浏览器和网络的趣事： ",
+
+        BUZZ_MESSAGE: "这是本很有趣的指南，介绍了一些关于网络和浏览器的事情，都是您一直想要了解但却不敢问的：http://goo.gl/20things",
+
+        BUZZ_MESSAGE_SINGLE: "今天，我从 Google 的指南中了解到一件关于浏览器和网络的趣事： ",
+
+        SOLID_BOOK_COLOR: "#5873a0"      };
+
+      
+
+      // Set language for use by Google +1 button.
+
+      window.___gcfg = {lang: SERVER_VARIABLES.LANG};
+
+    </script>
+
+
+
+  
+
+
+
+</head>
+
+<body class="zh-CN ">
+
+
+
+  <script type="text/javascript">
+
+  var _gaq = _gaq || [];
+
+  _gaq.push(['_setAccount', 'UA-19264787-1']);
+
+  _gaq.push(['_trackPageview']);
+
+
+
+  (function() {
+
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+
+  })();
+
+</script>  
+
+    
+
+  <div id="preloader">
+
+    <div class="contents">
+
+      <canvas class="animation"></canvas>
+
+      <div class="progress">
+
+        <div class="fill"></div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+  
+
+  <header>
+
+    <h1><a class="logo"  href="/">关于浏览器和网络的 20 项须知</a></h1>
+
+    <nav>
+
+      <ul>
+
+        <li class="table-of-things"><a href="/table-of-things">目录</a></li>
+
+        <li class="divider1"></li>
+
+        <li class="about"><a href="/foreword/1">前言</a></li>
+
+        <li class="divider2"></li>
+
+        <li class="credits"><a href="/credits">鸣谢</a></li>
+
+        <li class="divider2"></li>
+
+      </ul>
+
+    </nav>
+
+    
+
+    <div id="language-selector">
+
+      <div id="language-selector-title"><a>
+
+      中文（简体中文）      </a></div>
+
+      <div id="language-selector-list">
+
+        <ul>
+
+          <li data-locale="cs-CZ"><a href="/cs-CZ/old-vs-new-browsers/1">čeština</a></li><li data-locale="de-DE"><a href="/de-DE/old-vs-new-browsers/1">Deutsch</a></li><li data-locale="en-GB"><a href="/en-GB/old-vs-new-browsers/1">English (UK)</a></li><li data-locale="en-US"><a href="/en-US/old-vs-new-browsers/1">English (US)</a></li><li data-locale="es-419"><a href="/es-419/old-vs-new-browsers/1">español (Latinoamérica y el Caribe)</a></li><li data-locale="es-ES"><a href="/es-ES/old-vs-new-browsers/1">español (ES)</a></li><li data-locale="fil-PH"><a href="/fil-PH/old-vs-new-browsers/1">Filipino</a></li><li data-locale="fr-FR"><a href="/fr-FR/old-vs-new-browsers/1">français</a></li><li data-locale="in-ID"><a href="/in-ID/old-vs-new-browsers/1">Bahasa Indonesia</a></li><li data-locale="it-IT"><a href="/it-IT/old-vs-new-browsers/1">italiano</a></li><li data-locale="ja-JP"><a href="/ja-JP/old-vs-new-browsers/1">日本語</a></li><li data-locale="nl-NL"><a href="/nl-NL/old-vs-new-browsers/1">Nederlands</a></li><li data-locale="pl-PL"><a href="/pl-PL/old-vs-new-browsers/1">polski</a></li><li data-locale="pt-BR"><a href="/pt-BR/old-vs-new-browsers/1">português</a></li><li data-locale="ru-RU"><a href="/ru-RU/old-vs-new-browsers/1">русский</a></li><li data-locale="zh-CN"><a href="/zh-CN/old-vs-new-browsers/1">中文（简体中文）</a></li><li data-locale="zh-TW"><a href="/zh-TW/old-vs-new-browsers/1">中文 (繁體中文)</a></li>        </ul>
+
+      </div>
+
+    </div>
+
+    
+
+    <!-- Input type="search" is currently too inconsistent across browsers and platforms -->
+
+    <input id="search-field" type="text" value="在本书中搜索">
+
+  </header>
+
+  
+
+  <!-- Holds search results -->
+
+  <div id="search-dropdown">
+
+    <div class="fader">
+
+      <div class="background-top"></div>
+
+      <div class="background-bottom"></div>
+
+      <div class="results">
+
+        <div class="things">
+
+          <h4><span>在本书中搜索</span></h4>
+
+          <hr>
+
+        </div>
+
+        <div class="keywords">
+
+          <h4><span>关键字</span></h4>
+
+          <hr>
+
+        </div>
+
+        <div class="empty">找不到结果。</div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+  
+
+  <!-- Left side grey overlay that masks out the book -->
+
+  <div id="grey-mask"></div>
+
+  
+
+  <div id="book">
+
+    <div id="shadow">
+
+      <div class="shadow-left"></div>
+
+      <div class="shadow-right"></div>
+
+    </div>
+
+    <div id="spine">
+
+      <div class="spine-top"></div>
+
+      <div class="spine-bottom"></div>
+
+    </div>
+
+    <div id="front-cover-bookmark">
+
+      <div class="content">
+
+        <p>什么是 Cookie？我如何在网络上保护自己的安全浏览？特别是：如果哪天不小心我的笔记本发生严重故障，那我存的数据会发生什么问题？</p>
+
+										<p>希望了解这些您一直萦绕脑海的问题吗？请继续...</p>        <a href="/zh-CN/old-vs-new-browsers/2" class="open-book">打开本书</a>
+
+        <canvas id="flip-intro"></canvas>
+
+      </div>
+
+    </div>
+
+    <div id="sharer">
+
+      <div class="background-top"></div>
+
+      <div class="background-bottom"></div>
+
+      <div class="content">
+
+        <ul>
+
+          <li class="facebook"><a href="#" title="Facebook"></a></li>
+
+          <li class="twitter"><a href="#" title="Twitter"></a></li>
+
+          <li class="gplus"></li>
+
+          <li class="print"><a href="#" target="_blank" title="打印事宜">打印事宜</a></li>
+
+        </ul>
+
+        <p class="index">事情</p>
+
+        <p class="instruction">分享事情</p>
+
+      </div>
+
+    </div>
+
+    <div id="front-cover">
+
+      <img src="/css/images/front-cover.jpg" width="830" height="520">
+
+    </div>
+
+    <div id="back-cover">
+
+      <img src="/css/images/back-cover.jpg" data-src-flipped="/css/images/back-cover-flipped.jpg" width="830" height="520">
+
+    </div>
+
+    <div id="page-shadow-overlay"></div>
+
+    <div id="pages">
+
+<section class="template-start-4 title-old-vs-new-browsers page-1"><div class="page"><div class="page-title"><h2>浏览器大合唱</h2><h3>新老浏览器的对决</h3></div><div class="image1"><img src="" data-src="/media/illustrations/oldvsnewbrowsers01.png" /></div>
+
+<p><span>老古董般的浏览器与现代浏览器</span><span>无法并存：</span><span>现代浏览器速度快、功能全、安全好</span><span>老版浏览器运行慢，弱点一大堆</span><span>一有恶意攻击就疲软。</span><span class="reference"></span></p>
+
+</div></section>			
+
+			</div>
+
+			<div id="left-page">
+
+				<img src="/css/images/left-page.jpg" data-src-flipped="/css/images/left-page-flipped.jpg" width="830" height="520">
+
+			</div>
+
+			<div id="right-page">
+
+				<div id="paperstack">
+
+					<div class="paper s1"></div>
+
+					<div class="paper s2"></div>
+
+					<div class="paper s3"></div>
+
+					<div class="paper s4"></div>
+
+					<div class="paper s5"></div>
+
+					<div class="paper s6"></div>
+
+					<div class="paper s7"></div>
+
+					<div class="shadow"></div>
+
+				</div>
+
+				<img src="/css/images/right-page.jpg" width="830" height="520">
+
+			</div>
+
+		</div>
+
+		
+
+		<nav id="chapter-nav">
+
+			<p>20 项须知</p>
+
+			<ul>
+
+											
+
+				<li class="what-is-the-internet">
+
+					<a href="/what-is-the-internet" class="cnItem" title="什么是互联网？"  data-title="什么是互联网？" data-subtitle="要知道什么是互联网，就要知道什么是 TCP/IP" data-article="what-is-the-internet" data-globalstartpage="4" data-globalendpage="6" data-numberofpages="3">
+
+						<div class="illustration"></div>
+
+						<span>1</span>
+
+					</a>
+
+					<a class="over" href="/what-is-the-internet">
+
+						<div class="description">
+
+							<p class="title">什么是互联网？</p>
+
+							<p class="pagenumber">4-6</p>
+
+						</div>
+
+						<div class="small-book">
+
+							<div class="illustration"></div>
+
+							<p class="index">1</p>
+
+						</div>
+
+					</a>
+
+				</li>
+
+				
+
+														
+
+				<li class="cloud-computing">
+
+					<a href="/cloud-computing" class="cnItem" title="云计算"  data-title="云计算" data-subtitle="为什么卡车碾过我的笔记本也没关系" data-article="cloud-computing" data-globalstartpage="7" data-globalendpage="8" data-numberofpages="2">
+
+						<div class="illustration"></div>
+
+						<span>2</span>
+
+					</a>
+
+					<a class="over" href="/cloud-computing">
+
+						<div class="description">
+
+							<p class="title">云计算</p>
+
+							<p class="pagenumber">7-8</p>
+
+						</div>
+
+						<div class="small-book">
+
+							<div class="illustration"></div>
+
+							<p class="index">2</p>
+
+						</div>
+
+					</a>
+
+				</li>
+
+				
+
+														
+
+				<li class="web-apps">
+
+					<a href="/web-apps" class="cnItem" title="网络应用程序"  data-title="网络应用程序" data-subtitle="或者说 “生命、自由以及对应用程序的追求”" data-article="web-apps" data-globalstartpage="9" data-globalendpage="11" data-numberofpages="3">
+
+						<div class="illustration"></div>
+
+						<span>3</span>
+
+					</a>
+
+					<a class="over" href="/web-apps">
+
+						<div class="description">
+
+							<p class="title">网络应用程序</p>
+
+							<p class="pagenumber">9-11</p>
+
+						</div>
+
+						<div class="small-book">
+
+							<div class="illustration"></div>
+
+							<p class="index">3</p>
+
+						</div>
+
+					</a>
+
+				</li>
+
+				
+
+														
+
+				<li class="html">
+
+					<a href="/html" class="cnItem" title="HTML、JavaScript、CSS..."  data-title="HTML、JavaScript、CSS..." data-subtitle="AJAX 不再是从前的样子了" data-article="html" data-globalstartpage="12" data-globalendpage="14" data-numberofpages="3">
+
+						<div class="illustration"></div>
+
+						<span>4</span>
+
+					</a>
+
+					<a class="over" href="/html">
+
+						<div class="description">
+
+							<p class="title">HTML、JavaScript、CSS...</p>
+
+							<p class="pagenumber">12-14</p>
+
+						</div>
+
+						<div class="small-book">
+
+							<div class="illustration"></div>
+
+							<p class="index">4</p>
+
+						</div>
+
+					</a>
+
+				</li>
+
+				
+
+														
+
+				<li class="html5">
+
+					<a href="/html5" class="cnItem" title="HTML5"  data-title="HTML5" data-subtitle="或“在开始，还没有&lt;video&gt;的时候”" data-article="html5" data-globalstartpage="15" data-globalendpage="16" data-numberofpages="2">
+
+						<div class="illustration"></div>
+
+						<span>5</span>
+
+					</a>
+
+					<a class="over" href="/html5">
+
+						<div class="description">
+
+							<p class="title">HTML5</p>
+
+							<p class="pagenumber">15-16</p>
+
+						</div>
+
+						<div class="small-book">
+
+							<div class="illustration"></div>
+
+							<p class="index">5</p>
+
+						</div>
+
+					</a>
+
+				</li>
+
+				
+
+														
+
+				<li class="threed">
+
+					<a href="/threed" class="cnItem" title="支持 3D 功能的浏览器"  data-title="支持 3D 功能的浏览器" data-subtitle="更有深度的浏览" data-article="threed" data-globalstartpage="17" data-globalendpage="19" data-numberofpages="3">
+
+						<div class="illustration"></div>
+
+						<span>6</span>
+
+					</a>
+
+					<a class="over" href="/threed">
+
+						<div class="description">
+
+							<p class="title">支持 3D 功能的浏览器</p>
+
+							<p class="pagenumber">17-19</p>
+
+						</div>
+
+						<div class="small-book">
+
+							<div class="illustration"></div>
+
+							<p class="index">6</p>
+
+						</div>
+
+					</a>
+
+				</li>
+
+				
+
+														
+
+				<li class="old-vs-new-browsers">
+
+					<a href="/old-vs-new-browsers" class="cnItem" title="浏览器大合唱"  data-title="浏览器大合唱" data-subtitle="新老浏览器的对决" data-article="old-vs-new-browsers" data-globalstartpage="20" data-globalendpage="23" data-numberofpages="4">
+
+						<div class="illustration"></div>
+
+						<span>7</span>
+
+					</a>
+
+					<a class="over" href="/old-vs-new-browsers">
+
+						<div class="description">
+
+							<p class="title">浏览器大合唱</p>
+
+							<p class="pagenumber">20-23</p>
+
+						</div>
+
+						<div class="small-book">
+
+							<div class="illustration"></div>
+
+							<p class="index">7</p>
+
+						</div>
+
+					</a>
+
+				</li>
+
+				
+
+														
+
+				<li class="plugins">
+
+					<a href="/plugins" class="cnItem" title="插件"  data-title="插件" data-subtitle="吃饺子要蘸醋" data-article="plugins" data-globalstartpage="24" data-globalendpage="25" data-numberofpages="2">
+
+						<div class="illustration"></div>
+
+						<span>8</span>
+
+					</a>
+
+					<a class="over" href="/plugins">
+
+						<div class="description">
+
+							<p class="title">插件</p>
+
+							<p class="pagenumber">24-25</p>
+
+						</div>
+
+						<div class="small-book">
+
+							<div class="illustration"></div>
+
+							<p class="index">8</p>
+
+						</div>
+
+					</a>
+
+				</li>
+
+				
+
+														
+
+				<li class="browser-extensions">
+
+					<a href="/browser-extensions" class="cnItem" title="浏览器扩展程序"  data-title="浏览器扩展程序" data-subtitle="浏览器变身“百变金刚”" data-article="browser-extensions" data-globalstartpage="26" data-globalendpage="28" data-numberofpages="3">
+
+						<div class="illustration"></div>
+
+						<span>9</span>
+
+					</a>
+
+					<a class="over" href="/browser-extensions">
+
+						<div class="description">
+
+							<p class="title">浏览器扩展程序</p>
+
+							<p class="pagenumber">26-28</p>
+
+						</div>
+
+						<div class="small-book">
+
+							<div class="illustration"></div>
+
+							<p class="index">9</p>
+
+						</div>
+
+					</a>
+
+				</li>
+
+				
+
+														
+
+				<li class="sync">
+
+					<a href="/sync" class="cnItem" title="同步浏览器"  data-title="同步浏览器" data-subtitle="又有卡车碾过我的笔记本了" data-article="sync" data-globalstartpage="29" data-globalendpage="30" data-numberofpages="2">
+
+						<div class="illustration"></div>
+
+						<span>10</span>
+
+					</a>
+
+					<a class="over" href="/sync">
+
+						<div class="description">
+
+							<p class="title">同步浏览器</p>
+
+							<p class="pagenumber">29-30</p>
+
+						</div>
+
+						<div class="small-book">
+
+							<div class="illustration"></div>
+
+							<p class="index">10</p>
+
+						</div>
+
+					</a>
+
+				</li>
+
+				
+
+														
+
+				<li class="browser-cookies">
+
+					<a href="/browser-cookies" class="cnItem" title="浏览器 Cookie"  data-title="浏览器 Cookie" data-subtitle="多亏了记录功能" data-article="browser-cookies" data-globalstartpage="31" data-globalendpage="32" data-numberofpages="2">
+
+						<div class="illustration"></div>
+
+						<span>11</span>
+
+					</a>
+
+					<a class="over" href="/browser-cookies">
+
+						<div class="description">
+
+							<p class="title">浏览器 Cookie</p>
+
+							<p class="pagenumber">31-32</p>
+
+						</div>
+
+						<div class="small-book">
+
+							<div class="illustration"></div>
+
+							<p class="index">11</p>
+
+						</div>
+
+					</a>
+
+				</li>
+
+				
+
+														
+
+				<li class="browser-privacy">
+
+					<a href="/browser-privacy" class="cnItem" title="浏览器和隐私"  data-title="浏览器和隐私" data-subtitle="在浏览器中保护自己的隐私" data-article="browser-privacy" data-globalstartpage="33" data-globalendpage="36" data-numberofpages="4">
+
+						<div class="illustration"></div>
+
+						<span>12</span>
+
+					</a>
+
+					<a class="over" href="/browser-privacy">
+
+						<div class="description">
+
+							<p class="title">浏览器和隐私</p>
+
+							<p class="pagenumber">33-36</p>
+
+						</div>
+
+						<div class="small-book">
+
+							<div class="illustration"></div>
+
+							<p class="index">12</p>
+
+						</div>
+
+					</a>
+
+				</li>
+
+				
+
+														
+
+				<li class="malware">
+
+					<a href="/malware" class="cnItem" title="恶意软件、网上诱骗和安全风险"  data-title="恶意软件、网上诱骗和安全风险" data-subtitle="披着羊皮的狼" data-article="malware" data-globalstartpage="37" data-globalendpage="39" data-numberofpages="3">
+
+						<div class="illustration"></div>
+
+						<span>13</span>
+
+					</a>
+
+					<a class="over" href="/malware">
+
+						<div class="description">
+
+							<p class="title">恶意软件、网上诱骗和安全风险</p>
+
+							<p class="pagenumber">37-39</p>
+
+						</div>
+
+						<div class="small-book">
+
+							<div class="illustration"></div>
+
+							<p class="index">13</p>
+
+						</div>
+
+					</a>
+
+				</li>
+
+				
+
+														
+
+				<li class="browser-protection">
+
+					<a href="/browser-protection" class="cnItem" title="新一代的浏览器如何帮您抵御恶意软件和网上诱骗"  data-title="新一代的浏览器如何帮您抵御恶意软件和网上诱骗" data-subtitle="小心这些坏家伙！" data-article="browser-protection" data-globalstartpage="40" data-globalendpage="42" data-numberofpages="3">
+
+						<div class="illustration"></div>
+
+						<span>14</span>
+
+					</a>
+
+					<a class="over" href="/browser-protection">
+
+						<div class="description">
+
+							<p class="title">新一代的浏览器如何帮您抵御恶意软件和网上诱骗</p>
+
+							<p class="pagenumber">40-42</p>
+
+						</div>
+
+						<div class="small-book">
+
+							<div class="illustration"></div>
+
+							<p class="index">14</p>
+
+						</div>
+
+					</a>
+
+				</li>
+
+				
+
+														
+
+				<li class="url">
+
+					<a href="/url" class="cnItem" title="使用网址，确保安全"  data-title="使用网址，确保安全" data-subtitle="或者说，“我的名字叫网址”" data-article="url" data-globalstartpage="43" data-globalendpage="47" data-numberofpages="5">
+
+						<div class="illustration"></div>
+
+						<span>15</span>
+
+					</a>
+
+					<a class="over" href="/url">
+
+						<div class="description">
+
+							<p class="title">使用网址，确保安全</p>
+
+							<p class="pagenumber">43-47</p>
+
+						</div>
+
+						<div class="small-book">
+
+							<div class="illustration"></div>
+
+							<p class="index">15</p>
+
+						</div>
+
+					</a>
+
+				</li>
+
+				
+
+														
+
+				<li class="dns">
+
+					<a href="/dns" class="cnItem" title="IP 地址和 DNS"  data-title="IP 地址和 DNS" data-subtitle="幽灵电话亭" data-article="dns" data-globalstartpage="48" data-globalendpage="50" data-numberofpages="3">
+
+						<div class="illustration"></div>
+
+						<span>16</span>
+
+					</a>
+
+					<a class="over" href="/dns">
+
+						<div class="description">
+
+							<p class="title">IP 地址和 DNS</p>
+
+							<p class="pagenumber">48-50</p>
+
+						</div>
+
+						<div class="small-book">
+
+							<div class="illustration"></div>
+
+							<p class="index">16</p>
+
+						</div>
+
+					</a>
+
+				</li>
+
+				
+
+														
+
+				<li class="identity">
+
+					<a href="/identity" class="cnItem" title="在线身份验证"  data-title="在线身份验证" data-subtitle="&quot;您就是那谁吧?&quot;" data-article="identity" data-globalstartpage="51" data-globalendpage="53" data-numberofpages="3">
+
+						<div class="illustration"></div>
+
+						<span>17</span>
+
+					</a>
+
+					<a class="over" href="/identity">
+
+						<div class="description">
+
+							<p class="title">在线身份验证</p>
+
+							<p class="pagenumber">51-53</p>
+
+						</div>
+
+						<div class="small-book">
+
+							<div class="illustration"></div>
+
+							<p class="index">17</p>
+
+						</div>
+
+					</a>
+
+				</li>
+
+				
+
+														
+
+				<li class="page-load">
+
+					<a href="/page-load" class="cnItem" title="向更快的网络时代迈进"  data-title="向更快的网络时代迈进" data-subtitle="加快网络上图片、视频和 JavaScript 的速度" data-article="page-load" data-globalstartpage="54" data-globalendpage="57" data-numberofpages="4">
+
+						<div class="illustration"></div>
+
+						<span>18</span>
+
+					</a>
+
+					<a class="over" href="/page-load">
+
+						<div class="description">
+
+							<p class="title">向更快的网络时代迈进</p>
+
+							<p class="pagenumber">54-57</p>
+
+						</div>
+
+						<div class="small-book">
+
+							<div class="illustration"></div>
+
+							<p class="index">18</p>
+
+						</div>
+
+					</a>
+
+				</li>
+
+				
+
+														
+
+				<li class="open-source">
+
+					<a href="/open-source" class="cnItem" title="开放源代码和浏览器"  data-title="开放源代码和浏览器" data-subtitle="站在巨人的肩膀上" data-article="open-source" data-globalstartpage="58" data-globalendpage="59" data-numberofpages="2">
+
+						<div class="illustration"></div>
+
+						<span>19</span>
+
+					</a>
+
+					<a class="over" href="/open-source">
+
+						<div class="description">
+
+							<p class="title">开放源代码和浏览器</p>
+
+							<p class="pagenumber">58-59</p>
+
+						</div>
+
+						<div class="small-book">
+
+							<div class="illustration"></div>
+
+							<p class="index">19</p>
+
+						</div>
+
+					</a>
+
+				</li>
+
+				
+
+														
+
+				<li class="conclusion">
+
+					<a href="/conclusion" class="cnItem" title="最后一个须知.."  data-title="最后一个须知.." data-subtitle="云计算时代的生活" data-article="conclusion" data-globalstartpage="60" data-globalendpage="61" data-numberofpages="2">
+
+						<div class="illustration"></div>
+
+						<span>20</span>
+
+					</a>
+
+					<a class="over" href="/conclusion">
+
+						<div class="description">
+
+							<p class="title">最后一个须知..</p>
+
+							<p class="pagenumber">60-61</p>
+
+						</div>
+
+						<div class="small-book">
+
+							<div class="illustration"></div>
+
+							<p class="index">20</p>
+
+						</div>
+
+					</a>
+
+				</li>
+
+				
+
+							
+
+			</ul>
+
+		</nav>
+
+		
+
+		<div id="overlay">
+
+			<div class="bookmark">
+
+				<div class="content">
+
+					<a class="close" href="#">关闭</a>
+
+					<h3>继续阅读？</h3>
+
+					<p>您可以从上次读到的地方继续阅读，也可以从头开始阅读。请选择：</p>
+
+					<a class="action resume" href="#">继续<br/>阅读</a>
+
+					<a class="action restart" href="#">从头<br/>开始</a>
+
+				</div>
+
+			</div>
+
+			
+
+			<div class="print">
+
+					<a class="close" href="#">关闭</a>
+
+					<a class="printBook" href="/zh-CN/all/print"_blank">
+
+						<h2>打印本书</h2>
+
+						<p>打印本书（仅支持 Letter 尺寸或 A4 尺寸）</p>
+
+					</a>
+
+					<a class="downloadPdf" target="_blank" href="/media/20ThingsILearnedaboutBrowsersandtheWeb.pdf">
+
+						<h2>下载 PDF</h2>
+
+						<p>下载本书的 PDF 格式文件大小：3.3 MB</p>
+
+					</a>
+
+			</div>
+
+		</div>
+
+		
+
+		<div id="credits">
+
+			<div class="header">
+
+				<h2><span>鸣谢</span></h2>
+
+				<hr>
+
+			</div>
+
+			<div class="people">
+
+				<ul>
+
+					<li><h3>插图</h3><a href="http://www.christophniemann.com/" target="_blank">Christoph Niemann</a></li>
+
+					<li><h3>作者/编辑</h3>Min Li Chan, Fritz Holznagel, Michael Krantz</li>
+
+					<li><h3>项目策划人</h3>Min Li Chan &amp; <br/>The Google Chrome Team</li>
+
+					<li><h3>设计</h3><a href="http://f-i.com" target="_blank">Fi</a><br/><a href="http://monocubed.com/" target="_blank">Paul Truong</a></li>
+
+					<li><h3>开发</h3><a href="http://f-i.com" target="_blank">Fi</a></li>
+
+				</ul>
+
+				<h4>特别鸣谢</h4>
+
+				<p class="special-thanks">Brian Rakowski, Ian Fette, Chris DiBona, Alex Russell, Erik Kay, Jim Roskind, Mike Belshe, Dimitri Glazkov, Henry Bridge, Gregor Hochmuth, Jeffrey Chang, Mark Larson, Aaron Boodman, Wieland Holfelder, Jochen Eisinger, Bernhard Bauer, Adam Barth, Cory Ferreria, Erik Arvidsson, John Abd-Malek, Carlos Pizano, Justin Schuh, Wan-Teh Chang, Vangelis Kokkevis, Mike Jazayeri, Brad Chen, Darin Fisher, Johanna Wittig,  Maxim Lobanov, Marion Fabing Nicolas, Jana Vorechovska, Daniele De Santis, Laura van Nigtevegt, Wojtek Cyprys, Dudley Carr, Richard Rabbat, Ji Lee, Glen Murphy, Valdean Klump, Aaron Koblin, Paul Irish, John Fu, Chris Wright, Sarah Nahm, Christos Apartoglou, Meredith Papp, Eric Antonow, Eitan Bencuya, Jay Nancarrow, Ben Lee, Gina Weakley, Linus Upson, Sundar Pichai & The Google Chrome Team</p>
+
+				<p class="html5-logo">采用 HTML5 构建<img src="/media/images/HTML5_Badge_32.png" title="Built in HTML5"></img></p>
+
+			</div>
+
+			<hr>
+
+			<div class="share">
+
+				<p>将这本书以及您从中学到的东西分享给朋友和家人。www.20thingsilearned.com</p>
+
+				<ul>
+
+					<li class="facebook"><a href="http://www.facebook.com/sharer.php?u=http://20thingsilearned.com&amp;t=20%20Things%20I%20learned%20About%20Browsers%20and%20the%20Web" title="Facebook"><span class="icon"></span><span class="text">分享途径</span></a></li>
+
+					<li class="twitter"><a href="http://twitter.com/share?original_referer=http://20thingsilearned.com&amp;text=20%20Things%20I%20learned%20About%20Browsers%20and%20the%20Web&amp;url=http://20thingsilearned.com" title="Twitter"><span class="icon"></span><span class="text">分享途径</span></a></li>
+
+					<li class="gplus"></li>
+
+				</ul>
+
+			</div>
+
+		</div>
+
+		
+
+		<div id="articleId">old-vs-new-browsers</div><div id="pageNumber">1</div>	<div id="pagination-prev" class=""><a href="/zh-CN/threed/3"><div class="arrow">LOCALE_PREVIOUS_PAGE</div></a></div>
+
+	<div id="pagination-next" class=""><a href="/zh-CN/old-vs-new-browsers/2"><div class="arrow">LOCALE_NEXT_PAGE</div></a></div>
+
+		
+
+		<div id="table-of-contents">
+
+			<div class="center">
+
+				<div class="header">
+
+					<a class="go-back" href="/">返回</a>
+
+					<h2><span>目录</span></h2>
+
+					<hr>
+
+				</div>
+
+				<ul>
+
+									
+
+							<li class="what-is-the-internet">
+
+								<a href="/what-is-the-internet" data-article="what-is-the-internet">
+
+									<div class="medium-book">
+
+										<div class="illustration"></div>
+
+										<p>事情 1</p>
+
+									</div>
+
+									<h3>什么是互联网？</h3>
+
+									<p>要知道什么是互联网，就要知道什么是 TCP/IP</p>
+
+								</a>
+
+							</li>
+
+									
+
+							<li class="cloud-computing">
+
+								<a href="/cloud-computing" data-article="cloud-computing">
+
+									<div class="medium-book">
+
+										<div class="illustration"></div>
+
+										<p>事情 2</p>
+
+									</div>
+
+									<h3>云计算</h3>
+
+									<p>为什么卡车碾过我的笔记本也没关系</p>
+
+								</a>
+
+							</li>
+
+									
+
+							<li class="web-apps">
+
+								<a href="/web-apps" data-article="web-apps">
+
+									<div class="medium-book">
+
+										<div class="illustration"></div>
+
+										<p>事情 3</p>
+
+									</div>
+
+									<h3>网络应用程序</h3>
+
+									<p>或者说 “生命、自由以及对应用程序的追求”</p>
+
+								</a>
+
+							</li>
+
+									
+
+							<li class="html">
+
+								<a href="/html" data-article="html">
+
+									<div class="medium-book">
+
+										<div class="illustration"></div>
+
+										<p>事情 4</p>
+
+									</div>
+
+									<h3>HTML、JavaScript、CSS...</h3>
+
+									<p>AJAX 不再是从前的样子了</p>
+
+								</a>
+
+							</li>
+
+									
+
+							<li class="html5">
+
+								<a href="/html5" data-article="html5">
+
+									<div class="medium-book">
+
+										<div class="illustration"></div>
+
+										<p>事情 5</p>
+
+									</div>
+
+									<h3>HTML5</h3>
+
+									<p>或“在开始，还没有&lt;video&gt;的时候”</p>
+
+								</a>
+
+							</li>
+
+									
+
+							<li class="threed">
+
+								<a href="/threed" data-article="threed">
+
+									<div class="medium-book">
+
+										<div class="illustration"></div>
+
+										<p>事情 6</p>
+
+									</div>
+
+									<h3>支持 3D 功能的浏览器</h3>
+
+									<p>更有深度的浏览</p>
+
+								</a>
+
+							</li>
+
+									
+
+							<li class="old-vs-new-browsers">
+
+								<a href="/old-vs-new-browsers" data-article="old-vs-new-browsers">
+
+									<div class="medium-book">
+
+										<div class="illustration"></div>
+
+										<p>事情 7</p>
+
+									</div>
+
+									<h3>浏览器大合唱</h3>
+
+									<p>新老浏览器的对决</p>
+
+								</a>
+
+							</li>
+
+									
+
+							<li class="plugins">
+
+								<a href="/plugins" data-article="plugins">
+
+									<div class="medium-book">
+
+										<div class="illustration"></div>
+
+										<p>事情 8</p>
+
+									</div>
+
+									<h3>插件</h3>
+
+									<p>吃饺子要蘸醋</p>
+
+								</a>
+
+							</li>
+
+									
+
+							<li class="browser-extensions">
+
+								<a href="/browser-extensions" data-article="browser-extensions">
+
+									<div class="medium-book">
+
+										<div class="illustration"></div>
+
+										<p>事情 9</p>
+
+									</div>
+
+									<h3>浏览器扩展程序</h3>
+
+									<p>浏览器变身“百变金刚”</p>
+
+								</a>
+
+							</li>
+
+									
+
+							<li class="sync">
+
+								<a href="/sync" data-article="sync">
+
+									<div class="medium-book">
+
+										<div class="illustration"></div>
+
+										<p>事情 10</p>
+
+									</div>
+
+									<h3>同步浏览器</h3>
+
+									<p>又有卡车碾过我的笔记本了</p>
+
+								</a>
+
+							</li>
+
+									
+
+							<li class="browser-cookies">
+
+								<a href="/browser-cookies" data-article="browser-cookies">
+
+									<div class="medium-book">
+
+										<div class="illustration"></div>
+
+										<p>事情 11</p>
+
+									</div>
+
+									<h3>浏览器 Cookie</h3>
+
+									<p>多亏了记录功能</p>
+
+								</a>
+
+							</li>
+
+									
+
+							<li class="browser-privacy">
+
+								<a href="/browser-privacy" data-article="browser-privacy">
+
+									<div class="medium-book">
+
+										<div class="illustration"></div>
+
+										<p>事情 12</p>
+
+									</div>
+
+									<h3>浏览器和隐私</h3>
+
+									<p>在浏览器中保护自己的隐私</p>
+
+								</a>
+
+							</li>
+
+									
+
+							<li class="malware">
+
+								<a href="/malware" data-article="malware">
+
+									<div class="medium-book">
+
+										<div class="illustration"></div>
+
+										<p>事情 13</p>
+
+									</div>
+
+									<h3>恶意软件、网上诱骗和安全风险</h3>
+
+									<p>披着羊皮的狼</p>
+
+								</a>
+
+							</li>
+
+									
+
+							<li class="browser-protection">
+
+								<a href="/browser-protection" data-article="browser-protection">
+
+									<div class="medium-book">
+
+										<div class="illustration"></div>
+
+										<p>事情 14</p>
+
+									</div>
+
+									<h3>新一代的浏览器如何帮您抵御恶意软件和网上诱骗</h3>
+
+									<p>小心这些坏家伙！</p>
+
+								</a>
+
+							</li>
+
+									
+
+							<li class="url">
+
+								<a href="/url" data-article="url">
+
+									<div class="medium-book">
+
+										<div class="illustration"></div>
+
+										<p>事情 15</p>
+
+									</div>
+
+									<h3>使用网址，确保安全</h3>
+
+									<p>或者说，“我的名字叫网址”</p>
+
+								</a>
+
+							</li>
+
+									
+
+							<li class="dns">
+
+								<a href="/dns" data-article="dns">
+
+									<div class="medium-book">
+
+										<div class="illustration"></div>
+
+										<p>事情 16</p>
+
+									</div>
+
+									<h3>IP 地址和 DNS</h3>
+
+									<p>幽灵电话亭</p>
+
+								</a>
+
+							</li>
+
+									
+
+							<li class="identity">
+
+								<a href="/identity" data-article="identity">
+
+									<div class="medium-book">
+
+										<div class="illustration"></div>
+
+										<p>事情 17</p>
+
+									</div>
+
+									<h3>在线身份验证</h3>
+
+									<p>&quot;您就是那谁吧?&quot;</p>
+
+								</a>
+
+							</li>
+
+									
+
+							<li class="page-load">
+
+								<a href="/page-load" data-article="page-load">
+
+									<div class="medium-book">
+
+										<div class="illustration"></div>
+
+										<p>事情 18</p>
+
+									</div>
+
+									<h3>向更快的网络时代迈进</h3>
+
+									<p>加快网络上图片、视频和 JavaScript 的速度</p>
+
+								</a>
+
+							</li>
+
+									
+
+							<li class="open-source">
+
+								<a href="/open-source" data-article="open-source">
+
+									<div class="medium-book">
+
+										<div class="illustration"></div>
+
+										<p>事情 19</p>
+
+									</div>
+
+									<h3>开放源代码和浏览器</h3>
+
+									<p>站在巨人的肩膀上</p>
+
+								</a>
+
+							</li>
+
+									
+
+							<li class="conclusion">
+
+								<a href="/conclusion" data-article="conclusion">
+
+									<div class="medium-book">
+
+										<div class="illustration"></div>
+
+										<p>事情 20</p>
+
+									</div>
+
+									<h3>最后一个须知..</h3>
+
+									<p>云计算时代的生活</p>
+
+								</a>
+
+							</li>
+
+								</ul>
+
+			</div>
+
+		</div>	
+
+		<footer>		
+
+			<span class="curator">由 <a href="http://www.google.com/chrome?brand=CHJN">Google Chrome</a> 小组发布。©2010 Google Inc. 保留所有权利。</span>
+
+			<div class="right-side">
+
+				<div class="divider"></div>
+
+				<div class="sharing">
+
+					<p>分享本书</p>
+
+					<input type="text" class="clipboard-notification" value="http://20thingsilearned.com/" readonly="readonly" />
+
+					<ul>
+
+						<li class="facebook"><a href="http://www.facebook.com/sharer.php?u=http://20thingsilearned.com&amp;t=20%20Things%20I%20learned%20About%20Browsers%20and%20the%20Web" title="Facebook"></a></li>
+
+						<li class="twitter"><a href="http://twitter.com/share?original_referer=http://20thingsilearned.com&amp;text=20%20Things%20I%20learned%20About%20Browsers%20and%20the%20Web&amp;url=http://20thingsilearned.com" title="Twitter"></a></li>
+
+						<li class="gplus"></li>
+
+						<li class="url"><a href="#"></a></li>
+
+					</ul>
+
+				</div>
+
+				<div class="divider"></div>
+
+				<div class="print">
+
+					<a href="/zh-CN/all/print" target="_blank"><span class="icon"></span>打印本书</a>
+
+				</div>
+
+									<div class="divider"></div>
+
+					<div class="lights-wrapper">
+
+						<div class="lights">
+
+							<a href="#"><span class="icon">背景光</span></a>
+
+						</div>
+
+					</div>
+
+					<div class="divider"></div>
+
+					<div class="fullscreen-wrapper" style="display: none;">
+
+						<div class="fullscreen">
+
+							<a href="#"><span class="icon"></span>全屏</a>
+
+						</div>
+
+					</div>
+
+							</div>
+
+		</footer>
+
+		
+
+    <script type="text/javascript" src="https://apis.google.com/js/plusone.js"></script>
+
+				
+
+  		<script type="text/javascript" src="tt.js"></script>
+
+  		<script type="text/javascript">
+
+  			TT.initialize();
+
+  		</script>
+
+		
+
+					
+
+		
+
+	</body>
+
+</html>

@@ -1,0 +1,53 @@
+/* main css */
+/* ----- reset ------ */
+body,div,dl,dt,dd,ul,ol,li,h1,h2,h3,h4,h5,h6,pre,form,fieldset,input,textarea,p,blockquote,th,td{margin:0;padding:0}
+fieldset,img{border:0}
+address,caption,cite,code,dfn,em,th,var{font-style:normal; font-weight:normal}
+ol,ul{list-style:none}
+caption,th{text-align:left}
+abbr,acronym{border:0}
+table {border-collapse:collapse; border-spacing:0;}/* tables still need 'cellspacing="0"' in the markup */
+img{ -ms-interpolation-mode:bicubic; }
+h1,h2,h3,h4,h5,h6{font-size:100%;font-weight:normal;}
+button, input, select, textarea {font-size: 100%;}
+a,a:link,a:visited,a:focus,a:hover,a:active {color: #245C99;text-decoration:none;}
+a:hover {color: #32A2FF;text-decoration: none;}
+body,button,input,select,textarea{font: 12px/1.5 Tahoma, Arial, "\5b8b\4f53", sans-serif;}
+:focus {outline-color: -moz-use-text-color;outline-style: none;outline-width: 0;}
+
+.clr:after {content: ".";display: block; height: 0; clear: both; visibility: hidden;}
+.clr{zoom:1;}
+
+body {
+    background: url(images/bg.png);
+    overflow: hidden;
+    position: absolute;
+    width: 100%;
+    height: 100%;
+}
+
+.book {
+    background: url(images/pages.png) repeat-y right;
+    width: 2160px;
+    height: 720px;
+    position: absolute;
+    left: 50%;
+    top: 0;
+    margin-left: -1620px;
+    -webkit-box-shadow: 0 0 6px #bababa;
+}
+section {
+    position: absolute;
+    width: 1066px;
+    height: 720px;
+    background: url(images/page.png);
+    left: 1080px;
+    overflow: hidden;
+}
+section .fix-width {
+    width: 1066px;
+    height: 720px;
+}
+.paddiv {
+    padding: 60px 80px 40px 60px;
+}
