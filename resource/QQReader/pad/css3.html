@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8" />
+<title>Q+ 阅读</title>
+<link href="main.css" rel="stylesheet" />
+<script src="jet.all.js?t=20110809153"></script>
+</head>
+
+<body>
+    <div id="doc">
+        <div id="book" class="book" style="display:block">
+            <div id="pages">
+				<section class="current">
+					<div class="fix-width">
+                        <div class="paddiv clr">
+							<div class="page-left"></div>
+							<div class="page-right"></div>						
+                        </div>
+                    </div>
+				</section>
+				<section>
+					<div class="fix-width">
+                    <div class="paddiv">
+						<h2>第二页</h2>
+						<p>工作一段时间之后，即使做的还是编码的工作，但是几乎已经不和数学打交道了，基本都是和dom在打交道。所以基本不再有可能发现数学的美丽之处了。。（其实说这句话心里也是虚虚的。当时上学的时候高数也是烂的一沓糊涂，唉，往事不堪回首）。　　再加上前一段时间一位同仁说：js玩3D能玩出什么呢？</p>
+					</div>
+                    </div>
+				</section>
+				<section>
+					<div class="fix-width">
+                    <div class="paddiv">
+						<h2>第三页</h2>
+						<p>At the time of its introduction the canvas element was met with mixed reactions from the web standards community. There havte been arguments against Apple's decision to create a new proprietary element instead of supporting the SVG standard. There are other concerns about syntax e.g. the absence of a namespace.</p>
+					</div>
+                    </div>
+				</section>
+				<section id="test" style="z-index:5; border: 4px solid #333">
+					<div class="fix-width">
+                    <div class="paddiv">
+						<h2>Support</h2>
+						<p>The element is currently supported by the latest versions of Mozilla Firefox, Google Chrome, Safari, and Opera. It is not natively implemented by Internet Explorer (IE) as of version 8, though support is in development for Internet Explorer 9; however, many of the Canvas element's features can be supported in IE, for example by using Google or Mozilla plugins, JavaScript libraries and either Adobe Flash or IE's proprietary VML.</p>
+					</div>
+                    </div>
+				</section>
+			</div>
+        </div>
+    </div>
+    <script src="css3.js"></script>
+    <script>
+        CSS3.animate('#test').set('width', 0).set('left', 0).duration(2000).delay(2000).end();
+    </script>
+</body>
+</html>
