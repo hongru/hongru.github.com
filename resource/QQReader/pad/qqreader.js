@@ -148,7 +148,7 @@ Jx().$package('QReader.preload', function (J) {
 			.end();
 	}
 
-	this.resetConst = function () {alert(QReader.isTouchDevice); alert(webkitRequestAnimationFrame)
+	this.resetConst = function () {alert(QReader.isTouchDevice); alert(typeof webkitRequestAnimationFrame)
 		if (QReader.isTouchDevice) {
 			// 重置const 为pad版本
 			QReader.PAGE_WIDTH = 800;
