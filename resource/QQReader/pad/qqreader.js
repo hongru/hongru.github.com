@@ -100,6 +100,15 @@ Jx().$package('QReader', function (J) {
 			window.console.log(s);
 		}
 	};
+    
+    this.requestAnimationFrame = window.requestAnimationFrame || 
+              window.webkitRequestAnimationFrame || 
+              window.mozRequestAnimationFrame    || 
+              window.oRequestAnimationFrame      || 
+              window.msRequestAnimationFrame     || 
+              function(/* function */ callback, /* DOMElement */ element){
+                window.setTimeout(callback, 16);
+              };
 
 	this.initialize = function () {
 		QReader.preload.initialize();
@@ -139,7 +148,7 @@ Jx().$package('QReader.preload', function (J) {
 			.end();
 	}
 
-	this.resetConst = function () {
+	this.resetConst = function () {alert(QReader.isTouchDevice)
 		if (QReader.isTouchDevice) {
 			// 重置const 为pad版本
 			QReader.PAGE_WIDTH = 800;
@@ -441,7 +450,7 @@ Jx().$package('QReader.pageflip', function (J) {
 	
 	// 动画激活
 	this.activate = function () {
-		if (this.loopInterval == -1) {
+		if (this.loopInterval == -1) { QReader.log('start')
 			clearInterval(this.loopInterval);
 		//	this.loopInterval = setInterval(function () { context.reDraw() }, 1000/this.fps);
 		this.loopInterval = 1;
