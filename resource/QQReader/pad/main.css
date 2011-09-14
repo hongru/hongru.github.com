@@ -34,7 +34,7 @@ body {
     left: 50%;
     top: 0;
     margin-left: -1620px;
-    -webkit-box-shadow: 0 0 6px #bababa;
+	display: none;
 }
 .touchdevice .book {
 
@@ -45,7 +45,12 @@ section {
     height: 720px;
     background: url(images/page.png);
     left: 1080px;
+	font-size: 14px;
+	line-height: 1.8;
+	font-family: Microsoft yahei;
     overflow: hidden;
+	word-break: break-word;
+	word-wrap: break-word;
 }
 .touchdevice section {
 	width: 800px;
@@ -62,5 +67,13 @@ section .fix-width {
 	height: 500px;
 }
 .paddiv {
-    padding: 60px 80px 40px 60px;
+    padding: 60px;
+}
+.page-left {
+	float: left;
+	width: 47%;
+}
+.page-right {
+	float: right;
+	width: 47%;
 }
