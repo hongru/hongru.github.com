@@ -443,8 +443,14 @@ Jx().$package('QReader.pageflip', function (J) {
 	this.activate = function () {
 		if (this.loopInterval == -1) {
 			clearInterval(this.loopInterval);
-			//this.loopInterval = setInterval(function () { context.reDraw() }, 1000/this.fps);
-			context.reDraw();
+		//	this.loopInterval = setInterval(function () { context.reDraw() }, 1000/this.fps);
+		this.loopInterval = 1;
+
+(function animloop(){
+      context.reDraw();
+      webkitRequestAnimationFrame(animloop);
+    })();
+			
 		}
 		$D.setStyle(this.canvas, 'zIndex', 1000);
 	}
@@ -452,7 +458,7 @@ Jx().$package('QReader.pageflip', function (J) {
 	// 停止绘制
 	this.deActivate = function () {
 		clearInterval(this.loopInterval);
-		this.loopInterval = -1;
+		//this.loopInterval = -1;
 		this.ctx.clearRect(0, 0, this.CANVAS_WIDTH, this.CANVAS_HEIGHT);
 		$D.setStyle(this.canvas, 'zIndex', 0);
 	}
@@ -479,7 +485,7 @@ Jx().$package('QReader.pageflip', function (J) {
 		}
 		this.removeInactiveFlips();
 
-		webkitRequestAnimationFrame(function () {context.reDraw()})
+		//webkitRequestAnimationFrame(function () {context.reDraw()})
 	}
 
 	// 绘制内页的翻页动画
