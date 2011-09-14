@@ -13,6 +13,7 @@ Jx().$package('QReader', function (J) {
 	
 	this.WIN_WIDTH = window.innerWidth;
 	this.WIN_HEIGHT = window.innerHeight;
+
 	// 单页宽度
 	this.PAGE_WIDTH = 1066;
 	// 单页高度
@@ -37,6 +38,26 @@ Jx().$package('QReader', function (J) {
 	this.time = function () {
 		return new Date().getTime();
 	}
+
+	this.getIdByUrl = function (id) {
+		var a = document.createElement('a');
+		a.href = window.location.href;
+		return (function () {
+			var ret = {},
+				seg = a.search.replace(/^\?/, '').split('&'),
+				len = seg.length,
+				i = 0,
+				s;
+			for ( ; i < len; i ++) {
+				if (!seg[i]) { continue; }
+				s = seg[i].split('=');
+				ret[s[0]] = s[1];
+			}
+			return ret;
+		})()[id];
+	}
+
+	this.BOOK_ID = this.getIdByUrl('bid') || 1001;
 
 	// Region Class
 	// 用于产生一个区域
@@ -82,6 +103,7 @@ Jx().$package('QReader', function (J) {
 
 	this.initialize = function () {
 		QReader.preload.initialize();
+		QReader.view.initialize();
 		QReader.pageflip.initialize();
 
 	}
@@ -103,6 +125,18 @@ Jx().$package('QReader.preload', function (J) {
 	this.initialize = function () {
 		this.resetConst();
 		this.resetBookStyle();
+
+		this.showBook();
+	}
+
+	this.showBook = function () {
+		//$D.setStyle(QReader.BOOK, 'opacity', 0);
+		CSS3.animate(QReader.BOOK).set('opacity', 0).duration(0).end();
+		$D.show(QReader.BOOK);
+		CSS3.animate(QReader.BOOK)
+			.set('opacity', 1)
+			.duration(2000)
+			.end();
 	}
 
 	this.resetConst = function () {
@@ -133,6 +167,153 @@ Jx().$package('QReader.preload', function (J) {
 
 
 /**
+ * package {QReader.rpc}
+ * 从服务端获取数据
+ * 提供接口和数据控制
+ */
+Jx().$package('QReader.rpc', function (J) {
+		
+	var packageContext = this,
+		$D = J.dom,
+		$E = J.event;
+	
+	var MAIN_URL = 'http://10.133.0.232/book/';
+
+	// TODO
+	this.getPageContentFromServer = function (cid) {
+		var succeeded = false;
+		J.http.loadScript(MAIN_URL + QReader.BOOK_ID + '/' + cid + '.js', {
+			onSuccess: function () { console.log(data)
+				QReader.cache.setPageContentIntoCache(cid, window.data.content);
+				succeeded = true;
+			}	
+		});
+	}
+
+});
+
+
+/**
+ * package {QReader.cache}
+ * 提供数据缓存，作为一个中间层
+ * 每次要拿数据都先从cache里拿，没有再发请求去server
+ * 而每次从server拉到数据都先写进cache，以便下次获取
+ */
+Jx().$package('QReader.cache', function (J) {
+		
+	var packageContext = this,
+		$D = J.dom,
+		$E = J.event;
+
+	/* == 以下为测试数据 == */
+	this['page1'] = '接上一篇的依靠像素模拟的球面的曲线图，通过不同的数学曲线，表现了一点点数学之美的皮毛（我甚至不能妄称了解了数学之美，因为自己深深地明白，数学的博大精深恐怕是我这辈子也难以企及的）。因为还是有一些同学比较感兴趣，所以这里稍作一点分解。既然我们不能参悟高深的数学，那就让我们以娱乐的心态去编码，去学习。　　上一篇随笔的评论里我看有童鞋在问具体用了什么数学公式。其实基本上核心的就用了一个数学公式，即球坐标相关的东西。具体可以参考百度百科或者维基百科的球坐标相关释义。我自己恐怕是讲不清楚，所以这里暂就附上《维基百科》上关于球坐标系的解析吧：球坐标系维基百科';
+    this['page2'] = "随着前端技术发展，尤其是html5中canvas和svg的应用，开始让web也可以轻易的渲染出各种绚丽的效果。\
+本篇讨论的是基于rotate（旋转）的3d效果的初识。在canvas的getContext('2d')下利用一些变换来模拟。webGL是后话，本篇暂不讨论。";
+    this['page3'] = "由于仍是在2d下模拟，所以所谓的3d最终还是要降到2d的层面来。\
+在坐标上的表现就是，3d的界面应该是有x,y,z三向坐标，2d的就只有x，y二向。\
+那么怎么把3d的z向坐标降到和2d的x，y相关联起来，就是关键。\
+要在2d的界面上展现3d的z方向的层次感，需要一个视井。\
+相信学过绘画的同学应该很清楚，要画透视或者有层次关系的多个物体时。在最开始建模的时候老师都会教先根据观察角度“打格子”，把物体的大小层次关系大概先模拟出来。\
+格子打出来其实就是由近及远的“井”字形。";
+
+	/* == 测试数据结束 == */
+
+	this.getPageContentFromCache = function (pageNum) {
+		if (!!this['page'+pageNum]) {
+			return this['page'+pageNum];
+		} else {
+			// 注意这里异步数据，要监测
+			QReader.rpc.getPageContentFromServer(pageNum);
+		}
+	}
+
+	this.setPageContentIntoCache = function (pageNum, content) {
+		this['page'+pageNum] = content;
+	}
+
+	this.isInCache = function (cid) {
+		return !!this['page'+cid];
+	}
+	
+	// 初始化指定页的数据
+	this.initialize = function (pageNum) {
+		return getPageContentFromCache(pageNum);
+	}
+		
+})
+
+
+/**
+ * package {QReader.tpl}
+ * 页面模版
+ */
+Jx().$package('QReader.tpl', function (J) {
+		
+	this['section'] = '<section>\
+							<div class="fix-width">\
+								<div class="paddiv clr">\
+									<div class="page-left"><%= leftCon %></div>\
+									<div class="page-right"><%= rightCon %></div>\
+								</div>\
+							</div>\
+						</section>'
+		
+})
+
+
+/**
+ * package {QReader.view}
+ * view 在初始化的时候要保证指定初始化的章节内容loading完全后才执行后面的操作
+ * update也是，每次update一章内容。
+ */
+Jx().$package('QReader.view', function (J) {
+	
+	var packageContext = this,
+		$D = J.dom,
+		$E = J.event,
+		$S = J.string;
+	
+	this.initialize = function (cid) {
+		cid = cid || 1;
+		if (QReader.cache.isInCache(cid)) {
+			this.fillContent();
+			this.setSectionZIndex();
+			this.setCurrent(0);
+		} else {
+			QReader.rpc.getPageContentFromServer(cid)
+		}
+
+	}
+
+	this.setCurrent = function (n) {
+		n = n || 0;
+		var sections = $D.mini('#pages section');
+		$D.addClass(sections[n], 'current');
+	}
+
+	this.fillContent = function () {
+		var list = [];
+		for (var i = 1; i <= 3; i ++) {
+			var data = {
+				leftCon: QReader.cache.getPageContentFromCache(i),
+				rightCon: QReader.cache.getPageContentFromCache(i)
+			};
+			var result = $S.template(QReader.tpl.section, data);
+			list.push(result);
+		}
+		QReader.PAGES.innerHTML = list.join('');
+	}
+
+	this.setSectionZIndex = function () {
+		var sections = $D.mini('#book section');
+		for (var i = 0; i < sections.length; i++) {
+			$D.setStyle(sections[i], 'zIndex', sections.length-i);
+		}
+	}
+
+})
+
+/**
  * package {QReader.pageflip}
  * 翻页效果控制和渲染
  */
@@ -142,8 +323,10 @@ Jx().$package('QReader.pageflip', function (J) {
 		$E = J.event,
 		context = this;
 		$D.getNextElement = function (el) { 
+							if (!el) return null;
 							var node = el.nextSibling;
-							if (node.nodeType == 1) {
+							if (!node) return null;
+							if (node && node.nodeType == 1) {
 								return node;
 							}
 							else if (node.nextSibling) {
@@ -190,7 +373,7 @@ Jx().$package('QReader.pageflip', function (J) {
 	this.flipBackCover = null;
 	this.isEventsAreBound = false;
 	this.loopInterval = -1;
-	this.fps = 60;
+	this.fps = QReader.isTouchDevice ? 50 : 30;
 	this.dirtyRegion = new QReader.Region();
 
 	// 初始化
@@ -327,7 +510,8 @@ Jx().$package('QReader.pageflip', function (J) {
 			// 翻页动作完成
 			if (Math.round(flip.progress * 99) == Math.round(flip.target * 99)) {
 				flip.progress = flip.target;
-				flip.x = flip.progress + QReader.PAGE_WIDTH;
+				flip.x = flip.progress * QReader.PAGE_WIDTH;
+				//QReader.log(currentPage);
 				$D.setStyle(currentPage, 'width', flip.x + 'px');
 
 				if (flip.target == 1 || flip.target == -1) {
@@ -360,6 +544,7 @@ Jx().$package('QReader.pageflip', function (J) {
 			foldShadowWidth = (QReader.PAGE_WIDTH * .5) * Math.max(Math.min(flip.strength, .05), 0);
 
 		$D.setStyle(currentPage, 'width', Math.max(flip.x + horizontalSpread*.5, 0) + 'px');
+		//QReader.log(flip.x + horizontalSpread*.5)
 
 		// 拖拽页边有倾斜角度
 		if (this.dragging) {
@@ -644,7 +829,7 @@ Jx().$package('QReader.pageflip', function (J) {
 						var currentPage = $D.mini('#pages section.current')[0];
 					
 						var nextPage = $D.getNextElement(currentPage);
-						if (nextPage.nodeName.toLowerCase() == 'section') {
+						if (nextPage && nextPage.nodeName.toLowerCase() == 'section') {
 							$D.setStyle(nextPage, 'width', QReader.PAGE_WIDTH);
 							$D.show(nextPage);
 						}
@@ -679,7 +864,7 @@ Jx().$package('QReader.pageflip', function (J) {
 
 	// 鼠标松开
 	this.handlePointerUp = function () {
-		if (QReader.time() -  this.mouseDownTime < this.CLICK_FREQUENCY) {
+		if (QReader.time() -  this.mouseDownTime < this.CLICK_FREQUENCY && !this.turning) {
 			QReader.navigation.goToNextPage();
 			this.dragging = false;
 			return false;
@@ -828,15 +1013,15 @@ Jx().$package('QReader.navigation', function (J) {
 			prevPage,
 			nextArticle,
 			nextPage;
-		
+
 		if (this.isHomePage()) {
-		//	nextArticle = this.classToArticle($D.getClass(currentPage));
-		//	nextPage = this.classToArticlePage($D.getClass(currentPage));
+			//	nextArticle = this.classToArticle($D.getClass(currentPage));
+			//	nextPage = this.classToArticlePage($D.getClass(currentPage));
 		} else {
 			QReader.pageflip.completeCurrentTurn();
-		//	var cls = $D.getClass($D.getNextElement(currentPage));
-		//	nextArticle = this.classToArticle(cls);
-		//	nextPage = this.classToArticlePage(cls);
+			//	var cls = $D.getClass($D.getNextElement(currentPage));
+			//	nextArticle = this.classToArticle(cls);
+			//	nextPage = this.classToArticlePage(cls);
 		}
 
 		this.goToPage(nextArticle, nextPage);
@@ -850,18 +1035,318 @@ Jx().$package('QReader.navigation', function (J) {
 
 
 	this.cleanUpTransitions = function () {
-		
+
 	}
 
-	this.updateCurrentPointer = function () {}
+	this.updateCurrentPointer = function (currentPage, targetPage) {
+		if (this.transitioningFromHardCover) {
+			// 如果是从封面或封底变过来的
+			// TODO
+		}
+		$D.removeClass(currentPage, 'current');
+		$D.addClass(targetPage, 'current');
+	}
 
 	this.goToCredits = function () {}
 
 	this.isLastPage = function () {
-		return false;
+		//return false;
+		var currentPage = $D.mini('#pages section.current')[0],
+			nextPage = $D.getNextElement(currentPage);
+		return !nextPage;
 	}
 
 })
 
 
-QReader.initialize();
+/**
+ * CSS3 animate
+ * @example 
+ * 	CSS3.animate(el)
+ 		.to(500, 200)
+ 		.rotate(180)
+ 		.scale(.5)
+ 		.set('background-color', '#888')
+ 		.set('border-color', 'black')
+ 		.duration('2s')
+ 		.skew(50, -10)
+ 		.then()
+ 			.set('opacity', 0)
+ 			.duration('0.3s')
+ 			.scale(.1)
+ 			.pop()
+ 		.end();
+ * 	
+ */	
+Jx().$package('CSS3', function (J) {
+
+	var packageContext = this;
+	var current = (typeof getComputedStyle != 'undefined') ? getComputedStyle : currentStyle;
+	// 样式为数字+px 的属性
+	var map = {
+		'top': 'px',
+		'left': 'px',
+		'right': 'px',
+		'bottom': 'px',
+		'width': 'px',
+		'height': 'px',
+		'font-size': 'px',
+		'margin': 'px',
+		'margin-top': 'px',
+		'margin-left': 'px',
+		'margin-right': 'px',
+		'margin-bottom': 'px',
+		'padding': 'px',
+		'padding-left': 'px',
+		'padding-right': 'px',
+		'padding-top': 'px',
+		'padding-bottom': 'px',
+		'border-width': 'px'
+	}
+
+	this.animate = function (selector) {
+		var el = this.animate.get(selector);
+		return new Anim(el);
+	};
+	this.animate.defaults = {
+		duration: 500
+	};
+	this.animate.ease = {
+		'in' : 'ease-in',
+		'out': 'ease-out',
+		'in-out': 'ease-in-out',
+		'snap' : 'cubic-bezier(0,1,.5,1)'
+	};
+	this.animate.get = function (selector) {
+		if (typeof selector != 'string' && selector.nodeType == 1) {
+			return selector;
+		}
+		return document.getElementById(selector) || document.querySelectorAll(selector)[0];
+	};
+
+	// EventEmitter {Class}
+	var EventEmitter = J.Class({
+		init: function () {
+			this.callbacks = {};
+		},		
+		on: function (event, fn) {
+			(this.callbacks[event] = this.callbacks[event] || []).push(fn);
+			return this;
+		},
+		/**
+		 * param {event} 指定event
+		 * params 指定event的callback的参数
+		 */
+		fire: function (event) {
+			var args = Array.prototype.slice.call(arguments, 1),
+				callbacks = this.callbacks[event],
+				len;
+			if (callbacks) {
+				for (var i = 0, len = callbacks.length; i < len; i ++) {
+					callbacks[i].apply(this, args);
+				}
+			}
+			return this;
+		}
+	});
+
+	/**
+	 * Anim {Class}
+	 * @inherit from EventEmitter
+	 * param {Element}
+	 */
+	var Anim = J.Class({extend: EventEmitter},{
+		init: function (el) {
+			var context = this;
+			// 调父类方法
+			this.callSuper = function (funcName) {
+				var slice = Array.prototype.slice;
+				var args = slice.call(arguments, 1);
+				Anim.superClass[funcName].apply(context, args.concat(slice.call(arguments)));
+			}
+
+			this.callSuper('init');
+
+			if (!(this instanceof Anim)) {
+				return new Anim(el);
+			}
+			this.el = el;
+			this._props = {};
+			this._rotate = 0;
+			this._transitionProps = [];
+			this._transforms = [];
+			this.duration(packageContext.animate.defaults.duration);
+
+		},
+		transform : function (transform) {
+			this._transforms.push(transform);
+			return this;
+		},
+		// skew methods
+		skew: function (x, y) {
+			y = y || 0;
+			return this.transform('skew('+ x +'deg, '+ y +'deg)');
+		},
+		skewX: function (x) {
+			return this.transform('skewX('+ x +'deg)');	   
+		},
+		skewY: function (y) {
+			return this.transform('skewY('+ y +'deg)');	   
+		},
+		// translate methods
+		translate: function (x, y) {
+			y = y || 0;
+			return this.transform('translate('+ x +'px, '+ y +'px)');
+		},
+		to: function (x, y) {
+			return this.translate(x, y);	
+		},
+		translateX: function (x) {
+			return this.transform('translateX('+ x +'px)');			
+		},
+		x: function (x) {
+			return this.translateX(x);   
+		},
+		translateY: function (y) {
+			return this.transform('translateY('+ y +'px)');			
+		},
+		y: function (y) {
+			return this.translateY(y);   
+		},
+		// scale methods
+		scale: function (x, y) {
+			y = (y == null) ? x : y;
+			return this.transform('scale('+ x +', '+ y +')');
+		},
+		scaleX: function (x) {
+			return this.transform('scaleX('+ x +')');
+		},
+		scaleY: function (y) {
+			return this.transform('scaleY('+ y +')');
+		},
+		// rotate methods
+		rotate: function (n) {
+			return this.transform('rotate('+ n +'deg)');
+		},
+
+		// set transition ease
+		ease: function (fn) {
+			fn = packageContext.animate.ease[fn] || fn || 'ease';
+			return this.setVendorProperty('transition-timing-function', fn);
+		},
+
+		//set duration time
+		duration: function (n) {
+			n = this._duration = (typeof n == 'string') ? parseFloat(n)*1000 : n;
+			return this.setVendorProperty('transition-duration', n + 'ms');
+		},
+
+		// set delay time
+		delay: function (n) {
+			n = (typeof n == 'string') ? parseFloat(n) * 1000 : n;
+			return this.setVendorProperty('transition-delay', n + 'ms');
+		},
+
+		// set property to val
+		setProperty: function (prop, val) {
+			this._props[prop] = val;
+			return this;
+		},
+		setVendorProperty: function (prop, val) {
+			this.setProperty('-webkit-' + prop, val);
+			this.setProperty('-moz-' + prop, val);
+			this.setProperty('-ms-' + prop, val);
+			this.setProperty('-o-' + prop, val);
+			return this;
+		},
+		set: function (prop, val) {
+			this.transition(prop);	 
+			if (typeof val == 'number' && map[prop]) {
+				val += map[prop];
+			}
+			this._props[prop] = val;
+			return this;
+		},
+		
+		// add value to a property
+		add: function (prop, val) {
+			var self = this;
+			return this.on('start', function () {
+				var curr = parseInt(self.current(prop), 10);
+				self.set(prop, curr + val + 'px');
+			})
+		},
+		// sub value to a property
+		sub: function (prop, val) {
+			var self = this;
+			return this.on('start', function () {
+				var curr = parseInt(self.current(prop), 10);
+				self.set(prop, curr - val + 'px');
+			})
+		},
+		current: function (prop) {
+			return current(el).getPropertyValue(prop);		 
+		},
+
+		transition: function (prop) {
+			if (this._transitionProps.indexOf(prop) > -1) { return this; }
+			this._transitionProps.push(prop);
+			return this;
+		},
+		applyPropertys: function () {
+			var props = this._props,
+				el = this.el;
+			for (var prop in props) {
+				if (props.hasOwnProperty(prop)) {
+					el.style.setProperty(prop, props[prop], '');
+				}
+			}
+			return this;
+		},
+		
+		// then
+		then: function (fn) {
+			if (fn instanceof Anim) {
+				this.on('end', function () {
+					fn.end();		
+				})
+			} else if (typeof fn == 'function') {
+				this.on('end', fn);
+			} else {
+				var clone = new Anim(el);
+				clone._transforms = this._transforms.slice(0);
+				this.then(clone);
+				clone.parent = this;
+				return clone;
+			}
+
+			return this;
+		},
+		pop: function () {
+			return this.parent;	 
+		},
+		end: function (fn) {
+			var self = this;
+			this.fire('start');
+
+			if (this._transforms.length > 0) {
+				this.setVendorProperty('transform', this._transforms.join(' '));
+			}
+
+			this.setVendorProperty('transition-properties', this._transitionProps.join(', '));
+			this.applyPropertys();
+
+			if (fn) { this.then(fn) }
+
+			setTimeout(function () {
+				self.fire('end');		
+			}, this.duration);
+
+			return this;
+		}
+	});
+		
+});
+
+
+ QReader.initialize();
