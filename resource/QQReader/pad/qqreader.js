@@ -343,6 +343,18 @@ Jx().$package('QReader.pageflip', function (J) {
 							}
 							return null;
 						};
+		$D.getPrevElement = function (el) {
+			if (!el) return null;
+			var node = el.previousSibling;
+			if (!node) return null;
+			if (node && node.nodeType == 1) {
+				return node;
+			} else if (node.previousSibling) {
+				return $D.getPrevElement(node);
+			}
+
+			return null;
+		}
 	
 	// canvas 要比书大一点，用于绘制3d效果
 	// 上下padding值
@@ -792,9 +804,26 @@ Jx().$package('QReader.pageflip', function (J) {
 		return region;
 	}
 
+	// 获取反向翻页钩子区域
+	this.getHintBackRegion = function () {
+		var region = new QReader.Region();
+		
+		region.left = 0;
+		region.right = QReader.isTouchDevice ? this.HINT_WIDTH_TOUCH : this.HINT_WIDTH;
+		region.top = 0;
+		region.bottom = QReader.PAGE_HEIGHT;
+
+		return region;
+	}
+
 	// 判读鼠标是否落在翻页钩子区域
 	this.isMouseInHintRegion = function () {
 		return this.getHintRegion().contains(this.mouse.x, this.mouse.y);
+	}
+
+	// 判断鼠标位置落在左侧反向翻页区域
+	this.isMouseInHintBackRegion = function () {
+		return this.getHintBackRegion().contains(this.mouse.x, this.mouse.y);
 	}
 
 	// 处理鼠标按下事件
@@ -852,6 +881,11 @@ Jx().$package('QReader.pageflip', function (J) {
 						}
 					}
 				}
+			} else if (this.isMouseInHintBackRegion()) {
+				// 在反向翻页钩子区域
+				//QReader.log('back')
+				this.hintingBack = true;
+
 			} else {
 				if (flip.progress != 1 && flip.target != -1) {
 					if (this.hinting == true) {
@@ -863,6 +897,7 @@ Jx().$package('QReader.pageflip', function (J) {
 					this.activate();
 					this.hinting = false;
 				}
+				this.hintingBack = false;
 			}
 		} else {
 			if (this.dragging) {
@@ -894,6 +929,12 @@ Jx().$package('QReader.pageflip', function (J) {
 		} else {
 			this.dragging = false;
 			this.handlePointerMove();
+		}
+		
+		// 反向翻页
+		if (!this.dragging && this.hintingBack && this.isMouseInHintBackRegion()) {
+			QReader.log('prev');
+			QReader.navigation.goToPreviousPage();
 		}
 	}
 
@@ -1044,6 +1085,21 @@ Jx().$package('QReader.navigation', function (J) {
 		this.goToPage(nextArticle, nextPage);
 	}
 
+	// 返回上一页
+	this.goToPreviousPage = function () {
+		this.cleanUpTransitions();
+
+		if (this.isFirstPage()) {
+			// 在第一页，不能返回上一页
+			QReader.log('already in first page')
+			return;
+		}
+		QReader.pageflip.completeCurrentTurn();
+		var currentPage = $D.mini('#pages section.current')[0],
+			targetPage = $D.getPrevElement(currentPage);
+		QReader.pageflip.turnToPage(currentPage, targetPage, -1, 'soft');
+	}
+
 	this.goToPage = function (articleId, pageNum) {
 		var currentPage = $D.mini('#pages section.current')[0],
 			targetPage = $D.getNextElement(currentPage);
@@ -1071,6 +1127,12 @@ Jx().$package('QReader.navigation', function (J) {
 		var currentPage = $D.mini('#pages section.current')[0],
 			nextPage = $D.getNextElement(currentPage);
 		return !nextPage;
+	}
+
+	this.isFirstPage = function () {
+		var currentPage = $D.mini('#pages section.current')[0],
+			prevPage = $D.getPrevElement(currentPage);
+		return !prevPage;
 	}
 
 })
