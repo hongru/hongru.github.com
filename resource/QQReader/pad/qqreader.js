@@ -148,7 +148,7 @@ Jx().$package('QReader.preload', function (J) {
 			.end();
 	}
 
-	this.resetConst = function () {alert(QReader.isTouchDevice); alert(typeof webkitRequestAnimationFrame)
+	this.resetConst = function () {//alert(QReader.isTouchDevice); alert(typeof webkitRequestAnimationFrame)
 		if (QReader.isTouchDevice) {
 			// 重置const 为pad版本
 			QReader.PAGE_WIDTH = 800;
@@ -452,13 +452,12 @@ Jx().$package('QReader.pageflip', function (J) {
 	this.activate = function () {
 		if (this.loopInterval == -1) { QReader.log('start'); 
 			clearInterval(this.loopInterval);
-		//	this.loopInterval = setInterval(function () { context.reDraw() }, 1000/this.fps);
-		this.loopInterval = 1;
+			this.loopInterval = setInterval(function () { context.reDraw() }, 1000/this.fps);
 
-(function animloop(){
+/*(function animloop(){
       context.reDraw();
       webkitRequestAnimationFrame(animloop);
-    })();
+    })();*/
 			
 		}
 		$D.setStyle(this.canvas, 'zIndex', 1000);
@@ -467,7 +466,7 @@ Jx().$package('QReader.pageflip', function (J) {
 	// 停止绘制
 	this.deActivate = function () {
 		clearInterval(this.loopInterval);
-		//this.loopInterval = -1;
+		this.loopInterval = -1;
 		this.ctx.clearRect(0, 0, this.CANVAS_WIDTH, this.CANVAS_HEIGHT);
 		$D.setStyle(this.canvas, 'zIndex', 0);
 	}
