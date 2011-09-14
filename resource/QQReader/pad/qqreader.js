@@ -443,7 +443,8 @@ Jx().$package('QReader.pageflip', function (J) {
 	this.activate = function () {
 		if (this.loopInterval == -1) {
 			clearInterval(this.loopInterval);
-			this.loopInterval = setInterval(function () { context.reDraw() }, 1000/this.fps);
+			//this.loopInterval = setInterval(function () { context.reDraw() }, 1000/this.fps);
+			context.reDraw();
 		}
 		$D.setStyle(this.canvas, 'zIndex', 1000);
 	}
@@ -477,6 +478,8 @@ Jx().$package('QReader.pageflip', function (J) {
 			}
 		}
 		this.removeInactiveFlips();
+
+		webkitRequestAnimationFrame(function () {context.reDraw()})
 	}
 
 	// 绘制内页的翻页动画
