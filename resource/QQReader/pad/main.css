@@ -206,3 +206,48 @@ section .fix-width {
 	cursor: pointer;
 	color: #3b3b3b;
 }
+
+
+/* === skin 1 === */
+.skin1 section {
+	background: url(images/skin1/bg.png);
+}
+.skin1 .tab-header {
+	background: url(images/skin1/blue-dark.png);
+	border-bottom: 1px solid #eee;
+}
+.skin1 .tab-header .current {
+	background: url(images/skin1/catalog-btn-bg.png);
+}
+.skin1 .bookmark-container {
+	background: url(images/skin1/left-nav-bg.png);
+}
+.skin1 .catalog-list li.current {
+	background: #fefefe;
+}
+.skin1 .bk-div {
+	background: #fff;
+}
+.skin1 li.current .bk-div {background: #fff}
+.skin1 .bookmark-hint-area {
+	background: url(images/skin1/blue-light.png);
+	border: 0 none;
+	width: 28px;
+}
+.skin1 .hint-area-arrow {
+	position: absolute;
+	width: 13px;
+	height: 16px;
+	overflow: hidden;
+	background: url(images/skin1/arrow-right.png) no-repeat;
+	left: 50%;
+	top: 50%;
+	margin-left: -6px;
+	margin-top: -8px;
+}
+.skin1 .hint-area-arrow.arrow-left {
+	background: url(images/skin1/arrow-left.png) no-repeat;
+}
+.skin1 .bookmark-del {
+	background: url(images/skin1/bk-del.png) no-repeat;
+}
