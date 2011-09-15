@@ -24,6 +24,8 @@ body {
     position: absolute;
     width: 100%;
     height: 100%;
+	word-break: break-word;
+	word-wrap: break-word;
 }
 
 .book {
@@ -131,13 +133,51 @@ section .fix-width {
 	font-weight: 500;
 	font-family: Microsoft yahei;
 	color: #3b3b3b;
+	overflow: hidden;
+	height: 440px;
+}
+.bookmark-list {
+	font-size: 13px;
+	font-family: Microsoft yahei;
+	color: #3b3b3b;
+	overflow: hidden;
+	height: 410px;
 }
 .catalog-list li {
 	line-height: 34px;
 	padding: 0 6px;
+	cursor: pointer;
 }
-.catalog-list li.current {
+.bookmark-list li {
+	padding: 10px 0;
+	border-bottom: 1px solid #ddd;
+	cursor: pointer;
+	position: relative;
+}
+.bookmark-del {
+	position: absolute;
+	right: 0;
+	bottom: 10px;
+	background: url(images/del.png) no-repeat;
+	width: 24px;
+	height: 24px;
+}
+.bookmark-list li h4 {
+	font-size: 14px;
+	font-weight: 600;
+	padding-left: 16px;
+	background: url(images/bk_icon.png) no-repeat 0 50%;
+}
+.bookmark-list li .bk-div {
+	padding: 4px 10px;
+}
+.catalog-list li.current,
+.bookmark-list li.current .bk-div {
 	background: #dad9d7;
+}
+.win .catalog-list li:hover,
+.win .bookmark-list li:hover .bk-div {
+	background: #eee;
 }
 
 .bookmark-hint-area {
@@ -155,3 +195,14 @@ section .fix-width {
 	background: #fff;
 }
 .bookmark-hint-area {cursor:pointer}
+.edit-bookmark-list-btn {
+	display: inline-block;
+	font-size: 14px;
+	font-weight: 500;
+	font-family: Microsoft yahei;
+	padding: 2px 12px;
+	background: #ddd;
+	border: 1px solid #ccc;
+	cursor: pointer;
+	color: #3b3b3b;
+}
