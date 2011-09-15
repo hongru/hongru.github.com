@@ -1443,7 +1443,11 @@ Jx().$package('QReader.catalogNav', function (J) {
 	this.EL_CATALOG_BTN = $D.id('catalog-btn');
 	this.EL_BOOKMARK_BTN = $D.id('bookmark-btn');
 	this.EL_CONTAINER = $D.id('bookmark-container');
+	this.EL_CATALOG_CON = $D.id('catalog-con');
+	this.EL_BOOKMARK_CON = $D.id('bookmark-con');
+	this.EL_TAB_INNERWRAP = $D.id('tab-innerwrap');
 	this.CONTAINER_WIDTH = 230;
+	this.isNavVisible = false;
 
 	this.initialize = function () {
 		this.fillNavContent();
@@ -1461,16 +1465,46 @@ Jx().$package('QReader.catalogNav', function (J) {
 	}
 
 	this.bindEvent = function () {
-		$E.on(this.EL_HINT, 'click', function (e) {
-			packageContext.showNav();		
-		})
+		$E.on(this.EL_HINT, 'click', this.toggleShowNav);
+		$E.on(this.EL_CATALOG_BTN, 'click', this.showCatalogList);
+		$E.on(this.EL_BOOKMARK_BTN, 'click', this.showBookmarkList);
+	}
+
+	this.showCatalogList = function (e) {
+		CSS3.animate(packageContext.EL_TAB_INNERWRAP)
+			.set('margin-left', 0)
+			.end();
+		$D.removeClass(packageContext.EL_BOOKMARK_BTN, 'current');
+		!$D.hasClass(packageContext.EL_CATALOG_BTN, 'current') && $D.addClass(packageContext.EL_CATALOG_BTN, 'current');
+	}
+	this.showBookmarkList = function (e) {
+		CSS3.animate(packageContext.EL_TAB_INNERWRAP)
+			.set('margin-left', (-packageContext.CONTAINER_WIDTH))
+			.end();
+		$D.removeClass(packageContext.EL_CATALOG_BTN, 'current');
+		!$D.hasClass(packageContext.EL_BOOKMARK_BTN, 'current') && $D.addClass(packageContext.EL_BOOKMARK_BTN, 'current');
+	}
+
+	this.toggleShowNav = function (e) {
+		if (packageContext.isNavVisible) {
+			packageContext.hideNav();
+		} else {
+			packageContext.showNav();
+		}
 	}
 
 	this.showNav = function () {
 		CSS3.animate(this.EL_CONTAINER)
 			.set('left', 0)
-			.duration(1000)
-			.end()
+			.end();
+		this.isNavVisible = true;
+	}
+
+	this.hideNav = function () {
+		CSS3.animate(this.EL_CONTAINER)
+			.set('left', (-this.CONTAINER_WIDTH))
+			.end();
+		this.isNavVisible = false;
 	}
 		
 })

@@ -92,6 +92,13 @@ section .fix-width {
 	background: #fff;
 	z-index: 1050;
 }
+.tab-wrap {
+	width: 230px;
+	overflow: hidden;
+}
+.tab-innerwrap {
+	width: 460px;
+}
 .tab-header {
 	background: #dad9d7;
 }
@@ -112,9 +119,11 @@ section .fix-width {
 	float: left;
 }
 .bookmark-btn { float:right; }
-.catalog-con {
+.catalog-con, .bookmark-con {
+	float: left;
 	padding: 12px 10px;
 	height: 430px;
+	width: 210px;
 	overflow: hidden;
 }
 .catalog-list {
@@ -145,3 +154,4 @@ section .fix-width {
 	-webkit-box-shadow: 2px 2px 5px #ccc;
 	background: #fff;
 }
+.bookmark-hint-area {cursor:pointer}
