@@ -114,6 +114,7 @@ Jx().$package('QReader', function (J) {
 		QReader.preload.initialize();
 		QReader.view.initialize();
 		QReader.pageflip.initialize();
+		QReader.catalogNav.initialize();
 
 	}
 
@@ -1426,6 +1427,53 @@ Jx().$package('CSS3', function (J) {
 	});
 		
 });
+
+
+/**
+ * package {QReader.catalogNav}
+ * 左侧悬浮导航
+ */
+Jx().$package('QReader.catalogNav', function (J) {
+		
+	var packageContext = this,
+		$D = J.dom,
+		$E = J.event;
+
+	this.EL_HINT = $D.id('bookmark-hint-area');
+	this.EL_CATALOG_BTN = $D.id('catalog-btn');
+	this.EL_BOOKMARK_BTN = $D.id('bookmark-btn');
+	this.EL_CONTAINER = $D.id('bookmark-container');
+	this.CONTAINER_WIDTH = 230;
+
+	this.initialize = function () {
+		this.fillNavContent();
+		this.bindEvent();
+	}
+
+	// 填充内容
+	this.fillNavContent = function () {
+	
+	}
+
+	// 更新内容
+	this.updateNavContent = function () {
+		
+	}
+
+	this.bindEvent = function () {
+		$E.on(this.EL_HINT, 'click', function (e) {
+			packageContext.showNav();		
+		})
+	}
+
+	this.showNav = function () {
+		CSS3.animate(this.EL_CONTAINER)
+			.set('left', 0)
+			.duration(1000)
+			.end()
+	}
+		
+})
 
 
  QReader.initialize();

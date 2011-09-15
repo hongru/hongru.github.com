@@ -77,3 +77,71 @@ section .fix-width {
 	float: right;
 	width: 47%;
 }
+
+/** bookmark **/
+.bookmark-container {
+	position: absolute;
+	left: -230px;
+	top: 50%;
+	height: 500px;
+	width: 230px;
+	margin-top: -250px;
+	border: 1px solid #e4e3e1;
+	border-top: 0 none;
+	-webkit-box-shadow: 2px 2px 5px #ccc;
+	background: #fff;
+	z-index: 1050;
+}
+.tab-header {
+	background: #dad9d7;
+}
+.tab-header .tab-btn {
+	width: 50%;
+	text-align: center;
+	line-height: 38px;
+	font-size: 20px;
+	font-family: Microsoft yahei;
+	font-weight: 500;
+	color: #3b3b3b;
+	cursor: pointer;
+}
+.tab-header .current {
+	background: #b5d6c7;
+}
+.catalog-btn {
+	float: left;
+}
+.bookmark-btn { float:right; }
+.catalog-con {
+	padding: 12px 10px;
+	height: 430px;
+	overflow: hidden;
+}
+.catalog-list {
+	font-size: 16px;
+	font-weight: 500;
+	font-family: Microsoft yahei;
+	color: #3b3b3b;
+}
+.catalog-list li {
+	line-height: 34px;
+	padding: 0 6px;
+}
+.catalog-list li.current {
+	background: #dad9d7;
+}
+
+.bookmark-hint-area {
+	position: absolute;
+	left: 230px;
+	top: 50%;
+	margin-top: -50px;
+	height: 100px;
+	width: 20px;
+	border-width: 1px 1px 1px 8px;
+	border-color: #e3e3e3 #e3e3e3 #e3e3e3 #b7d8c8;
+	border-style: solid;
+	-webkit-border-radius: 0 8px 8px 0;
+	-webkit-box-shadow: 2px 2px 5px #ccc;
+	background: #fff;
+}
