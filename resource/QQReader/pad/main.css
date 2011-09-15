@@ -245,9 +245,47 @@ section .fix-width {
 	margin-left: -6px;
 	margin-top: -8px;
 }
+.skin1 .navshow .hint-area-arrow {
+	background: url(images/skin1/arrow-left.png) no-repeat;
+}
 .skin1 .hint-area-arrow.arrow-left {
 	background: url(images/skin1/arrow-left.png) no-repeat;
 }
 .skin1 .bookmark-del {
 	background: url(images/skin1/bk-del.png) no-repeat;
 }
+.skin1 .bookmark-container {
+	height: 600px;
+	margin-top: -300px;
+}
+.skin1 .catalog-con, 
+.skin1 .bookmark-con {
+	height: 530px;
+}
+.skin1 .bookmark-list {
+	height: auto;
+	border-bottom: 1px solid #c2c2bf;
+}
+.skin1 .bookmark-list li {
+	padding: 2px 0 10px 0;
+	border-bottom: 0 none;
+}
+.skin1 .bookmark-list li .bk-div {
+	border-bottom: 1px solid #aaa;
+	border-right: 1px solid #aaa;
+	height: 62px;
+	overflow: hidden;
+}
+.skin1 .btn-div {
+	border-top: 1px solid #f4f4f4;
+	text-align: center;
+}
+.skin1 .edit-bookmark-list-btn {
+	background: #eee;
+	margin-top: 10px;
+	padding: 2px 30px;
+}
+
+.bookmark-del {display: none};
+.bookmark-edit-status .bookmark-del {display: block}
+.bookmark-edit-status li .bookmark-del {display: block}

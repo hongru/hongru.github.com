@@ -1446,8 +1446,13 @@ Jx().$package('QReader.catalogNav', function (J) {
 	this.EL_CATALOG_CON = $D.id('catalog-con');
 	this.EL_BOOKMARK_CON = $D.id('bookmark-con');
 	this.EL_TAB_INNERWRAP = $D.id('tab-innerwrap');
+	this.EL_EDIT_BTN = $D.id('edit-bookmark-list-btn');
+	this.EL_BOOKMARK_LIST = $D.id('bookmark-list');
 	this.CONTAINER_WIDTH = 230;
 	this.isNavVisible = false;
+
+	this.BTN_TEXT_EDIT = '编 辑';
+	this.BTN_TEXT_COMPLETE = '完 成';
 
 	this.initialize = function () {
 		this.fillNavContent();
@@ -1468,6 +1473,18 @@ Jx().$package('QReader.catalogNav', function (J) {
 		$E.on(this.EL_HINT, 'click', this.toggleShowNav);
 		$E.on(this.EL_CATALOG_BTN, 'click', this.showCatalogList);
 		$E.on(this.EL_BOOKMARK_BTN, 'click', this.showBookmarkList);
+		$E.on(this.EL_EDIT_BTN, 'click', this.editBookmark);
+	}
+
+	this.editBookmark = function () {
+		var text = packageContext.EL_EDIT_BTN.innerHTML;
+		if (text == packageContext.BTN_TEXT_EDIT) {
+			$D.addClass(packageContext.EL_BOOKMARK_LIST, 'bookmark-edit-status');
+			packageContext.EL_EDIT_BTN.innerHTML = packageContext.BTN_TEXT_COMPLETE;
+		} else if (text == packageContext.BTN_TEXT_COMPLETE) {
+			$D.removeClass(packageContext.EL_BOOKMARK_LIST, 'bookmark-edit-status');
+			packageContext.EL_EDIT_BTN.innerHTML = packageContext.BTN_TEXT_EDIT;
+		}
 	}
 
 	this.showCatalogList = function (e) {
@@ -1498,6 +1515,7 @@ Jx().$package('QReader.catalogNav', function (J) {
 			.set('left', 0)
 			.end();
 		this.isNavVisible = true;
+		$D.addClass(this.EL_HINT, 'navshow');
 	}
 
 	this.hideNav = function () {
@@ -1505,6 +1523,7 @@ Jx().$package('QReader.catalogNav', function (J) {
 			.set('left', (-this.CONTAINER_WIDTH))
 			.end();
 		this.isNavVisible = false;
+		$D.removeClass(this.EL_HINT, 'navshow');
 	}
 		
 })
