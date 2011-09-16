@@ -1433,7 +1433,7 @@ Jx().$package('CSS3', function (J) {
  * package {QReader.catalogNav}
  * 左侧悬浮导航
  */
-Jx().$package('QReader.catalogNav', function (J) {
+Jx().$package('QReader.catalogNav', function (J) {alert(99)
 		
 	var packageContext = this,
 		$D = J.dom,
