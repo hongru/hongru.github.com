@@ -1433,7 +1433,7 @@ Jx().$package('CSS3', function (J) {
  * package {QReader.catalogNav}
  * 左侧悬浮导航
  */
-Jx().$package('QReader.catalogNav', function (J) {alert(99)
+Jx().$package('QReader.catalogNav', function (J) {
 		
 	var packageContext = this,
 		$D = J.dom,
@@ -1478,8 +1478,8 @@ Jx().$package('QReader.catalogNav', function (J) {alert(99)
 
 	this.editBookmark = function () {
 		var text = packageContext.EL_EDIT_BTN.innerHTML;
-		alert(1)
-		if (text == packageContext.BTN_TEXT_EDIT) {alert(text);
+		
+		if (text == packageContext.BTN_TEXT_EDIT) {
 			$D.addClass(packageContext.EL_BOOKMARK_LIST, 'bookmark-edit-status');
 			packageContext.EL_EDIT_BTN.innerHTML = packageContext.BTN_TEXT_COMPLETE;
 		} else if (text == packageContext.BTN_TEXT_COMPLETE) {
