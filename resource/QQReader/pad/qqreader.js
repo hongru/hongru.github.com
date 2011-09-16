@@ -1478,7 +1478,8 @@ Jx().$package('QReader.catalogNav', function (J) {
 
 	this.editBookmark = function () {
 		var text = packageContext.EL_EDIT_BTN.innerHTML;
-		if (text == packageContext.BTN_TEXT_EDIT) {
+		alert(1)
+		if (text == packageContext.BTN_TEXT_EDIT) {alert(text);
 			$D.addClass(packageContext.EL_BOOKMARK_LIST, 'bookmark-edit-status');
 			packageContext.EL_EDIT_BTN.innerHTML = packageContext.BTN_TEXT_COMPLETE;
 		} else if (text == packageContext.BTN_TEXT_COMPLETE) {
