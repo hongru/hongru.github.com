@@ -100,6 +100,26 @@ Jx().$package('QReader', function (J) {
 			window.console.log(s);
 		}
 	};
+
+	this.checkEventTarget = function (el) {
+		for ( ; el != document.body ; el = el.offsetParent) {
+			if (el.id == 'book') {
+			//	QReader.log('BOOK');
+				return 'inBook';
+			} else if (el.id == 'bookmark-container') {
+			//	QReader.log('BOOKMARK CONTAINER');
+				return 'inBookmarkContainer';
+			} else if (el.id == 'navigation') {
+			//	QReader.log('NAVIGATION');
+				return 'inNavigation';
+			} else if (el.id == 'tool-bar') {
+			//	QReader.log('TOOLBAR');
+				return 'inToolBar';
+			}
+		}
+
+		return 'inBody';
+	}
     
     this.requestAnimationFrame = window.requestAnimationFrame || 
               window.webkitRequestAnimationFrame || 
@@ -933,7 +953,7 @@ Jx().$package('QReader.pageflip', function (J) {
 		}
 		
 		// 反向翻页
-		if (!this.dragging && this.hintingBack && this.isMouseInHintBackRegion()) {
+		if (!this.dragging && this.hintingBack && this.isMouseInHintBackRegion() && this.mouseUpTarget == 'inBook') {
 			QReader.log('prev');
 			QReader.navigation.goToPreviousPage();
 		}
@@ -955,9 +975,11 @@ Jx().$package('QReader.pageflip', function (J) {
 	}
 
 	this.onMouseUp = function (event) {
+		context.mouseUpTarget = QReader.checkEventTarget(event.target);
 		context.mouse.down = false;
 		context.updateRelativeMousePosition(event.clientX, event.clientY);
 		context.handlePointerUp();
+
 	}
 
 	// 移动设备 touch 事件支持
@@ -987,6 +1009,7 @@ Jx().$package('QReader.pageflip', function (J) {
 	}
 
 	this.onTouchEnd = function (event) {
+		context.mouseUpTarget = QReader.checkEventTarget(event.target);
 		context.mouse.down = false;
 		context.handlePointerUp();
 	}

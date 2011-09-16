@@ -304,10 +304,11 @@ section .fix-width {
 .tool-bar {
 	position:absolute;
 	min-height: 450px;
-	right: 8%;
+	right: 4%;
 	bottom: -320px;
 	width: 57px;
 	background: url(images/tool-normal.png) no-repeat 50% 0;
+	z-index: 1025;
 }
 .hint-tool {
 	position: absolute;
