@@ -213,11 +213,11 @@ section .fix-width {
 	background: url(images/skin1/bg.png);
 }
 .skin1 .tab-header {
-	background: url(images/skin1/blue-dark.png);
+	background: url(images/skin1/catalog-btn-bg.png);
 	border-bottom: 1px solid #eee;
 }
 .skin1 .tab-header .current {
-	background: url(images/skin1/catalog-btn-bg.png);
+	background: url(images/skin1/blue-dark.png);
 }
 .skin1 .bookmark-container {
 	background: url(images/skin1/left-nav-bg.png);
@@ -289,3 +289,31 @@ section .fix-width {
 .bookmark-del {display: none};
 .bookmark-edit-status .bookmark-del {display: block}
 .bookmark-edit-status li .bookmark-del {display: block}
+
+.skin1 .navigation {
+	position: absolute;
+	bottom: 0;
+	width: 100%;
+	height: 30px;
+	background: url(images/skin1/navigation-bg.png);
+	z-index: 1050;
+}
+
+
+/* == tool bar == */
+.tool-bar {
+	position:absolute;
+	min-height: 450px;
+	right: 8%;
+	bottom: -320px;
+	width: 57px;
+	background: url(images/tool-normal.png) no-repeat 50% 0;
+}
+.hint-tool {
+	position: absolute;
+	left: 0;
+	top: 0;
+	width: 100%;
+	height: 100px;
+	cursor: pointer;
+}

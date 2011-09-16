@@ -1448,8 +1448,11 @@ Jx().$package('QReader.catalogNav', function (J) {
 	this.EL_TAB_INNERWRAP = $D.id('tab-innerwrap');
 	this.EL_EDIT_BTN = $D.id('edit-bookmark-list-btn');
 	this.EL_BOOKMARK_LIST = $D.id('bookmark-list');
+	this.EL_TOOL_BAR = $D.id('tool-bar');
+	this.EL_TOOL_HINT = $D.id('hint-tool');
 	this.CONTAINER_WIDTH = 230;
 	this.isNavVisible = false;
+	this.isToolbarShow = false;
 
 	this.BTN_TEXT_EDIT = '编 辑';
 	this.BTN_TEXT_COMPLETE = '完 成';
@@ -1474,9 +1477,30 @@ Jx().$package('QReader.catalogNav', function (J) {
 		$E.on(this.EL_CATALOG_BTN, 'click', this.showCatalogList);
 		$E.on(this.EL_BOOKMARK_BTN, 'click', this.showBookmarkList);
 		$E.on(this.EL_EDIT_BTN, 'click', this.editBookmark);
+		$E.on(this.EL_TOOL_HINT, 'click', this.toggleShowTool);
 	}
 
-	this.editBookmark = function () {
+	this.toggleShowTool = function (e) {
+		if (packageContext.isToolbarShow) {
+			packageContext.hideToolBar();
+		} else {
+			packageContext.showToolBar();
+		}
+	}
+	this.showToolBar = function (e) {
+		CSS3.animate(packageContext.EL_TOOL_BAR)
+			.set('bottom', 0)
+			.end();
+		this.isToolbarShow = true;
+	}
+	this.hideToolBar = function () {
+		CSS3.animate(this.EL_TOOL_BAR)
+			.set('bottom', (-320))
+			.end();
+		this.isToolbarShow = false;
+	}
+
+	this.editBookmark = function (e) {
 		var text = packageContext.EL_EDIT_BTN.innerHTML;
 		
 		if (text == packageContext.BTN_TEXT_EDIT) {
