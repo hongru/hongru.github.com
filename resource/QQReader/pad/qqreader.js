@@ -104,6 +104,13 @@ Jx().$package('QReader', function (J) {
 		}
 	};
 
+	this.getUID = function () {
+		var id = 0;
+		return function () {
+			return id ++;	
+		}
+	}();
+
 	this.checkEventTarget = function (el) {
 		for ( ; el != document.body ; el = el.offsetParent) {
 			if (el.id == 'book') {
@@ -123,6 +130,13 @@ Jx().$package('QReader', function (J) {
 
 		return 'inBody';
 	}
+
+	this.toType = function (o) {
+		var toString = Object.prototype.toString,
+			s = toString.call(o),
+			l = s.length;
+		return s.substring(8, l-1).toLowerCase();
+	}
     
     this.requestAnimationFrame = window.requestAnimationFrame || 
               window.webkitRequestAnimationFrame || 
@@ -135,9 +149,9 @@ Jx().$package('QReader', function (J) {
 
 	this.initialize = function () {
 		QReader.preload.initialize();
-		QReader.view.initialize();
 		QReader.pageflip.initialize();
 		QReader.catalogNav.initialize();
+		QReader.view.initialize(1);
 
 	}
 
@@ -213,14 +227,21 @@ Jx().$package('QReader.rpc', function (J) {
 	var MAIN_URL = 'http://10.133.0.232/book/';
 
 	// TODO
-	this.getPageContentFromServer = function (cid) {
-		var succeeded = false;
-		J.http.loadScript(MAIN_URL + QReader.BOOK_ID + '/' + cid + '.js', {
-			onSuccess: function () { console.log(data)
-				QReader.cache.setPageContentIntoCache(cid, window.data.content);
-				succeeded = true;
+	this.getPageContentFromServer = function (cid, t) {
+		J.http.loadScript(MAIN_URL + QReader.BOOK_ID + '/' + cid + '.js' + '?t='+t, {
+			onSuccess: function () { 
+				QReader.cache.push('$chap'+cid, window.data)
 			}	
 		});
+	}
+
+	this.getCatalogFromServer = function (t) {
+		J.http.loadScript(MAIN_URL + QReader.BOOK_ID + '/' + 'meta.js' + '?t=' + t, {
+			onSuccess: function () {
+				//clearInterval(QReader.cache['interval_'+t]);
+				QReader.cache.push('$catalog', window.meta)
+			}	
+		})
 	}
 
 });
@@ -231,6 +252,7 @@ Jx().$package('QReader.rpc', function (J) {
  * 提供数据缓存，作为一个中间层
  * 每次要拿数据都先从cache里拿，没有再发请求去server
  * 而每次从server拉到数据都先写进cache，以便下次获取
+ * 另外还肩负数据二次处理，把章的数据按页分开
  */
 Jx().$package('QReader.cache', function (J) {
 		
@@ -239,10 +261,10 @@ Jx().$package('QReader.cache', function (J) {
 		$E = J.event;
 
 	/* == 以下为测试数据 == */
-	this['page1'] = '接上一篇的依靠像素模拟的球面的曲线图，通过不同的数学曲线，表现了一点点数学之美的皮毛（我甚至不能妄称了解了数学之美，因为自己深深地明白，数学的博大精深恐怕是我这辈子也难以企及的）。因为还是有一些同学比较感兴趣，所以这里稍作一点分解。既然我们不能参悟高深的数学，那就让我们以娱乐的心态去编码，去学习。　　上一篇随笔的评论里我看有童鞋在问具体用了什么数学公式。其实基本上核心的就用了一个数学公式，即球坐标相关的东西。具体可以参考百度百科或者维基百科的球坐标相关释义。我自己恐怕是讲不清楚，所以这里暂就附上《维基百科》上关于球坐标系的解析吧：球坐标系维基百科';
-    this['page2'] = "随着前端技术发展，尤其是html5中canvas和svg的应用，开始让web也可以轻易的渲染出各种绚丽的效果。\
+/*	this['$chap1'] = '接上一篇的依靠像素模拟的球面的曲线图，通过不同的数学曲线，表现了一点点数学之美的皮毛（我甚至不能妄称了解了数学之美，因为自己深深地明白，数学的博大精深恐怕是我这辈子也难以企及的）。因为还是有一些同学比较感兴趣，所以这里稍作一点分解。既然我们不能参悟高深的数学，那就让我们以娱乐的心态去编码，去学习。　　上一篇随笔的评论里我看有童鞋在问具体用了什么数学公式。其实基本上核心的就用了一个数学公式，即球坐标相关的东西。具体可以参考百度百科或者维基百科的球坐标相关释义。我自己恐怕是讲不清楚，所以这里暂就附上《维基百科》上关于球坐标系的解析吧：球坐标系维基百科';
+    this['$chap2'] = "随着前端技术发展，尤其是html5中canvas和svg的应用，开始让web也可以轻易的渲染出各种绚丽的效果。\
 本篇讨论的是基于rotate（旋转）的3d效果的初识。在canvas的getContext('2d')下利用一些变换来模拟。webGL是后话，本篇暂不讨论。";
-    this['page3'] = "由于仍是在2d下模拟，所以所谓的3d最终还是要降到2d的层面来。\
+    this['$chap3'] = "由于仍是在2d下模拟，所以所谓的3d最终还是要降到2d的层面来。\
 在坐标上的表现就是，3d的界面应该是有x,y,z三向坐标，2d的就只有x，y二向。\
 那么怎么把3d的z向坐标降到和2d的x，y相关联起来，就是关键。\
 要在2d的界面上展现3d的z方向的层次感，需要一个视井。\
@@ -251,9 +273,11 @@ Jx().$package('QReader.cache', function (J) {
 
 	/* == 测试数据结束 == */
 
+	this.serializedPageNum = 0;
+
 	this.getPageContentFromCache = function (pageNum) {
-		if (!!this['page'+pageNum]) {
-			return this['page'+pageNum];
+		if (!!this['$chap'+pageNum]) {
+			return this['$chap'+pageNum];
 		} else {
 			// 注意这里异步数据，要监测
 			QReader.rpc.getPageContentFromServer(pageNum);
@@ -261,16 +285,76 @@ Jx().$package('QReader.cache', function (J) {
 	}
 
 	this.setPageContentIntoCache = function (pageNum, content) {
-		this['page'+pageNum] = content;
+		this['$chap'+pageNum] = content;
 	}
 
 	this.isInCache = function (cid) {
-		return !!this['page'+cid];
+		return !!this['$chap'+cid];
+	}
+
+	this.check = function (id, callback) {
+		id = /^\$/.test(id) ? id : '$' + id;
+		if (!this[id]) {
+			if (/\$catalog/.test(id)) {
+				var t = QReader.getUID();
+				QReader.rpc.getCatalogFromServer(t);
+				this['interval_'+t] = setInterval(function () { 
+					if (packageContext[id]) { 
+						clearInterval(packageContext['interval_'+t]);
+						!!callback && callback.call(null, packageContext[id]);
+					}
+				}, 20);
+			} else if (/\$chap/.test(id)) {
+				var t = QReader.getUID(),
+					cid = id.match(/\d/)[0];
+				QReader.rpc.getPageContentFromServer(cid, t);
+				this['interval_'+t] = setInterval(function () {
+					if (packageContext[id]) {
+						clearInterval(packageContext['interval_'+t]);
+						!!callback && callback.call(null, packageContext[id]);
+					}	
+				}, 20);
+			}
+		} else {
+			!!callback && callback.call(null, packageContext[id]);
+		}
+	}
+
+	this.multyCheck = function (ids, callback) {
+		if (QReader.toType(ids) == 'array' && ids.length > 0) { 
+			var len = ids.length,
+				n = 0;
+			for (var i = 0; i < len; i ++) {
+				this.check(ids[i], function () { 
+					n ++;
+					if (n == len) {
+						callback && callback();
+					}
+				});
+			}
+		}
+	}
+
+	this.serialize = function (chap) {
+		var con = this[chap].content;
+	}
+	// 创建一个用来判断每一页能放多少数据的盒子
+	this.createSeriaLizeBox = function () {
+		if (!document.getElementById('__serialize-box__')) {
+			var box = $D.node('div', {
+				id: '__serialize-box__'			
+			});
+		}
+	}
+
+	this.push = function (key, data) {
+		key = /^\$/.test(key) ? key : '$'+key;
+		this[key] = data;
 	}
 	
-	// 初始化指定页的数据
-	this.initialize = function (pageNum) {
-		return getPageContentFromCache(pageNum);
+	// 
+	this.initialize = function () {
+		this.createSeriaLizeBox();
 	}
 		
 })
@@ -281,7 +365,8 @@ Jx().$package('QReader.cache', function (J) {
  * 页面模版
  */
 Jx().$package('QReader.tpl', function (J) {
-		
+	// 书页模版	
+	// {leftCon: '', rightCon: ''}
 	this['section'] = '<section>\
 							<div class="fix-width">\
 								<div class="paddiv clr">\
@@ -289,7 +374,24 @@ Jx().$package('QReader.tpl', function (J) {
 									<div class="page-right"><%= rightCon %></div>\
 								</div>\
 							</div>\
-						</section>'
+						</section>';
+	
+	// catalog-list 模版
+	// {chapName: ''}
+	this['catalogList'] = '<li><%= chapName %></li>';
+
+	// bookmark-list 模版
+	// ｛
+	// 		chapName: '',
+	// 	 	snapshot: ''
+	// 	｝
+	this['bookmarkList'] = '<li>\
+								<div class="bk-div">\
+									<h4><%= chapName %></h4>\
+									<%= snapshot %>\
+								</div>\
+								<a class="bookmark-del"></a>\
+							</li>';
 		
 })
 
@@ -308,14 +410,62 @@ Jx().$package('QReader.view', function (J) {
 	
 	this.initialize = function (cid) {
 		cid = cid || 1;
-		if (QReader.cache.isInCache(cid)) {
-			this.fillContent();
-			this.setSectionZIndex();
-			this.setCurrent(0);
-		} else {
-			QReader.rpc.getPageContentFromServer(cid)
-		}
 
+		this.fillMultyPageContent(['$chap1','$chap2','$chap3']);
+
+		this.fillCatalogCon();
+
+	};
+
+	this.fillPageContent = function (cid) {
+		QReader.cache.check('$chap'+cid, function (r) { 
+			var list = [];
+			r = r || QReader.cache['$chap'+cid];
+			var data = {
+				leftCon: r.content,
+				rightCon: r.content
+			};
+			list.push($S.template(QReader.tpl.section, data));
+			QReader.PAGES.innerHTML = list.join('');
+			
+			packageContext.setSectionZIndex();
+			packageContext.setCurrent(0);
+		})
+	}
+
+	this.fillMultyPageContent = function (ids) {
+		if (QReader.toType(ids) == 'array') {
+			QReader.cache.multyCheck(ids, function () { 
+				var list = [];
+				for (var i = 0; i < ids.length; i++) {
+					var r = QReader.cache[ids[i]];
+					var data = {
+						leftCon: r.content.substr(0, 300).replace(/\n/g, '<br/>').replace(/\t/g, '&nbsp;&nbsp;&nbsp;&nbsp;'),
+						rightCon: r.content.substr(0, 200)
+					}
+					list.push($S.template(QReader.tpl.section, data));
+				}
+				QReader.PAGES.innerHTML = list.join('');
+
+				packageContext.setSectionZIndex();
+				packageContext.setCurrent(0);
+			})
+		}
+	}
+
+	this.fillCatalogCon = function () {
+		QReader.cache.check('$catalog', function (r) { 
+			var list = [];
+			r = r || QReader.cache['$catalog'];
+			for (var i=0; i<r.capters.length; i++) {
+				var data = {
+					chapName: r.capters[i].name
+				};
+				var result = $S.template(QReader.tpl.catalogList, data);
+				list.push(result);
+			}
+			$D.id('catalog-list').innerHTML = list.join('');
+		})
 	}
 
 	this.setCurrent = function (n) {
@@ -324,18 +474,6 @@ Jx().$package('QReader.view', function (J) {
 		$D.addClass(sections[n], 'current');
 	}
 
-	this.fillContent = function () {
-		var list = [];
-		for (var i = 1; i <= 3; i ++) {
-			var data = {
-				leftCon: QReader.cache.getPageContentFromCache(i),
-				rightCon: QReader.cache.getPageContentFromCache(i)
-			};
-			var result = $S.template(QReader.tpl.section, data);
-			list.push(result);
-		}
-		QReader.PAGES.innerHTML = list.join('');
-	}
 
 	this.setSectionZIndex = function () {
 		var sections = $D.mini('#book section');
