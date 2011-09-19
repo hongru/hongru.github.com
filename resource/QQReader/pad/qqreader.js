@@ -29,6 +29,9 @@ Jx().$package('QReader', function (J) {
 	this.BOOK = $id('book');
 	// 页容器
 	this.PAGES = $id('pages');
+	// 翻页动画模式
+	// canvas | css3
+	this.pageflipMode = 'css3';
 
 	// ua 判断
 	this.UA = navigator.userAgent.toLowerCase();
@@ -746,7 +749,7 @@ Jx().$package('QReader.pageflip', function (J) {
 	};
 
 	// 翻到指定页
-	this.turnToPage = function (currentPage, targetPage, direction, type) {
+	this.turnToPage = QReader.pageflipMode == 'canvas' ? function (currentPage, targetPage, direction, type) {
 		if (type == 'hard' && !this.dragging) {
 			this.removeHardFlips();
 		}
@@ -778,16 +781,37 @@ Jx().$package('QReader.pageflip', function (J) {
 
 		this.activate();
 		this.reDraw();
-	} 
+	} : function (currentPage, targetPage, direction, type) {
+		// css3 pageflip animate
+		type = type || 'soft';
+		if (!this.turning) {
+			this.turning = true;
+		CSS3.animate(currentPage)
+			.sub('left', QReader.PAGE_WIDTH)
+			.set('opacity', .8)
+			.then()
+				.set('z-index', 0)
+				.add('left', QReader.PAGE_WIDTH)
+				.pop()
+			.end(function () {
+				QReader.pageflip.turning = false;
+				QReader.navigation.updateCurrentPointer(currentPage, targetPage);
+			});
+		}
+	}  
 
-	// 翻页过程中松手，继续完成翻页动作
-	this.completeCurrentTurn = function () {
+	// 完成翻页动作
+	this.completeCurrentTurn = QReader.pageflipMode == 'canvas' ? function () {
 		if (this.turning) {
 			this.turning = false;
 			var flip = this.flips[this.flips.length - 1];
 			if (flip) {
 				QReader.navigation.updateCurrentPointer(flip.currentPage, flip.targetPage);
 			}
+		}
+	} : function () {
+		if (this.turning) {
+			this.turning = false;
 		}
 	};
 
@@ -848,7 +872,7 @@ Jx().$package('QReader.pageflip', function (J) {
 	}
 
 	// 处理鼠标按下事件
-	this.handlePointerDown = function () {
+	this.handlePointerDown = QReader.pageflipMode == 'canvas' ? function () {
 		if (this.isMouseInHintRegion()) {
 			$D.setStyle(document.body, 'cursor', 'pointer');
 			if (QReader.time() - this.mouseDownTime > this.CLICK_FREQUENCY) {
@@ -857,10 +881,16 @@ Jx().$package('QReader.pageflip', function (J) {
 			this.mouseDownTime = QReader.time();
 			this.activate();
 		}
-	}
+	} : function () {
+		// css3 mode
+		if (this.isMouseInHintRegion()) {
+			$D.setStyle(document.body, 'cursor', 'pointer');
+			this.mouseDownTime = QReader.time();
+		}
+	};
 
 	// 处理鼠标移动
-	this.handlePointerMove = function () {
+	this.handlePointerMove = QReader.pageflipMode == 'canvas' ? function () {
 		var hinting = this.hinting;
 		this.hinting = false;
 		$D.setStyle(document.body, 'cursor', '');
@@ -933,10 +963,13 @@ Jx().$package('QReader.pageflip', function (J) {
 		}
 
 		this.mouseHistory.unshift(this.mouse);
-	}
+	} : function () {
+		// css3 mode handlePointerMove
+		// TODO
+	};
 
 	// 鼠标松开
-	this.handlePointerUp = function () {
+	this.handlePointerUp = QReader.pageflipMode == 'canvas' ? function () {
 		if (QReader.time() -  this.mouseDownTime < this.CLICK_FREQUENCY && !this.turning) {
 			QReader.navigation.goToNextPage();
 			this.dragging = false;
@@ -956,6 +989,17 @@ Jx().$package('QReader.pageflip', function (J) {
 		if (!this.dragging && this.hintingBack && this.isMouseInHintBackRegion() && this.mouseUpTarget == 'inBook') {
 			QReader.log('prev');
 			QReader.navigation.goToPreviousPage();
+		}
+	} : function () {
+		// css3 mode handlePointerUp
+		if (this.mouseUpTarget == 'inBook') {
+			// 正向翻页
+			if (this.isMouseInHintRegion()) {
+				//QReader.log('正向');
+				QReader.navigation.goToNextPage();
+			} else if (this.isMouseInHintBackRegion()) {
+				QReader.log('反向');
+			}
 		}
 	}
 
@@ -1075,7 +1119,7 @@ Jx().$package('QReader.navigation', function (J) {
 		return true;
 	}
 	
-	this.goToNextPage = function () {
+	this.goToNextPage = QReader.pageflipMode == 'canvas' ? function () {
 		this.cleanUpTransitions();
 		if (this.transitioningFromHardCover) {
 			return false;
@@ -1107,6 +1151,13 @@ Jx().$package('QReader.navigation', function (J) {
 		}
 
 		this.goToPage(nextArticle, nextPage);
+	} : function () {
+		// css3 mode goToNextPage
+		var currentPage = $D.mini('#pages section.current')[0];
+			targetPage = $D.getNextElement(currentPage);
+		if (!!targetPage) {
+			QReader.pageflip.turnToPage(currentPage, targetPage, 1, 'soft');
+		}
 	}
 
 	// 返回上一页
@@ -1388,7 +1439,7 @@ Jx().$package('CSS3', function (J) {
 			})
 		},
 		current: function (prop) {
-			return current(el).getPropertyValue(prop);		 
+			return current(this.el).getPropertyValue(prop);		 
 		},
 
 		transition: function (prop) {
@@ -1416,7 +1467,7 @@ Jx().$package('CSS3', function (J) {
 			} else if (typeof fn == 'function') {
 				this.on('end', fn);
 			} else {
-				var clone = new Anim(el);
+				var clone = new Anim(this.el);
 				clone._transforms = this._transforms.slice(0);
 				this.then(clone);
 				clone.parent = this;
@@ -1443,7 +1494,7 @@ Jx().$package('CSS3', function (J) {
 
 			setTimeout(function () {
 				self.fire('end');		
-			}, this.duration);
+			}, this._duration);
 
 			return this;
 		}
