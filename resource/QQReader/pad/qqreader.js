@@ -786,17 +786,43 @@ Jx().$package('QReader.pageflip', function (J) {
 		type = type || 'soft';
 		if (!this.turning) {
 			this.turning = true;
-		CSS3.animate(currentPage)
-			.sub('left', QReader.PAGE_WIDTH)
-			.set('opacity', .8)
-			.then()
-				.set('z-index', 0)
-				.add('left', QReader.PAGE_WIDTH)
-				.pop()
-			.end(function () {
-				QReader.pageflip.turning = false;
-				QReader.navigation.updateCurrentPointer(currentPage, targetPage);
-			});
+			if (direction == 1) {
+				CSS3.animate(currentPage)
+					.sub('left', QReader.PAGE_WIDTH)
+					.set('opacity', .8)
+					.then()
+						.set('z-index', 0)
+						.add('left', QReader.PAGE_WIDTH)
+						.set('opacity', .5)
+						.pop()
+					.end(function () {
+						QReader.pageflip.turning = false;
+						QReader.navigation.updateCurrentPointer(currentPage, targetPage);
+					});	
+			} else if (direction == -1) {
+				var z = parseInt($D.getStyle(currentPage, 'z-index'));
+				CSS3.animate(targetPage)
+					.sub('left', QReader.PAGE_WIDTH)
+					.set('opacity', .8)
+					.end(function () {
+						$D.setStyle(targetPage, 'z-index', (z+1));
+						CSS3.animate(targetPage)
+							.set('z-index', (z+1))
+							.duration(0)
+							.end(function () {
+								CSS3.animate(targetPage)
+									.add('left', QReader.PAGE_WIDTH)
+									.set('opacity', 1)
+									.duration(500)
+									.end(function () {
+										QReader.pageflip.turning = false;
+										QReader.navigation.updateCurrentPointer(currentPage, targetPage);
+									})
+							})
+					
+					})
+			}
+
 		}
 	}  
 
@@ -998,7 +1024,8 @@ Jx().$package('QReader.pageflip', function (J) {
 				//QReader.log('正向');
 				QReader.navigation.goToNextPage();
 			} else if (this.isMouseInHintBackRegion()) {
-				QReader.log('反向');
+				//QReader.log('反向');
+				QReader.navigation.goToPreviousPage();
 			}
 		}
 	}
@@ -1161,7 +1188,7 @@ Jx().$package('QReader.navigation', function (J) {
 	}
 
 	// 返回上一页
-	this.goToPreviousPage = function () {
+	this.goToPreviousPage = QReader.pageflipMode == 'canvas' ? function () {
 		this.cleanUpTransitions();
 
 		if (this.isFirstPage()) {
@@ -1173,6 +1200,10 @@ Jx().$package('QReader.navigation', function (J) {
 		var currentPage = $D.mini('#pages section.current')[0],
 			targetPage = $D.getPrevElement(currentPage);
 		QReader.pageflip.turnToPage(currentPage, targetPage, -1, 'soft');
+	} : function () {
+		var currentPage = $D.mini('#pages section.current')[0],
+			targetPage = $D.getPrevElement(currentPage);
+		!!targetPage &&	QReader.pageflip.turnToPage(currentPage, targetPage, -1, 'soft');
 	}
 
 	this.goToPage = function (articleId, pageNum) {
