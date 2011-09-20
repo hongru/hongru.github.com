@@ -31,7 +31,7 @@ Jx().$package('QReader', function (J) {
 	this.PAGES = $id('pages');
 	// 翻页动画模式
 	// canvas | css3
-	this.pageflipMode = 'css3';
+	this.pageflipMode = 'canvas';
 
 	// ua 判断
 	this.UA = navigator.userAgent.toLowerCase();
@@ -224,7 +224,7 @@ Jx().$package('QReader.rpc', function (J) {
 		$D = J.dom,
 		$E = J.event;
 	
-	var MAIN_URL = 'http://10.133.0.232/book/';
+	var MAIN_URL = 'http://113.108.10.198/book/';
 
 	// TODO
 	this.getPageContentFromServer = function (cid, t) {
@@ -335,16 +335,70 @@ Jx().$package('QReader.cache', function (J) {
 		}
 	}
 
+	this.addWhitespace = function (s) {
+		return s.replace(/\n/g, '<br/>').replace(/\t/, '&nbsp;&nbsp;&nbsp;&nbsp;');
+	}
+
 	this.serialize = function (chap) {
-		var con = this[chap].content;
+		var con = this[chap].content,
+			conLen = con.length,
+			parseCon = '',
+			parsePos = 0,
+			from = parsePos,
+			list = [];
+
+		if (!this.serializeBox) {this.getSeriaLizeBox()}
+		var section = $D.mini('section', this.serializeBox)[0],
+			leftPage = $D.mini('.page-left', this.serializeBox)[0],
+			rightPage = $D.mini('.page-right', this.serializeBox)[0];
+
+		while (true) {
+			var ret = tryCon(); 
+			if (ret == 'EOF' || parsePos > conLen) {
+				list.push({from: from, to: conLen});
+				break;
+			} else if (typeof ret == 'object') {
+				list.push(ret);
+				
+			}
+		}
+
+		function tryCon () {
+			if (parsePos > conLen) {
+				return 'EOF';
+			}
+			parseCon += con[parsePos];
+			leftPage.innerHTML = packageContext.addWhitespace(parseCon);
+			if (section.scrollHeight > section.offsetHeight) {
+				var ret = {
+					from: from,
+					to: parsePos
+				};
+				from = parsePos;
+				parseCon = '';
+				return ret;
+			}
+			parsePos ++;
+			return 'continue';
+		}
+		
+		return list;
+
 	}
 	// 创建一个用来判断每一页能放多少数据的盒子
-	this.createSeriaLizeBox = function () {
+	this.getSeriaLizeBox = function () {
 		if (!document.getElementById('__serialize-box__')) {
 			var box = $D.node('div', {
-				id: '__serialize-box__'			
+				id: '__serialize-box__',
+				class: 'serialize-box'
 			});
+			box.innerHTML =	'<section><div class="fix-width"><div class="paddiv clr><div class="page-left"></div><div class="page-right"></div></div></div></section>';
+
+			QReader.BOOK.appendChild(box);
 		}
+
+		this.serializeBox = $D.id('__serialize-box__');
+		return box;
 	}
 
 	this.push = function (key, data) {
@@ -354,7 +408,7 @@ Jx().$package('QReader.cache', function (J) {
 	
 	// 
 	this.initialize = function () {
-		this.createSeriaLizeBox();
+		this.getSeriaLizeBox();
 	}
 		
 })
@@ -411,7 +465,7 @@ Jx().$package('QReader.view', function (J) {
 	this.initialize = function (cid) {
 		cid = cid || 1;
 
-		this.fillMultyPageContent(['$chap1','$chap2','$chap3']);
+		this.fillMultyPageContent(['$chap1']);
 
 		this.fillCatalogCon();
 
@@ -436,19 +490,33 @@ Jx().$package('QReader.view', function (J) {
 	this.fillMultyPageContent = function (ids) {
 		if (QReader.toType(ids) == 'array') {
 			QReader.cache.multyCheck(ids, function () { 
+				var N = parseInt(ids[ids.length-1].match(/\d/)[0]);
 				var list = [];
 				for (var i = 0; i < ids.length; i++) {
 					var r = QReader.cache[ids[i]];
-					var data = {
-						leftCon: r.content.substr(0, 300).replace(/\n/g, '<br/>').replace(/\t/g, '&nbsp;&nbsp;&nbsp;&nbsp;'),
-						rightCon: r.content.substr(0, 200)
+					var pages = QReader.cache.serialize(ids[i]);
+					for (var j = 0; j < pages.length; j += 2) {
+						var pageL = pages[j],
+							pageR = pages[j + 1];
+
+						var data = {
+							leftCon: pageL ? QReader.cache.addWhitespace(r.content.substring(pageL.from, pageL.to)) : '',
+							rightCon: pageR ? QReader.cache.addWhitespace(r.content.substring(pageR.from, pageR.to)) : ''
+						};
+						list.push($S.template(QReader.tpl.section, data));
 					}
-					list.push($S.template(QReader.tpl.section, data));
 				}
+				// 最后追加push一个loading的页面
+				list.push($S.template(QReader.tpl.section, {
+					leftCon: '',
+					rightCon: '<img alt="loading" data-targetchap="'+N+'" src="images/loading.gif" class="loading-gif" />'
+				}));
 				QReader.PAGES.innerHTML = list.join('');
 
 				packageContext.setSectionZIndex();
 				packageContext.setCurrent(0);
+
+				//console.log(QReader.cache.serialize('$chap1'));
 			})
 		}
 	}
@@ -624,7 +692,7 @@ Jx().$package('QReader.pageflip', function (J) {
 	
 	// 动画激活
 	this.activate = function () {
-		if (this.loopInterval == -1) { QReader.log('start'); 
+		if (this.loopInterval == -1) {  
 			clearInterval(this.loopInterval);
 			this.loopInterval = setInterval(function () { context.reDraw() }, 1000/this.fps);
 
@@ -971,6 +1039,13 @@ Jx().$package('QReader.pageflip', function (J) {
 			var flip = this.flips[this.flips.length - 1];
 			if (flip) {
 				QReader.navigation.updateCurrentPointer(flip.currentPage, flip.targetPage);
+				// 判断是否已到最后loading页，以便加载下一章
+				//console.log($D.mini('img.loading-gif', flip.targetPage));
+				var loadingGif = $D.mini('img.loading-gif', flip.targetPage)[0];
+				if (loadingGif) {
+					var N = parseInt(loadingGif.getAttribute('data-targetchap'));
+					QReader.view.fillMultyPageContent(['$chap'+(N+1)]);
+				}
 			}
 		}
 	} : function () {

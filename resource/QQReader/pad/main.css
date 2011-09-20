@@ -318,3 +318,10 @@ section .fix-width {
 	height: 100px;
 	cursor: pointer;
 }
+.loading-gif {
+	position: absolute;
+	left: 50%;
+	top: 50%;
+	margin-top: -113px;
+	margin-left: -85px;
+}
