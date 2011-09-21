@@ -31,7 +31,7 @@ Jx().$package('QReader', function (J) {
 	this.PAGES = $id('pages');
 	// 翻页动画模式
 	// canvas | css3
-	this.pageflipMode = 'canvas';
+	this.pageflipMode = 'css3';
 
 	// ua 判断
 	this.UA = navigator.userAgent.toLowerCase();
@@ -339,7 +339,7 @@ Jx().$package('QReader.cache', function (J) {
 		return s.replace(/\n/g, '<br/>').replace(/\t/, '&nbsp;&nbsp;&nbsp;&nbsp;');
 	}
 
-	this.serialize = function (chap) {
+/*	this.serialize = function (chap) {
 		var con = this[chap].content,
 			conLen = con.length,
 			parseCon = '',
@@ -382,6 +382,63 @@ Jx().$package('QReader.cache', function (J) {
 			return 'continue';
 		}
 		
+		return list;
+
+	}*/
+
+	this.serialize = function (chap) {
+		var con = this[chap].content,
+			conLen = con.length,
+			parseCon = '',
+			parsePos = 0,
+			from = parsePos,
+			list = [];
+
+		if (!this.serializeBox) {this.getSeriaLizeBox()}
+
+		var section = $D.mini('section', this.serializeBox)[0],
+			leftPage = $D.mini('.page-left', this.serializeBox)[0],
+			rightPage = $D.mini('.page-right', this.serializeBox)[0];
+
+		function tryCon (start, end) {
+			var _start = start;
+			leftPage.innerHTML = packageContext.addWhitespace(con);
+			if (section.offsetHeight == section.scrollHeight) {
+				return {from: start, to: end};
+			}
+
+			while (true) {
+				doTry(start, end);
+				//console.log(start, end);
+				if (Math.abs(start-end) <= 1) {
+					break;
+				} 
+			}
+			function doTry(s, e) {
+				//if (s == e) return [s, e];
+				parsePos = s + Math.floor((e-s)/2);
+				parseCon = con.substring(_start, parsePos);
+				leftPage.innerHTML = packageContext.addWhitespace(parseCon);
+				if (section.scrollHeight > section.offsetHeight) {
+					start = s;
+					end = parsePos;
+				} else {
+					start = parsePos;
+					end = e;
+				}
+			}
+			return {from: _start, to: start};
+
+		}
+
+		while (true) {
+		
+			var startPos = list.length == 0 ? 0 : list[list.length-1].to;
+			var result = tryCon(startPos,conLen);
+			list.push(result);
+		//	console.log(result.to, conLen);
+			if (Math.abs(result.to - conLen) <= 1) break;
+		}
 		return list;
 
 	}
@@ -494,7 +551,7 @@ Jx().$package('QReader.view', function (J) {
 				var list = [];
 				for (var i = 0; i < ids.length; i++) {
 					var r = QReader.cache[ids[i]];
-					var pages = QReader.cache.serialize(ids[i]);
+					var pages = QReader.cache.serialize(ids[i]); 
 					for (var j = 0; j < pages.length; j += 2) {
 						var pageL = pages[j],
 							pageR = pages[j + 1];
@@ -1004,6 +1061,12 @@ Jx().$package('QReader.pageflip', function (J) {
 					.end(function () {
 						QReader.pageflip.turning = false;
 						QReader.navigation.updateCurrentPointer(currentPage, targetPage);
+
+						var loadingGif = $D.mini('#pages section.current img.loading-gif')[0];
+						if (loadingGif) {
+							var N = parseInt(loadingGif.getAttribute('data-targetchap'));
+							QReader.view.fillMultyPageContent(['$chap'+(N+1)]);
+						}
 					});	
 			} else if (direction == -1) {
 				var z = parseInt($D.getStyle(currentPage, 'z-index'));
@@ -1051,6 +1114,12 @@ Jx().$package('QReader.pageflip', function (J) {
 	} : function () {
 		if (this.turning) {
 			this.turning = false;
+			var loadingGif = $D.mini('#pages section.current img.loading-gif')[0]
+			//var loadingGif = $D.mini('img.loading-gif', flip.targetPage)[0];
+				if (loadingGif) {
+					var N = parseInt(loadingGif.getAttribute('data-targetchap'));
+					QReader.view.fillMultyPageContent(['$chap'+(N+1)]);
+				}
 		}
 	};
 
