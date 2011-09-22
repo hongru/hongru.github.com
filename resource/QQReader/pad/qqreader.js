@@ -449,8 +449,8 @@ Jx().$package('QReader.cache', function (J) {
 	this.getSeriaLizeBox = function () {
 		if (!document.getElementById('__serialize-box__')) {
 			var box = $D.node('div', {
-				id: '__serialize-box__',
-				class: 'serialize-box'
+				id: '__serialize-box__'
+				//class: 'serialize-box'
 			});
 			box.innerHTML =	'<section><div class="fix-width"><div class="paddiv clr><div class="page-left"></div><div class="page-right"></div></div></div></section>';
 
