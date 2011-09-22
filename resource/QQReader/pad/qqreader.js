@@ -61,6 +61,9 @@ Jx().$package('QReader', function (J) {
 	// 翻页动画模式
 	// canvas | css3
 	this.pageflipMode = this.getIdByUrl('mode') || 'canvas';
+	// 单双页模式
+	// doublePage | singlePage
+	this.pageMode = 'doublePage';
 
 	// Region Class
 	// 用于产生一个区域
@@ -140,6 +143,15 @@ Jx().$package('QReader', function (J) {
 			l = s.length;
 		return s.substring(8, l-1).toLowerCase();
 	}
+
+	this.removeVendorProperty = function (el, prop) {
+		if (el.nodeType == 1) {
+			el.style.removeProperty('-webkit-' + prop);
+			el.style.removeProperty('-moz-' + prop);
+			el.style.removeProperty('-o-' + prop);
+			el.style.removeProperty('-ms-' + prop);
+		}
+	}
     
     this.requestAnimationFrame = window.requestAnimationFrame || 
               window.webkitRequestAnimationFrame || 
@@ -192,8 +204,13 @@ Jx().$package('QReader.preload', function (J) {
 
 	this.resetConst = function () {//alert(QReader.isTouchDevice); alert(typeof webkitRequestAnimationFrame)
 		//if (QReader.isTouchDevice) {
-			// 重置const 为pad版本
-			QReader.PAGE_WIDTH = QReader.WIN_WIDTH - (QReader.isTouchDevice ? 40 : 100);
+			// 重置const 
+			if (QReader.pageMode == 'doublePage') {
+				QReader.PAGE_WIDTH = QReader.WIN_WIDTH - (QReader.isTouchDevice ? 40 : 100);
+			} else {
+				QReader.PAGE_WIDTH = QReader.WIN_WIDTH * .6;
+			}
+			
 			QReader.PAGE_HEIGHT = QReader.WIN_HEIGHT;
 			QReader.PAGE_MARGIN_X = 14;
 			QReader.PAGE_MARGIN_Y = 0;
@@ -209,7 +226,7 @@ Jx().$package('QReader.preload', function (J) {
 	}
 
 	this.resetStyleRules = function () {
-		var styleRules = 'section {width:'+QReader.PAGE_WIDTH+'px; height:'+QReader.PAGE_HEIGHT+'px; left:'+(QReader.PAGE_WIDTH+QReader.PAGE_MARGIN_X)+'px} section .fix-width {width:'+QReader.PAGE_WIDTH+'px; height:'+QReader.PAGE_HEIGHT+'px}';
+		var styleRules = 'section {width:'+QReader.PAGE_WIDTH+'px; height:'+QReader.PAGE_HEIGHT+'px; left:'+(QReader.PAGE_WIDTH+QReader.PAGE_MARGIN_X)+'px} section .fix-width {width:'+QReader.PAGE_WIDTH+'px; height:'+QReader.PAGE_HEIGHT+'px} .tap-bk-r {left:'+(QReader.PAGE_WIDTH - 100)+'px}';
 		if (J.browser.ie > 5 && J.browser.ie < 9) {
 			window.style = styleRules;
 			document.createStyleSheet('javascript:style');
@@ -1737,6 +1754,9 @@ Jx().$package('CSS3', function (J) {
 
 		//set duration time
 		duration: function (n) {
+			if (n === 0) {
+				return this.removeVendorProperty('transition-duration');
+			}
 			n = this._duration = (typeof n == 'string') ? parseFloat(n)*1000 : n;
 			return this.setVendorProperty('transition-duration', n + 'ms');
 		},
@@ -1757,6 +1777,22 @@ Jx().$package('CSS3', function (J) {
 			this.setProperty('-moz-' + prop, val);
 			this.setProperty('-ms-' + prop, val);
 			this.setProperty('-o-' + prop, val);
+			return this;
+		},
+		removeVendorProperty: function (prop) {
+			this.removeProperty('-webkit-'+prop);
+			this.removeProperty('-moz-' + prop);
+			this.removeProperty('-ms-' + prop);
+			this.removeProperty('-o-' + prop);
+			return this;
+		},
+		removeProperty: function (prop) {
+			if (this._props.hasOwnProperty(prop)) {
+				delete this._props[prop];
+			};
+			if (prop in this.el.style) {
+				this.el.style.removeProperty(prop);
+			}
 			return this;
 		},
 		set: function (prop, val) {
@@ -1904,6 +1940,62 @@ Jx().$package('QReader.catalogNav', function (J) {
 		$E.on(this.EL_EDIT_BTN, 'click', this.editBookmark);
 		$E.on(this.EL_TOOL_HINT, 'click', this.toggleShowTool);
 		$E.on(this.EL_CATALOG_LIST, 'click', this.delegateCatalog);
+		$E.on(this.EL_TOOL_BRIGHT, 'click', this.toggleBright);
+		$E.on(this.EL_TOOL_PAGEMODE, 'click', this.togglePageMode);
+	}
+
+	this.togglePageMode = function (e) {
+		if (QReader.pageMode == 'doublePage') {
+			// 从双叶转换到单页
+			packageContext.turnModeToSinglePage();
+			QReader.pageMode = 'singlePage';
+			$D.addClass(e.target, 'active');
+		} else if (QReader.pageMode == 'singlePage') {
+			// 单页到双页
+			packageContext.turnModeToDoublePage();
+			QReader.pageMode = 'doublePage';
+			$D.removeClass(e.target, 'active');
+		}
+	}
+
+	this.turnModeToSinglePage = function () {
+		CSS3.animate(QReader.BOOK)
+			.set('opacity', 0)
+			.end(toSinglePage);
+		function toSinglePage () {
+			QReader.removeVendorProperty(QReader.BOOK, 'transition-duration');
+			
+			QReader.preload.initialize();
+			$D.setStyle(QReader.pageflip.canvas, 'z-index', 0);
+			QReader.pageflip.unRegisterEventListeners();
+			CSS3.animate(QReader.BOOK)
+				.set('opacity', 1)
+				.end();
+		}
+	}
+
+	this.turnModeToDoublePage = function () {
+		CSS3.animate(QReader.BOOK)
+			.set('opacity', 0)
+			.end(toDoublePage);
+
+		function toDoublePage() {
+			QReader.removeVendorProperty(QReader.BOOK, 'transition-duration');
+			QReader.preload.initialize();
+			QReader.pageflip.registerEventListeners();
+			CSS3.animate(QReader.BOOK)
+				.set('opacity', 1)
+				.end();
+		}
+	}
+
+	this.toggleBright = function () {
+		var op = $D.getStyle(document.body, 'opacity');
+		if (op == 1) {
+			$D.setStyle(document.body, 'opacity', .5);
+		} else {
+			$D.setStyle(document.body, 'opacity', 1);
+		}
 	}
 
 	this.delegateCatalog = function (e) {

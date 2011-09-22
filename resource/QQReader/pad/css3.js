@@ -224,7 +224,7 @@ Jx().$package('CSS3', function (J) {
 			})
 		},
 		current: function (prop) {
-			return current(el).getPropertyValue(prop);		 
+			return current(this.el).getPropertyValue(prop);		 
 		},
 
 		transition: function (prop) {
@@ -252,7 +252,7 @@ Jx().$package('CSS3', function (J) {
 			} else if (typeof fn == 'function') {
 				this.on('end', fn);
 			} else {
-				var clone = new Anim(el);
+				var clone = new Anim(this.el);
 				clone._transforms = this._transforms.slice(0);
 				this.then(clone);
 				clone.parent = this;
@@ -279,11 +279,10 @@ Jx().$package('CSS3', function (J) {
 
 			setTimeout(function () {
 				self.fire('end');		
-			}, this.duration);
+			}, this._duration);
 
 			return this;
 		}
 	});
 		
 });
-
