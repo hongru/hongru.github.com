@@ -193,7 +193,7 @@ Jx().$package('QReader.preload', function (J) {
 	this.resetConst = function () {//alert(QReader.isTouchDevice); alert(typeof webkitRequestAnimationFrame)
 		//if (QReader.isTouchDevice) {
 			// 重置const 为pad版本
-			QReader.PAGE_WIDTH = QReader.WIN_WIDTH;
+			QReader.PAGE_WIDTH = QReader.WIN_WIDTH - (QReader.isTouchDevice ? 40 : 100);
 			QReader.PAGE_HEIGHT = QReader.WIN_HEIGHT;
 			QReader.PAGE_MARGIN_X = 14;
 			QReader.PAGE_MARGIN_Y = 0;
@@ -1178,7 +1178,9 @@ Jx().$package('QReader.pageflip', function (J) {
 			region.left = QReader.PAGE_WIDTH - (QReader.isTouchDevice ? this.HINT_WIDTH_TOUCH : this.HINT_WIDTH);
 			region.right = QReader.PAGE_WIDTH;
 		}
-		region.top = 0;
+		// 因为右上角刚好有贴书签的位置，所以钩子区域留出位置
+		region.top = 60;
+		//region.top = 0;
 		region.bottom = QReader.PAGE_HEIGHT;
 
 		return region;
@@ -1305,7 +1307,7 @@ Jx().$package('QReader.pageflip', function (J) {
 
 	// 鼠标松开
 	this.handlePointerUp = QReader.pageflipMode == 'canvas' ? function () {
-		if (QReader.time() -  this.mouseDownTime < this.CLICK_FREQUENCY && !this.turning) {
+		if (QReader.time() -  this.mouseDownTime < this.CLICK_FREQUENCY && !this.turning && context.mouseUpTarget == 'inBook') {
 			QReader.navigation.goToNextPage();
 			this.dragging = false;
 			return false;
@@ -1869,6 +1871,10 @@ Jx().$package('QReader.catalogNav', function (J) {
 	this.EL_BOOKMARK_LIST = $D.id('bookmark-list');
 	this.EL_TOOL_BAR = $D.id('tool-bar');
 	this.EL_TOOL_HINT = $D.id('hint-tool');
+	this.EL_TOOL_FONTSIZE = $D.id('font-size');
+	this.EL_TOOL_BRIGHT = $D.id('bright');
+	this.EL_TOOL_SKIN = $D.id('change-skin');
+	this.EL_TOOL_PAGEMODE = $D.id('page-mode');
 	this.CONTAINER_WIDTH = 230;
 	this.isNavVisible = false;
 	this.isToolbarShow = false;
@@ -1920,12 +1926,14 @@ Jx().$package('QReader.catalogNav', function (J) {
 		CSS3.animate(packageContext.EL_TOOL_BAR)
 			.set('bottom', 0)
 			.end();
+		$D.addClass(this.EL_TOOL_HINT, 'active');
 		this.isToolbarShow = true;
 	}
 	this.hideToolBar = function () {
 		CSS3.animate(this.EL_TOOL_BAR)
 			.set('bottom', (-320))
 			.end();
+		$D.removeClass(this.EL_TOOL_HINT, 'active');
 		this.isToolbarShow = false;
 	}
 
@@ -1965,16 +1973,20 @@ Jx().$package('QReader.catalogNav', function (J) {
 	}
 
 	this.showNav = function () {
+		var d = QReader.isTouchDevice ? 0 : 500;
 		CSS3.animate(this.EL_CONTAINER)
 			.set('left', 0)
+			.duration(d)
 			.end();
 		this.isNavVisible = true;
 		$D.addClass(this.EL_HINT, 'navshow');
 	}
 
 	this.hideNav = function () {
+		var d = QReader.isTouchDevice ? 0 : 500;
 		CSS3.animate(this.EL_CONTAINER)
 			.set('left', (-this.CONTAINER_WIDTH))
+			.duration(d)
 			.end();
 		this.isNavVisible = false;
 		$D.removeClass(this.EL_HINT, 'navshow');
@@ -1994,11 +2006,12 @@ Jx().$package('QReader.tapBookmark', function (J) {
 		$D = J.dom,
 		$E = J.event;
 	
+	
 	$E.on(QReader.BOOK, 'click', function (e) {
 		var tar = QReader.checkEventTarget(e.target);
 		if (tar == 'tapBookmark') {
 			$D.addClass(e.target, 'tapped');
-			QReader.catalogNav.addBookmark(chap);
+			QReader.catalogNav.addBookmark();
 		}
 	})		
 })

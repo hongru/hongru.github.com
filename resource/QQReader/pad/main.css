@@ -135,7 +135,6 @@ section .fix-width {
 	font-family: Microsoft yahei;
 	color: #3b3b3b;
 	overflow: hidden;
-	height: 640px;
 }
 .bookmark-list {
 	font-size: 13px;
@@ -309,16 +308,46 @@ section .fix-width {
 	right: 4%;
 	bottom: -320px;
 	width: 57px;
-	background: url(images/tool-normal.png) no-repeat 50% 0;
 	z-index: 1025;
 }
+.tool-bar a {
+    display: block;
+    width: 100%;
+    cursor: pointer;
+    background-image: url(images/tool-normal.png);
+    background-repeat: no-repeat;
+}
+.win .tool-bar a.hint-tool:hover,
+.win .tool-bar a.font-size:hover,
+.win .tool-bar a.bright:hover,
+.win .tool-bar a.change-skin:hover,
+.tool-bar a.active {
+    background-image: url(images/tool-active.png);
+}
 .hint-tool {
-	position: absolute;
-	left: 0;
-	top: 0;
 	width: 100%;
 	height: 100px;
-	cursor: pointer;
+    background-position: 50% 0;
+}
+.font-size {
+    height: 66px;
+    background-position: 50% -100px;
+}
+.bright {
+    height: 68px;
+    background-position: 50% -166px;
+}
+.change-skin {
+    height: 70px;
+    background-position: 50% -234px;
+}
+.page-mode {
+    height: 80px;
+    background-position: 50% -304px;
+}
+.slide-screen {
+    height: 60px;
+    background-position: 50% -384px;
 }
 .loading-gif {
 	position: absolute;
