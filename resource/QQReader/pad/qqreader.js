@@ -112,6 +112,9 @@ Jx().$package('QReader', function (J) {
 	}();
 
 	this.checkEventTarget = function (el) {
+		if (el.nodeName.toLowerCase() == 'span' && ($D.hasClass(el, 'tap-bk-l') || $D.hasClass(el, 'tap-bk-r'))) {
+			return 'tapBookmark';
+		}
 		for ( ; el != document.body ; el = el.offsetParent) {
 			if (el.id == 'book') {
 			//	QReader.log('BOOK');
@@ -477,11 +480,13 @@ Jx().$package('QReader.cache', function (J) {
  */
 Jx().$package('QReader.tpl', function (J) {
 	// 书页模版	
-	// {leftCon: '', rightCon: ''}
-	this['section'] = '<section>\
-							<div class="fix-width">\
+	// {leftCon: '', rightCon: '', chapNum: ''}
+	this['section'] = '<section data-chapnum="<%= chap %>"><div class="fix-width">\
+								<span class="tap-bk-l"></span>\
+								<span class="tap-bk-r"></span>\
 								<div class="paddiv clr">\
-									<div class="page-left"><%= leftCon %></div>\
+									<div class="page-left"><%= leftCon %>\
+									</div>\
 									<div class="page-right"><%= rightCon %></div>\
 								</div>\
 							</div>\
@@ -489,7 +494,7 @@ Jx().$package('QReader.tpl', function (J) {
 	
 	// catalog-list 模版
 	// {chapName: ''}
-	this['catalogList'] = '<li><%= chapName %></li>';
+	this['catalogList'] = '<li data-chapnum="<%= chapNum %>"><%= chapName %></li>';
 
 	// bookmark-list 模版
 	// ｛
@@ -522,7 +527,7 @@ Jx().$package('QReader.view', function (J) {
 	this.initialize = function (cid) {
 		cid = cid || 1;
 
-		this.fillMultyPageContent(['$chap1']);
+		this.fillMultyPageContent(['$chap1', '$chap2']);
 
 		this.fillCatalogCon();
 
@@ -549,6 +554,11 @@ Jx().$package('QReader.view', function (J) {
 			QReader.cache.multyCheck(ids, function () { 
 				var N = parseInt(ids[ids.length-1].match(/\d/)[0]);
 				var list = [];
+				// 先push一个向前loading的页面
+			//	list.push($S.template(QReader.tpl.section, {
+			//		leftCon: '',
+			//		rightCon: '<img alt="loading" data-targetchap="'+N+'" src="images/loading.gif" class="prev-loading-gif" />'
+			//	}))
 				for (var i = 0; i < ids.length; i++) {
 					var r = QReader.cache[ids[i]];
 					var pages = QReader.cache.serialize(ids[i]); 
@@ -558,7 +568,8 @@ Jx().$package('QReader.view', function (J) {
 
 						var data = {
 							leftCon: pageL ? QReader.cache.addWhitespace(r.content.substring(pageL.from, pageL.to)) : '',
-							rightCon: pageR ? QReader.cache.addWhitespace(r.content.substring(pageR.from, pageR.to)) : ''
+							rightCon: pageR ? QReader.cache.addWhitespace(r.content.substring(pageR.from, pageR.to)) : '',
+							chap: ids[i].match(/\d/)[0]
 						};
 						list.push($S.template(QReader.tpl.section, data));
 					}
@@ -566,7 +577,8 @@ Jx().$package('QReader.view', function (J) {
 				// 最后追加push一个loading的页面
 				list.push($S.template(QReader.tpl.section, {
 					leftCon: '',
-					rightCon: '<img alt="loading" data-targetchap="'+N+'" src="images/loading.gif" class="loading-gif" />'
+					rightCon: '<img alt="loading" data-targetchap="'+N+'" src="images/loading.gif" class="loading-gif" />',
+					chap: '+1'
 				}));
 				QReader.PAGES.innerHTML = list.join('');
 
@@ -584,6 +596,7 @@ Jx().$package('QReader.view', function (J) {
 			r = r || QReader.cache['$catalog'];
 			for (var i=0; i<r.capters.length; i++) {
 				var data = {
+					chapNum: i + 1,
 					chapName: r.capters[i].name
 				};
 				var result = $S.template(QReader.tpl.catalogList, data);
@@ -1485,7 +1498,11 @@ Jx().$package('QReader.navigation', function (J) {
 	} : function () {
 		var currentPage = $D.mini('#pages section.current')[0],
 			targetPage = $D.getPrevElement(currentPage);
-		!!targetPage &&	QReader.pageflip.turnToPage(currentPage, targetPage, -1, 'soft');
+		if (!!targetPage) {	QReader.pageflip.turnToPage(currentPage, targetPage, -1, 'soft');}
+		// 如果上一页不存在，看是不是在第一章，如果不是，把上一张内容push进来后再向前翻
+		else {
+			QReader.log('first')
+		}
 	}
 
 	this.goToPage = function (articleId, pageNum) {
@@ -1831,6 +1848,7 @@ Jx().$package('QReader.catalogNav', function (J) {
 	this.EL_BOOKMARK_BTN = $D.id('bookmark-btn');
 	this.EL_CONTAINER = $D.id('bookmark-container');
 	this.EL_CATALOG_CON = $D.id('catalog-con');
+	this.EL_CATALOG_LIST = $D.id('catalog-list');
 	this.EL_BOOKMARK_CON = $D.id('bookmark-con');
 	this.EL_TAB_INNERWRAP = $D.id('tab-innerwrap');
 	this.EL_EDIT_BTN = $D.id('edit-bookmark-list-btn');
@@ -1865,6 +1883,16 @@ Jx().$package('QReader.catalogNav', function (J) {
 		$E.on(this.EL_BOOKMARK_BTN, 'click', this.showBookmarkList);
 		$E.on(this.EL_EDIT_BTN, 'click', this.editBookmark);
 		$E.on(this.EL_TOOL_HINT, 'click', this.toggleShowTool);
+		$E.on(this.EL_CATALOG_LIST, 'click', this.delegateCatalog);
+	}
+
+	this.delegateCatalog = function (e) {
+		var tar = e.target;
+		if (tar.nodeName.toLowerCase() == 'li') {
+			var to = '$chap' + tar.getAttribute('data-chapnum');
+			QReader.view.fillMultyPageContent([to]);
+			packageContext.toggleShowNav();
+		}
 	}
 
 	this.toggleShowTool = function (e) {
@@ -1938,6 +1966,22 @@ Jx().$package('QReader.catalogNav', function (J) {
 		$D.removeClass(this.EL_HINT, 'navshow');
 	}
 		
+});
+
+/**
+ * tapBookmark
+ */
+Jx().$package('QReader.tapBookmark', function (J) {
+	var packageContext = this,
+		$D = J.dom,
+		$E = J.event;
+	
+	$E.on(QReader.BOOK, 'click', function (e) {
+		var tar = QReader.checkEventTarget(e.target);
+		if (tar == 'tapBookmark') {
+			$D.addClass(e.target, 'tapped');
+		}
+	})		
 })
 
 

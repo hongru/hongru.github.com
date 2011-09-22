@@ -134,7 +134,7 @@ section .fix-width {
 	font-family: Microsoft yahei;
 	color: #3b3b3b;
 	overflow: hidden;
-	height: 440px;
+	height: 640px;
 }
 .bookmark-list {
 	font-size: 13px;
@@ -262,6 +262,7 @@ section .fix-width {
 .skin1 .bookmark-con {
 	height: 530px;
 }
+.skin1 .catalog-con { overflow: auto }
 .skin1 .bookmark-list {
 	height: auto;
 	border-bottom: 1px solid #c2c2bf;
@@ -325,3 +326,25 @@ section .fix-width {
 	margin-top: -113px;
 	margin-left: -85px;
 }
+.tap-bk-l {
+    position: absolute;
+    width: 85px;
+    height: 27px;
+    left: 60px;
+    top: 20px;
+    background: url(images/skin1/bk-test.png) no-repeat;
+    cursor: pointer;
+}
+.tap-bk-r {
+    position: absolute;
+    width: 85px;
+    height: 27px;
+    right: 40px;
+    top: 20px;
+    background: url(images/skin1/bk-test.png) no-repeat;
+    cursor: pointer;
+}
+.tap-bk-r.tapped, 
+.tap-bk-l.tapped {
+    background: url(images/skin1/bookmark.png) no-repeat;
+} 
