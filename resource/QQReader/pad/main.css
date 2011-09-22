@@ -18,6 +18,7 @@ body,button,input,select,textarea{font: 12px/1.5 Tahoma, Arial, "\5b8b\4f53", sa
 .clr:after {content: ".";display: block; height: 0; clear: both; visibility: hidden;}
 .clr{zoom:1;}
 
+html {overflow: hidden;}
 body {
     background: url(images/bg.png);
     overflow: hidden;

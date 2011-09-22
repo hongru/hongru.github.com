@@ -31,7 +31,7 @@ Jx().$package('QReader', function (J) {
 	this.PAGES = $id('pages');
 	// 翻页动画模式
 	// canvas | css3
-	this.pageflipMode = 'canvas';
+	this.pageflipMode = 'css3';
 
 	// ua 判断
 	this.UA = navigator.userAgent.toLowerCase();
