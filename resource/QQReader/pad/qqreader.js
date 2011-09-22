@@ -29,10 +29,7 @@ Jx().$package('QReader', function (J) {
 	this.BOOK = $id('book');
 	// 页容器
 	this.PAGES = $id('pages');
-	// 翻页动画模式
-	// canvas | css3
-	this.pageflipMode = 'canvas';
-
+	
 	// ua 判断
 	this.UA = navigator.userAgent.toLowerCase();
 	this.isTouchDevice = (/android|iphone|ipad/.test(this.UA));
@@ -61,6 +58,9 @@ Jx().$package('QReader', function (J) {
 	}
 
 	this.BOOK_ID = this.getIdByUrl('bid') || 1001;
+	// 翻页动画模式
+	// canvas | css3
+	this.pageflipMode = this.getIdByUrl('mode') || 'canvas';
 
 	// Region Class
 	// 用于产生一个区域
