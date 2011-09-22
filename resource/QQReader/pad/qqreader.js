@@ -31,7 +31,7 @@ Jx().$package('QReader', function (J) {
 	this.PAGES = $id('pages');
 	// 翻页动画模式
 	// canvas | css3
-	this.pageflipMode = 'css3';
+	this.pageflipMode = 'canvas';
 
 	// ua 判断
 	this.UA = navigator.userAgent.toLowerCase();
@@ -1965,6 +1965,10 @@ Jx().$package('QReader.catalogNav', function (J) {
 		this.isNavVisible = false;
 		$D.removeClass(this.EL_HINT, 'navshow');
 	}
+
+	this.addBookmark = function (chap) {
+		
+	}
 		
 });
 
@@ -1980,6 +1984,7 @@ Jx().$package('QReader.tapBookmark', function (J) {
 		var tar = QReader.checkEventTarget(e.target);
 		if (tar == 'tapBookmark') {
 			$D.addClass(e.target, 'tapped');
+			QReader.catalogNav.addBookmark(chap);
 		}
 	})		
 })
