@@ -31,7 +31,7 @@ Jx().$package('QReader', function (J) {
 	this.PAGES = $id('pages');
 	// 翻页动画模式
 	// canvas | css3
-	this.pageflipMode = 'css3';
+	this.pageflipMode = 'canvas';
 
 	// ua 判断
 	this.UA = navigator.userAgent.toLowerCase();
@@ -175,6 +175,7 @@ Jx().$package('QReader.preload', function (J) {
 	this.initialize = function () {
 		this.resetConst();
 		this.resetBookStyle();
+		this.resetStyleRules();
 
 		this.showBook();
 	}
@@ -190,10 +191,10 @@ Jx().$package('QReader.preload', function (J) {
 	}
 
 	this.resetConst = function () {//alert(QReader.isTouchDevice); alert(typeof webkitRequestAnimationFrame)
-		if (QReader.isTouchDevice) {
+		//if (QReader.isTouchDevice) {
 			// 重置const 为pad版本
-			QReader.PAGE_WIDTH = 800;
-			QReader.PAGE_HEIGHT = 500;
+			QReader.PAGE_WIDTH = QReader.WIN_WIDTH;
+			QReader.PAGE_HEIGHT = QReader.WIN_HEIGHT;
 			QReader.PAGE_MARGIN_X = 14;
 			QReader.PAGE_MARGIN_Y = 0;
 			QReader.BOOK_WIDTH = (QReader.PAGE_WIDTH + QReader.PAGE_MARGIN_X) * 2;
@@ -203,8 +204,21 @@ Jx().$package('QReader.preload', function (J) {
 			QReader.pageflip.CANVAS_H_PADDING = 20;
 			QReader.pageflip.CANVAS_WIDTH = QReader.BOOK_WIDTH + (QReader.pageflip.CANVAS_H_PADDING * 2);
 			QReader.pageflip.CANVAS_HEIGHT = QReader.BOOK_HEIGHT + (QReader.pageflip.CANVAS_V_PADDING * 2);
-		}
+		//}
 
+	}
+
+	this.resetStyleRules = function () {
+		var styleRules = 'section {width:'+QReader.PAGE_WIDTH+'px; height:'+QReader.PAGE_HEIGHT+'px; left:'+(QReader.PAGE_WIDTH+QReader.PAGE_MARGIN_X)+'px} section .fix-width {width:'+QReader.PAGE_WIDTH+'px; height:'+QReader.PAGE_HEIGHT+'px}';
+		if (J.browser.ie > 5 && J.browser.ie < 9) {
+			window.style = styleRules;
+			document.createStyleSheet('javascript:style');
+		} else {
+			var styleEl = document.createElement('style');
+			styleEl.type = 'text/css';
+			styleEl.innerHTML = styleRules;
+			document.getElementsByTagName('head')[0].appendChild(styleEl);
+		}
 	}
 
 	this.resetBookStyle = function () {
