@@ -24,9 +24,12 @@ Jx().$package('QReader', function (J) {
 	// 书的高宽， 包括边上的留白
 	this.BOOK_WIDTH = 2160;
 	this.BOOK_HEIGHT = 720;
+	//字体大小 12 |14|16
+	this.BOOK_FONTSIZE = 14;
 	
 	// 书容器
 	this.BOOK = $id('book');
+	this.SBOOK = $id('s-book');
 	// 页容器
 	this.PAGES = $id('pages');
 	
@@ -164,6 +167,7 @@ Jx().$package('QReader', function (J) {
 
 	this.initialize = function () {
 		QReader.preload.initialize();
+		QReader.singlePage.initialize();
 		QReader.pageflip.initialize();
 		QReader.catalogNav.initialize();
 		QReader.view.initialize(1);
@@ -205,11 +209,8 @@ Jx().$package('QReader.preload', function (J) {
 	this.resetConst = function () {//alert(QReader.isTouchDevice); alert(typeof webkitRequestAnimationFrame)
 		//if (QReader.isTouchDevice) {
 			// 重置const 
-			if (QReader.pageMode == 'doublePage') {
-				QReader.PAGE_WIDTH = QReader.WIN_WIDTH - (QReader.isTouchDevice ? 40 : 100);
-			} else {
-				QReader.PAGE_WIDTH = QReader.WIN_WIDTH * .6;
-			}
+			QReader.PAGE_WIDTH = QReader.WIN_WIDTH - (QReader.isTouchDevice ? 40 : 100);
+
 			
 			QReader.PAGE_HEIGHT = QReader.WIN_HEIGHT;
 			QReader.PAGE_MARGIN_X = 14;
@@ -231,10 +232,13 @@ Jx().$package('QReader.preload', function (J) {
 			window.style = styleRules;
 			document.createStyleSheet('javascript:style');
 		} else {
-			var styleEl = document.createElement('style');
-			styleEl.type = 'text/css';
-			styleEl.innerHTML = styleRules;
-			document.getElementsByTagName('head')[0].appendChild(styleEl);
+			if (!$D.id('top-style')) {
+				var styleEl = document.createElement('style');
+				styleEl.id = 'top-style';
+				styleEl.type = 'text/css';
+				document.getElementsByTagName('head')[0].appendChild(styleEl);
+			}
+			$D.id('top-style').innerHTML = styleRules;
 		}
 	}
 
@@ -522,6 +526,9 @@ Jx().$package('QReader.tpl', function (J) {
 								</div>\
 							</div>\
 						</section>';
+	
+	// 单页滚动模式
+	this['singlePage'] = '<section class="single-page"></section>'
 	
 	// catalog-list 模版
 	// {chapName: ''}
@@ -1888,6 +1895,7 @@ Jx().$package('CSS3', function (J) {
 /**
  * package {QReader.catalogNav}
  * 左侧悬浮导航
+ * 工具箱操作也在这里
  */
 Jx().$package('QReader.catalogNav', function (J) {
 		
@@ -1911,6 +1919,8 @@ Jx().$package('QReader.catalogNav', function (J) {
 	this.EL_TOOL_BRIGHT = $D.id('bright');
 	this.EL_TOOL_SKIN = $D.id('change-skin');
 	this.EL_TOOL_PAGEMODE = $D.id('page-mode');
+	this.EL_TOOL_PAGEFLIP = $D.id('pageflip-mode');
+	this.EL_TOOL_PANEL = $D.id('tool-panel');
 	this.CONTAINER_WIDTH = 230;
 	this.isNavVisible = false;
 	this.isToolbarShow = false;
@@ -1940,8 +1950,51 @@ Jx().$package('QReader.catalogNav', function (J) {
 		$E.on(this.EL_EDIT_BTN, 'click', this.editBookmark);
 		$E.on(this.EL_TOOL_HINT, 'click', this.toggleShowTool);
 		$E.on(this.EL_CATALOG_LIST, 'click', this.delegateCatalog);
+		$E.on(this.EL_TOOL_FONTSIZE, 'click', this.toggleFontsizePanel);
 		$E.on(this.EL_TOOL_BRIGHT, 'click', this.toggleBright);
 		$E.on(this.EL_TOOL_PAGEMODE, 'click', this.togglePageMode);
+		$E.on(this.EL_TOOL_PAGEFLIP, 'click', this.togglePageflip);
+	}
+
+	this.togglePageflip = function (e) {
+		if (QReader.pageflipMode == 'canvas') {
+			QReader.pageflipMode = 'css3';
+			$D.addClass(packageContext.EL_TOOL_PAGEFLIP, 'active');
+		} else {
+			QReader.pageflipMode = 'canvas';
+			$D.removeClass(packageContext.EL_TOOL_PAGEFLIP, 'active');
+		}
+	}
+
+	this.toggleFontsizePanel = function (e) {
+		if (QReader.BOOK_FONTSIZE == 16) {
+			packageContext.setPanelBtnCurrent(3);
+		} else if (QReader.BOOK_FONTSIZE == 12) {
+			packageContext.setPanelBtnCurrent(1);
+		} else {
+			packageContext.setPanelBtnCurrent(2);
+		}
+		
+		$D.hasClass(packageContext.EL_TOOL_FONTSIZE, 'active') ?
+			packageContext.hideFontsizePanel() :
+			packageContext.showFontsizePanel();
+	}
+	this.hideFontsizePanel = function () {
+		$D.removeClass(this.EL_TOOL_FONTSIZE, 'active');
+		$D.hide(this.EL_TOOL_PANEL);
+	}
+	this.showFontsizePanel = function () {
+		$D.addClass(this.EL_TOOL_FONTSIZE, 'active');
+		$D.show(this.EL_TOOL_PANEL);
+	}
+	// 给panel的小按钮设置选中状态
+	this.setPanelBtnCurrent = function (n) {
+		n =  n || 2;
+		var btns = $D.mini('a', this.EL_TOOL_PANEL);
+		for (var i = 0; i < btns.length; i ++) {
+			$D.removeClass(btns[i], 'cur');
+		}
+		$D.addClass(btns[n-1], 'cur');
 	}
 
 	this.togglePageMode = function (e) {
@@ -1950,11 +2003,13 @@ Jx().$package('QReader.catalogNav', function (J) {
 			packageContext.turnModeToSinglePage();
 			QReader.pageMode = 'singlePage';
 			$D.addClass(e.target, 'active');
+			$D.hide(packageContext.EL_TOOL_PAGEFLIP);
 		} else if (QReader.pageMode == 'singlePage') {
 			// 单页到双页
 			packageContext.turnModeToDoublePage();
 			QReader.pageMode = 'doublePage';
 			$D.removeClass(e.target, 'active');
+			$D.show(packageContext.EL_TOOL_PAGEFLIP);
 		}
 	}
 
@@ -1964,25 +2019,30 @@ Jx().$package('QReader.catalogNav', function (J) {
 			.end(toSinglePage);
 		function toSinglePage () {
 			QReader.removeVendorProperty(QReader.BOOK, 'transition-duration');
-			
-			QReader.preload.initialize();
-			$D.setStyle(QReader.pageflip.canvas, 'z-index', 0);
 			QReader.pageflip.unRegisterEventListeners();
-			CSS3.animate(QReader.BOOK)
+			$D.hide(QReader.BOOK);
+
+			// 获取当前章
+			var chap = $D.mini('#pages section.current')[0].getAttribute('data-chapnum');
+			QReader.singlePage.render('$chap'+chap);
+			$D.show(QReader.SBOOK);
+			CSS3.animate(QReader.SBOOK)
 				.set('opacity', 1)
 				.end();
 		}
 	}
 
 	this.turnModeToDoublePage = function () {
-		CSS3.animate(QReader.BOOK)
+		CSS3.animate(QReader.SBOOK)
 			.set('opacity', 0)
 			.end(toDoublePage);
 
 		function toDoublePage() {
 			QReader.removeVendorProperty(QReader.BOOK, 'transition-duration');
-			QReader.preload.initialize();
+			//QReader.preload.initialize();
 			QReader.pageflip.registerEventListeners();
+			$D.show(QReader.BOOK);
+			$D.hide(QReader.SBOOK);
 			CSS3.animate(QReader.BOOK)
 				.set('opacity', 1)
 				.end();
@@ -2016,14 +2076,14 @@ Jx().$package('QReader.catalogNav', function (J) {
 	}
 	this.showToolBar = function (e) {
 		CSS3.animate(packageContext.EL_TOOL_BAR)
-			.set('bottom', 0)
+			.set('bottom', 30)
 			.end();
 		$D.addClass(this.EL_TOOL_HINT, 'active');
 		this.isToolbarShow = true;
 	}
 	this.hideToolBar = function () {
 		CSS3.animate(this.EL_TOOL_BAR)
-			.set('bottom', (-320))
+			.set('bottom', (-445))
 			.end();
 		$D.removeClass(this.EL_TOOL_HINT, 'active');
 		this.isToolbarShow = false;
@@ -2106,6 +2166,66 @@ Jx().$package('QReader.tapBookmark', function (J) {
 			QReader.catalogNav.addBookmark();
 		}
 	})		
+})
+
+
+/**
+ * 单页模式
+ */
+Jx().$package('QReader.singlePage', function (J) {
+	var packageContext = this,
+		$D = J.dom,
+		$E = J.event,
+		$S = J.string;
+
+	this.CONTENT_BODY = $D.id('real-content');
+	this.SCROLLWRAP = $D.id('scroll-wrap');
+	this.CONTENT_WRAP = $D.id('content-wrap');
+
+	this.initialize = function () {
+		this.setStyle();
+        this.initScrollBar();
+	}
+    
+    this.initScrollBar = function () {
+    
+        this.scrollControl = new J.ui.ScrollBar(this.SCROLLWRAP, {
+            showBarContainer: true,
+			barActiveClass: 'scrollBarActive',
+			ipadTouchArea: true
+        });
+        this.scrollControl.update();
+    }
+    
+	this.setStyle = function () {
+		var w = QReader.WIN_WIDTH * .6;
+		$D.setStyle(QReader.SBOOK, 'width', w + 'px');
+		$D.setStyle(QReader.SBOOK, 'marginLeft', (-w/2)+'px');
+		$D.setStyle(this.SCROLLWRAP, 'height', (QReader.WIN_HEIGHT-120) + 'px');
+	}
+
+	this.render = function (chaps/* array */) {
+		if (QReader.toType(chaps) == 'string') {
+			var _c = chaps;
+			chaps = [];
+			chaps.push(_c);
+		}
+		QReader.cache.multyCheck(chaps, function () {
+			
+			var con = '';
+			for (var i=0; i<chaps.length; i++) {
+				con += QReader.cache[chaps[i]].content;
+			}
+			packageContext.CONTENT_BODY.innerHTML = QReader.cache.addWhitespace(con);
+			setTimeout(function () {
+				packageContext.scrollControl.update();
+				var scrollBarBg = $D.mini('.scrollBar_bgc', packageContext.SCROLLWRAP)[0];
+				$D.setStyle(scrollBarBg, 'height', packageContext.SCROLLWRAP.offsetHeight + 'px');
+			}, 200);
+			
+		})
+	}
+		
 })
 
 

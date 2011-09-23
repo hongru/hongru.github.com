@@ -25,6 +25,7 @@ body {
     position: absolute;
     width: 100%;
     height: 100%;
+    font-family: Microsoft Yahei;
 	word-break: break-word;
 	word-wrap: break-word;
 }
@@ -38,6 +39,64 @@ body {
     top: 0;
     margin-left: -1620px;
 	display: none;
+}
+.s-book {
+    position: absolute;
+    width: 600px;
+    height: 100%;
+    left: 50%;
+    margin-left: -300px;
+    top: 0;
+    display: none;
+    opacity: 0;
+    background: #fff;
+    font-size: 14px;
+    font-family: Microsoft Yahei;
+    line-height: 1.8;
+}
+.content-wrap {
+    padding: 60px;
+}
+.scroll-wrap {
+    overflow: hidden;
+}
+.scrollBar{
+	position:absolute;
+	right:16px;
+	top:60px;
+	width:10px; 
+	height:20px; 
+    border: 1px solid #cbc9c5;
+    border-bottom-color: #aaa;
+	-moz-border-radius: 6px;
+	-khtml-border-radius: 6px;
+	-webkit-border-radius: 6px;
+	border-radius: 5px;
+	background:#d4d2cd;
+    z-index: 2;
+
+}
+.scrollBar_bg{
+	border:0 none;
+	display:block;
+	margin:0;
+	padding:0;
+	position:absolute;
+
+}
+.scrollBar_bgc {
+    position: absolute;
+    right: 18px;
+    top: 60px;
+    width: 8px;
+    height: 100%;
+    -moz-border-radius: 5px;
+	-khtml-border-radius: 5px;
+	-webkit-border-radius: 5px;
+	border-radius: 5px;
+    background: #e5e2dd;
+    z-index: 1;
+    -webkit-box-shadow: inset 0 0 3px #ccc;
 }
 .touchdevice .book {
 
@@ -306,15 +365,44 @@ section .fix-width {
 	position:absolute;
 	min-height: 450px;
 	right: 4%;
-	bottom: -320px;
+	bottom: -445px;
 	width: 57px;
 	z-index: 1025;
 }
-.tool-bar a {
+.tool-panel {
+    position: absolute;
+    width: 35px;
+    height: 113px;
+    background: url(images/tool-panel.png) no-repeat;
+    left: -36px;
+    top: 80px;
+    display: none;
+}
+.panel-btn1, 
+.panel-btn2,
+.panel-btn3 {
+    position: absolute;
+    width: 19px;
+    height: 19px;
+    overflow: hidden;
+    font-size: 12px;
+    left: 4px;
+    line-height: 18px;
+    text-align: center;
+    color: #bababa;
+}
+.tool-panel a.cur {
+    background-color: #98d3fc;
+    color: #fff;
+}
+.panel-btn1 { top: 12px }
+.panel-btn2 { top: 46px }
+.panel-btn3 { top: 80px }
+.tool-bar > a {
     display: block;
     width: 100%;
     cursor: pointer;
-    background-image: url(images/tool-normal.png);
+    background-image: url(images/tool-normal_03.png);
     background-repeat: no-repeat;
 }
 .win .tool-bar a.hint-tool:hover,
@@ -322,7 +410,7 @@ section .fix-width {
 .win .tool-bar a.bright:hover,
 .win .tool-bar a.change-skin:hover,
 .tool-bar a.active {
-    background-image: url(images/tool-active.png);
+    background-image: url(images/tool-active_03.png);
 }
 .hint-tool {
 	width: 100%;
@@ -341,13 +429,17 @@ section .fix-width {
     height: 70px;
     background-position: 50% -234px;
 }
+.pageflip-mode {
+    height: 122px;
+    background-position: 50% -304px;
+}
 .page-mode {
     height: 80px;
-    background-position: 50% -304px;
+    background-position: 50% -426px;
 }
 .slide-screen {
     height: 60px;
-    background-position: 50% -384px;
+    background-position: 50% -506px;
 }
 .loading-gif {
 	position: absolute;
