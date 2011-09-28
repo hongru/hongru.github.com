@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8" />
+<style>
+* {margin: 0; padding:0}
+ul, li {list-style: none}
+#wrapper {
+    position: absolute;
+    width: 1000px;
+    height: 600px;
+    left: 50%;
+    top: 50%;
+    margin-left: -500px;
+    margin-top: -300px;
+    overflow: hidden;
+    -webkit-box-shadow: 0 0 10px #aaa;
+}
+.list {
+    display: -webkit-box;
+}
+.list li {
+    width: 1000px;
+    height: 600px;
+    font-size: 300px;
+    font-weight: bold;
+    line-height: 500px;
+    text-align: center;
+}
+</style>
+<script src="http://0.web.qstatic.com/webqqpic/js/jet.all.js?t=20110909002"></script>
+</head>
+
+<body>
+    <div id="wrapper">
+        <ul id="list" class="list">
+            <li style="background:#f4fad3">1</li>
+            <li style="background:#daee33">2</li>
+            <li style="background:#22feac">3</li>
+        </ul>
+    </div>
+    
+    <script src="flipsnap.js"></script>
+    <script>
+        Flipsnap("#list");
+    </script>
+</body>
+</html>
