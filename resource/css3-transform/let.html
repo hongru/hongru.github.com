@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+<head>
+<script src="let.js"></script>
+<style>
+#test {
+    width: 100px;
+    height: 100px;
+    background: #000;
+}
+</style>
+</head>
+
+<body>
+<div id="test"></div>
+<script>
+Let('#test')
+    .to(200, 200)
+    .rotate(1000)
+    .scale(.5)
+    .set({
+        'background-color': 'red',
+        'width': 300
+    })
+    .duration(2000)
+    .then()
+        .set('opacity', .5)
+        .set('height', 200)
+        .duration('1s')
+        .scale(1.5)
+        .to(300, 300)
+        .pop()
+    .end()
+    
+</script>
+</body>
+</html>
