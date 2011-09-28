@@ -2,6 +2,7 @@
 <html>
 <head>
 <meta charset="utf-8" />
+<link rel="stylesheet" href="touchscroll.css" />
 <style>
 * {margin: 0; padding:0}
 ul, li {list-style: none}
@@ -17,9 +18,7 @@ ul, li {list-style: none}
     -webkit-box-shadow: 0 0 10px #aaa;
 }
 .list {
-    position: absolute;
-    left: 0;
-    top: 0;
+
     width: 99999px;
     height: 600px;
 }
@@ -41,126 +40,10 @@ ul, li {list-style: none}
         </ul>
     </div>
     
-    <script src="css3.js"></script>
+    <script src="touchscroll.min.js"></script>
     <script>
-        Jx().$package('T', function (J) {
-            var $D = J.dom,
-                $E = J.event,
-                wrapper = $D.id('wrapper'),
-                list = $D.id('list'),
-                mouseX = 0;
-                left = 0;
-                mouseDown = false;
-                mouseHistory = [];
-                mouseDirection = 1;
-                currentPage = 0;
-                mouseDistance = 0;
-                
-            var onMouseDown = function (e) {
-                mouseX = e.clientX;
-                left = parseInt($D.getStyle(list, 'left'));
-                mouseDown = true;
-                mouseHistory = [];
-                currentPage = Math.round(Math.abs(left)/1000);
-                mouseDistance = 0;
-            }
-            var onTouchStart = function (e) {
-                mouseX = e.touches[0].pageX;
-                left = parseInt($D.getStyle(list, 'left'));
-                mouseDown = true;
-                mouseHistory = [];
-                currentPage = Math.round(Math.abs(left)/1000);
-                mouseDistance = 0;
-            }
-            var onMouseMove = function (e) {
-                var d = e.clientX - mouseX;
-
-                if (mouseDown) {
-                    list.style.removeProperty('-webkit-transition-duration');
-                    $D.setStyle(list, 'left', parseInt(left)+d+'px');
-                    /*CSS3.animate(list)
-                        .set('left', parseInt(left)+d)
-                        .end();*/
-                    if (mouseHistory[4]) {
-                        mouseDirection = (e.clientX - mouseHistory[4] < 0) ? 1 : -1;
-                        mouseDistance = Math.abs(e.clientX - mouseHistory[4]);
-                        
-                    } else {
-                        // 回到开始位置
-                        
-                    }
-                }
-                
-                while(mouseHistory.length > 9) {
-                    mouseHistory.pop();
-                }
-                mouseHistory.unshift(e.clientX);
-            }
-            var onTouchMove = function (e) {
-                var d = e.touches[0].pageX - mouseX;
-
-                if (mouseDown) {
-                    list.style.removeProperty('-webkit-transition-duration');
-                    $D.setStyle(list, 'left', parseInt(left)+d+'px');
-                    /*CSS3.animate(list)
-                        .set('left', parseInt(left)+d)
-                        .end();*/
-                    if (mouseHistory[4]) {
-                        mouseDirection = (e.touches[0].pageX - mouseHistory[4] < 0) ? 1 : -1;
-                        mouseDistance = Math.abs(e.touches[0].pageX - mouseHistory[4]);
-                        
-                    } else {
-                        // 回到开始位置
-                        
-                    }
-                }
-                
-                while(mouseHistory.length > 9) {
-                    mouseHistory.pop();
-                }
-                mouseHistory.unshift(e.touches[0].pageX);
-            }
-            
-            var onMouseUp = function (e) {
-                mouseDown = false;
-                    if (mouseDirection == 1 && mouseDistance > 10) {
-                        CSS3.animate(list)
-                            .set('left', (-(currentPage+1)*1000))
-                            .end();
-                    } else {
-                        CSS3.animate(list)
-                            .set('left', (-currentPage*1000))
-                            .end();
-                    }
-                
-            }
-            var onTouchEnd = function (e) {
-                mouseDown = false;
-                    if (mouseDirection == 1 && mouseDistance > 10) {
-                        CSS3.animate(list)
-                            .set('left', (-(currentPage+1)*1000))
-                            .end();
-                    } else {
-                        CSS3.animate(list)
-                            .set('left', (-currentPage*1000))
-                            .end();
-                    }
-                
-            }
-                
-            this.init = function () {
-                this.bind();
-            }
-            this.bind = function () {
-                $E.on(wrapper, 'mousedown', onMouseDown);
-                $E.on(wrapper, 'mousemove', onMouseMove);
-                $E.on(document, 'mouseup', onMouseUp);
-                wrapper.addEventListener('touchstart', onTouchStart, false);
-                wrapper.addEventListener('touchmove', onTouchMove, false);
-                document.addEventListener('touchend', onTouchEnd, false);
-            }
-        })
-        T.init()
+        var S = new TouchScroll(document.getElementById('wrapper'), {elastic: true});
+        S.setupScroller(true);
     </script>
 </body>
 </html>
