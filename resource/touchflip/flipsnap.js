@@ -139,7 +139,7 @@ Flipsnap.prototype = {
 			(point > self.maxPoint) ? self.maxPoint :
 			parseInt(point);
 
-		self.element.style.webkitTransitionDuration = '350ms';
+		self.element.style.webkitTransitionDuration = '1000ms';
 		self._setX(- self.currentPoint * self.distance)
 
 		var ev = document.createEvent('Event');
