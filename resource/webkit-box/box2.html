@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+<meta charset="utf-8" />
+<style>
+.wrap {
+    display: -webkit-box;
+    -webkit-box-orient: horizontal;
+}
+.child {
+    min-height: 200px;
+    border: 2px solid #666;
+    margin: 10px;
+    font-size: 40px;
+    font-weight: bold;
+    font-family: Georgia;
+    -webkit-box-align: center;
+}
+.w200 {width: 200px}
+.flex1 {-webkit-box-flex: 1}
+.flex2 {-webkit-box-flex: 2}
+</style>
+
+<div class="wrap">
+<div class="child w200">200px</div>
+<div class="child flex1">比例1</div>
+<div class="child flex2">比例2</div>
+</div>
+</html>
