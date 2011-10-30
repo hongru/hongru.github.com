@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimum-scale=1.0, maximum-scale=1.0">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<title>3D模型初识</title>
+<base target="_blank"></base>
+<script type="text/javascript" src="http://code.jquery.com/jquery-1.6.4.min.js"></script>
+<script type="text/javascript" src="../resource/iscroll/iscroll.js"></script>
+<script src="../js/JCanvas.0.1.js"></script>
+
+<script>
+var myScroll;
+$(function () {
+	var $wrapper = $('#wrapper'),
+		$scroller = $('#scroller'),
+		$items = $('#scroller li.item'),
+		cnt = $items.length,
+		resizeTimer;
+		
+	function resize () {
+		var ww = $wrapper.width(),
+			winW = $(window).width(),
+			winH = $(window).height();
+		$wrapper.height(winH * .9);
+		$scroller.css({ width: ww*cnt });
+		$items.css({ width: ww });
+		myScroll && myScroll.refresh();
+	}
+	resize();
+	$(window).bind('resize', function () {
+		clearTimeout(resizeTimer);
+		resizeTimer = setTimeout(resize, 200);
+	});
+	
+	myScroll = new iScroll('wrapper', {
+		snap: true,
+		momentum: false,
+		hScrollbar: false,
+		onScrollEnd: function () {
+			document.querySelector('#indicator > li.active').className = '';
+			document.querySelector('#indicator > li:nth-child(' + (this.currPageX+1) + ')').className = 'active';
+		}
+	 });
+});
+</script>
+
+<style type="text/css" media="all">
+body {
+	background: #25272B
+}
+body,ul,li {
+	padding:10px;
+	margin:0;
+}
+
+body {
+	font-size:12px;
+	-webkit-user-select:none;
+    -webkit-text-size-adjust:none;
+	font-family:helvetica Microsoft Yahei;
+}
+
+#wrapper {
+	width:94%;
+	height:160px;
+	margin: 0 3%;
+	float:left;
+	position:relative;	/* On older OS versions "position" and "z-index" must be defined, */
+	z-index:1;			/* it seems that recent webkit is less picky and works anyway. */
+	overflow:hidden;
+
+	background:#aaa;
+	-webkit-border-radius:10px;
+	-moz-border-radius:10px;
+	-o-border-radius:10px;
+	border-radius:10px;
+	background:#e3e3e3;
+	-webkit-box-shadow: 0 0 10px #000;
+}
+
+#scroller {
+	width:2100px;
+	height:100%;
+	float:left;
+	padding:0;
+}
+
+#thelist {
+	list-style:none;
+	display:block;
+	float:left;
+	width:100%;
+	height:100%;
+	padding:0;
+	margin:0;
+	text-align:left;
+}
+
+#thelist>li {
+	-webkit-box-sizing:border-box;
+	-moz-box-sizing:border-box;
+	-o-box-sizing:border-box;
+	box-sizing:border-box;
+	display:block; float:left;
+	width:100%; 
+	height:100%;
+
+	font-family:Microsoft Yahei;
+	font-size:18px;
+	line-height:140%;
+}
+
+#nav {
+	width:300px;
+	margin: 0 auto;
+}
+
+#prev, #next {
+	float:left;
+	font-weight:bold;
+	font-size:14px;
+	padding:5px 0;
+	width:80px;
+}
+
+#next {
+	float:right;
+	text-align:right;
+}
+
+#indicator, #indicator > li {
+	display:block; float:left;
+	list-style:none;
+	padding:0; margin:0;
+}
+
+#indicator {
+	width:110px;
+	padding:12px 0 0 30px;
+}
+
+#indicator > li {
+	text-indent:-9999em;
+	width:8px; height:8px;
+	-webkit-border-radius:4px;
+	-moz-border-radius:4px;
+	-o-border-radius:4px;
+	border-radius:4px;
+	background:#ddd;
+	overflow:hidden;
+	margin-right:4px;
+}
+
+#indicator > li.active {
+	background:#888;
+}
+
+#indicator > li:last-child {
+	margin:0;
+}
+.in-con {
+	padding: 100px 40px 40px 200px;
+	text-align:left;
+	position: relative;
+}
+h1 {
+	font-size: 46px;
+}
+#cube-home {
+	position: absolute;
+	left: 40px;
+	top: 60px;
+}
+#scroller li .list li {
+	
+}
+.btn,
+.list a {
+	padding: 0 20px;
+	font-size: 12px;
+	font-weight: bold;
+	color: #fff;
+	display: inline-block;
+	background: #1C4C80;
+	-webkit-border-radius: 2px;
+	-webkit-box-shadow: 0 0 5px #333;
+	margin-bottom: 8px;
+	-webkit-transition-duration: 500ms;
+	margin-left: 8px;
+}
+.btn:hover,
+.list a:hover {
+	background: #4B83AF;
+}
+.code {
+	width: 80%;
+	min-height: 300px;
+	overflow:auto;
+	font-size: 14px;
+	font-weight: 600;
+	color: #eee;
+	background: #333;
+}
+</style>
+</head>
+<body>
+<div id="wrapper">
+	<div id="scroller">
+		<ul id="thelist">
+			<li class="item">
+				<div class="in-con">
+				<canvas id="cube-home" width="200" height="200"></canvas>
+				<h1>3D模型初识</h1>
+				--by horizon
+				</div>
+			</li>
+			<li class="item">
+				<div class="in-con">
+				<h2>Demos</h2>
+				<dl class="list">
+					<dd><a href="3D/clock.html">clock</a></dd>
+					<dd><a href="3D/math1.html">math1</a></dd>
+					<dd><a href="3D/math2.html">math2</a></dd>
+					<dd><a href="3D/math3.html">math3</a></dd>
+					<dd><a href="3D/math4.html">math4</a></dd>
+					<dd><a href="3D/sphere.html">sphere</a></dd>
+					<dd><a href="3D/tags.html">tags sphere</a></dd>
+				</dl>
+				<a class="btn" href="3D/cube.html">cube</a>
+				<a class="btn" href="3D/cube2.html">cube2</a>
+				<a class="btn" href="3D/cube3.html">cube3</a>
+				<a class="btn" href="3D/cube4.html">cube4</a>
+				<a class="btn" href="3D/cube5.html">cube5</a>
+				<a class="btn" href="3D/rotate3D.html">rotate3D</a>
+				<a class="btn" href="3D/rotate3D_Y.html">rotate3D_Y</a>
+				<a class="btn" href="3D/rotate3D_XY.html">rotate3D_XY</a>
+				<a class="btn" href="3D/rotate3D_lines.html">rotate3D_lines</a>
+				</div>
+			</li>
+			<li class="item">
+				<div class="in-con" style="padding-top:60px">
+					<h2>原理</h2>
+					<img alt="" src="3D/1.gif" />
+				</div>
+			</li>
+			<li class="item">
+				<div class="in-con" style="padding-top:60px">
+					<h2>z坐标投影到平面后对x, y 坐标的影响</h2>
+					<img alt="" src="3D/2.jpg" />
+					<a class="btn" href="3D/rotate3D.html">demo</a>
+				</div>
+			</li>
+			<li class="item">
+				<div class="in-con" style="padding-top:60px">
+					<h2>三维旋转矩阵</h2>
+					<img alt="" src="3D/3.png" />
+					<p style="margin-top: 0.4em; margin-right: 0px; margin-bottom: 0.5em; margin-left: 0px; line-height: 1.5em; ">生成旋转矩阵的一种简单方式是把它作为三个基本旋转的序列复合。关于右手笛卡尔坐标系的&nbsp;<em>x</em>-,&nbsp;<em>y</em>- 和&nbsp;<em>z</em>-轴的旋转分别叫做&nbsp;<em>roll</em>,&nbsp;<em>pitch</em>&nbsp;和&nbsp;<em>yaw</em>&nbsp;旋转。因为这些旋转被表达为关于一个轴的旋转，它们的生成元很容易表达。</p>
+					
+				</div>
+			</li>
+			<li class="item">
+			<ul style="line-height: 1.5em; list-style-type: square; margin-top: 0.3em; margin-right: 0px; margin-bottom: 0px; margin-left: 1.5em; padding-top: 0px; padding-right: 0px; padding-bottom: 0px; padding-left: 0px; list-style-image: url(http://bits.wikimedia.org/skins-1.5/vector/images/bullet-icon.png?1); ">
+     <li style="margin-bottom: 0.1em; ">绕&nbsp;<em>x</em>-轴的主动旋转定义为:</li>
+</ul>
+				<dl style="margin-top: 0.2em; margin-bottom: 0.5em; "><dd style="line-height: 1.5em; margin-left: 2em; margin-bottom: 0.1em; "><img alt=" \mathcal{R}_x(\theta_x)= \begin{bmatrix} 1 &amp; 0 &amp; 0 \\ 0 &amp; \cos{\theta_x} &amp; -\sin{\theta_x} \\ 0 &amp; \sin{\theta_x} &amp; \cos{\theta_x} \end{bmatrix} =\exp \left( \begin{bmatrix} 0 &amp; 0 &amp; 0 \\ 0 &amp; 0 &amp; \theta_x \\ 0 &amp; -\theta_x &amp; 0 \end{bmatrix}\right)" src="http://upload.wikimedia.org/math/3/d/6/3d6ab188a68499b6d57d24addfb40f98.png" style="border-top-style: none; border-right-style: none; border-bottom-style: none; border-left-style: none; border-width: initial; border-color: initial; vertical-align: middle; ">&nbsp;这里的&nbsp;<span style="font-family: serif; ">θ<sub><em>x</em></sub></span>&nbsp;是 roll 角。</dd></dl>
+				<ul style="line-height: 1.5em; list-style-type: square; margin-top: 0.3em; margin-right: 0px; margin-bottom: 0px; margin-left: 1.5em; padding-top: 0px; padding-right: 0px; padding-bottom: 0px; padding-left: 0px; list-style-image: url(http://bits.wikimedia.org/skins-1.5/vector/images/bullet-icon.png?1); ">
+     <li style="margin-bottom: 0.1em; ">绕&nbsp;<em>y</em>-轴的主动旋转定义为:</li>
+</ul>
+				<dl style="margin-top: 0.2em; margin-bottom: 0.5em; "><dd style="line-height: 1.5em; margin-left: 2em; margin-bottom: 0.1em; "><img alt=" \mathcal{R}_y(\theta_y)= \begin{bmatrix} \cos{\theta_y} &amp; 0 &amp; \sin{\theta_y} \\ 0 &amp; 1 &amp; 0 \\ -\sin{\theta_y} &amp; 0 &amp; \cos{\theta_y} \end{bmatrix} =\exp\left( \begin{bmatrix} 0 &amp; 0 &amp; - \theta_y \\ 0 &amp; 0 &amp; 0 \\ \theta_y &amp; 0 &amp; 0 \end{bmatrix}\right)" src="http://upload.wikimedia.org/math/1/5/3/153ac4e8bc4e0deb5e13b17b44276488.png" style="border-top-style: none; border-right-style: none; border-bottom-style: none; border-left-style: none; border-width: initial; border-color: initial; vertical-align: middle; ">&nbsp;这里的&nbsp;<span style="font-family: serif; ">θ<sub><em>y</em></sub></span>&nbsp;是 pitch 角。</dd></dl>
+				<ul style="line-height: 1.5em; list-style-type: square; margin-top: 0.3em; margin-right: 0px; margin-bottom: 0px; margin-left: 1.5em; padding-top: 0px; padding-right: 0px; padding-bottom: 0px; padding-left: 0px; list-style-image: url(http://bits.wikimedia.org/skins-1.5/vector/images/bullet-icon.png?1); ">
+     <li style="margin-bottom: 0.1em; ">绕&nbsp;<em>z</em>-轴的主动旋转定义为:</li>
+</ul>
+				<dl style="margin-top: 0.2em; margin-bottom: 0.5em; "><dd style="line-height: 1.5em; margin-left: 2em; margin-bottom: 0.1em; "><img alt=" \mathcal{R}_z(\theta_z)= \begin{bmatrix} \cos{\theta_z} &amp; -\sin{\theta_z} &amp; 0 \\ \sin{\theta_z} &amp; \cos{\theta_z} &amp; 0 \\ 0 &amp; 0 &amp; 1 \end{bmatrix} =\exp\left( \begin{bmatrix} 0 &amp; \theta_z &amp; 0 \\ - \theta_z &amp; 0 &amp; 0 \\ 0 &amp; 0 &amp; 0 \end{bmatrix}\right)" src="http://upload.wikimedia.org/math/e/d/b/edb465bf10a2ea647ad2debe4f250811.png" style="border-top-style: none; border-right-style: none; border-bottom-style: none; border-left-style: none; border-width: initial; border-color: initial; vertical-align: middle; ">&nbsp;这里的&nbsp;<span style="font-family: serif; ">θ<sub><em>z</em></sub></span>&nbsp;是 yaw 角。</dd></dl>
+			</li>
+			<li class="item">
+				<img alt="" src="3D/5.png" />
+				<a href="3D/rotate3D_Y.html" class="btn">绕Y轴旋转</a>
+			</li>
+			<li class="item">
+				<div class="in-con">
+				<textarea class="code">
+function rotateY(ball, angleY) {
+	var cosy = Math.cos(angleY),
+		siny = Math.sin(angleY),
+		x1 = ball.xpos * cosy - ball.zpos * siny,
+		z1 = ball.zpos * cosy + ball.xpos * siny;
+	ball.xpos = x1;
+	ball.zpos = z1;
+}
+        
+function rotateX(ball, angleX) {
+	var cosx = Math.cos(angleX),
+		sinx = Math.sin(angleX),
+		y1 = ball.ypos * cosx - ball.zpos * sinx,
+		z1 = ball.zpos * cosx + ball.ypos * sinx;
+	ball.ypos = y1;
+	ball.zpos = z1;
+}
+				
+				</textarea><br/>
+				<a href="3D/rotate3D_XY.html" class="btn">同时绕XY轴旋转</a>
+				</div>
+			</li>
+		</ul>
+	</div>
+</div>
+<div id="nav">
+	<div id="prev" onclick="myScroll.scrollToPage('prev', 0);return false">&larr; prev</div>
+	<ul id="indicator">
+		<li class="active">1</li>
+		<li>2</li>
+		<li>3</li>
+		<li>4</li>
+		<li>5</li>
+		<li>6</li>
+		<li>7</li>
+		<li>8</li>
+	</ul>
+	<div id="next" onclick="myScroll.scrollToPage('next', 0);return false">next &rarr;</div>
+</div>
+
+<script src="3D/cube5.js"></script>
+<script>cube5('cube-home')</script>
+</body>
+</html>

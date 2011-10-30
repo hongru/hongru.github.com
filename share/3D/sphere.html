@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>3D Sphere</title>
+<meta name="Author" content="hongru.chen" />
+<style type="text/css">
+html {
+overflow: hidden;
+}
+body {
+position: absolute;
+margin: 0px;
+padding: 0px;
+background: #222;
+width: 100%;
+height: 100%;
+}
+#screen {
+position: absolute;
+left: 0px;
+top: 0px;
+width: 100%;
+height: 100%;
+background: #000;
+overflow: hidden;
+}
+#screen .plo {
+position: absolute;
+font-size: 1px;
+cursor: pointer;
+}
+</style>
+<script type="text/javascript"> 
+var Sphere = {
+/* ==== variables ==== */
+O : [],
+x : 0,
+y : 0,
+ax : 0,
+ay : 0,
+/* ==== init script ==== */
+init : function () {
+Sphere.screen = document.getElementById('screen');
+onresize = Sphere.resize;
+for (var i = 0; i < 200; i++) {
+o = {};
+/* ==== plot ==== */
+o.plo = document.createElement('div');
+o.plo.className = 'plo out';
+Sphere.screen.appendChild(o.plo);
+var r = .4
+                var a = Math.random() * Math.PI * 2;
+                var b = Math.random() * Math.PI * 2;
+                o.x = Math.sin(a) * Math.sin(b) * r;
+                o.y = Math.cos(a) * Math.sin(b) * r;
+                o.z = Math.cos(b) * r;
+/* ==== push object ==== */
+Sphere.O.push(o);
+/* ==== 3D transform function ==== */
+o.transform = function () {
+/* ==== Rotation ==== */
+var z = this.y * Sphere.sx + this.z * Sphere.cx;
+this.y = this.y * Sphere.cx + this.z * -Sphere.sx;
+this.z = this.x * -Sphere.sy + z * Sphere.cy;
+this.x = this.x * Sphere.cy + z * Sphere.sy;
+/* ==== 3D to 2D ==== */
+var scale = 1 / (1 + this.z);
+var x = this.x * scale * Sphere.screen.w * (Sphere.screen.h / Sphere.screen.w);
+var y = this.y * scale * Sphere.screen.h;
+var c = Math.round(256 + (-this.z * 256));
+/* ==== plot ==== */
+var p = this.plo.style;
+p.left = Math.round(x + Sphere.screen.w - scale * 2) + 'px';
+p.top = Math.round(y + Sphere.screen.h - scale * 2) + 'px';
+p.width = Math.round(scale * 2) + 'px';
+p.height = Math.round(scale * 2) + 'px';
+p.background = 'rgb('.concat((c),',',(c),',',(512 - c),')');
+p.zIndex = 200 + Math.floor(-this.z * 100);
+}
+}
+/* ==== start script ==== */
+Sphere.resize();
+Sphere.run();
+},
+/* ==== resize window ==== */
+resize : function ()
+{
+Sphere.screen.w = Sphere.screen.offsetWidth / 2;
+Sphere.screen.h = Sphere.screen.offsetHeight / 2;
+},
+/* ==== main loop ==== */
+run : function ()
+{
+/* ==== mouse ==== */
+Sphere.x = mouse.x;
+Sphere.y = mouse.y;
+var sx = (Sphere.y - Sphere.ax) * (10 / Sphere.screen.h);
+var sy = (Sphere.x - Sphere.ay) * (10 / Sphere.screen.w);
+Sphere.ax += sx;
+Sphere.ay += sy;
+/* ==== angles sin and cos ==== */ 
+Sphere.cx = Math.cos( sx * .01);
+Sphere.sx = Math.sin( sx * .01);
+Sphere.cy = Math.cos(-sy * .01);
+Sphere.sy = Math.sin(-sy * .01);
+/* ==== loop through all points ==== */
+for (var i = 0, o; o = Sphere.O[i]; i++) o.transform();
+/* ==== loop ==== */
+setTimeout(Sphere.run, 16);
+}
+}
+/* ==== global mouse position ==== */
+var mouse = {
+x : 0,
+y : 0
+}
+document.onmousemove = function(e) {
+if (window.event) e = window.event;
+mouse.x = e.clientX;
+mouse.y = e.clientY;
+return false;
+}
+/* ==== start script ==== */
+onload = function () {
+setTimeout(Sphere.init, 500);
+}
+</script></head>
+<body>
+     <div id="screen">
+     </div>
+</body>
+</html>

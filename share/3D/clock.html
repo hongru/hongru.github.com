@@ -1,0 +1,207 @@
+<!DOCTYPE HTML> 
+<html> 
+<head> 
+<title>clock3D</title> 
+<style  type="text/css">
+ 
+	html {
+		overflow: hidden;
+	}
+	body {
+		margin: 0px;
+		padding: 0px;
+		background: #222;
+	}
+	#clock3D {
+		position:absolute;
+		left: 50%;
+		top: 50%;
+		border:#444 solid 1px;
+		margin-left: -150px;
+		margin-top: -100px;
+		width:300px;
+		height:200px;
+		background:#000;
+	}
+	#clock3D span {
+		position: absolute;
+		width: 4px;
+		height: 4px;
+		-webkit-border-radius: 2px;
+		-moz-border-radius: 2px;
+	}
+</style> 
+ 
+<script type="text/javascript">
+(function () { 
+var digits = [
+"#####  #  ###########   ##########################     ",
+"#   #  #      #    ##   ##    #        ##   ##   #     ",
+"#   #  #      #    ##   ##    #        ##   ##   #  #  ",
+"#   #  #  ##### ###################    ###########     ",
+"#   #  #  #        #    #    ##   #    ##   #    #  #  ",
+"#   #  #  #        #    #    ##   #    ##   #    #     ",
+"#####  #  ##########    ###########    ###########     "
+],O = [], px = 0, py = 0, rx = 0, ry = 0, TM = [], Tm = [], A = 2000, crx, srx, cry, sry, _id, _dir;
+var Class = {
+	create : function () {
+		return function () {
+			this.init.apply(this, arguments);
+		}
+	}
+}
+var $ = function (i) {return document.getElementById(i)}
+window.clock3D = Class.create();
+clock3D.prototype = {
+	init: function (o) {
+		this.time();
+		this.resize();
+		_dir = o.direction ? o.direction : 'left';
+		_id = o.id;
+		var k=0;
+		for(var i=0;i<6;i++){
+			O[k] = new Cdigit(k++, TM[i]);
+			if(i==1 || i==3) O[k] = new Cdigit(k++, 10);
+		}
+		this.mainloop();
+	},
+	time : function () {
+		T = new Date();
+		h = T.getHours();
+		m = T.getMinutes();
+		s = T.getSeconds();
+		TM = [
+			Math.floor(h/10),
+			h%10,
+			Math.floor(m/10),
+			m%10,
+			Math.floor(s/10),
+			s%10
+		];
+		setTimeout(arguments.callee ,1000); 
+	},
+	resize: function () {
+		nx = document.documentElement.clientWidth/2;
+		ny = document.documentElement.clientHeight/2;
+		if(ny==0)ny = document.body.clientHeight/2;	
+	},
+	mainloop: function () {
+		// rotations
+		_dir == 'left' ? A-=0.1 : A+=0.1;
+		rx+=px;
+		ry+=py;
+		crx=Math.cos(rx);
+		srx=Math.sin(rx);
+		cry=Math.cos(ry+Math.PI/2);
+		sry=Math.sin(ry+Math.PI/2);
+		// return to the horizontale
+		rx*=.9; ry*=.9; px*=.9; py*=.9;
+		// refresh time
+		k=0;
+		for(var i=0;i<6;i++){
+			if(TM[i]!=Tm[i]){
+				Tm[i]=TM[i];
+				// destroy objects
+				for(var j in O[k].O) $(_id).removeChild(O[k].O[j].o);
+				delete O[k];
+				// create new digit
+				O[k] = new Cdigit(k, TM[i]);
+			}
+			k+=(i==1 || i==3)?2:1;
+		}
+		// call animation
+		for(var i in O){
+			for(var j in O[i].O){
+				O[i].O[j].anim();
+			}
+		}
+		setTimeout(arguments.callee,32);
+	}
+}
+function Cdigit(N,d){
+	// digit prototype
+	this.O = [];
+	for(var i=0;i<7;i++){
+		for(var j=0;j<5;j++){
+			if(digits[i].charAt(5*d+j)!=" "){
+				this.O.push(
+					new CObj((
+						(32*N)+(j*5))/50,
+						-42+i*12
+					)
+				);
+			}
+		}
+	}
+}
+function CObj(a,z){
+	// create led element
+	this.o=document.createElement("span");
+	this.o.style.background = '#fff';
+	$(_id).appendChild(this.o);
+	this.a=a;
+	this.z=z;
+	this.plot=true;
+}
+ 
+// leds lighting
+CObj.prototype.alpha=function(opacity){
+	if(opacity>0){
+		if(!this.plot){
+			this.plot=true;
+			this.o.style.background = '#fff';
+		}
+	} else {
+		if(this.plot){
+			this.plot=false;
+			this.o.style.background = '#333';
+		}
+	}
+}
+document.onmousemove = function(e){
+	if(window.event) e=window.event;
+	xm=(e.x || e.clientX);
+	ym=(e.y || e.clientY);
+	px=(xm-nx)/(nx*5);
+	py=(ym-ny)/(ny*5);
+}
+// main 3D function
+CObj.prototype.anim=function() {
+		// z axis rotation
+		var x=Math.sin(A+this.a)*100;
+		var y=Math.cos(A+this.a)*100;
+		// simple 3D
+		var x1=y*crx-this.z*srx;
+		var zz=y*srx+this.z*crx;
+		var y1=x*cry-zz*sry;
+		zz=x*sry+zz*cry;
+		// 2D projection
+		var r=400/(400+zz);
+		x=Math.round(150-x1/r);
+		y=Math.round(100-y1/r);
+		var w=Math.round(2+Math.max(4,zz*.07));
+		// leds lighting
+		this.alpha(zz);
+		// html positioning
+		var css = this.o.style;
+		css.left=x+"px";
+		css.top=y+"px";
+		css.width=css.height=w+"px";
+		css.zIndex=Math.round(1000+zz);
+	}
+})(); 
+</script> 
+</head> 
+ 
+<body> 
+	<div id="clock3D"></div> 
+<script type="text/javascript">
+onload = function () {
+	new clock3D({
+		id: 'clock3D',
+		direction: 'left'
+	}); 
+}	//window.onresize = new clock3D.resize;
+</script>
+</body> 
+</html>

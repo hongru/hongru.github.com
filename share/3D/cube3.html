@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html>
+<style>
+html {overflow:hidden}
+body {position: absolute; margin:0; padding:0;width:100%; height:100%}
+canvas {display:block;border:2px solid #ccc; margin:10px auto;}
+p {text-align: center; font-size:12px;color:#454545;}
+</style>
+<script src="../../js/JCanvas.0.1.js"></script>
+<canvas id="canvas" width="600" height="400"></canvas>
+
+<script>
+	var canvas = document.getElementById('canvas');
+	var stage = new CVS.$stage(canvas);
+
+	var initialize = function () {
+		var focalLength = 250,
+			ballN = 20,
+			balls = [],
+			areas = [],
+			vpx = 0,
+			vpy = 0,
+			angleY = 0,
+			angleX = 0,
+			createTriangle = CVS.createTriangle;
+			
+		var cube = [
+			[-100, -100, -100],
+			[100, -100, -100],
+			[100,  100, -100],
+			[-100,  100, -100],
+			[-100, -100, 100],
+			[ 100, -100, 100],
+			[100,  100, 100],
+			[-100,  100, 100]
+		],
+		triangles = [];
+
+			vpx = canvas.width / 2;
+			vpy = canvas.height / 2;
+		for (var i=0; i<cube.length; i++) {
+
+			var ball = CVS.createPoint3D(stage.ctx, function () {
+				this.xpos = cube[i][0];
+				this.ypos = cube[i][1];
+				this.zpos = cube[i][2];
+				this.width = 0;
+				this.draw = function () {
+					this.ctx.beginPath();
+					this.ctx.arc(0, 0, this.width/2, 0, Math.PI*2, true);
+					this.ctx.closePath();
+					this.ctx.fill();
+				};
+			});
+			ball.setVanishPoint(vpx, vpy);
+			ball.setCenterPoint(0, 0, 600);
+			stage.addChild(ball);
+			balls.push(ball);
+		}
+		
+		 //front
+		triangles[0] = createTriangle(stage.ctx, balls[0], balls[1], balls[2], 0x6666cc);
+		triangles[1]  = createTriangle(stage.ctx, balls[0], balls[2], balls[3], 0x6666cc);
+		//top
+		triangles[2]  = createTriangle(stage.ctx, balls[0], balls[5], balls[1], 0x66cc66);
+		triangles[3]  = createTriangle(stage.ctx, balls[0], balls[4], balls[5], 0x66cc66);
+		//back
+		triangles[4]  = createTriangle(stage.ctx, balls[4], balls[6], balls[5], 0xcc6666);
+		triangles[5]  = createTriangle(stage.ctx, balls[4], balls[7], balls[6], 0xcc6666);
+		//bottom
+		triangles[6]  = createTriangle(stage.ctx, balls[3], balls[2], balls[6], 0xcc66cc);
+		triangles[7]  = createTriangle(stage.ctx, balls[3], balls[6], balls[7], 0xcc66cc);
+		//right
+		triangles[8]  = createTriangle(stage.ctx, balls[1], balls[5], balls[6], 0x66cccc);
+		triangles[9]  = createTriangle(stage.ctx, balls[1], balls[6], balls[2], 0x66cccc);
+		//left
+		triangles[10] = createTriangle(stage.ctx, balls[4], balls[0], balls[3], 0xcccc66);
+		triangles[11] = createTriangle(stage.ctx, balls[4], balls[3], balls[7], 0xcccc66);
+
+		stage.addEventListener('mousemove', function (x, y) {
+			angleY = (x - vpx) * .0005;
+            angleX = (y - vpy) * .0005;
+		});
+		
+		function randomColor () {
+			return 'rgba('+Math.floor(Math.random()*256)+', '+Math.floor(Math.random()*256)+', '+Math.floor(Math.random()*256)+', 0.5)';
+		}
+		
+
+		stage.onRefresh = function () { 
+			for (var i=0,ball; ball=balls[i]; i++) { 
+			   ball.rotateX(angleX);
+			   ball.rotateY(angleY);
+
+			   ball.x = ball.screenX;
+			   ball.y = ball.screenY;
+            }
+
+            triangles.sort(function (a, b) { return b.depth - a.depth })
+			for (var j = 0; j < triangles.length; j ++) {
+				triangles[j].draw();
+			}
+		}
+
+		stage.start();
+	};
+
+	onload = initialize;
+
+
+</script>
+</html>
+
