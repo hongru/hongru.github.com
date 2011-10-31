@@ -114,7 +114,7 @@ body {
 }
 
 #nav {
-	width:300px;
+    width: 400px;
 	margin: 0 auto;
 }
 
@@ -138,7 +138,7 @@ body {
 }
 
 #indicator {
-	width:110px;
+
 	padding:12px 0 0 30px;
 }
 
@@ -236,7 +236,7 @@ h1 {
 				<a class="btn" href="3D/cube5.html">cube5</a>
 				<a class="btn" href="3D/rotate3D.html">rotate3D</a>
 				<a class="btn" href="3D/rotate3D_Y.html">rotate3D_Y</a>
-				<a class="btn" href="3D/rotate3D_XY.html">rotate3D_XY</a>
+				<a class="btn" href="3D/lines.html">rotate3D_XY</a>
 				<a class="btn" href="3D/rotate3D_lines.html">rotate3D_lines</a>
 				</div>
 			</li>
@@ -261,7 +261,7 @@ h1 {
 					
 				</div>
 			</li>
-			<li class="item">
+			<li class="item" style="padding: 80px 0 0 100px">
 			<ul style="line-height: 1.5em; list-style-type: square; margin-top: 0.3em; margin-right: 0px; margin-bottom: 0px; margin-left: 1.5em; padding-top: 0px; padding-right: 0px; padding-bottom: 0px; padding-left: 0px; list-style-image: url(http://bits.wikimedia.org/skins-1.5/vector/images/bullet-icon.png?1); ">
      <li style="margin-bottom: 0.1em; ">绕&nbsp;<em>x</em>-轴的主动旋转定义为:</li>
 </ul>
@@ -275,8 +275,8 @@ h1 {
 </ul>
 				<dl style="margin-top: 0.2em; margin-bottom: 0.5em; "><dd style="line-height: 1.5em; margin-left: 2em; margin-bottom: 0.1em; "><img alt=" \mathcal{R}_z(\theta_z)= \begin{bmatrix} \cos{\theta_z} &amp; -\sin{\theta_z} &amp; 0 \\ \sin{\theta_z} &amp; \cos{\theta_z} &amp; 0 \\ 0 &amp; 0 &amp; 1 \end{bmatrix} =\exp\left( \begin{bmatrix} 0 &amp; \theta_z &amp; 0 \\ - \theta_z &amp; 0 &amp; 0 \\ 0 &amp; 0 &amp; 0 \end{bmatrix}\right)" src="http://upload.wikimedia.org/math/e/d/b/edb465bf10a2ea647ad2debe4f250811.png" style="border-top-style: none; border-right-style: none; border-bottom-style: none; border-left-style: none; border-width: initial; border-color: initial; vertical-align: middle; ">&nbsp;这里的&nbsp;<span style="font-family: serif; ">θ<sub><em>z</em></sub></span>&nbsp;是 yaw 角。</dd></dl>
 			</li>
-			<li class="item">
-				<img alt="" src="3D/5.png" />
+			<li class="item" style="padding: 60px 0 0 100px">
+				<img alt="" src="3D/5.png" /><br/>
 				<a href="3D/rotate3D_Y.html" class="btn">绕Y轴旋转</a>
 			</li>
 			<li class="item">
@@ -304,6 +304,43 @@ function rotateX(ball, angleX) {
 				<a href="3D/rotate3D_XY.html" class="btn">同时绕XY轴旋转</a>
 				</div>
 			</li>
+            <li class="item">
+				<div class="in-con">
+				<h2>由点到线</h2>
+				<a href="3D/rotate3D_lines.html" class="btn">两点之间连接成线</a>
+                <h2>由线到面</h2>
+                <a href="3D/cube.html" class="btn">封闭折线成面</a>
+				</div>
+                
+			</li>
+            <li class="item">
+				<div class="in-con">
+				<h2>面的基元（三角形）</h2>
+				<p>任何一个折面都可以由三角形拼接而成</p>
+                <a href="3D/cube3.html" class="btn">由三角形拼接而成的面</a>
+				</div>
+			</li>
+            <li class="item">
+				<div class="in-con">
+				<h2>关于单点透视的消失点（VanishPoint）和观察点（ViewPoint/Camera）</h2>
+				<p>VanishPoint通常是被观察物体的相对坐标原点</p>
+                <p>ViewPoint 即观察者的视角点（camera）</p>
+                <a href="3D/vanish_point.html" class="btn">VanishPoint demo</a>
+                <a href="3D/view_point.html" class="btn">ViewPoint demo</a>
+				</div>
+			</li>
+            <li class="item">
+				<div class="in-con">
+				<h2>关于三角形翻转正反面的判断</h2>
+				<p>http://www.jurjans.lv/flash/shape.html</p>
+                <p><img src="3D/backface.png" /></p>
+				</div>
+			</li>
+            <li class="item">
+                <div class="in-con">
+                    <h2>Thanks!</h2>
+                </div>
+            </li>
 		</ul>
 	</div>
 </div>
@@ -318,6 +355,11 @@ function rotateX(ball, angleX) {
 		<li>6</li>
 		<li>7</li>
 		<li>8</li>
+        <li>9</li>
+        <li>10</li>
+        <li>11</li>
+        <li>12</li>
+        <li>13</li>
 	</ul>
 	<div id="next" onclick="myScroll.scrollToPage('next', 0);return false">next &rarr;</div>
 </div>
