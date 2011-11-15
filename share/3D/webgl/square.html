@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html>
+<script src="https://raw.github.com/toji/gl-matrix/master/gl-matrix.js"></script>
+
+<script id="fs" type="x-shader/x-fragment">
+	// 告诉显卡精度为浮点数
+	#ifdef GL_ES
+	precision highp float;
+	#endif
+	
+	// 以白色绘制
+	void main(void) {
+		gl_FragColor = vec4(1.0, 1.0, 1.0, 1.0);
+	}
+</script>
+<script id="vs" type="x-shader/x-vertex">
+	// 三维向量位置
+	attribute vec3 aVertexPosition;
+	
+	// 定义两个uniform变量，分别是模型视图矩阵和投影矩阵
+	uniform mat4 uMVMatrix;
+	uniform mat4 uPMatrix;
+	
+	// 顶点位置变换，左乘模型视图矩阵和投影矩阵，得到实际位置
+	void main(void) {
+		gl_Position = uPMatrix * uMVMatrix * vec4(aVertexPosition, 1.0);
+	}
+</script>
+
+<script type="text/javascript">
+	var gl;
+	function initGL(canvas) {
+		try {
+			gl = canvas.getContext('experimental-webgl');
+			gl.viewportWidth = canvas.width;
+			gl.viewportHeight = canvas.height;
+		} catch(e) {}
+		
+		if (!gl) {
+			alert('don\'t support webGL');
+		}
+	}
+	
+	// 获取shader
+	// shader 有fragment shader (片元) 和 vertex （顶点）
+	function getShader(gl, id) {
+		var shaderEL = document.getElementById(id);
+		if (!shaderEL) {
+			return null;
+		}
+		
+		var str = '';
+		var k = shaderEL.firstChild;
+		while(k) {
+			if (k.nodeType == 3) {
+				str += k.textContent;
+			}
+			k = k.nextSibling;
+		}
+		
+		var shader;
+		if (shaderEL.type == 'x-shader/x-fragment') {
+			shader = gl.createShader(gl.FRAGMENT_SHADER);
+		} else if (shaderEL.type == 'x-shader/x-vertex') {
+			shader = gl.createShader(gl.VERTEX_SHADER);
+		} else {
+			return null;
+		}
+		
+		//把对应shader 源码 赋给对应的shader容器
+		gl.shaderSource(shader, str);
+		//编译shader 源码
+		gl.compileShader(shader);
+		
+		// 如果编译出错，报出错误log
+		if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
+			alert(gl.getShaderInfoLog(shader));
+			return null;
+		}
+		
+		return shader;
+	}
+	
+	// 生成一个shader program来把片元shader和顶点shader 组织连接起来
+	var shaderProgram;
+	function initShaders() {
+		var fragmentShader = getShader(gl, 'fs');
+		var vertexShader = getShader(gl, 'vs');
+		
+		shaderProgram = gl.createProgram();
+		gl.attachShader(shaderProgram, vertexShader);
+		gl.attachShader(shaderProgram, fragmentShader);
+		gl.linkProgram(shaderProgram);
+		
+		// link program 错误输出
+		if (!gl.getProgramParameter(shaderProgram, gl.LINK_STATUS)) {
+			alert('wrong -- init shaders');
+		}
+		
+		gl.useProgram(shaderProgram);
+		// 获取这个shaderProgram的顶点绝对位置并转换为数组
+		shaderProgram.vertexPositionAttribute = gl.getAttribLocation(shaderProgram, 'aVertexPosition');
+		gl.enableVertexAttribArray(shaderProgram.vertexPositionAttribute);
+		//定义shaderProgram的模型视图矩阵和投影矩阵(和shader里面的 attribute变量和uniform变量建立联系)
+		shaderProgram.pMatrixUniform = gl.getUniformLocation(shaderProgram, 'uPMatrix');
+		shaderProgram.mvMatrixUniform = gl.getUniformLocation(shaderProgram, 'uMVMatrix');
+	}
+	
+	var mvMatrix = mat4.create();
+	var pMatrix = mat4.create();
+	//把绝对位置的坐标 推送至 shaderProgram，即webGL里面进行计算渲染
+	function setMatrixUniforms() {
+        gl.uniformMatrix4fv(shaderProgram.pMatrixUniform, false, pMatrix);
+        gl.uniformMatrix4fv(shaderProgram.mvMatrixUniform, false, mvMatrix);
+    }
+	
+	// 创建一个buffer来存储坐标，在webGL里面都这样做，这种规范的机制可以提高性能
+	var squareVertexBuffer;
+	function initBuffer() {
+		squareVertexBuffer = gl.createBuffer();
+		gl.bindBuffer(gl.ARRAY_BUFFER, squareVertexBuffer);
+		var vertices = [
+             1.0,  1.0,  0.0,
+            -1.0,  1.0,  0.0,
+             1.0, -1.0,  0.0,
+            -1.0, -1.0,  0.0
+        ];
+		gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertices), gl.STATIC_DRAW);
+		// 自定义属性，每个点由3个坐标定义，总共4个点
+		squareVertexBuffer.itemSize = 3;
+		squareVertexBuffer.numItems = 4;
+	}
+	
+	// 绘制
+	function render () {
+		gl.viewport(0, 0, gl.viewportWidth, gl.viewportHeight);
+        gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+		// 利用gl-matrix 变换投影矩阵 垂直视野45度，渲染宽高比，视点最近的距离为0.1个单位，最远为100个单位
+        mat4.perspective(45, gl.viewportWidth / gl.viewportHeight, 0.1, 100.0, pMatrix);
+		
+		// 对模型矩阵进行变换
+		mat4.identity(mvMatrix);
+        mat4.translate(mvMatrix, [0.0, 0.0, -4.0]); // 以viewport中心为基准，x, y, z三个方向移动
+		gl.bindBuffer(gl.ARRAY_BUFFER, squareVertexBuffer);
+        gl.vertexAttribPointer(shaderProgram.vertexPositionAttribute, squareVertexBuffer.itemSize, gl.FLOAT, false, 0, 0);
+        setMatrixUniforms();
+        gl.drawArrays(gl.TRIANGLE_STRIP, 0, squareVertexBuffer.numItems);
+	}
+	
+	function init () {
+		var canvas = document.getElementById("gl");
+        initGL(canvas);
+        initShaders();
+        initBuffer();
+
+        gl.clearColor(0.0, 0.0, 0.0, 1.0);
+        gl.enable(gl.DEPTH_TEST);
+
+        render();
+	}
+	
+	onload = init;
+</script>
+
+<canvas id="gl" width="600" height="400"></canvas>
+</html>
