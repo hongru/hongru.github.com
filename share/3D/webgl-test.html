@@ -1,0 +1,44 @@
+<script id="rain" type="x-shader"> 
+	//#name Rain
+	//#author bartekd
+	
+	//#include CommonFilterInclude
+	
+	//#vertex
+	attribute vec4 aParticle;
+	uniform sampler2D uTexture;	
+ 
+	varying vec4 vParticle;
+	varying float illum;
+ 
+	void main(void) {	
+		vec4 pt = aParticle;
+		
+		pt.y = pt.y - (uTime * (1.0 + pt.z) / 10.0);
+		pt.y = mod(pt.y, 1.0);
+		
+		vec2 p = vec2(pt.x * 2.0 - 1.0, pt.y * 2.0 - 1.0);
+		
+		vec4 c = texture2D(uTexture, pt.xy);
+		
+		p.x += (0.05 + c.r * 0.95) * 0.02 * sin(pt.w * uTime * 3.0);
+		p.y += c.r * 0.02;
+		
+		illum = c.r;
+		
+		gl_Position = vec4(p, 0.0, 1.0);
+		gl_PointSize = 2.0;
+		
+		vParticle = pt;
+	}
+	
+	//#fragment
+	varying vec4 vParticle;
+	varying float illum;
+ 
+	void main(void) {
+		float a = (0.2 + illum * 0.8) * sin(uTime * vParticle.w + vParticle.w);
+		gl_FragColor = vec4(a,a,a,  1.0);
+	}
+ 
+</script> 

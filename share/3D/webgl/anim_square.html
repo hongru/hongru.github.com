@@ -3,6 +3,7 @@
 <meta charset="utf-8" />
 <style>html,body{margin:0; padding:0; overflow:hidden;}</style>
 <script src="https://raw.github.com/toji/gl-matrix/master/gl-matrix.js"></script>
+<script src="webgl-utils.js"></script>
 
 <script id="fs" type="x-shader/x-fragment">
     /* 片元着色器，处理非顶点的像素点的颜色 */
@@ -11,25 +12,34 @@
 	#ifdef GL_ES
 	precision highp float;
 	#endif
+    
+    //接收经插值变换后的颜色输出
+    varying vec4 vColor;
 	
-	// 以白色绘制
+	//颜色指定
 	void main(void) {
-		gl_FragColor = vec4(1.0, 1.0, 1.0, 1.0);
+		gl_FragColor = vColor;
 	}
 </script>
 <script id="vs" type="x-shader/x-vertex">
     /* 顶点着色器，比如顶点位置相关的 */
 
-	// 三维向量位置
+	// 三维向量位置（位置变化）
 	attribute vec3 aVertexPosition;
+    // 颜色变化
+    attribute vec4 aVertexColor;
 	
 	// 定义两个uniform变量，分别是模型视图矩阵和投影矩阵
 	uniform mat4 uMVMatrix;
 	uniform mat4 uPMatrix;
+    
+    //用于存储输出插值变化后的颜色
+    varying vec4 vColor;
 	
 	// 顶点位置变换，左乘模型视图矩阵和投影矩阵，得到实际位置
 	void main(void) {
 		gl_Position = uPMatrix * uMVMatrix * vec4(aVertexPosition, 1.0);
+        vColor = aVertexColor;
 	}
 </script>
 
@@ -84,12 +94,14 @@
 			return null;
 		}
 		
+        // 返回编译后的shader
 		return shader;
 	}
 	
 	// 生成一个shader program来把片元shader和顶点shader 组织连接起来
 	var shaderProgram;
 	function initShaders() {
+        // 获取编译后的shader 用于连接link
 		var fragmentShader = getShader(gl, 'fs');
 		var vertexShader = getShader(gl, 'vs');
 		
@@ -107,6 +119,9 @@
 		// 获取这个shaderProgram的顶点绝对位置并转换为数组
 		shaderProgram.vertexPositionAttribute = gl.getAttribLocation(shaderProgram, 'aVertexPosition');
 		gl.enableVertexAttribArray(shaderProgram.vertexPositionAttribute);
+        // 以同样的方式引入顶点颜色 aVertexColor
+        shaderProgram.vertexColorAttribute = gl.getAttribLocation(shaderProgram, 'aVertexColor');
+        gl.enableVertexAttribArray(shaderProgram.vertexColorAttribute);
 		//定义shaderProgram的模型视图矩阵和投影矩阵(和shader里面的 attribute变量和uniform变量建立联系)
 		shaderProgram.pMatrixUniform = gl.getUniformLocation(shaderProgram, 'uPMatrix');
 		shaderProgram.mvMatrixUniform = gl.getUniformLocation(shaderProgram, 'uMVMatrix');
@@ -114,6 +129,21 @@
 	
 	var mvMatrix = mat4.create();
 	var pMatrix = mat4.create();
+    var mvMatrixStack = [];
+    // 每次绘制前都经过一个push， 绘制后都经过一次pop保证mvMatrix永远维持最初的模样
+    function mvPushMatrix() {
+        var copy = mat4.create();
+        mat4.set(mvMatrix, copy);
+        mvMatrixStack.push(copy);
+    }
+    function mvPopMatrix() {
+        if (mvMatrixStack.length == 0) {
+            throw "Invalid popMatrix!";
+        }
+        mvMatrix = mvMatrixStack.pop();
+    }
+    
+    
 	//把绝对位置的坐标 推送至 shaderProgram，即webGL里面进行计算渲染
 	function setMatrixUniforms() {
         gl.uniformMatrix4fv(shaderProgram.pMatrixUniform, false, pMatrix);
@@ -122,6 +152,7 @@
 	
 	// 创建一个buffer来存储坐标，在webGL里面都这样做，这种规范的机制可以提高性能
 	var squareVertexBuffer;
+    var squareColorBuffer;
 	function initBuffer() {
 		squareVertexBuffer = gl.createBuffer();
 		gl.bindBuffer(gl.ARRAY_BUFFER, squareVertexBuffer);
@@ -135,9 +166,25 @@
 		// 自定义属性，每个点由3个坐标定义，总共4个点
 		squareVertexBuffer.itemSize = 3;
 		squareVertexBuffer.numItems = 4;
+        
+        /* colorBuffer */
+        squareColorBuffer = gl.createBuffer();
+        gl.bindBuffer(gl.ARRAY_BUFFER, squareColorBuffer);
+        // rgba,每4个元素确定一个点的rgba值
+        // 由于openGL 矩阵是左乘变换，（由右向左）。所以以下颜色分别为 [右上，左上，右下，左下]
+        var colors = [
+            1.0, 0.0, 0.0, 1.0,
+            0.0, 1.0, 0.0, 1.0,
+            0.0, 0.0, 1.0, 1.0,
+            1.0, 1.0, 1.0, 1.0
+        ];
+        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(colors), gl.STATIC_DRAW);
+        squareColorBuffer.itemSize = 4;
+        squareColorBuffer.numItems = 4;
 	}
 	
 	// 绘制
+    var angle = 0;
 	function render () {
 		gl.viewport(0, 0, gl.viewportWidth, gl.viewportHeight);
         gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
@@ -147,11 +194,43 @@
 		// 对模型矩阵进行变换
 		mat4.identity(mvMatrix);
         mat4.translate(mvMatrix, [0.0, 0.0, -4.0]); // 以viewport中心为基准，x, y, z三个方向移动
+        
+        // 每次rotate变换矩阵之前都push 备份一下
+        mvPushMatrix();
+        mat4.rotate(mvMatrix, angle*Math.PI/180, [1, 1, 1]);
+        
 		gl.bindBuffer(gl.ARRAY_BUFFER, squareVertexBuffer);
         gl.vertexAttribPointer(shaderProgram.vertexPositionAttribute, squareVertexBuffer.itemSize, gl.FLOAT, false, 0, 0);
+        // 从buffer中bind 颜色data
+        gl.bindBuffer(gl.ARRAY_BUFFER, squareColorBuffer);
+        gl.vertexAttribPointer(shaderProgram.vertexColorAttribute, squareColorBuffer.itemSize, gl.FLOAT, false, 0, 0);
+        
         setMatrixUniforms();
         gl.drawArrays(gl.TRIANGLE_STRIP, 0, squareVertexBuffer.numItems);
+        
+        // 每次绘制完后还原mvMatrix
+        mvPopMatrix();
 	}
+    
+    // loop
+    var lastTime = 0;
+ 
+    function animate() {
+        var timeNow = new Date().getTime();
+        if (lastTime != 0) {
+            var elapsed = timeNow - lastTime;
+            // 每秒90度
+            angle += (90 * elapsed) / 1000.0;
+        }
+        lastTime = timeNow;
+    }
+ 
+ 
+    function loop() {
+        requestAnimFrame(loop);
+        render();
+        animate();
+    }
 	
 	function init () {
 		var canvas = document.getElementById("gl");
@@ -164,7 +243,7 @@
         gl.clearColor(0.0, 0.0, 0.0, 1.0);
         gl.enable(gl.DEPTH_TEST);
 
-        render();
+        loop();
 	}
 	
 	onload = init;

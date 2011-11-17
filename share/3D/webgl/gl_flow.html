@@ -1,0 +1,273 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8" />
+<title>webGL render flow</title>
+<style>
+body {font-family: Microsoft Yahei; color:#333; line-height:1.8}
+section {width: 70%; margin: 0 auto; overflow:hidden; height: 100%; display: block}
+.wp {overflow:hidden; height: 100%}
+img {float: left;}
+.des {padding-left: 280px;}
+h1 {text-align: center}
+.tr {text-align: right; font-weight: normal}
+.green {color: #4cb848}
+</style>
+</head>
+
+<body>
+    <section>
+        <hgroup>
+        <h1>webGL rendering flow</h1>
+        <h6 class="tr">-- settled by horizon</h6>
+        </hgroup>
+        <div class="wp">
+        <img alt="" src="gl_flow.png" />
+        <div class="des">
+            <p>从最高层开始，处理的过程是这样的：每次你调用类似于drawArrays的函数时，WebGL会处理你之前传递给它的数据，这些数据都是以属性（Attribute）（比如用到的顶点位置数组）和Uniform变量（用来储存模型视图矩阵和投影矩阵）的形式存在的，然后WebGL会把这些数据传递给顶点着色器。</p><p>
+每次当相应顶点的属性建立完成后，都会调用一次顶点着色器；而Uniform变量，就像它的名字一样，在调用过程中并不发生任何改变，顶点着色器只是需要这些数据——这些数据代表着模型视图矩阵和投影矩阵，使得顶点可以被放置到透视中并且调整到当前的模型视图状态下——然后顶点着色器把处理的结果储存在称为“Varying变量”（Varying Variable）的变量中。顶点着色器通常会输出一系列的Varying变量，其中有个特别的也是必须的变量，那就是gl_Position，它储存着经过顶点着色器处理过的顶点坐标。</p><p>
+在顶点着色器处理完成之后，WebGL将会神奇般的将这些Varying变量中描述的3D图形转换为2D图片，然后为图片中的每个像素调用片元着色器（这就是为什么在有些3D图形系统中你会听到他们把片元着色器称为“像素着色器”的原因了）。当然，确切的说是为那些非顶点位置的像素调用片元着色器，而在那些顶点位置上的像素则已经建立好了顶点。这个过程“填充”了各顶点间限定的空间，从而显示出一个可见的形状。片元着色器的作用是返回每个内插点的颜色，并储存在称为gl_FragColor的Varying变量中。</p><p>
+当片元处理器工作完毕后，WebGL会再处理一下它输出的结果，然后放到Frame Buffer（帧缓冲）中，也就是最终显示在屏幕上的东西。</p>
+
+            <h3>流程关键词</h3>
+            <ul>
+                <li><strong>VertexArray ：</strong>绘图场景中所有的物体空间位置由点坐标数组构成。</li>
+                <li><strong>VertexShader ：</strong>对每个点的位置进行变换，计算光照方程式生成每点的颜色，生成或者变换纹理坐标。对每个点的位置进行变换，计算光照方程式生成每点的颜色，生成或者变换纹理坐标。
+                    <ul>
+                        <li><em>Attributes  </em>---- 采用点向量数组形式传入的每个点的数据</li>
+                        <li><em>Uniforms  </em>---- vertex shader 使用常量数量</li>
+                        <li><em>Sampler  </em>---  表示纹理的特殊常量。可选。</li>
+                        <li><em>Varying Variable</em>--- Vertex Shader的输出变量，作为Fragment Shader的输入。必须与Fragment Shader中的输入Varying一一对应。</li>
+                        <li><em>gl_Position</em>--- 是每个点固有的Varying .表示点的空间位置。</li>
+                    </ul>
+                </li>
+                <li><strong>Fragment Shader ：</strong>通过shader程序对Fragment进行处理。接收varying 的参数，对片元设置颜色，或其他属性</li>
+                <li><strong>Primitive Assembly :</strong>管线中这个流程是对所有的点数据进行点线面等基础图元的组装。这个过程会对所有的图元进行剪切和筛选。对于不在视区空间中的部分进行剪切，对于不可见的面进行筛选。</li>
+                <li><strong>Rasterization :</strong>光栅化的过程就是对所有的经过Primitive Assembly图元转换成屏幕上可以显示的二维Fragment。</li>
+                <li><strong>Per-Fragment Operations:</strong>每个Fragment的操作。每个Fragment在屏幕上都有一个显示坐标（wx,wy）。</li>
+            </ul>
+            
+            <h3 class="green">Opengl ES 2.0 Shader编程 OverView</h3>
+            <ol class="green">
+                <li>编写vertex Shader和fragment shader源码。</li>
+                <li>创建两个shader 实例：GLuint   glCreateShader(GLenum type); [gl.createShader]</li>
+                <li>给Shader实例指定源码。 glShaderSource [gl.shaderSource]</li>
+                <li>编译shaer源码 void glCompileShader(GLuint shader) [gl.compileShader]</li>
+                <li>创建shader program -- GLuint   glCreateProgram(void) [gl.createProgram]<li>
+                <li>绑定shader到program 。 void   glAttachShader(GLuint program, GLuint shader)。每个program必须绑定一个vertex shader 和一个fragment shader。 [gl.attachShader]</li>
+                <li>链接program 。 void   glLinkProgram(GLuint program) [gl.linkProgram]</li>
+                <li>使用porgram 。 void   glUseProgram(GLuint program) [gl.useProgram]</li>
+                <li>* 对于使用独立shader编译器编译的二进制shader代码，可使用glShaderBinary来加载到一个shader实例中。</li>
+            </ol>
+            
+            <h3>Shader语言中的数据类型与变量</h3>
+            <ul>
+                <li>
+                    <strong>Uniforms and Attributes</strong>
+                    <ul>
+        <li>Uniforms 是一个program 中统一分配的，vertext 和fragment中同名的Uniform必须同类型。对应于不经常变化的变量。</li>
+	<li>Attributes 变化率高的变量。主要用来定义输入的每次点属性。</li>
+	<li>Uniforms and Attributes 在shader中通过location 和 name 来对应的。</li>
+	<li>通过GLint   glGetUniformLocation(GLuint program,const char* name).根据一个Uniform的名称获取其location. [gl.getUniformLocation]</li>
+	<li>通过 glUniform***系列函数可以给一个location 设置一个Uniform的值。 [gl.uniform**]</li>
+    </ul>
+                </li>
+                <li>
+                    <strong>数据类型</strong>
+                    <ul>
+                        <li>三类基本类型：float , int , boolean</li>
+                        <li>复合类型：
+                            <ul>
+                                <li>向量(浮点，整型，布尔)   vec2 , vec3,vec4</li>
+                                <li>矩阵          mat2, mat3,mat4 </li>
+                                <li>结构体  用基本类型和复合类型构建结构体。</li>
+                            </ul>
+                            <p style="font-size:12px; ">
+                                	变量初始化。可以由简单类型初始化复杂类型。<br/>
+	可以通过常量下标访问矩阵，变量数组，向量中的分量。<br/>
+	操作与C语言类似。<br/>
+	 函数。传参指定in out 或者inout。<br/>
+	 if else 流控制。<br/>
+	 for循环。只支持常数循环次数。<br/>
+	无论下标，还是循环变量，都只能使用编译时可确定的常数。
+                            </p>
+                        </li>
+                        <li>Uniform  前辍修饰的变量初始值由外部程序赋值。在program中具有统一访问空间。存储空间有限</li>
+                        <li>Attribute  前辍修饰的变量定义的是每个vertex的属性变量，包括位置，颜色，法线和纹理坐标</li>
+                        <li>Uniform 和 Attribute  类型的变量在shader中是只读的，只能由外部主机程序传入值。</li>
+                    </ul>
+                </li>
+            </ul>
+            
+            <h3>Vertex  Attribute</h3>
+            <ol>
+                <li>	Vertex Attributes 是每点的属性数据。与一个index序号绑定。<br/>
+	外部程序可通过 glBindAttribLocation将一个attribute 名与一个index绑定起来。[gl.bindAttribLocation]<br/>
+	当然，OPENGL ES 内部会自动绑定所有attributes.外部程序只需要通过 glGetAttribLocation获取指定attribute名的index.  [gl.getAttribLocation]</li>
+                <li>	给Attribute传值有两种方式：<br/>
+	可以通过 glVertexAttribPointer会话vertex Array数组。 [gl.vertexAttribPointer]<br/>
+	可以通过 glVertexAttrib** 给指定location(index)的attribute赋值。 [gl.vertexAttrib**]</li>
+            </ol>
+            
+            <h3>Primitive Assembly and Rasterization</h3>
+            <ul>
+                <li><strong>Primitive  </strong>： 三角形 ，线 ， 点
+                    <ul>
+                        <li>三角形绘制时可使用：GL_TRIANGLES[gl.TRIANGLES] ，GL_TRIANGLE_STRIP [gl.TRIANGLE_STRIP] ，GL_TRIANGLE_FAN [gl.TRIANGLE_FAN]三种模式。</li>
+                        <li>绘线可用：GL_LINES[gl.LINES],  GL_LINE_STRIP[gl.LINE_STRIP], GL_LINE_LOOP[gl.LINE_LOOP]三种模式</li>
+                        <li>线宽可用：void   glLineWidth(GLfloat width)进行设置。 [gl.lineWidth]</li>
+                        <li>绘点可用：  GL_POINTS [gl.POINTS]. 绘点vertex Shader中内置gl_PointSize输出变量。定义点的半径</li>
+                    </ul>
+                    <span style="color:red">webGL 并未提供图形库</span>
+                </li>
+                <li><strong>Drawing Primitives</strong>
+                    	绘制primitves时可用的两个函数：<br/>
+	void   glDrawArrays(GLenum mode, GLint first, GLsizei count) [gl.drawArrays]<br/>
+	void   glDrawElements(GLenum mode, GLsizei count,GLenum type, const GLvoid *indices) [gl.drawElements]<br/>
+这两个函数调用前都需要绑定点属性数组，主要是坐标数组。后都给定下标数组来绘制primitive,绘制大量的mesh时，有利于提高性能。
+                </li>
+                <li>
+                    <strong>Primitive Assembly</strong>
+                    	视区空间，六个面组成。对于每个primitive，凡在空间外的都clip掉。
+                    <ul>
+                        <li>Perspective Division <br/>
+	标准化坐标，即齐次坐标（x,y,z,w）转化为(x/w,y/w,z/w,1) 其中x,y,z绝对值均小于w</li>
+                        <li>Viewport Transformation <br/>
+	将标准化后的空间坐标转换到平面可视窗口范围内的坐标上。窗口范围定义void   glViewport(GLint x, GLint y, GLsizei w, GLsizei h) 。[gl.viewport]<br/>
+	其中Xw,Yw,Zw是窗口坐标，Z是深度坐标。</li>
+                        <li>Rasterization ：<br/>为每个primitive生成一个fragment。一个fragment由屏幕像素坐标（Xw,Yw）和其他的fragment数据组成，这些数据将在fragment shader中被使用。</li>
+                        <li>Culling ： <br/>对triangle进行Rasterization之前必须确定它是正面还是反面朝向观察者，Culling操作将会忽略背向观察者的面。首要的问题是如果区分三角形的正面和反面，这跟绘制三角形时三个点的顺序有关。<br/>
+                            	通过 void   glFrontFace(GLenum dir) [gl.frontFace] 来设定三角形的正面。Dir可为GL_CW [gl.CW] or GL_CCW [gl.CCW](默认). 意思就是如果三角形三个点的绘制顺序为v0,v1,v2，站在观察者的位置，如果v0,v1,v2路径与 glFrontFace [gl.frontFace]设定的时针方向相同，那么面向观察者的这一面就是正面，否则就是反面。<br/>
+Culling其他相关接口：<br/>
+void   glCullFace(GLenum mode) [gl.cullFace] 选择要Cull的面，参数可为 GL_FRONT [gl.FRONT], GL_BACK[gl.BACK], and GL_FRONT_AND_BACK [gl.FRONT_BACK]。默认是GL_BACK[gl.BACK]。<br/>
+void   glEnable(GLenum cap) [gl.enable]<br/>
+void   glDisable(GLenum cap) [gl.disable]<br/>
+	其中 cap参数为 GL_CULL_FACE 。 使能、禁止GL_CULL_FACE功能。
+                        </li>
+                    </ul>
+	
+                </li>
+            </ul>
+            
+            <h3>Vertex Shader</h3>
+            <ul>
+                <li>Vertex shader 能做的事
+                    <ul>
+                        <li>点操作的矩阵变换</li>
+                        <li>根据光照公式计算每点的color</li>
+                        <li>生成或转换纹理坐标</li>
+                        <li>...</li>
+                    </ul>
+                </li>
+                <li>
+                    <strong>vertex shader overview</strong>
+                    <ol>
+                        <li><strong>Built-In Special Variables</strong>  输出给管线的后端
+                            <ul>
+                                <li>gl_Position: 点坐标</li>
+                                <li>gl_PointSize: point size(大小)绘制单点时有用</li>
+                                <li>gl_FrontFacing: 正反面（默认）</li>
+                            </ul>
+                        </li>
+                        <li>
+                            <strong>Built-In Uniform State</strong>
+                            <ul>
+                                <li>uniform gl_DepthRangeParameters gl_DepthRange; 窗口坐标深度远近值。
+	用gl_DepthRange可设置</li>
+                            </ul>
+                        </li>
+                        <li><strong>Precision Qualifiers 精度限定</strong>
+                            <ul>
+                                <li>对于基于int float的类型变量可以在定义是指定精度，三种：highp,mediump lowp 。 如 highp vec4  position; 
+	默认精度设定，如precision highp float;  对所有未加精度限定的float，使用默认设定highp。 </li>
+                            </ul>
+                        </li>
+                        <li>
+                            <strong>ES 2.0 Vertex Shader Limitations</strong>
+                            <ul>
+                                <li>Length of Vertex Shader</li>
+                                <li>Temporary Variables</li>
+                                <li>Flow Control : for 循环</li>
+                                <li>Conditional Statements：if(bool){} 或者if(bool) {}else{}</li>
+                                <li>Array Indexing: 只能使用常量。</li>
+                                <li>Counting Number of Uniforms Used in a Vertex Shader：OpenGL ES 2.0 实现标准是 128 vec4 entries的uniform常量，被用来存储这几种类型的数值：<br/>
+                                    a)	Variables declared with the uniform qualifier。如uniform vec4 v;<br/>
+                                    b)	Const variables.   如： const int i=1;<br/>
+                                    c) 	Literal values。 如 vec(0.0,0.0,0.0,0.0)，对于这种情况，应该尽量使用const变量来定义重复的文字常量。如const float z=0.0; 然后使用vec(z,z,z,z)来表示这个0向量。Uniform 存储空间占用会由4个0.0缩小到一个z.
+                                </li>
+                            </ul>
+                        </li>
+                    </ol>
+                </li>
+            </ul>
+            
+            <h3>Texturing</h3>
+            <ul>
+                <li><strong>纹理坐标</strong>
+                    <ul><li>...</li>
+                    </ul>
+                </li>
+                <li><strong>Texture Objects and Loading Textures</strong>
+                    <ul><li>Texture Object采用int句柄来指向。</li>
+                    <li>	void   glGenTextures(GLsizei n, GLuint *textures) [gl.genTextures] 创建指定数目的Texture对象。返回句柄到textures</li>
+                    <li>	void   glDeleteTextures(GLsizei n, GLuint *textures) 删除对象 [gl.deleteTextures]</li>
+                    <li>	绑定纹理void   glBindTexture(GLenum target, GLuint texture)，对于2D纹理target使用GL_TEXTURE_2D [gl.bindTexture]</li>
+                    <li>	加载纹理： void   glTexImage2D(....) [gl.texImage2D]</li>
+                    </ul>
+                </li>
+                <li><strong>Texture Coordinate Wrapping</strong>
+                    <ul><li>	纹理坐标超出[0,1]范围时映射纹理使用的回绕方式：<br/>
+	Texture Wrap Modes : GL_REPEAT [gl.REPEAT],GL_CLAMP_TO_EDGE [gl.CLAMP_TO_EDGE], GL_MIRRORED_REPEAT[gl.MIRRORED_REPEAT]</li>
+                    </ul>
+                </li>
+                <li><strong>Using Textures in the Fragment Shader </strong>
+                    <ul><li>	在fragment shader 中定义uniform sampler2D s_texture;常量。<br/>
+	获取s_texture的location。 <br/>
+                    samplerLoc = glGetUniformLocation(<br/>
+	                              userData->programObject, <br/>
+	                              "s_texture");<br/>
+	使用void   glActiveTexture(GLenum texture) 将GL_TEXTURE0 ..GL_TEXTURE31指定为当前active texture。<br/>
+	使用glBindTexture 绑定一个texture句柄到GL_TEXTURE*<br/>
+	glUniform1i(userData->samplerLoc, GL_TEXTURE* ); 当前激活的GL_TEXTURE*传给s_texture<br/>
+	在shader中使用 texture2D内建函数取纹理坐标对应的color值。如：gl_FragColor = texture2D(s_texture, v_texCoord);</li>
+                    </ul>
+                </li>
+                <li><strong>Texture Subimage Specification</strong>
+                    <ul>
+                        <li>	对纹理的子块进行更新。<br/>
+	void   glTexSubImage2D(GLenum target, GLint level,<br/>
+	                       GLint xoffset, GLint yoffset,<br/>
+	                       GLsizei width, GLsizei height,<br/>
+	                       GLenum format, GLenum type, <br/>
+	                       const void* pixels)</li>
+                    </ul>
+                </li>
+                <li><strong>Blending </strong>
+                    <ul>
+                        <li>
+                            <p>	生成的fragment是具有（x,y,z）坐标的，其中x,y是在窗口中显示的位置。Z是深度坐标。Blending是指当Fragment要显示在窗口中时，如果使能了blend，那么当前fragment的颜色要经过指定的blend方法去与屏幕中已经存在于（x，y）坐标上的颜色进行混合。</p>
+	<p>基本的混合模式是Cfinal = （fsource *Csource ）op (fdestingation*Cdestination)
+	Csource 和Cdestination是源和目的颜色,fsource和fdestination是源和目的的系数。也就是最终的颜色将是源和目的的颜色乘以各自的系数然后OP操作进行混合。</p>
+    <p>	void   glBlendFunc(GLenum sfactor, GLenum dfactor);指定对于源和目的都采用什么系数模式。<br/>
+	void   glBlendFuncSeparate(GLenum srcRGB, GLenum dstRGB, GLenum srcAlpha, GLenum dstAlpha);</p>
+	<p>对于源和目的采用分开的系数模式。即alpha部分与RGB部分独立指定。<br/>
+	void   glBlendEquation(GLenum mode); 指定OP操作。<br/>
+	void   glBlendEquationSeparate(GLenum modeRGB, GLenum modeAlpha);对于RGB部分和Alpha部分分开指定OP操作。</p>
+                        </li>
+                    </ul>
+                </li>
+                <li><strong> Reading and Writing Pixels to the Framebuffer </strong>
+                    <ul>
+                        <li>	从color buffer中读取图像像素<br/>
+	void   glReadPixels(GLint x, GLint y, GLsizei width,<br/>
+	                    GLsizei height, GLenum format,<br/>
+	                    GLenum type, void *pixels);
+</li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+        </div>
+    </section>
+</body>
+</html>

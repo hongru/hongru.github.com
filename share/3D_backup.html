@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimum-scale=1.0, maximum-scale=1.0">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black">
-<title>Simple 3D</title>
+<title>3D模型初识</title>
 <base target="_blank"></base>
 <script type="text/javascript" src="http://code.jquery.com/jquery-1.6.4.min.js"></script>
 <script type="text/javascript" src="../resource/iscroll/iscroll.js"></script>
@@ -18,22 +18,13 @@ $(function () {
 		$scroller = $('#scroller'),
 		$items = $('#scroller li.item'),
 		cnt = $items.length,
-		resizeTimer,
-        hoverTimer;
-        
-    // 生成 #nav li
-    var _a = [];
-    for (var i = 0; i < $items.length; i ++) {
-        _a.push('<li title="'+(i+1)+'">'+(i+1)+'</li>');
-    }
-    $('#indicator').html(_a.join(''));
-    $('#indicator li').eq(0).addClass('active');
-	// resize	
+		resizeTimer;
+		
 	function resize () {
 		var ww = $wrapper.width(),
 			winW = $(window).width(),
 			winH = $(window).height();
-		$wrapper.height(winH - 20);
+		$wrapper.height(winH * .9);
 		$scroller.css({ width: ww*cnt });
 		$items.css({ width: ww });
 		myScroll && myScroll.refresh();
@@ -43,28 +34,6 @@ $(function () {
 		clearTimeout(resizeTimer);
 		resizeTimer = setTimeout(resize, 200);
 	});
-    $('#indicator li').bind('click', function (e) {
-        e.preventDefault();
-        var to = parseInt($(this).html());
-        myScroll && myScroll.scrollToPage(to-1);
-    })
-    $('#nav').hover(function (e) {
-        clearTimeout(hoverTimer);
-        hoverTimer = setTimeout(function () {
-            $('#nav').animate({'bottom':0, opacity:1});
-        }, 200)    
-    }, function () {
-        clearTimeout(hoverTimer);
-        hoverTimer = setTimeout(function () {
-            $('#nav').animate({'bottom':-30, opacity:0});
-        }, 200);
-    });
-    
-    // code
-    $('code').each(function () {
-        var t = $(this).text();
-        $(this).html(t);
-    })
 	
 	myScroll = new iScroll('wrapper', {
 		snap: true,
@@ -86,19 +55,18 @@ body,ul,li {
 	padding:10px;
 	margin:0;
 }
-h1,h2,h3,h4,h5,h6{ font-weight: 600 }
 
 body {
 	font-size:12px;
 	-webkit-user-select:none;
     -webkit-text-size-adjust:none;
 	font-family:helvetica Microsoft Yahei;
-    overflow: hidden;
 }
 
 #wrapper {
-    width: 100%;
+	width:94%;
 	height:160px;
+	margin: 0 3%;
 	float:left;
 	position:relative;	/* On older OS versions "position" and "z-index" must be defined, */
 	z-index:1;			/* it seems that recent webkit is less picky and works anyway. */
@@ -146,15 +114,8 @@ body {
 }
 
 #nav {
-    width: 100%;
-    position: absolute;
-    bottom: -30px;
-    opacity: 0;
-    left: 0;
-    height: 40px;
-    background: rgba(64, 64, 64, .8);
-    z-index: 100;
-    text-align: center;
+    width: 400px;
+	margin: 0 auto;
 }
 
 #prev, #next {
@@ -171,13 +132,13 @@ body {
 }
 
 #indicator, #indicator > li {
-	display:inline-block;
+	display:block; float:left;
 	list-style:none;
 	padding:0; margin:0;
 }
 
 #indicator {
-    display: inline-block;
+
 	padding:12px 0 0 30px;
 }
 
@@ -191,7 +152,6 @@ body {
 	background:#ddd;
 	overflow:hidden;
 	margin-right:4px;
-    cursor: pointer;
 }
 
 #indicator > li.active {
@@ -235,13 +195,14 @@ h1 {
 .list a:hover {
 	background: #4B83AF;
 }
-pre {
+.code {
 	width: 80%;
-	height: 300px;
+	min-height: 300px;
 	overflow:auto;
 	font-size: 14px;
+	font-weight: 600;
 	color: #eee;
-	background: rgba(0,0,0, .6);
+	background: #333;
 }
 </style>
 </head>
@@ -252,85 +213,27 @@ pre {
 			<li class="item">
 				<div class="in-con">
 				<canvas id="cube-home" width="200" height="200"></canvas>
-				<h1>Simple 3D (base on canvas)</h1>
+				<h1>3D模型初识</h1>
 				--by horizon
-				</div>
-			</li>
-            <li class="item">
-				<div class="in-con">
-                    <h2>Timeline</h2>
-                    <img alt="" src="3D/web.png" />
-                    <ul>
-                        <li>1996年 javascript的介入</li>
-                        <li>2005年 ajax技术发展</li>
-                        <li>2009年 html5相关技术的兴起</li>
-                    </ul>
-				</div>
-			</li>
-            <li class="item">
-                <div class="in-con">
-                    <p>曾经：闲的蛋疼的人才在 web 上做3D<br/>
-                    而今：如果你不想闲的蛋疼，那就在web上玩玩3D吧</p>
-                    
-                    <ul>
-                        <li>3D 引擎：
-                            <ul>
-                                <li><a href="http://www.c3dl.org/">C3DL</a>
-                                    <a href="http://www.ambiera.com/copperlicht/">Copperlicht</a>
-                                    <a href="http://energize.cc/">EnergizeGL</a>
-                                    <a href="http://www.glge.org/">GLGE</a>
-                                    <a href="http://jax.thoughtsincomputation.com/">Jax</a>
-                                    <a href="http://processingjs.org/">Processing</a>
-                                    <a href="http://www.scenejs.com/">SceneJS</a>
-                                    <a href="http://spidergl.org/">SpiderGL</a>
-                                    <a href="http://code.google.com/p/stormenginec/">StormEngineC</a>
-                                    <a href="https://github.com/mrdoob/three.js/">Three.js</a>
-                                    <a href="http://sourceforge.net/projects/webglu/">WebGLU</a>
-                                    <a href="http://www.x3dom.org/">X3DOM</a>
-                                    <a href="http://code.google.com/p/o3d/">o3d</a>
-                                    <a href="http://osgjs.org/">osgjs</a>
-                                    <a href="http://www.oak3d.com/">Oak3D</a>
-                                </li>
-                                <li>...</li>
-                            </ul>
-                        </li>
-                        <li>不仅仅是特效：
-                            <ul><li>google实验性产品3d书架</br>
-                            <a href="http://workshop.chromeexperiments.com/bookcase">http://workshop.chromeexperiments.com/bookcase</a></li>
-                            <li>?3维全景地图...</li>
-                            <li>...</li>
-                            </ul>
-                        </li>
-                    </ul>
-				</div>
-            </li>
-            <li class="item">
-				<div class="in-con">
-                    <h2>绘制3D effects 的两种方式（base on canvas）</h2>
-                    <ul>
-                        <li>getContext('2d')  --> 借助数学算法来模拟</li>
-                        <li>getContext('experimental-webgl')  --> webGL</li>
-                        <li>建模工具</li>
-                    </ul>
 				</div>
 			</li>
 			<li class="item">
 				<div class="in-con">
 				<h2>Demos</h2>
-				<a class="btn" href="3D/clock.html">clock</a>
-				<a class="btn" href="3D/math1.html">math1</a>
-				<a class="btn" href="3D/math2.html">math2</a>
-				<a class="btn" href="3D/math3.html">math3</a>
-				<a class="btn" href="3D/math4.html">math4</a>
-				<a class="btn" href="3D/sphere.html">sphere</a>
-				<a class="btn" href="3D/tags.html">tags sphere</a>
-                <br/>
+				<dl class="list">
+					<dd><a href="3D/clock.html">clock</a></dd>
+					<dd><a href="3D/math1.html">math1</a></dd>
+					<dd><a href="3D/math2.html">math2</a></dd>
+					<dd><a href="3D/math3.html">math3</a></dd>
+					<dd><a href="3D/math4.html">math4</a></dd>
+					<dd><a href="3D/sphere.html">sphere</a></dd>
+					<dd><a href="3D/tags.html">tags sphere</a></dd>
+				</dl>
 				<a class="btn" href="3D/cube.html">cube</a>
 				<a class="btn" href="3D/cube2.html">cube2</a>
 				<a class="btn" href="3D/cube3.html">cube3</a>
 				<a class="btn" href="3D/cube4.html">cube4</a>
 				<a class="btn" href="3D/cube5.html">cube5</a>
-                <br/>
 				<a class="btn" href="3D/rotate3D.html">rotate3D</a>
 				<a class="btn" href="3D/rotate3D_Y.html">rotate3D_Y</a>
 				<a class="btn" href="3D/lines.html">rotate3D_XY</a>
@@ -378,8 +281,7 @@ pre {
 			</li>
 			<li class="item">
 				<div class="in-con">
-                <pre>
-				<code class="code">
+				<textarea class="code">
 function rotateY(ball, angleY) {
 	var cosy = Math.cos(angleY),
 		siny = Math.sin(angleY),
@@ -398,8 +300,7 @@ function rotateX(ball, angleX) {
 	ball.zpos = z1;
 }
 				
-				</code>
-                </pre><br/>
+				</textarea><br/>
 				<a href="3D/rotate3D_XY.html" class="btn">同时绕XY轴旋转</a>
 				</div>
 			</li>
@@ -426,7 +327,6 @@ function rotateX(ball, angleX) {
                 <p>ViewPoint 即观察者的视角点（camera）</p>
                 <a href="3D/vanish_point.html" class="btn">VanishPoint demo</a>
                 <a href="3D/view_point.html" class="btn">ViewPoint demo</a>
-                <p>* 关于lighting（光照）放到webGL里面讲</p>
 				</div>
 			</li>
             <li class="item">
@@ -436,114 +336,6 @@ function rotateX(ball, angleX) {
                 <p><img src="3D/backface.png" /></p>
 				</div>
 			</li>
-            
-            
-            <!-- webGL pages -->
-            <li class="item">
-                <div class="in-con">
-                    <h2>About webGL</h2>
-                    <ul>
-                        <li>基于openGL ES 在canvas上渲染图形</li>
-                        <li><a href="http://www.khronos.org/registry/gles/specs/2.0/GLSL_ES_Specification_1.0.17.pdf"> OpenGL® ES Shading Languag</a></li>
-                        <li>&lt;script type="x-shader/x-fragment"&gt; -- 片元着色器</li>
-                        <li>&lt;script type="x-shader/x-vertex"&gt;  -- 顶点着色器</li>
-                        <li>gl = canvas.getContext('experimental-webgl')  -- gl的api列表</li>
-                        <li>webGL <a href="3D/webgl/gl_flow.html">渲染管线流程图及GLES常用点</a></li>
-                    </ul>
-                </div>
-            </li>
-            
-            <li class="item">
-                <div class="in-con">
-                    <h2>Code View</h2>
-                    <ul>
-                        <li><a class="btn" href="3D/webgl/square.html">webgl square</a>
-                            <ul>
-                                <li>shader language</li>
-                                <li>initGL()</li>
-                                <li>initShaders() [getShaders, compileShader, createProgram, attachShaders, linkProgram, useProgram ...]</li>
-                                <li>initBuffer()</li>
-                                <li>render()</li>
-                            </ul>
-                        </li>
-                    </ul>
-                </div>
-            </li>
-            
-            <li class="item">
-                <div class="in-con">
-                    <h2>Code View</h2>
-                    <ul>
-                        <li><a class="btn" href="3D/webgl/colored_square.html">webgl colored square</a>
-                            <ul>
-                                <li>shader --> attribute vec4 aVertexColor</li>
-                                <li>shaderProgram.vertexColorAttribute = gl.getAttribLocation(shaderProgram, 'aVertexColor');<br/>
-        gl.enableVertexAttribArray(shaderProgram.vertexColorAttribute);</li>
-                                <li>// rgba,每4个元素确定一个点的rgba值<br/>
-        // 由于openGL 矩阵是左乘变换，（由右向左）。所以以下颜色分别为 [右上，左上，右下，左下]
-</li>
-                                <li>gl.bindBuffer(gl.ARRAY_BUFFER, squareColorBuffer);<br/>
-        gl.vertexAttribPointer(shaderProgram.vertexColorAttribute, squareColorBuffer.itemSize, gl.FLOAT, false, 0, 0);</li>
-
-                            </ul>
-                        </li>
-                    </ul>
-                </div>
-            </li>
-            
-            <li class="item">
-                <div class="in-con">
-                    <h2>Code View</h2>
-                    <ul>
-                        <li><a class="btn" href="3D/webgl/anim_square.html">webgl animating square</a>
-                            <ul>
-                                <li>由于rotate,translate等变换共用一个模型视图矩阵mvMatrix,通常永远以最开始的状态作为基准点来变换。即不同变换之间不会相互影响</li>
-                                <li>每次变换前都copy备份一下mvMatrix矩阵，变换后还原</li>
-                                <li>小tip: requestAnimationFrame 有什么好处？</li>
-                                <li>小tip: 怎么保证变换速度的一致？</li>
-
-                            </ul>
-                        </li>
-                    </ul>
-                </div>
-            </li>
-            
-            <li class="item">
-                <div class="in-con">
-                    <h2>Code View</h2>
-                    <ul>
-                        <li><a class="btn" href="3D/webgl/cube.html">webgl animating cube</a>
-                            <ul>
-                                <li>常用方法：
-                                    <ul>
-                                        <li>分别绘制独立的六个面</li>
-                                        <li>以三角形为基元绘制，拼接而成</li>
-                                    </ul>
-                                </li>
-                                <li>每次变换前都copy备份一下mvMatrix矩阵，变换后还原</li>
-                                <li>关于drawArrays 和 drawElements</li>
-                                <li>关于buffer缓冲区的运用</li>
-                            </ul>
-                        </li>
-                    </ul>
-                </div>
-            </li>
-            
-            <li class="item">
-                <div class="in-con">
-                    <h2>Code View</h2>
-                    <ul>
-                        <li><a class="btn" href="3D/webgl/cube_texture.html">webgl animating cube with texture</a>
-                            <ul>
-                                <li>在shader里面添加 texture</li>
-                                <li>用texture的像素点来代替普通color为vertex着色</li>
-                                <li>在未经过clip操作前对图片size有要求，如256*256</li>
-                            </ul>
-                        </li>
-                    </ul>
-                </div>
-            </li>
-            
             <li class="item">
                 <div class="in-con">
                     <h2>Thanks!</h2>
@@ -553,11 +345,23 @@ function rotateX(ball, angleX) {
 	</div>
 </div>
 <div id="nav">
-	<!--<div id="prev" onclick="myScroll.scrollToPage('prev', 0);return false">&larr; prev</div>-->
+	<div id="prev" onclick="myScroll.scrollToPage('prev', 0);return false">&larr; prev</div>
 	<ul id="indicator">
-		
+		<li class="active">1</li>
+		<li>2</li>
+		<li>3</li>
+		<li>4</li>
+		<li>5</li>
+		<li>6</li>
+		<li>7</li>
+		<li>8</li>
+        <li>9</li>
+        <li>10</li>
+        <li>11</li>
+        <li>12</li>
+        <li>13</li>
 	</ul>
-	<!--<div id="next" onclick="myScroll.scrollToPage('next', 0);return false">next &rarr;</div>-->
+	<div id="next" onclick="myScroll.scrollToPage('next', 0);return false">next &rarr;</div>
 </div>
 
 <script src="3D/cube5.js"></script>
