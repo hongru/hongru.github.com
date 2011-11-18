@@ -1,0 +1,92 @@
+<script type="text/javascript" src="https://raw.github.com/hongru/Sandy/master/build/sandy.0.1.js"></script> 
+<style>
+html, body { margin:0; padding:0; overflow:hidden; }
+</style> 
+ 
+<script id="particleShader" type="x-shader"> 
+	//#name ParticleShader
+	//#include CommonInclude
+	
+	//#vertex
+	//#include VertexInclude
+	varying vec4 vColor;
+	varying float eyeDist;
+	
+	void main(void) {
+		vec4 worldPos = mMatrix * vec4(aVertexPosition, 1.0);
+		
+		vColor = aVertexColor;
+		eyeDist = clamp( distance( uEyePosition, worldPos.xyz ) / 300.0, 0.0, 1.0);
+		
+		gl_Position = pMatrix * vMatrix * worldPos;
+		gl_PointSize = 2.0 * (1.0 - eyeDist);
+	}
+	
+	//#fragment
+	uniform vec4 uColor;
+	
+	varying vec4 vColor;
+	varying float eyeDist;
+	
+	void main(void) {
+		gl_FragColor = vec4( uColor.rgb * (1.0 - eyeDist) * vColor.rgb, 1.0 );
+	}
+</script> 
+ 
+<script> 
+	var engine, scene, stars, camera;
+	var mx = 0, my = 0;
+ 
+	function init() {
+		
+		engine = new Sandy.Engine();
+ 
+		camera = new Sandy.Transform();
+		camera.camera = new Sandy.Camera();
+		camera.position.z = 100;	
+		engine.camera = camera;	
+		engine.scene.add(camera);
+ 
+		stars = new Sandy.Transform();	
+		
+		var shsrc = document.getElementById("particleShader").firstChild.nodeValue;
+		stars.renderer = new Sandy.shaderUtil.parseGLSL(shsrc);
+		stars.renderer.drawMode = Sandy.gl.POINTS;
+			
+		var a = getParticleAmount();
+		stars.geometry = new Sandy.Geometry();
+		stars.geometry.addArray("aVertexPosition", Sandy.particleUtil.insideCube(a, 400), 3);
+		stars.geometry.addArray("aVertexColor", Sandy.particleUtil.randomColors(a, 0.5), 4);
+ 
+		engine.scene.add(stars);
+ 
+		document.onmousemove = onMouseMove;
+		
+		draw();
+	}
+ 
+	function onMouseMove(e) {
+		mx = ( e.clientX / window.innerWidth  ) * 2 - 1;
+		my = ( e.clientY / window.innerHeight ) * 2 - 1;
+	}
+	
+	function getParticleAmount() {
+		return parseInt(window.location.hash.substring(1)) || 1000000;
+	}
+	
+	function draw() {
+		requestAnimationFrame(draw);
+		
+		stars.renderer.uColor =  [1 - (mx + 1 / 2), my + 1 / 2, 1, 1];
+		
+		if (!isNaN(mx) && !isNaN(my)) {
+			stars.rotation.x += my * Sandy.time.deltaTime / 1000;
+			stars.rotation.y += mx * Sandy.time.deltaTime / 2000;
+		}
+		
+		engine.render();
+	}
+    
+    onload = init;
+	
+</script> 

@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<meta charset="utf-8" />
+<script type="text/javascript" src="https://raw.github.com/hongru/Sandy/master/build/sandy.0.1.js"></script> 
+<script>
+var engine, cube, light;
+
+window.onload = function() {
+
+    engine = new Sandy.Engine();  
+    engine.setClearColor(Sandy.Color.white);
+    engine.scene.ambient = new Sandy.Color(.5, .5, .5, 1);
+
+    light = new Sandy.Transform();
+    light.light = new Sandy.Light(Sandy.DIRECT);
+    light.light.color = new Sandy.Color(.5, .5, .5, 1);
+    light.light.direction = new Sandy.V3(1, 0, 1).norm();
+
+    cube = new Sandy.Transform();
+    cube.geometry = Sandy.primitive.Cube(1, 1, 1);        
+    cube.renderer = Sandy.builtinShaders.fetch("Phong");
+    cube.renderer.uColor = new Sandy.Color(1,0,0,1);
+
+    camera = new Sandy.Transform();
+    camera.camera = new Sandy.Camera();
+    camera.position.z = 4;
+    engine.camera = camera;
+
+    engine.scene.add(camera, cube, light);
+
+    draw();
+}
+
+function draw() {
+    cube.rotation.x += Math.PI * Sandy.time.deltaTime / 6000;
+    cube.rotation.y += Math.PI * Sandy.time.deltaTime / 3000;
+    engine.render();
+    requestAnimationFrame(draw);
+}
+
+</script>
+</html>
