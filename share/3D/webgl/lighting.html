@@ -63,7 +63,7 @@
 		if (!uUseLighting) {
 			vLightWeight = vec3(1.0, 1.0, 1.0);
 		} else {
-			vec3 transformedNormal = (uNMatrix * vec4(aVertexNormal, 1.0)).xyz; // 法线投影
+			vec3 transformedNormal = uNMatrix * aVertexNormal; // 法线投影
             float directionalLightWeighting = max(dot(transformedNormal, uLightingDirection), 0.0); // 光强即为方向和法向的点积（余弦），当小于0时证明光照在背后。不取
             vLightWeight = uAmbientColor + uDirectionalColor * directionalLightWeighting; //模拟光强即为环境光 + 乘以光强比例后的平行光照
 		}
