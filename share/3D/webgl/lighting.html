@@ -567,7 +567,7 @@
 	function init () {
 		var canvas = document.getElementById("gl");
         canvas.width = window.innerWidth;
-        canvas.height = window.innerHeight * .8;
+        canvas.height = window.innerHeight * .5;
         initGL(canvas);
         initShaders();
         initBuffer();
@@ -585,8 +585,6 @@
 
 <canvas id="gl" width="600" height="400"></canvas>
     <input type="checkbox" id="lighting" checked /> Use lighting<br/>
-    (Use cursor keys to spin the box and <code>Page Up</code>/<code>Page Down</code> to zoom out/in)
-
     <br/>
     <h2>Directional light:</h2>
 
