@@ -476,7 +476,7 @@
             ];
             var adjustedLD = vec3.create();
             vec3.normalize(lightingDirection, adjustedLD);
-            //vec3.scale(adjustedLD, -1);
+            vec3.scale(adjustedLD, -1);
             gl.uniform3fv(shaderProgram.lightingDirectionUniform, adjustedLD);
 
             gl.uniform3f(
