@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <meta charset="utf-8" />
-<style>html,body{margin:0; padding:0; overflow:hidden;}</style>
+<style>html,body{margin:0; padding:0;}</style>
 <script src="https://raw.github.com/toji/gl-matrix/master/gl-matrix.js"></script>
 <script src="webgl-utils.js"></script>
 
@@ -586,10 +586,9 @@
 </script>
 
 <canvas id="gl" width="600" height="400"></canvas>
-    <input type="checkbox" id="lighting" checked /> Use lighting<br/>
+    <label for="lighting">使用光照</label><input type="checkbox" id="lighting" checked /> 
     <br/>
-    <h2>Directional light:</h2>
-
+	<strong>平行光</strong>
     <table style="border: 0; padding: 10px;">
         <tr>
             <td><b>Direction:</b>
@@ -605,7 +604,7 @@
         </tr>
     </table>
 
-    <h2>Ambient light:</h2>
+	<strong>环境光</strong>
     <table style="border: 0; padding: 10px;">
         <tr>
             <td><b>Colour:</b>
