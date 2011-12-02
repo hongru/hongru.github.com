@@ -104,7 +104,7 @@ Laro.register('Emberwind', function (La) {
             this.timeInState += dt;
         },
         transition: function () {
-            return this.host.tryChangeState(this.timeInState > 5, La.FSM.kNextState, 'stage0');
+            //return this.host.tryChangeState(this.timeInState > 5, La.FSM.kNextState, 'stage0');
         },
         draw: function (render) {
             render.clear(render.white);
