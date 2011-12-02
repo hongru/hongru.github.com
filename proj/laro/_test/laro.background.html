@@ -1,0 +1,39 @@
+<script src="../src/laro.global.js"></script>
+<script src="../src/base/module.js"></script>
+<script src="../src/laro.seed.js"></script>
+<canvas width="600" height="400" id="canvas"></canvas>
+<script>
+Laro.multiModule('canvasRender', 'loop', 'resource', function () {
+   
+    // loader
+    var loader = new Laro.ResourceLoader();
+    loader.preloadImages([
+        'background/0.png',
+        'background/1.png',
+        'background/2.png'
+    ], loaderCallback);
+    Laro.ResourceLoader.instance = loader;
+    
+    function loaderCallback(p) {
+        if (p == 1) {
+            new BG('canvas');
+        }
+    }
+    
+    var BG = Laro.Class(function (id) {
+        var canvas = document.getElementById(id);
+        this.canvas = canvas;
+        this.render = new Laro.CanvasRender(canvas, 1, false);
+        this.loop = new Laro.Loop(this.update, this);
+    }).methods({
+        update: function (dt) {
+            this.draw();
+        },
+        draw: function () {
+            this.render.clear();
+            this.render
+        }
+    })
+
+})
+</script>

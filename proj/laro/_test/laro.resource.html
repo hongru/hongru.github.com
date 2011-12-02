@@ -1,0 +1,50 @@
+<script src="../src/laro.global.js"></script>
+<script src="../src/base/module.js"></script>
+<script src="../src/laro.seed.js"></script>
+
+<script>
+Laro.use('resource', function () {
+    console.log(Laro);
+    
+    // ResourceLoader test
+    // 主要功能是preloadImages
+    var loader = new Laro.ResourceLoader();
+    loader.preloadImages([
+        'fighter/RYU1_after_impact_boxing.gif',
+        'fighter/RYU1_after_whirl_kick.gif',
+        'fighter/RYU1_beAttacked_bottom.gif',
+        'fighter/RYU1_beAttacked_electric.gif',
+        'fighter/RYU1_beAttacked_fall.gif',
+        'fighter/RYU1_beAttacked_fire.gif',
+        'fighter/RYU1_beAttacked_heavy.gif',
+        'fighter/RYU1_beAttacked_impact.gif',
+        'fighter/RYU1_beAttacked_top.gif',
+        'fighter/RYU1_before_fall_down.gif',
+        'fighter/RYU1_before_whirl_kick.gif',
+        'fighter/RYU1_crouch.gif',
+        'fighter/RYU1_crouch_heavy_boxing.gif',
+        'fighter/RYU1_crouch_heavy_kick.gif',
+        'fighter/RYU1_crouch_light_boxing.gif',
+        'fighter/RYU1_crouch_light_kick.gif',
+        'fighter/RYU1_crouch_middle_boxing.gif',
+        'fighter/RYU1_crouch_middle_kick.gif',
+        'fighter/RYU1_fall_down.gif',
+        'fighter/RYU1_goBack.gif',
+        'fighter/RYU1_goForward.gif',
+        'fighter/RYU1_heavy_kick.gif',
+        'fighter/RYU1_impact_boxing.gif',
+        'fighter/RYU1_jump_back.gif',
+        'fighter/RYU1_jump_down.gif',
+    ], myCallback);
+    
+    function myCallback (progress) {
+        console.log(progress);
+        document.write(progress*100 + '%' loaded!);
+        if (progress == 1) {
+            alert('all resources loaded');
+            console.log(loader.loadedImages)
+        }
+    }
+    
+})
+</script>

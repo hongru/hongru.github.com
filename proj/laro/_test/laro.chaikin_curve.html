@@ -1,0 +1,87 @@
+<canvas id="canvas" width="400" height="300"></canvas> 
+<script src="../src/laro.global.js"></script>
+<script src="../src/base/module.js"></script>
+<script src="../src/laro.seed.js"></script>
+<script type="application/x-javascript"> 
+Laro.use('chaikin', function () {
+    Laro.register('Chaikin', function (La) {
+        var frame = 0,
+            Point = La.geometry.Point2,
+            Subdivide = La.geometry.chaikin.subDivide;
+        
+        var origArr = new Array();
+        updateOrigArr();
+        
+        function updateOrigArr () {
+            for (var i = 0; i < 6; i ++) {
+                origArr[i] = new Point(Math.random()*400, Math.random()*300);
+            }
+        }
+     
+        
+        function start()
+        {
+          draw();
+          var interval = setInterval(draw, 1000);
+        }
+        
+        function draw() 
+        {
+          var canvas = document.getElementById("canvas");
+          if (canvas.getContext) 
+          {
+            var ctx = canvas.getContext("2d");
+
+            ctx.fillStyle = "rgb(255,255,255)";
+            ctx.fillRect (0, 0, 400, 400);
+
+            var arr = new Array();
+            for (var i = 0; i < origArr.length; ++i)
+              arr[i] = new Point(origArr[i].x, origArr[i].y);
+                 
+            if (frame > 0)
+              Subdivide(arr, frame);
+        
+            ctx.strokeStyle = "#AAA";
+            if (frame > 0)
+            {
+              ctx.beginPath();
+              ctx.moveTo(origArr[0].x,origArr[0].y);
+              for (var i = 1; i < origArr.length; ++i)
+                ctx.lineTo(origArr[i].x,origArr[i].y);
+              ctx.stroke();
+            }
+
+            for (var i = 0; i < origArr.length; ++i)
+            {
+              ctx.beginPath();
+              ctx.arc(origArr[i].x,origArr[i].y,5,0,Math.PI*2,true);
+              ctx.stroke();
+            }
+
+            ctx.strokeStyle = "#000";
+            ctx.beginPath();
+            ctx.moveTo(arr[0].x,arr[0].y);
+            for (var i = 1; i < arr.length; ++i)
+              ctx.lineTo(arr[i].x,arr[i].y);
+            ctx.stroke();
+            
+            ++frame;
+            if (frame > 4) {
+                frame = 0;
+                updateOrigArr();
+            }
+              
+          }
+        }
+        
+        this.start = start;
+    });
+
+    Chaikin.start();    
+    
+})
+
+
+	  
+</script>  

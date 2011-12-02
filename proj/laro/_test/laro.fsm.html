@@ -1,0 +1,191 @@
+<script src="../src/laro.global.js"></script>
+<script src="../src/base/module.js"></script>
+<script src="../src/laro.seed.js"></script>
+<style>
+    #canvas {
+        font-weight: bold;
+        font-size: 40px;
+        text-align: center;
+        font-style: italic;
+    }
+</style>
+<div id="canvas">loading...</div>
+
+<script src="data.timetrap.js"></script>
+<script>
+Laro.multiModule('fsm', 'resource', 'canvasRender','animationHandle', function () {
+    /**
+     * anim one
+     */
+     var animTest;
+     var AnimTest = Laro.Class(function (canvasID) {                       
+            this.canvasID = canvasID;
+            this.render = this.createRender();
+            this.animation = this.getAnimation();
+            this.loop = new Laro.Loop(this.update, this);
+            this.animation.play(false)
+            
+        }).methods({          
+            createRender: function () {
+                var oldCanvas = document.getElementById(this.canvasID);
+                var canvas = document.createElement('canvas');
+                canvas.width = window.innerWidth;
+                canvas.height = window.innerHeight;
+                canvas.id = this.canvasID;
+                
+                var render = new Laro.CanvasRender(canvas, 1, false);
+                oldCanvas.parentNode.replaceChild(canvas, oldCanvas);
+                
+                return render;
+            },
+            getAnimation: function () {
+                var anim = this._genAnimation();
+                return new Laro.AnimationHandle(anim); 
+            },
+            _genAnimation: function () {
+                var image = Laro.ResourceLoader.instance.loadImage(animData.filename);
+                var frames = [];
+                for (var i = 0; i < animData.data.length; i ++) {
+                    var source = animData.data[i];
+                    
+                    var width = source[2] - source[0] + 1;
+                    var height = source[3] - source[1] + 1;
+             
+                    var xOffset = source[0] - source[4];
+                    var yOffset = source[1] - source[5];
+             
+                    var textureWidth = xOffset + width + source[6] - source[2];
+                    var textureHeight = yOffset + height + source[7] - source[3];
+                    
+                    console.log(xOffset + width);
+                    
+                    frames.push(new Laro.ImageRegion(image, source[0], source[1], width, height, xOffset, yOffset, textureWidth, textureHeight));
+
+                }
+                
+                return new Laro.Animation(animInfo, frames);
+            },
+            update: function (dt) {
+                this.render.clear(this.render.white);
+                this.animation.update(dt); 
+                this.animation.draw(this.render, this.render.getWidth() / 2, this.render.getHeight() / 2, 0, 1, null);
+                
+                fsmTest.update && fsmTest.update(dt);
+            }
+        });
+
+    
+    Laro.register('fsmTest', function () {
+        var Class = Laro.Class,
+            BaseState = Laro.BaseState,
+            AppFSM = Laro.AppFSM,
+            pkgContext = this;
+        
+        var states = {
+            intro: 0,
+            fighterWait: 1,
+            fighterImpactBoxing: 2,
+            fighterWhirlKick: 3
+        };
+        
+        var IntroState = BaseState.extend(function () {
+            console.log('intro state init');
+        }).methods({
+            enter: function (msg, from) {
+                console.log('enter introState', msg, from);
+                        // loader
+                var loader = new Laro.ResourceLoader();
+                loader.preloadImages([
+                    animData.filename
+                ], loaderCallback);
+                Laro.ResourceLoader.instance = loader;
+                
+                function loaderCallback(p) {
+                    if (p == 1) {
+                        animTest = new AnimTest('canvas');
+                    }
+                }
+            },
+            suspended: function () {}
+        });
+        var FighterWait = BaseState.extend(function () {
+            console.log('wait init')
+        }).methods({
+            enter: function () { console.log('wait enter') },
+            suspended: function () {}
+        });
+        var FighterImpactBoxing = BaseState.extend();
+        var FighterWhirlKick = BaseState.extend();  
+        
+        var statesList = [
+            states.intro, IntroState,
+            states.fighterWait, FighterWait,
+            states.fighterImpactBoxing, FighterImpactBoxing,
+            states.fighterWhirlKick, FighterWhirlKick
+        ];
+        
+          
+        
+        this.fsm = new AppFSM(this, statesList);
+        this.newState = -1;
+        this.message = null;
+        
+        this.setState = function (state, msg, suspendCurrent) {
+            this.newState = state;
+            this.message = msg;
+            console.log(this.fsm.isSuspended(state))
+
+            this.fsm.setState(state, msg, suspendCurrent);
+
+        }
+        this.update = function (dt) {
+           // this.fsm.tryChangeState(animTest && animTest.animation.isStopped(), Laro.FSM.kNextState)
+            console.log(animTest && animTest.animation.isStopped())
+        }
+        
+        Laro.use('resource', function () {            
+            // ResourceLoader test
+            // 主要功能是preloadImages
+            var loader = new Laro.ResourceLoader();
+            loader.preloadImages([
+                'fighter/RYU1_after_impact_boxing.gif',
+                'fighter/RYU1_after_whirl_kick.gif',
+                'fighter/RYU1_beAttacked_bottom.gif',
+                'fighter/RYU1_beAttacked_electric.gif',
+                'fighter/RYU1_beAttacked_fall.gif',
+                'fighter/RYU1_beAttacked_fire.gif',
+                'fighter/RYU1_beAttacked_heavy.gif',
+                'fighter/RYU1_beAttacked_impact.gif',
+                'fighter/RYU1_beAttacked_top.gif',
+                'fighter/RYU1_before_fall_down.gif',
+                'fighter/RYU1_before_whirl_kick.gif',
+                'fighter/RYU1_crouch.gif',
+                'fighter/RYU1_crouch_heavy_boxing.gif',
+                'fighter/RYU1_crouch_heavy_kick.gif',
+                'fighter/RYU1_crouch_light_boxing.gif',
+                'fighter/RYU1_crouch_light_kick.gif',
+                'fighter/RYU1_crouch_middle_boxing.gif',
+                'fighter/RYU1_crouch_middle_kick.gif',
+                'fighter/RYU1_fall_down.gif',
+                'fighter/RYU1_goBack.gif',
+                'fighter/RYU1_goForward.gif',
+                'fighter/RYU1_heavy_kick.gif',
+                'fighter/RYU1_impact_boxing.gif',
+                'fighter/RYU1_jump_back.gif',
+                'fighter/RYU1_jump_down.gif',
+            ], myCallback);
+            
+            function myCallback (progress) {
+                document.getElementById('canvas').innerHTML = progress*100 + '%';
+                if (progress == 1) {
+                    pkgContext.setState(states.intro);
+                }
+            }
+            
+        })
+        
+    });
+
+       
+})
+</script>

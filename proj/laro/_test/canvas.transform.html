@@ -1,0 +1,111 @@
+<!doctype html>
+<html>
+<head>
+<meta charset='UTF-8' />
+<title>transform</title>
+<style>
+#rule,#pad{float:left;margin:10px;}
+#rule p{padding;0;margin:0;line-height:25px;}
+#rule label{display:inline-block;width:80px;text-align:right;font-size:12px;}
+#rule input{border:0;width:40px;}
+#rule b{position:relative;display:inline-block;width:150px;height:10px;font-size:0;line-height:0;background:#fff;border:1px solid #aaa;border-radius:4px;-moz-border-radius:4px;-webkit-border-radius:4px;}
+#rule p a{position:absolute;top:-4px;left:50%;width:15px;height:15px;margin-left:-8px;border:1px solid #d3d3d3;background:#ececec;border-radius:4px;-moz-border-radius:4px;-webkit-border-radius:4px;}
+#rule p a:hover{border:1px solid #999;background:#dcdcdc;}
+.footer{font-size:12px;padding:10px 0;}
+</style>
+</head>
+<body>
+<div id='rule'>
+	<h3>Transform方法可视化操作演示</h3>
+	<p onmousedown='G.change(this,event,4);'><label>水平缩放 m11: </label> <b class='range'><a onfocus="blur();"  href='javascript:;'>&nbsp;</a></b> <input id='m11' type='text' /></p>
+	<p onmousedown='G.change(this,event,4);'><label>y轴斜切 m12: </label> <b class='range'><a onfocus="blur();"  href='javascript:;'>&nbsp;</a></b> <input id='m12' type='text' /></p>
+	<p onmousedown='G.change(this,event,4);'><label>x轴斜切 m21: </label> <b class='range'><a onfocus="blur();"  href='javascript:;'>&nbsp;</a></b> <input id='m21' type='text' /></p>
+	<p onmousedown='G.change(this,event,4);'><label>垂直缩放 m22: </label> <b class='range'><a onfocus="blur();"  href='javascript:;'>&nbsp;</a></b> <input id='m22' type='text' /></p>
+	<p onmousedown='G.change(this,event,1000);'><label>平移 dx: </label> <b class='range'><a onfocus="blur();"  href='javascript:;'>&nbsp;</a></b> <input id='dx' type='text' /></p>
+	<p onmousedown='G.change(this,event,1000);'><label>纵移 dy: </label> <b class='range'><a onfocus="blur();"  href='javascript:;'>&nbsp;</a></b> <input id='dy' type='text' /></p>
+	<div class='footer'>首先在右侧用鼠标画一矩形。</div>
+</div>
+<canvas id="pad" width='800' height="600" style="position:relative;border:1px solid #c3c3c3;cursor:crosshair;">注意：ie9以下用户请绕行</canvas>
+<script>
+var $id=function(o){return document.getElementById(o);}
+var con=$id("pad").getContext('2d');
+var G={};
+G.x1=G.y1=G.x2=G.y2=0;
+G.val=[[4,1],[4,0],[4,0],[4,1],[1000,0],[1000,0]];
+G.init=function(){
+	var list=$id('rule').getElementsByTagName('p');
+	var left, value;
+	for(var i=0; i<list.length; i++){
+		value = G.val[i][1];
+		left =(0.5 + G.val[i][1] / G.val[i][0] ) * 100;
+		list[i].getElementsByTagName('a')[0].style.left= left + '%';
+		list[i].getElementsByTagName('input')[0].value= value;
+	}
+}
+G.draw=function(){
+	G.init();
+	var e = arguments[0];
+		G.x1 = (e.layerX) ? e.layerX : e.offsetX,
+		G.y1 = (e.layerY) ? e.layerY : e.offsetY,
+	$id("pad").onmousemove=function(e){
+		con.clearRect(0,0,800,600);
+		G.x2= (e.layerX) ? e.layerX : e.offsetX;
+		G.y2= (e.layerY) ? e.layerY : e.offsetY;
+		con.save();
+		con.translate(G.x1,G.y1)
+		G.rect(G.x1,G.y1,G.x2,G.y2);
+		con.restore();
+	}
+	$id("pad").onmouseup=function(){
+		$id("pad").onmousedown=null;
+		$id("pad").onmousemove=null;
+	}
+}
+G.change=function(obj,e,l,v){
+	var o=obj.getElementsByTagName('a')[0];
+	var e = e ? e : window.event;
+	if(!window.event) {e.preventDefault();}
+	var tX=o.offsetLeft,
+		dx=e.clientX;
+	document.onmousemove=function(e){
+		var e = e ? e : window.event;
+		var len=tX+e.clientX-dx+8;
+		if(len>=0 && len<=150){
+			var rat=(len / 150) * 100;
+			o.style.left=rat+ "%";
+			obj.getElementsByTagName('input')[0].value =l * Math.round((rat - 50)*10)/1000;
+			G.transform();
+		}
+		if(window.event) e.returnValue=false;
+	}
+	document.onmouseup=function(){
+		document.onmousemove=null;
+		document.onmouseup=null;
+	}
+}
+G.transform=function(){
+	var m11=($id('m11').value == 0)? 0.001 : $id('m11').value,  //firefox下m11,m12值不能为0
+		m12=$id('m12').value,
+		m21=$id('m21').value,
+		m22=($id('m22').value == 0)? 0.001 : $id('m22').value,
+		dx=$id('dx').value,
+		dy=$id('dy').value;
+	con.clearRect(0,0,800,600);
+	con.save();
+	con.translate(G.x1,G.y1);  //变形的参考点设为图形的左上角
+	con.transform(m11, m12, m21, m22, dx, dy);
+	G.rect(G.x1,G.y1,G.x2,G.y2);
+	con.restore();
+}
+G.rect=function(x1,y1,x2,y2){
+	var grd=con.createLinearGradient(0, 0, x2 - x1, y2 - y1); //弄一个渐变效果
+			grd.addColorStop(0,"#3F5816");
+			grd.addColorStop(1,"#B40000");
+		con.fillStyle=grd;
+		con.fillRect(0, 0, x2 - x1, y2 - y1);
+}
+window.addEventListener("load", G.init, false);
+$id("pad").addEventListener("mousedown", G.draw, false);
+</script>
+</body>
+</html>

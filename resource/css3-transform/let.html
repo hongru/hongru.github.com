@@ -23,16 +23,25 @@ Let('#test')
         'background-color': 'red',
         'width': 300
     })
-    .duration(4000)
-/*    .then()
-        .set('opacity', .5)
-        .set('height', 200)
-        .duration('1s')
-        .scale(1.5)
-        .to(300, 300)
-        .pop()*/
+    .duration(8000)
     .end()
     
+</script>
+<script>
+    onload = function () {
+        setTimeout(function () {
+            var tr = document.getElementById('test').style.getPropertyValue('-webkit-transition')
+        
+            document.getElementById('test').style.setProperty('-webkit-transition', 'none');
+            document.getElementById('test').style.setProperty('-webkit-transform', 'translate(600px, 0)')
+            console.log(document.getElementById('test').style.getPropertyValue('-webkit-transform'), tr);
+            setTimeout(function () {
+                document.getElementById('test').style.setProperty('-webkit-transition', tr)
+            }, 0)
+            
+            
+        }, 4000)
+    }
 </script>
 <input type="button" value="remove duration" onclick="document.getElementById('test').style.removeProperty('-webkit-transition-duration')" />
 <input type="button" value="set transition-property:none" onclick="document.getElementById('test').style.setProperty('-webkit-transition-property', 'none')" />

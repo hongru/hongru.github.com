@@ -1,0 +1,11 @@
+<script src="../src/laro.global.js"></script>
+<script src="../src/base/module.js"></script>
+<script src="../src/laro.seed.js"></script>
+
+<script>
+    Laro.use('util', function () {
+        for (var k in Laro.geometry.util) {
+            document.body.innerHTML += (k + ':' + Laro.geometry.util[k] + '<br/>')
+        }
+    })
+</script>

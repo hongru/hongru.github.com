@@ -1,0 +1,39 @@
+<script src="../src/laro.global.js"></script>
+<script src="../src/base/class.js"></script>
+<script>
+// 方式一
+var Person = Laro.base.Class({
+    initialize: function (name) {
+        this.name = name;
+    },
+    say: function () {
+        alert(this.name);
+    }
+});
+var superMan = Person.extend({
+    initialize: function (name) {
+        return this._super(name);
+    },
+    fly: function () {
+        alert('flying');
+    }
+});
+var ssMan = superMan.extend({
+    fight: function () {
+        alert('fight')
+    }
+})
+
+// 方式二
+var animal = Laro.base.Class(function (kind) {
+    this.kind = kind;
+}).statics({
+    head: 1,
+    feet: 4
+}).methods({
+    say: function () {
+        alert(this.head);
+    }
+});
+
+</script>

@@ -1,0 +1,264 @@
+<script src="../src/laro.global.js"></script>
+<script src="../src/base/module.js"></script>
+<script src="../src/laro.seed.js"></script>
+
+<style>
+    #canvas {display: block; margin: 0 auto}
+    body {text-align: center}
+</style>
+<div id="canvas">loading...</div>
+<select id="action">
+    <option value="wait" selected="true">wait</option>
+    <option value="impact-boxing">impact boxing</option>
+    <option value="whirlKick">whirl kick</option>
+    <option value="crouchHeavyBoxing">crouch heavy boxing</option>
+    <option value="crouchHeavyKick">crouch heavy kick</option>
+    <option value="nearHeavyKick">near heavy kick</option>
+</select>
+
+<script>
+    var animInfo = {};
+    var animData = {};
+    
+    function createAnimData(frames, imgW, imgH, imgUrl) {
+        var info = {
+            "nbrOfFrames": 0,
+            "pivoty": 60,
+            "framerate": 60,
+            "pivotx": 30,
+            "events": []
+        };
+        var data = {
+            "data": [],
+            "filename": ''
+        };
+        var unitW = imgW/frames,
+            unitH = imgH;
+        for (var i = 0; i < frames; i ++) {
+            var imgX1 = i * unitW,
+                imgY1 = 0,
+                imgX2 = imgX1 + unitW,
+                imgY2 = unitH;
+                
+            var coord = [imgX1, imgY1, imgX2, imgY2, imgX1, imgY1, imgX2, imgY2];
+            data['data'].push(coord);
+        }
+        
+        data['filename'] = imgUrl;
+        info['nbrOfFrames'] = data['data'].length;
+        
+        return {
+            data: data,
+            info: info
+        };
+    }
+    function getJumpUpFrames (coord, frameNo, H) {
+        frameNo = frameNo || 10;
+        H = H || 100;
+        var newCoords = [];
+        for (var i = frameNo-1; i >= 0; i --) {
+            var newCoord = [];
+            for (var j = 0; j < coord.length; j ++) {
+                newCoord[j] = coord[j];
+            }
+            newCoord[5] = coord[5] + getH(i, frameNo, H);
+            newCoord[7] = newCoord[5] + (coord[7] - coord[5]);
+            
+            newCoords.push(newCoord);
+        }
+        return newCoords;
+    }
+    function getJumpDownFrames(coord, frameNo, H) {
+        frameNo = frameNo || 10;
+        H = H || 100;
+        var newCoords = [];
+        for (var i = 1; i <= frameNo; i ++) {
+            var newCoord = [];
+            for (var j = 0; j < coord.length; j ++) {
+                newCoord[j] = coord[j];
+            }
+            newCoord[5] = coord[5] + getH(i, frameNo, H);
+            newCoord[7] = newCoord[5] + (coord[7] - coord[5]);
+            
+            newCoords.push(newCoord);
+        }
+        return newCoords;
+    }
+    
+    function getH(n, N, H) {
+        return (H - (H/(N*N)) * n*n);
+    }
+    
+    var r = createAnimData(6, 372, 93, 'fighter/RYU1_wait.gif');
+    animData = r['data'];
+    animInfo = r['info'];
+    animInfo['framerate'] = 10;
+
+
+    Laro.use('resource', 'canvasRender','animationHandle', function () {
+        console.log(Laro);
+        
+        // animation test
+        var animTest;
+        var AnimTest = Laro.Class(function (canvasID) {                       
+            this.canvasID = canvasID;
+            this.render = this.createRender();
+            this.animation = this.getAnimation();
+            this.loop = new Laro.Loop(this.update, this);
+            this.animation.play()
+            
+        }).methods({          
+            createRender: function () {
+                var oldCanvas = document.getElementById(this.canvasID);
+                var canvas = document.createElement('canvas');
+                canvas.width = 400;
+                canvas.height = 400;
+                canvas.id = this.canvasID;
+                
+                var render = new Laro.CanvasRender(canvas, 1, false);
+                oldCanvas.parentNode.replaceChild(canvas, oldCanvas);
+                
+                return render;
+            },
+            getAnimation: function () {
+                var anim = this._genAnimation();
+                return new Laro.AnimationHandle(anim); 
+            },
+            _genAnimation: function () {
+                var image = Laro.ResourceLoader.instance.loadImage(animData.filename);
+                var frames = [];
+                for (var i = 0; i < animData.data.length; i ++) {
+                    var source = animData.data[i];
+                    
+                    var width = source[2] - source[0];
+                    var height = source[3] - source[1];
+             
+                    var xOffset = source[0] - source[4];
+                    var yOffset = source[1] - source[5];
+             
+                    var textureWidth = xOffset + width + source[6] - source[2];
+                    var textureHeight = yOffset + height + source[7] - source[3];
+                    
+                   // console.log(textureWidth, textureHeight);
+                    
+                    frames.push(new Laro.ImageRegion(image, source[0], source[1], width, height, xOffset, yOffset, textureWidth, textureHeight));
+
+                }
+                
+                return new Laro.Animation(animInfo, frames);
+            },
+            update: function (dt) {
+                this.render.clear(this.render.white);
+                this.animation.update(dt); 
+                this.animation.draw(this.render, this.render.getWidth() / 2, this.render.getHeight() / 2, 0, 1, null);
+            }
+        });
+        
+        // loader
+        var loader = new Laro.ResourceLoader();
+        loader.preloadImages([
+            animData.filename
+        ], loaderCallback);
+        Laro.ResourceLoader.instance = loader;
+        
+        function loaderCallback(p) {
+            if (p == 1) {
+                animTest = new AnimTest('canvas');
+            }
+        }
+        function animationRefresh(cb) {
+            animTest.animation.stop();
+            animTest.animation = animTest.getAnimation();
+            !!cb && animTest.animation.setCallback(cb);
+            var loop = !cb;
+            animTest.animation.play(loop);
+        }
+        
+        function doWait() {
+            var r = createAnimData(6, 372, 93, 'fighter/RYU1_wait.gif');
+            animData = r['data'];
+            animInfo = r['info'];
+            animInfo['framerate'] = 10;
+            animationRefresh();           
+        }
+        function impactBoxing () {
+            var r = createAnimData(3, 183, 119, 'fighter/RYU1_after_impact_boxing.gif');
+            animData = r['data'];
+            animInfo = r['info'];
+            // jumpup
+            Array.prototype.splice.apply(animData['data'], [1, 0].concat(getJumpUpFrames(animData['data'][0], 20, 100)));
+            Array.prototype.splice.apply(animData['data'], [21, 0].concat(getJumpDownFrames(animData['data'][21], 20, 100)));
+            animInfo['nbrOfFrames'] = animData['data'].length;
+            animationRefresh();  
+        }
+        function beforeWhirlKick () {
+            var r = createAnimData(3, 213, 120, 'fighter/RYU1_before_whirl_kick.gif');
+            animData = r['data'];
+            animInfo = r['info'];
+            animInfo['framerate'] = 10;
+            animationRefresh(whirlKick);  
+        }
+        function whirlKick () {
+            var r = createAnimData(4, 608, 132, 'fighter/RYU1_whirl_kick.gif');
+            animData = r['data'];
+            animData['data'] = animData['data'].concat(animData['data']).concat(animData['data']);
+            animInfo = r['info'];
+            animInfo['nbrOfFrames'] = animData['data'].length;
+            animInfo['framerate'] = 10;
+            animationRefresh(afterWhirlKick);  
+        }
+        function afterWhirlKick () {
+            var r = createAnimData(5, 285, 132, 'fighter/RYU1_after_whirl_kick.gif');
+            animData = r['data'];
+            animInfo = r['info'];
+            animInfo['framerate'] = 10;
+            animationRefresh(beforeWhirlKick);  
+        }
+        function crouchHeavyBoxing() {
+            var r = createAnimData(5, 375, 126, 'fighter/RYU1_crouch_heavy_boxing.gif');
+            animData = r['data'];
+            animInfo = r['info'];
+            animInfo['framerate'] = 10;
+            animationRefresh();  
+        }
+        function crouchHeavyKick() {
+            var r = createAnimData(5, 615, 61, 'fighter/RYU1_crouch_heavy_kick.gif');
+            animData = r['data'];
+            animInfo = r['info'];
+            animInfo['framerate'] = 5;
+            animationRefresh();  
+        }
+        function nearHeavyKick () {
+            var r = createAnimData(6, 594, 122, 'fighter/RYU1_near_heavy_kick.gif');
+            animData = r['data'];
+            animInfo = r['info'];
+            animInfo['framerate'] = 8;
+            animationRefresh(); 
+        }
+        
+        document.getElementById('action').addEventListener('change', function (e) {
+            switch(this.value) {
+                case 'wait':
+                    doWait();
+                    break;
+                case 'impact-boxing':
+                    impactBoxing();
+                    break;
+                case 'whirlKick' :
+                    beforeWhirlKick();
+                    break;
+                case 'crouchHeavyBoxing':
+                    crouchHeavyBoxing();
+                    break;
+                case 'crouchHeavyKick':
+                    crouchHeavyKick();
+                    break;
+                case 'nearHeavyKick':
+                    nearHeavyKick();
+                    break;
+
+            }
+        }, false)
+        
+    })
+</script>

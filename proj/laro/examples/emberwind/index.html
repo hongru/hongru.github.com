@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8" />
+<script src="../../src/laro.global.js"></script>
+<script src="../../src/base/module.js"></script>
+<script baseUrl="../../" src="../../src/laro.seed.js"></script>
+</head>
+
+<body>
+<div id="canvas">Loading</div>
+
+<!-- 数据推荐用json文件 xhr请求获取，这里为了调试方便直接用全局变量 -->
+<script src="js/g_data.js"></script>
+<script>
+Laro.module.register('emberwind', 'js/game.js').require(['emberwind.resource', 'emberwind.states'])
+    .register('emberwind.states', 'js/states.js').require('emberwind.resource')
+    .register('emberwind.resource', 'js/resource.js').require('laro')
+    
+Laro.use('emberwind', function () {
+    new Emberwind.Game('canvas');
+})
+
+</script>
+
+</body>
+</html>
