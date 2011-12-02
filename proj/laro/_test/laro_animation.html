@@ -1,0 +1,81 @@
+<script src="../src/laro.global.js"></script>
+<script src="../src/base/module.js"></script>
+<script src="../src/laro.seed.js"></script>
+
+<div id="canvas">loading...</div>
+
+<script src="data.timetrap.js"></script>
+<script>
+    Laro.use('resource', 'canvasRender','animationHandle', function () {
+        console.log(Laro);
+        
+        // animation test
+        var AnimTest = Laro.Class(function (canvasID) {                       
+            this.canvasID = canvasID;
+            this.render = this.createRender();
+            this.animation = this.getAnimation();
+            this.loop = new Laro.Loop(this.update, this);
+            this.animation.play(false)
+            
+        }).methods({          
+            createRender: function () {
+                var oldCanvas = document.getElementById(this.canvasID);
+                var canvas = document.createElement('canvas');
+                canvas.width = window.innerWidth;
+                canvas.height = window.innerHeight;
+                canvas.id = this.canvasID;
+                
+                var render = new Laro.CanvasRender(canvas, 1, false);
+                oldCanvas.parentNode.replaceChild(canvas, oldCanvas);
+                
+                return render;
+            },
+            getAnimation: function () {
+                var anim = this._genAnimation();
+                return new Laro.AnimationHandle(anim); 
+            },
+            _genAnimation: function () {
+                var image = Laro.ResourceLoader.instance.loadImage(animData.filename);
+                var frames = [];
+                for (var i = 0; i < animData.data.length; i ++) {
+                    var source = animData.data[i];
+                    
+                    var width = source[2] - source[0] + 1;
+                    var height = source[3] - source[1] + 1;
+             
+                    var xOffset = source[0] - source[4];
+                    var yOffset = source[1] - source[5];
+             
+                    var textureWidth = xOffset + width + source[6] - source[2];
+                    var textureHeight = yOffset + height + source[7] - source[3];
+                    
+                    console.log(xOffset + width);
+                    
+                    frames.push(new Laro.ImageRegion(image, source[0], source[1], width, height, xOffset, yOffset, textureWidth, textureHeight));
+
+                }
+                
+                return new Laro.Animation(animInfo, frames);
+            },
+            update: function (dt) {
+                this.render.clear(this.render.white);
+                this.animation.update(dt); 
+                this.animation.draw(this.render, this.render.getWidth() / 2, this.render.getHeight() / 2, 0, 1, null);
+            }
+        });
+        
+        // loader
+        var loader = new Laro.ResourceLoader();
+        loader.preloadImages([
+            animData.filename
+        ], loaderCallback);
+        Laro.ResourceLoader.instance = loader;
+        
+        function loaderCallback(p) {
+            if (p == 1) {
+                new AnimTest('canvas');
+            }
+        }
+        
+    })
+</script>

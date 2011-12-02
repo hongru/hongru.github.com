@@ -18,7 +18,7 @@ Laro.register('Emberwind', function (La) {
 
     }).methods({
         enter : function (msg, fromState) {
-            La.ResourceLoader.getInstance().preloadImages(["opera_logo.png"], La.curry(this.operaProgressCallback, this));
+            La.ResourceLoader.getInstance().preloadImages(["laro.png"], La.curry(this.operaProgressCallback, this));
          
             var images = [
                 "titlescreen0.png", 
