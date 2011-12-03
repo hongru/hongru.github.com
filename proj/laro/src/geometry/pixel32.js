@@ -22,10 +22,10 @@ Laro.register('.geometry', function (La) {
 		},
 		equal: function (pix) {
 			if (pix instanceof Pixel32) {
-				return this.r = pix.r 
-						&& this.g = pix.g
-						&& this.b = pix.b
-						&& this.a = pix.a;
+				return this.r == pix.r 
+						&& this.g == pix.g
+						&& this.b == pix.b
+						&& this.a == pix.a;
 			} else {
 				return false;
 			}
