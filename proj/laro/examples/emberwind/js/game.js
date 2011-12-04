@@ -103,7 +103,7 @@ Laro.register('Emberwind', function (La) {
                         console.log('----------- '+this.newState)
 						this.fsm.setState(this.newState, this.newMessage);
 					} else {
-                    console.log('========')
+
 						this.screenTransition = null;
 						this.stateMode = this.stateModes.kStateActive;
 					}
@@ -144,7 +144,7 @@ Laro.register('Emberwind', function (La) {
          
             if (suspendCurrent || state == -1 || this.fsm.isSuspended(state)) {
                 this.fsm.setState(state, msg, suspendCurrent);
-            } else { console.log(66666666)
+            } else { 
                 var st = this.findScreenTransition(this.fsm.currentState, state, true);
 
                 if (st == null) st = this.findScreenTransition(this.fsm.currentState, -1, true);

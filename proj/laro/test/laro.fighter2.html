@@ -94,7 +94,7 @@
     animInfo = r['info'];
     animInfo['framerate'] = 10;
 
-
+	Laro.module.loadProgressCallback = function (name, url) {document.getElementById('canvas').innerHTML = 'loading module ' + name}
     Laro.use('resource', 'canvasRender','animationHandle', function () {
         console.log(Laro);
         

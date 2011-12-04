@@ -16,6 +16,7 @@
 <!-- 数据推荐用json文件 xhr请求获取，这里为了调试方便直接用全局变量 -->
 <script src="js/g_data.js"></script>
 <script>
+Laro.module.loadProgressCallback = function (name, url) {document.getElementById('canvas').innerHTML = 'loading module ' + name; }
 Laro.module.register('emberwind', 'js/game.js').require(['emberwind.resource', 'emberwind.states'])
     .register('emberwind.states', 'js/states.js').require('emberwind.resource')
     .register('emberwind.resource', 'js/resource.js').require('laro')
