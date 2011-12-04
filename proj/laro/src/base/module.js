@@ -212,7 +212,7 @@
              }
              
              if (isAsyn) {
-                _module.asynLoadScript(scriptUrl, asyncWait, callbackQueue);
+                _module.asynLoadScript(moduleName, scriptUrl, asyncWait, callbackQueue);
              } else {
                 _module.xhrLoadScript(moduleName, scriptUrl, callbackQueue);
              }
@@ -228,6 +228,7 @@
             xhr.onreadystatechange = function () {
                 if (xhr.readyState == 4 && xhr.status == 200) {
                     _module.injectScript(xhr.responseText, moduleName);
+					_module.loadProgressCallback && _module.loadProgressCallback(moduleName, scriptUrl);
                     if (callbackQueue) {
                         for (var q=0; q<callbackQueue.length; q++) {
                             callbackQueue[q].runCallback();
@@ -246,7 +247,7 @@
         },
         
         // -- 加载模块行动函数
-        asynLoadScript : function(scriptUrl, asyncWait, callbackQueue) {
+        asynLoadScript : function(moduleName, scriptUrl, asyncWait, callbackQueue) {
             var scriptNode = _module.prototype.createScriptNode();
             scriptNode.setAttribute("src", scriptUrl);
             if (callbackQueue) {
@@ -267,6 +268,8 @@
             }
             var headNode = document.getElementsByTagName("head")[0];
             headNode.appendChild(scriptNode);
+			
+			_module.loadProgressCallback && _module.loadProgressCallback(moduleName, scriptUrl);
         },    
         
         // -- 执行当前 callback

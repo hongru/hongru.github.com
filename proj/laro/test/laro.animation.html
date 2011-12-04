@@ -6,6 +6,9 @@
 
 <script src="data.timetrap.js"></script>
 <script>
+	Laro.module.loadProgressCallback = function (name, url) {
+		document.getElementById('canvas').innerHtml = name;
+	}
     Laro.use('resource', 'canvasRender','animationHandle', function () {
         console.log(Laro);
         
