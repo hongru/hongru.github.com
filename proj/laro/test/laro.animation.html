@@ -2,12 +2,16 @@
 <script src="../src/base/module.js"></script>
 <script src="../src/laro.seed.js"></script>
 
+<style>
+#canvas {text-align: center; font-size: 40px;}
+html, body {overflow:hidden}
+</style>
 <div id="canvas">loading...</div>
 
 <script src="data.timetrap.js"></script>
 <script>
 	Laro.module.loadProgressCallback = function (name, url) {
-		document.getElementById('canvas').innerHTML = name;
+		document.getElementById('canvas').innerHTML = 'loading module ' + name;
 	}
     Laro.use('resource', 'canvasRender','animationHandle', function () {
         console.log(Laro);
