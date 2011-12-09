@@ -1,0 +1,43 @@
+
+<script src="https://raw.github.com/hongru/Sandy/master/build/sandy.0.1.js"></script>
+<script>
+var engine, cube, light, dt = 0;
+	window.onload = function() {
+
+		engine = new Sandy.Engine();	
+		engine.setClearColor(Sandy.Color.white);
+        ambient = new Sandy.Transform();
+		ambient.light = new Sandy.Light(Sandy.AMBIENT);
+		ambient.light.color = new Sandy.Color(0.5, 0.5, 0.5, 1);
+		
+		light = new Sandy.Transform();
+		light.light = new Sandy.Light(Sandy.DIRECT);
+		light.light.color = new Sandy.Color(1, 1, 1, 1);
+		light.light.direction = new Sandy.V3(1, 0, 1).norm();		
+
+		cube = new Sandy.Transform();
+		cube.geometry = Sandy.primitive.Cube(1, 1, 1);		
+		cube.renderer = Sandy.builtinShaders.fetch("Phong");
+
+		//cube.renderer.su.color = new Sandy.Color(1,0,0,1);  // su --> static uniform
+		//cube.renderer.color = new Sandy.Color(1,0,0,1);
+
+		camera = new Sandy.Transform();
+		camera.camera = new Sandy.Camera();
+		camera.position.z = 4;
+		engine.camera = camera;
+		engine.scene.add(camera, cube, light, ambient);
+		draw();
+	}
+
+	function draw() {
+		requestAnimationFrame(draw);
+        
+        dt += 0.01;
+        cube.renderer.color = new Sandy.Color(Math.abs(Math.sin(dt)),Math.abs(Math.cos(dt*2)),Math.abs(Math.sin(dt*2)),1); 
+        camera.position.z = 5 + 2*Math.cos(dt);
+		cube.rotation.x += Math.PI * Sandy.time.deltaTime / 6000;
+		cube.rotation.y += Math.PI * Sandy.time.deltaTime / 6000;
+		engine.render();
+	}
+</script>
