@@ -1,7 +1,7 @@
 <script src="https://raw.github.com/hongru/Sandy/master/build/sandy.0.1.js"></script>
 <style>
 html,body {margin: 0; padding: 0; overflow:hidden}
-.ctrl {position: absolute; left:20px; top: 20px;}
+.ctrl {position: absolute; left:20px; top: 20px; z-index:10}
 </style>
 <div class="ctrl"><input type="checkbox" id="ck" /><label for="ck">mouse control</label></div>
 
@@ -56,7 +56,8 @@ html,body {margin: 0; padding: 0; overflow:hidden}
                 root.rotation.y += mx * Sandy.time.deltaTime / 4000;
             }    
         } else {
-            root.rotation.y += 0.001;
+            root.rotation.y += 0.002;
+            root.ratation.x += Math.sin(Sandy.time.deltaTime / 10000)
         }
 				
 		engine.render();
