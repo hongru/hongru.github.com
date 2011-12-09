@@ -52,11 +52,11 @@ html,body {margin: 0; padding: 0; overflow:hidden}
         if (document.getElementById('ck').checked) {
             if (!isNaN(mx) && !isNaN(my)) {
                 // Rotate the root to which camera is attached 
-                root.rotation.x += my * Sandy.time.deltaTime / 1000;
-                root.rotation.y += mx * Sandy.time.deltaTime / 2000;
+                root.rotation.x += my * Sandy.time.deltaTime / 4000;
+                root.rotation.y += mx * Sandy.time.deltaTime / 4000;
             }    
         } else {
-            root.rotation.y += 0.05;
+            root.rotation.y += 0.001;
         }
 				
 		engine.render();
