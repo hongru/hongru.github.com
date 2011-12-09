@@ -1,7 +1,13 @@
 <script src="https://raw.github.com/hongru/Sandy/master/build/sandy.0.1.js"></script>
+<style>
+html,body {margin: 0; padding: 0; overflow:hidden}
+.ctrl {position: absolute; left:20px; top: 20px;}
+</style>
+<div class="ctrl"><input type="checkbox" id="ck" /><label for="ck">mouse control</label></div>
+
 <script> 
 	var engine, scene;
-	var root, monkey, camera;
+	var root, camera;
 	var mx, my = 0;
 	var isMouseDown = false;
 	
@@ -29,12 +35,6 @@
 		});
  
 		engine.scene.addSkybox(cubemap);
-		
-		/*monkey = new Sandy.Transform();	
-		monkey.renderer = Sandy.BuiltinShaders.fetch("Reflective");
-		monkey.renderer.uCubemap = cubemap;
-		Sandy.Loader.loadJSON("models/monkeyhi.js", function(j) { monkey.geometry = new Sandy.Mesh(j); } );
-		engine.scene.add(monkey);*/
  
 		document.onmousemove = onMouseMove;
 	
@@ -49,12 +49,16 @@
 	function draw() {
 		requestAnimationFrame(draw);
 		
-		if (!isNaN(mx) && !isNaN(my)) {
-			// Rotate the root to which camera is attached 
-			root.rotation.x += my * Sandy.time.deltaTime / 1000;
-			root.rotation.y += mx * Sandy.time.deltaTime / 2000;
-		}
-		
+        if (document.getElementById('ck').checked) {
+            if (!isNaN(mx) && !isNaN(my)) {
+                // Rotate the root to which camera is attached 
+                root.rotation.x += my * Sandy.time.deltaTime / 1000;
+                root.rotation.y += mx * Sandy.time.deltaTime / 2000;
+            }    
+        } else {
+            root.rotation.x += Sandy.time.deltaTime / 1000;
+        }
+				
 		engine.render();
 	}
     
