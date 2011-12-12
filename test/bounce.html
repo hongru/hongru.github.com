@@ -1,0 +1,131 @@
+<!doctype html>
+<div>
+Froce Param: <b id="force-b"></b><input type="range" id="force" max="0.1" min="0.01" value="0.05" step="0.01" /><br/>
+Velocity-x param: <b id="x-b"></b><input type="range" id="ax" max="0.99" min="0.9" value="0.95" step="0.01" /><br/>
+Velocity-y param: <b id="y-b"></b><input type="range" id="ay" max="0.99" min="0.9" value="0.93" step="0.01" /><br/>
+<input type="button" id="btn" value="restart" />
+</div>
+<script>
+var Particle = function (x, y, canvas) {
+    this.endX = x;
+    this.endY = y;
+    this.canvas = canvas;
+    this.ctx = this.canvas.getContext('2d');
+    this.x = Math.random() * this.canvas.width;
+    this.y = Math.random() * this.canvas.height;
+
+    this.vx = Math.random()*10 - 5;
+    this.vy = Math.random()*10 - 5;
+
+}
+Particle.prototype = {
+    move: function () {
+        var disX = this.endX - this.x;
+        var disY = this.endY - this.y;
+        var dis = Math.sqrt(Math.pow(disX, 2) + Math.pow(disY, 2));
+        var force = dis * parseFloat(document.getElementById('force').value);
+        var angle = Math.atan2(disY, disX); // atan2(x, y) 返回点(x, y)到x 轴的弧度
+
+        this.vx += force * Math.cos(angle);
+        this.vy += force * Math.sin(angle);
+
+        this.vx *= parseFloat(document.getElementById('ax').value);
+        this.vy *= parseFloat(document.getElementById('ay').value);
+
+        //
+        this.x += this.vx;
+        this.y += this.vy;
+    },
+    render: function () {
+        this.ctx.fillStyle = 'blue';
+        this.ctx.beginPath();
+        this.ctx.arc(this.x, this.y, 10, 0, Math.PI*2, true);
+        this.ctx.closePath();
+        this.ctx.fill();
+    },
+    update: function () {
+        this.move();
+        this.render();
+    }
+}
+window.requesetAnimFrame = function () {
+    return window.requesetAnimationFrame ||
+        window.webkitRequestAnimationFrame ||
+        window.mozRequestAnimationFrame ||
+        window.oRequestAnimationFrame ||
+        window.msRequestAnimationFrame ||
+        function (fn) {
+            window.setTimeout(fn, 1000/60);
+        };
+}();
+
+var Bounce = function () {
+
+    var canvas, ctx, particle;
+    function genCanvas () {
+    
+        canvas = document.getElementsByTagName('canvas')[0];
+        if (!canvas) {
+            canvas = document.createElement('canvas');
+            document.body.appendChild(canvas);
+        }
+        canvas.width = 800;
+        canvas.height = 600;
+        
+        ctx = canvas.getContext('2d');
+    }
+    
+    var drawPoint = function () {
+        ctx.fillStyle = 'red';
+        ctx.beginPath();
+        ctx.arc(canvas.width/2, canvas.height/2, 10, 0, Math.PI*2, true);
+        ctx.closePath();
+        ctx.fill();       
+    }   
+    
+    var loop = function () {
+        requesetAnimFrame(loop);
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        drawPoint();
+        particle.update();
+    }
+    
+
+    return {
+        init: function () { 
+            var fb = document.getElementById('force-b'),
+                xb = document.getElementById('x-b'),
+                yb = document.getElementById('y-b'),
+                fr = document.getElementById('force'),
+                xr = document.getElementById('ax'),
+                yr = document.getElementById('ay'),
+                btn = document.getElementById('btn');
+                
+            fb.innerHTML = parseInt(fr.value*100)/100;
+            xb.innerHTML = parseInt(xr.value*100)/100;
+            yb.innerHTML = parseInt(yr.value*100)/100;
+            
+            genCanvas();
+            drawPoint();   
+            particle = new Particle(canvas.width/2, canvas.height/2, canvas);
+            btn.addEventListener('click', function (e) {
+                particle.x = Math.random()*canvas.width;
+                particle.y = Math.random()*canvas.height;
+            }, false);
+            fr.addEventListener('change', function (e) {
+                fb.innerHTML = parseInt(this.value*100)/100;
+            }, false);
+            xr.addEventListener('change', function (e) {
+                xb.innerHTML = parseInt(this.value*100)/100;
+            }, false);
+            yr.addEventListener('change', function (e) {
+                yb.innerHTML = parseInt(this.value*100)/100;
+            }, false);
+
+            loop();
+        }
+    }
+}();
+
+onload = Bounce.init;
+</script>

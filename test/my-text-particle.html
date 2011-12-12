@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8" />
+<style>
+html, body {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    overflow:hidden;
+    margin: 0;
+    padding: 0;
+}
+</style>
+</head>
+
+<body>
+<script>
+var TextParticles = function () {
+
+    var extend = function (target, source, isOverwrite) {
+        if (isOverwrite == undefined) isOverwrite = true;
+        for (var key in source) {
+            if (!(key in target) || isOverwrite) {
+                target[key] = source[key];
+            }
+        }
+        return target;
+    };
+    var $ = function (id) {
+        return document.getElementById(id) || id;
+    };
+    var $$ = function (tag, p) {
+        return p.getElementsByTagName(tag);
+    };
+    var addEvent = function (o, e, f) {
+        o.addEventListener ? o.addEventListener(e, f, false) : o.attachEvent('on'+e, function () {f.call(o)});
+    }
+	window.requesetAnimFrame = function () {
+		return window.requesetAnimationFrame ||
+			window.webkitRequestAnimationFrame ||
+			window.mozRequestAnimationFrame ||
+			window.oRequestAnimationFrame ||
+			window.msRequestAnimationFrame ||
+			function (fn) {
+				window.setTimeout(fn, 1000/60);
+			};
+	}();
+
+    var init = function (opt) {
+        this.opt = {
+            canvasId: null
+        }
+        extend(this.opt, opt);
+        
+        this.initialize();
+    }
+    init.prototype = {
+        initialize: function () {
+            if (this.opt.canvasId == null) {
+                this.genCanvas();
+            } else {
+                this.canvas = $(this.opt.canvasId);
+            }
+            
+            this.particles = [];
+            
+            this.ctx = this.canvas.getContext('2d');
+            this.setCvsStyle();
+            this.fillText();
+            this.getImageData();
+            this.loop();
+        },
+        loop: function () {
+            var _this = this;
+            /*setInterval(function () {
+                _this.doFrame();
+			}, 20);
+			*/
+			requesetAnimFrame(function () {_this.loop()});
+			this.doFrame();
+        },
+        doFrame: function () {
+            this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+            for (var i = 0; i < this.particles.length; i ++) {
+                var p = this.particles[i];
+                p.update();
+            }
+        },
+        getImageData: function () {
+            var imageData = this.ctx.getImageData(0, 0, this.canvas.width, this.canvas.height);
+            for (var x = 0; x < imageData.width; x ++) {
+                for (var y = 0; y < imageData.height; y ++) {
+                    //var i = 4*(x * imageData.height + y);
+                    var i = 4*(y * imageData.width + x);
+                    if (imageData.data[i + 3] > 128) {
+                        this.particles.push(new Particle(x, y, this.canvas));
+                    }
+                }
+            }
+        },
+        fillText: function () {
+            this.ctx.textAlign = 'center';
+            this.ctx.textBaseline = 'middle';
+            this.ctx.font = '200px sans-serif';
+            this.ctx.fillText('岑安', this.canvas.width/2, this.canvas.height/2);
+        },
+        setCvsStyle: function () {
+            this.canvas.width = window.innerWidth;
+            this.canvas.height = window.innerHeight;
+        },
+        genCanvas: function () {
+            var canvas = document.createElement('canvas');
+            document.body.appendChild(canvas);
+            this.canvas = canvas;
+            return canvas;
+        }
+    };
+    
+    var Particle = function (x, y, canvas) {
+        this.endX = x;
+        this.endY = y;
+        this.canvas = canvas;
+        this.ctx = this.canvas.getContext('2d');
+        this.x = Math.random() * this.canvas.width;
+		this.y = Math.random() * this.canvas.height;
+
+		this.vx = Math.random()*10 - 5;
+		this.vy = Math.random()*10 - 5;
+
+    }
+	Particle.prototype = {
+        move: function () {
+			var disX = this.endX - this.x;
+			var disY = this.endY - this.y;
+			var dis = Math.sqrt(Math.pow(disX, 2) + Math.pow(disY, 2));
+			var force = dis * .01;
+			var angle = Math.atan2(disY, disX); // atan2(x, y) 返回点(x, y)到x 轴的弧度
+
+			this.vx += force * Math.cos(angle);
+			this.vy += force * Math.sin(angle);
+
+			this.vx *= 0.92;
+			this.vy *= .92;
+
+			//
+            this.x += this.vx;
+            this.y += this.vy;
+        },
+        render: function () {
+            this.ctx.fillStyle = 'red';
+            this.ctx.fillRect(this.x, this.y, 1, 1);
+        },
+        update: function () {
+            this.move();
+            this.render();
+        }
+    }
+    
+    return init;
+}();
+
+onload = function () {
+    new TextParticles();
+}
+</script>
+</body>
+</html>

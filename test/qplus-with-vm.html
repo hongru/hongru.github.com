@@ -1,9 +1,11 @@
 <html>
-
+<script src="http://cdn.qplus.com/js/qplus.api.js"></script>
 <div id="ua"></div>
 <div id="r"></div>
 <script>
 
+qplus.onReady(function () {
+    console && console.log(window.frameElement)
     document.getElementById('ua').innerHTML = (window.navigator.userAgent);
     var r = [];
     r.push('window.innerWidth: '+window.innerWidth, 
@@ -21,6 +23,7 @@
             'document.body.scrollWidth:' + document.body.scrollWidth,
             'document.body.scrollHeight:' + document.body.scrollHeight);
     document.getElementById('r').innerHTML = r.join('<br/>');
+})
 
 </script>
 </html>
