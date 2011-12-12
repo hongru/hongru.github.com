@@ -1,0 +1,24 @@
+<meta charset="utf-8" />
+<input type="text" id="number" />
+<input type="button" value="计算" id="btn" onclick="go()" />
+<div id="result" ></div>
+<div id="time" ></div>
+<script>
+function go () {
+    var st = +new Date;
+    var n = document.getElementById('number').value;
+    var result = 0;
+    n = parseInt(n);
+    if (n > 1000000) { 
+        alert('为保证浏览器不崩溃，数字不要大于1000000');
+        return;
+    }
+    for (var i = 1; i <= n; i ++) {
+        result += n;
+        document.getElementById('result').innerHTML = result;
+    } 
+    var et = +new Date;
+    
+    document.getElementById('time').innerHTML = et - st + 'ms';
+}
+</script>
