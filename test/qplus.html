@@ -9,13 +9,20 @@ function go () {
     var n = document.getElementById('number').value;
     var result = 0;
     n = parseInt(n);
-    if (n > 1000000) { 
+    
+    var longStr = '为保证浏览器不崩溃';
+    for (var s = 0; s < 10; s ++) {
+        longStr += longStr
+    }
+    
+    if (n > 10000) { 
         alert('为保证浏览器不崩溃，数字不要大于1000000');
         return;
     }
     for (var i = 1; i <= n; i ++) {
         result += i;
         document.getElementById('result').innerHTML = result;
+        document.getElementById('result').innerHTML = longStr;
     } 
     var et = +new Date;
     
