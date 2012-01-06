@@ -1,7 +1,7 @@
 
 (function ( document, window ) {
 
-window.addEventListener('DOMContentLoaded', init, false)
+document.addEventListener('DOMContentLoaded', init, false)
     // HELPER FUNCTIONS
 function init () {    
     var pfx = (function () {
