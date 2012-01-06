@@ -1,8 +1,9 @@
 
 (function ( document, window ) {
 
+window.addEventListener('DOMContentLoaded', init, false)
     // HELPER FUNCTIONS
-    
+function init () {    
     var pfx = (function () {
 
         var style = document.createElement('dummy').style,
@@ -309,6 +310,6 @@
     // START 
     // by selecting step defined in url or first step of the presentation
     select(getElementFromUrl() || steps[0]);
-
+}
 })(document, window);
 
