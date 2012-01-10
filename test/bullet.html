@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html>
+	<meta charset="utf-8" />
+	<style>
+		html,body {
+			margin: 0;
+			padding: 0;
+			position: absolute;
+			width: 100%;
+			height: 100%;
+			overflow: hidden;
+		}
+		canvas {display: block}
+	</style>
+	<body>
+	<script>
+		var TraceSys = function () {
+			var canvas, ctx, shooter, tar;
+            var speed = 10;
+
+			window.requestAnimFrame = (function() {
+  				return window.requestAnimationFrame ||
+    			window.webkitRequestAnimationFrame ||
+     			window.mozRequestAnimationFrame ||
+     			window.oRequestAnimationFrame ||
+     			window.msRequestAnimationFrame ||
+     			function(/* function FrameRequestCallback */ callback, /* DOMElement Element */ element) {
+       				window.setTimeout(callback, 1000/60);
+     			};
+			})();
+
+			var init = function () {
+				genCanvas();
+				resize();
+				tar = new ShootTarget();
+				shooter = new Shooter();
+				tick();
+			}
+
+			function tick () {
+				requestAnimFrame(tick);
+				ctx.clearRect(0, 0, canvas.width, canvas.height);
+				tar.update();
+				shooter.update();
+			}
+
+			function genCanvas () {
+				canvas = document.getElementById('bullet-canvas');
+				if (!canvas) {
+					canvas = document.createElement('canvas');
+					canvas.id = 'bullet-canvas';
+					document.body.appendChild(canvas);
+				}
+				ctx = canvas.getContext('2d');
+			}
+			function resize () {
+				canvas.width = window.innerWidth;
+				canvas.height = window.innerHeight;
+			}
+
+			// target
+			var ShootTarget = function () {
+				this.x = 0;
+				this.y = 0;
+				this.color = 'green';
+				this.lastBeHittedTime = (+new Date)-500;
+				this.bind();
+			}
+			ShootTarget.prototype = {
+				bind: function () {
+					var _this = this;
+					canvas.addEventListener('mousemove', function (e) {
+						_this.x = e.clientX;
+						_this.y = e.clientY;
+					});
+				},
+				update: function () {
+					this.checkBeHitted();
+					this.draw();
+				},
+				checkBeHitted: function () {
+					var t = (+new Date);
+					var disT = t - this.lastBeHittedTime;
+					if (disT < 500) {
+						this.color = 'red';
+						this.text('哈哈，中了！');
+                        speed = 10;
+					} else {
+						this.color = 'green';
+						if (disT > 5000 && disT <= 10000) {
+ 							this.text('追你追得好辛苦...')
+						} else if (disT > 10000 && disT <= 20000 ) {
+							this.text('追你到天涯海角')
+						} else if (disT > 20000 && disT < 25000) {
+                            this.text('同学，鼠标晃的不累么？ -_-!')
+                        } else if (disT > 25000) {
+                            this.text('怒了，我要开挂！！！');
+                            speed += 0.1;
+                        }
+					}
+				},
+				text: function (txt) {
+					ctx.font = "30pt Microsoft Yahei";
+    				ctx.textAlign = "center";
+    				ctx.fillStyle = "#666";
+    				ctx.fillText(txt, canvas.width/2, canvas.height/2);
+				},
+				beHitted: function () {
+					this.lastBeHittedTime = (+new Date);
+				},
+				draw: function () {
+					ctx.beginPath();
+					ctx.arc(this.x, this.y, 20, 0, 2*Math.PI, true);
+					ctx.closePath();
+					ctx.fillStyle = this.color;
+					ctx.fill();
+
+				}
+			};
+
+			// shooter
+			var Shooter = function () {
+				this.bullets = [];
+				this.lastShootTime = (+new Date);
+				this.shootInterval = 2000;
+
+				this.shoot();
+			};
+			Shooter.prototype = {
+				update: function () {
+					
+					var t = (+new Date);
+					if (t - this.lastShootTime > this.shootInterval) {
+						this.shoot();
+						this.lastShootTime = t;
+					}
+					for (var i = 0; i < this.bullets.length; i ++) {
+						var b = this.bullets[i];
+						if (b.isLive) {
+							b.update();
+						} else {
+							this.bullets.splice(i, 1);
+							i -- ;
+						}
+					}
+					this.draw();
+
+				},
+				draw: function () {
+					ctx.fillStyle = 'blue';
+					ctx.fillRect(canvas.width/2, canvas.height-40, 10, 40);
+
+				},
+				shoot: function () {
+					this.bullets.push(new Bullet(tar));
+				}
+			};
+
+			// Bullet
+			var Bullet = function (tar) {
+				this.x = canvas.width/2+5;
+				this.y = canvas.height-40;
+				this.speedX = 0;
+				this.speedY = 0;
+				this.isLive = true;
+				this.tar = tar;
+			}
+			Bullet.prototype = {
+				update: function () {
+					var dis = Math.sqrt(Math.pow((this.tar.x-this.x), 2) + Math.pow((this.tar.y - this.y), 2));
+					var angleX = (this.tar.x - this.x)/dis;
+					var angleY = (this.tar.y - this.y)/dis;
+					this.speedX = speed * angleX;
+					this.speedY = speed * angleY;
+					this.x += this.speedX;
+					this.y += this.speedY;
+
+					this.checkHit(dis);
+
+					this.draw();
+				},
+				checkHit: function (dis) {
+					if (dis < 25) {
+						this.tar.beHitted();
+						this.hit();
+					}
+				},
+				hit: function () {
+					this.isLive = false;
+				},
+				draw: function () {
+					ctx.beginPath();
+					ctx.arc(this.x, this.y, 5, 0, 2*Math.PI, true);
+					ctx.closePath();
+					ctx.fillStyle = 'red';
+					ctx.fill();
+				}
+			}
+
+			return {init: init};
+		}();
+
+		onload = function () {
+			TraceSys.init();
+		}
+	</script>
+	</body>
+</html>
