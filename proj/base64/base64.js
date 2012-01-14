@@ -47,10 +47,10 @@
 			// 循环结束后看mod, 为0 证明需补3个6位，第一个为最后一个8位的最后两位后面补4个0。另外两个6位对应的是异常的“=”；
 			// mod为1，证明还需补两个6位，一个是最后一个8位的后4位补两个0，另一个对应异常的“=”
 			if(mod == 0) {
-				result.push(base64hash.charAt(prev & 3) << 4);
+				result.push(base64hash.charAt((prev & 3) << 4));
 				result.push('==');
 			} else if (mod == 1) {
-				result.push(base64hash.charAt(prev & 0x0f) << 2);
+				result.push(base64hash.charAt((prev & 0x0f) << 2));
 				result.push('=');
 			}
 
@@ -103,7 +103,7 @@
 	}();
 
 	if (!win.Base64) { win.Base64 = Base64 }
-	if (!win.btoa) { win.btoa = btoa }
-	if (!win.atob) { win.atob = atob }
+	if (!win.btoa) { win.btoa = Base64.btoa }
+	if (!win.atob) { win.atob = Base64.atob }
 
  })(window)

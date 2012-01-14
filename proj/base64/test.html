@@ -1,4 +1,85 @@
 <!doctype html>
 <html>
+	<meta charset="utf-8" />
+	<script>
+		var tools = function () {
+		
+			return {
+				ua: window.navigator.userAgent,
+				nativeSupp: !!(window.btoa || window.atob),
+				addEvent: function (o, e, f) {
+					return o.addEventListener ? o.addEventListener(e, f, false) : o.attachEvent('on'+e, function () {f.call(o)});
+				},
+				$: function (id) {
+					return typeof id == 'string' ? document.getElementById(id) : id;
+				}
+			}
+		}();
+	</script>
 	<script src="base64.js"></script>
+	<style>
+		.doc {
+			width: 70%;
+			margin: 0 auto;
+			font-family: Georgia;
+			color: #464646;
+		}
+		textarea {
+			width: 100%;
+			height: 200px;
+		}
+		span {color: green}
+	</style>
+	<body>
+		<div class="doc">
+		<h1>Base64 Encoding & Decoding Example</h1>
+		<ul>
+			<li>UA: <span id="ua"></span></li>
+			<li>Native btoa|atob supported: <span id="support"></span></li>
+		</ul>
+		<textarea id="text"></textarea>
+		<p>
+			<select id="sel">
+				<option value="encode">encode</option>
+				<option value="decode">decode</option>
+			</select>
+			<button id="btn">Go</button>
+		</p>
+		<div>
+			<span>result:</span><br/>
+			<p id="result"></p>
+		</div>
+		</div>
+		
+		<script>
+			(function () {
+				var $ua, $supp, $text, $sel, $btn, $result;
+				
+				function init () {
+					var $ = tools.$;
+					$ua = $('ua');
+					$supp = $('support');
+					$text = $('text');
+					$sel = $('sel');
+					$btn = $('btn');
+					$result = $('result');
+					renderInfo();
+					bind()
+				}
+				function renderInfo () {
+					$ua.innerHTML = tools.ua;
+					$supp.innerHTML = tools.nativeSupp;
+				}
+				function bind() {
+					tools.addEvent($btn, 'click', function (e) {
+						var val = $text.value,
+							method = $sel.value == 'encode' ? 'btoa' : 'atob';
+						$result.innerHTML = window[method](val);
+					})
+				}
+				
+				tools.addEvent(window, 'load', init)
+			})();
+		</script>
+	</body>
 </html>
