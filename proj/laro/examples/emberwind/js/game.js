@@ -4,7 +4,8 @@ Laro.register('Emberwind', function (La) {
 
 	PKG.states = {
 		kStateIntro: 0,
-		kStateTimetrap: 1
+		kStateTimetrap: 1,
+        kStateMenu: 2
 	};
     
     var Game = La.Class(function (id) {
@@ -16,7 +17,8 @@ Laro.register('Emberwind', function (La) {
         
         var statesList = [
             PKG.states.kStateIntro, PKG.IntroState,
-            PKG.states.kStateTimetrap, PKG.Timetrap
+            PKG.states.kStateTimetrap, PKG.Timetrap,
+            PKG.states.kStateMenu, PKG.Menu
         ];
         this.fsm = new La.AppFSM(this, statesList);    
         this.screenTransition = null;
@@ -30,6 +32,18 @@ Laro.register('Emberwind', function (La) {
 			{
 				from: PKG.states.kStateIntro,
 				to: PKG.states.kStateTimetrap,
+				out: false,
+				transition: new La.ScreenTransitionFade(new La.Pixel32(255, 255, 255, 255), new La.Pixel32(255, 255, 255, 0), 0.25)
+			},
+            {
+                from: PKG.states.kStateTimetrap,
+				to: PKG.states.kStateMenu,
+				out: true,
+				transition: new La.ScreenTransitionFade(new La.Pixel32(255, 255, 255, 0), new La.Pixel32(255, 255, 255, 255), 0.25)
+            },
+			{
+				from: PKG.states.kStateTimetrap,
+				to: PKG.states.kStateMenu,
 				out: false,
 				transition: new La.ScreenTransitionFade(new La.Pixel32(255, 255, 255, 255), new La.Pixel32(255, 255, 255, 0), 0.25)
 			}

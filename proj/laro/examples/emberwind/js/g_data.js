@@ -2,7 +2,7 @@ g_data = {
     "game": {
 		"stages": {
 			
-			"Stage_0_H1": {
+		/*	"Stage_0_H1": {
 				"preload": [
 					"atlas/friends/wick.png",
 					"atlas/gui/stage_banner.png",
@@ -121,7 +121,7 @@ g_data = {
 					}
 				],
 				"coldepthmin": 0
-			}
+			} */
         }
 	},
     "resources": {
