@@ -1,7 +1,8 @@
 // emberwind state
 Laro.register('Emberwind', function (La) {
     var Vec2 = La.Vector2, Pixel32 = La.Pixel32;
-    
+    var pkg = this;
+	
     this.IntroState = La.BaseState.extend(function () {
         this.t = 0;
         this.delayAfter = 1;
@@ -144,10 +145,20 @@ Laro.register('Emberwind', function (La) {
             
             this.cloudXPos = 0;
             this.fogXPos = 0;
+			
+			// add event
+			var cvs = Emberwind.Game.instance.canvas;
+			this.cvs = cvs;
+			var _this = this;
+			this.cvs.addEventListener('click', function (e) {
+				_this.buttonPressed = 1;
+			}, false)
 
 
         },
-        leave: function () {},
+        leave: function () {
+			this.cvs.removeEventListener('click');
+		},
         update: function (dt) {
             this.titleParam += dt;
             this.pressStartFlash += dt;
@@ -167,7 +178,9 @@ Laro.register('Emberwind', function (La) {
 
         },
         transition: function () {
-        
+			if (this.buttonPressed == 1) {
+				pkg.Game.instance.setState(pkg.states.kStateLoadingStage, 'stage0');
+			}
         },
         draw: function (render) {
             this.drawStartScreenBackground(render);
@@ -208,8 +221,50 @@ Laro.register('Emberwind', function (La) {
             var offsetY = perlin.noise(this.titleParam / 2 + 100) * 5;
          
             offsetY += 10; // Maybe
-            //render.drawParticle(this.titleImgs[5], center.x + offsetX, titlePos + offsetY, 0, 1, 1, 1, new Pixel32(0xff, 0xff, 0xff, 0xff), false);
+            render.drawParticle(this.titleImgs[5], center.x + offsetX, titlePos + offsetY, 0, 1, 1, 1, new Pixel32(0xff, 0xff, 0xff, 0xff), false);
         }
-    })
+    });
+	
+	
+	// LoadingStage state
+	this.LoadingStage = La.BaseState.extend(function () {
+	
+	}).methods({
+		enter: function (msg, fromState) {
+		
+		},
+		leave: function () {},
+		update: function (dt) {
+		
+		},
+		draw: function (render) {
+			render.clear(render.black);
+			render.context.font = '32pt Arial';
+			render.context.fillStyle = '#ffffff';
+			render.context.fillText('Loading Stage 0', render.getWidth()/2 - 100, render.getHeight()/2)
+		},
+		transition: function () {
+		
+		}
+	});
+
+	// into game; 
+	this.InGame = La.BaseState.extend(function () {
+	
+	}).methods({
+		enter: function (msg, fromState) {
+		
+		},
+		leave: function () {},
+		update: function (dt) {
+		
+		},
+		draw: function (render) {
+		
+		},
+		transition: function () {
+		
+		}
+	});
 
 })

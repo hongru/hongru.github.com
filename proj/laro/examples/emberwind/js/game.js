@@ -5,7 +5,10 @@ Laro.register('Emberwind', function (La) {
 	PKG.states = {
 		kStateIntro: 0,
 		kStateTimetrap: 1,
-        kStateMenu: 2
+        kStateMenu: 2,
+		
+		kStateLoadingStage: 3,
+		kStateInGame: 4
 	};
     
     var Game = La.Class(function (id) {
@@ -18,7 +21,10 @@ Laro.register('Emberwind', function (La) {
         var statesList = [
             PKG.states.kStateIntro, PKG.IntroState,
             PKG.states.kStateTimetrap, PKG.Timetrap,
-            PKG.states.kStateMenu, PKG.Menu
+            PKG.states.kStateMenu, PKG.Menu,
+			
+			PKG.states.kStateLoadingStage, PKG.LoadingStage,
+			PKG.states.kStateInGame, PKG.InGame
         ];
         this.fsm = new La.AppFSM(this, statesList);    
         this.screenTransition = null;
@@ -48,8 +54,8 @@ Laro.register('Emberwind', function (La) {
 				transition: new La.ScreenTransitionFade(new La.Pixel32(255, 255, 255, 255), new La.Pixel32(255, 255, 255, 0), 0.25)
 			}
         ];
-		this.screenTransitionDefaultIn = new La.ScreenTransitionFade(new La.Pixel32(255, 255, 255, 255), new La.Pixel32(255, 255, 255, 0));
-		this.screenTransitionDefaultOut = new La.ScreenTransitionFade(new La.Pixel32(255, 255, 255, 0), new La.Pixel32(255, 255, 255, 255));
+		this.screenTransitionDefaultIn = new La.ScreenTransitionFade(new La.Pixel32(255, 255, 255, 255), new La.Pixel32(255, 255, 255, 0), 0.25);
+		this.screenTransitionDefaultOut = new La.ScreenTransitionFade(new La.Pixel32(255, 255, 255, 0), new La.Pixel32(255, 255, 255, 255), 0.25);
 
 		this.newState = -1;
 		this.newMessage = null;
@@ -162,7 +168,7 @@ Laro.register('Emberwind', function (La) {
                 var st = this.findScreenTransition(this.fsm.currentState, state, true);
 
                 if (st == null) st = this.findScreenTransition(this.fsm.currentState, -1, true);
-                if (st == null) st = this.screenTransitionsDefaultOut;
+                if (st == null) st = this.screenTransitionDefaultOut;
          
                 st.reset();
          
