@@ -17,8 +17,9 @@
 <script src="js/g_data.js"></script>
 <script>
 Laro.module.loadProgressCallback = function (name, url) {document.getElementById('canvas').innerHTML = 'loading module ' + name; }
-Laro.module.register('emberwind', 'js/game.js').require(['emberwind.resource', 'emberwind.states'])
-    .register('emberwind.states', 'js/states.js').require('emberwind.resource')
+Laro.module.register('emberwind', 'js/game.js').require(['emberwind.resource', 'emberwind.states', 'emberwind.fighter'])
+	.register('emberwind.fighter', 'js/fighter.js').require('emberwind.resource')
+    .register('emberwind.states', 'js/states.js').require(['emberwind.resource', 'emberwind.fighter'])
     .register('emberwind.resource', 'js/resource.js').require('laro')
     
 Laro.use('emberwind', function () {

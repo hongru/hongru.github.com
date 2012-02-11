@@ -31,7 +31,10 @@ Laro.register('Emberwind', function (La) {
                 "titletext_html5.png", 
                 "titlescreen_wick_eyes.png", 
                 "titlescreen_kindle_eyes.png", 
-                "timetrap.png" 
+                "timetrap.png",
+
+				'fighter/wait.gif',
+				'fighter/goForward.gif'
 
             ];
             La.ResourceLoader.getInstance().preloadImages(images, La.curry(this.progressCallback, this));
@@ -146,6 +149,8 @@ Laro.register('Emberwind', function (La) {
             this.cloudXPos = 0;
             this.fogXPos = 0;
 			
+			this.fighter = Emberwind.Fighter.getInstance(Emberwind.Game.instance.render);
+			
 			// add event
 			var cvs = Emberwind.Game.instance.canvas;
 			this.cvs = cvs;
@@ -175,6 +180,8 @@ Laro.register('Emberwind', function (La) {
      
             this.fogXPos -= 8 * dt;
             if (this.fogXPos < - this.titleImgs[3].textureWidth * 10) this.fogXPos = -8 * dt;
+			
+			this.fighter.update(dt);
 
         },
         transition: function () {
@@ -184,6 +191,7 @@ Laro.register('Emberwind', function (La) {
         },
         draw: function (render) {
             this.drawStartScreenBackground(render);
+			this.drawFighter(render);
         },
         drawStartScreenBackground: function (render) {
             var center = new Vec2(render.getWidth() / 2, render.getHeight() / 2);
@@ -206,7 +214,7 @@ Laro.register('Emberwind', function (La) {
             if (this.timeIntoStartScreen > 0.5) {
                 fgScale = 5 - 4 * La.clamp(0, (this.timeIntoStartScreen - 0.5) / 2, 1);
             }
-            render.drawParticle(this.titleImgs[4], center.x, center.y, 0, fgScale, fgScale, 1, new Pixel32(0xff, 0xff, 0xff, 0x0), false);
+            //render.drawParticle(this.titleImgs[4], center.x, center.y, 0, fgScale, fgScale, 1, new Pixel32(0xff, 0xff, 0xff, 0x0), false);
             
             var titlePos = center.y;
             if (this.timeIntoStartScreen > 2.5) {
@@ -222,7 +230,10 @@ Laro.register('Emberwind', function (La) {
          
             offsetY += 10; // Maybe
             render.drawParticle(this.titleImgs[5], center.x + offsetX, titlePos + offsetY, 0, 1, 1, 1, new Pixel32(0xff, 0xff, 0xff, 0xff), false);
-        }
+        },
+		drawFighter: function (render) {
+			this.fighter.draw(render);
+		}
     });
 	
 	

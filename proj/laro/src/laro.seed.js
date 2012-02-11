@@ -33,10 +33,10 @@
         .register('laro', base + 'src/world/world.js').require(['class', 'exception', 'util', 'perlin', 'point2', 'vector2', 'chaikin', 'piexel32', 'rectf', 'imageW', 'layer', 'render', 'canvasRender', 'world', 'animation', 'animationHandle', 'resource', 'loop', 'state', 'fsm'])
         
         
-        Laro.initialize = function (cb) {
+        /*Laro.initialize = function (cb) {
             Laro.multiModule(['class', 'exception', 'util', 'perlin', 'point2', 'vector2', 'chaikin', 'piexel32', 'rectf', 'imageW', 'layer', 'render', 'canvasRender', 'world', 'animation', 'animationHandle', 'resource', 'loop', 'state', 'fsm'], function () {
                 console.log('Laro initialized :)', Laro);
                 cb && cb();
             });
-        }
+        }*/
 })();
