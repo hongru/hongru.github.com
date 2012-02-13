@@ -61,7 +61,7 @@ h1 {
                     var reader = new FileReader();  
                     reader.onload = function(e){ 
 
-                        displayImage($con.get[0], e.target.result);
+                        displayImage($con.get(0), e.target.result);
                     }
 
                     reader.readAsDataURL(file);  
