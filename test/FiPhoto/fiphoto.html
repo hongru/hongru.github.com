@@ -50,8 +50,29 @@ h1 {
             
             // private methods
             function displayImage(container,dataURL){
-                var imgStr = '<img alt="" src="'+ dataURL +'" />';
+                var imgStr = '<img id="fx-image" alt="" src="'+ dataURL +'" />';
                 $con.html(imgStr);
+                
+                imageFx();
+            }
+            function imageFx() {
+                try {
+                    var canvas = fx.canvas();
+                } catch (e) {
+                    alert(e.message);
+                    return;
+                }
+
+                // convert the image to a texture
+                var image = document.getElementById('fx-image');
+                var texture = canvas.texture(image);
+
+                // apply the ink filter
+                canvas.draw(texture).ink(0.25).update();
+alert(66)
+                // replace the image with the canvas
+                image.parentNode.insertBefore(canvas, image);
+                //image.parentNode.removeChild(image);
             }
             function handleFiles(files){
                 for (var i = 0; i < files.length; i++) {  
