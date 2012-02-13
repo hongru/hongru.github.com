@@ -1,0 +1,130 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3c.org/TR/html4/strict.dtd"> 
+<html> 
+	<head> 
+		<title>HTML5 File API - Image Preview</title> 
+		<meta charset="gb2312"> 
+		<style type="text/css"> 
+			.wrapper{
+				width: 300px;
+				height: 50px;
+				background:#F5F5F5;
+				border: 1px solid #E4E4E4;
+				border-radius: 5px;
+				border-bottom-left-radius: 0;
+				border-bottom-right-radius: 0;
+				-moz-border-radius: 5px;
+				-moz-border-radius-bottomleft: 0;
+				-moz-border-radius-bottomright: 0;
+				text-align: center;
+				font-family: 'Microsoft YaHei', 'Microsoft JhengHei', arial;
+				font-size: 198%;
+				line-height: 50px;
+				color: #919191;
+				float: left;
+			}
+			#fileUpload,#dragUpload{
+				margin-left: 10px;
+			}
+			.drag-over{
+				color: #555555;
+				background-color: #EBEBEB; 
+			}
+			.cls{ zoom: 1}
+			.cls:after{
+				content:'';
+				visibility: hidden;
+				display: block;
+				height: 0;
+				clear: both;
+			}
+ 
+			#hd{
+				width: 635px;
+				margin: 10px auto 10px;
+				border-bottom: 3px solid #737373;
+			}
+			#bd{
+				width: 615px;
+				margin: 0 auto;
+				line-height: 80px;
+			}
+			#bd img{
+				width: 100px;
+				height: 100px;
+				padding: 2px;
+				border: 1px solid #CECECE;
+				margin-left: 15px;
+				-webkit-box-shadow:2px 2px 5px #000;
+				-moz-box-shadow:2px 2px 5px #000;
+			}
+		</style> 
+	</head> 
+	<body> 
+		<div class="cls" id="hd"> 
+			<div id="fileUpload" class="wrapper"> 
+				<input id="fileInput" type="file" multiple onchange="handleFiles(this.files)"> 
+			</div> 
+			<div id="dragUpload" class="wrapper last"> 
+				拖拽图片到此
+			</div> 
+		</div> 
+		<div id="bd"></div> 
+ 
+	</body> 
+	<script type="text/javascript"> 
+	/*<![CDATA[*/
+		function $(id){
+			return document.getElementById(id);
+		}
+		function displayImage(container,dataURL){
+			var img = document.createElement('img');
+			img.src = dataURL;
+			container.appendChild(img);
+		}
+		function handleFiles(files){
+			for (var i = 0; i < files.length; i++) {  
+				var file = files[i];  
+				var imageType = /image.*/;  
+				  
+				if (!file.type.match(imageType)) {  
+				  continue;  
+				}  
+ 
+				var reader = new FileReader();  
+				reader.onload = function(e){
+					displayImage($('bd'),e.target.result);
+				}
+				reader.readAsDataURL(file);  
+			}  
+		}
+		if( window.addEventListener ){
+			var du = $('dragUpload'); 
+			du.addEventListener("dragenter", function(e){
+				e.stopPropagation();  
+				e.preventDefault();  
+				du.className += ' drag-over';
+			}, false);  
+			du.addEventListener("dragleave", function(e){
+				e.stopPropagation();  
+				e.preventDefault();  
+				du.className = du.className.replace(' drag-over','');
+			}, false);  
+			du.addEventListener("dragover",  function(e){
+				e.stopPropagation();  
+				e.preventDefault();  
+			}, false);  
+			du.addEventListener("drop",function(e){
+				e.stopPropagation();  
+				e.preventDefault();  
+				du.className = du.className.replace('drag-over','');
+	
+				var dt = e.dataTransfer;  
+				var files = dt.files; 
+	
+				handleFiles(files);  
+			},false);
+		}
+	//]]>
+	</script> 
+</html> 
