@@ -4,6 +4,7 @@
 <meta charset="utf-8" />
 <title>FiPhoto</title>
 <script src="http://code.jquery.com/jquery.min.js"></script>
+<script src="js/common.js"></script>
 <script src="js/glfx.js"></script>
 <style>
 body,p,ul,ol,h1,h2,h3,h4,h5,h6 {
@@ -29,7 +30,7 @@ h1 {
 .container:hover, .container.hover {
     background: #f3f3f3;
 }
-.container img {
+.container img, canvas {
     border: 1px solid #f3f3f3;
     -webkit-box-shadow:2px 2px 5px #000;
     padding: 10px;
@@ -47,32 +48,65 @@ h1 {
     <script>
         $(function () {
             var $con = $('#container');
+            var canvas;
+            
+            var imgFX = {
+                normal: function (image) {
+                    image.onload = function (e) {
+                        var texture = canvas.texture(image);
+                        canvas.draw(texture).vignette(0.5, 0.5).update();
+                        image.parentNode.insertBefore(canvas, image);
+                        image.parentNode.removeChild(image);  
+                    }
+                },
+                amaro: function (image) {
+                    image.onload = function (e) {
+                        var texture = canvas.texture(image);
+                        canvas.draw(texture).brightnessContrast(0, 0.15).update();
+                        texture = canvas.texture(canvas);
+                        canvas.draw(texture).sepia(0.4).update();
+                        texture = canvas.texture(canvas);
+                        canvas.draw(texture).vignette(0.5, 0.5).update();
+                        image.parentNode.insertBefore(canvas, image);
+                        image.parentNode.removeChild(image);  
+                    }
+                }
+            };
+            
+            var FXtab = function () {
+                vat tpl
+                
+                return {
+                    init: function () {
+                        
+                    }
+                }
+            }();
             
             // private methods
+            function generateCanvas(succFunc, errFunc) {
+                try {
+                    canvas = fx.canvas();
+                    !!canvas && succFunc(canvas);
+                } catch(e) {
+                    alert(e);
+                    !!errFunc && errFunc();
+                }
+            }
+            
             function displayImage(container,dataURL){
                 var imgStr = '<img id="fx-image" alt="" src="'+ dataURL +'" />';
                 $con.html(imgStr);
                 
                 imageFx();
             }
+            
             function imageFx() {
-                try {
-                    var canvas = fx.canvas();
-                } catch (e) {
-                    alert(e.message);
-                    return;
-                }
 
                 // convert the image to a texture
                 var image = document.getElementById('fx-image');
-                var texture = canvas.texture(image);
-
-                // apply the ink filter
-                canvas.draw(texture).ink(0.25).update();
-alert(66)
-                // replace the image with the canvas
-                image.parentNode.insertBefore(canvas, image);
-                //image.parentNode.removeChild(image);
+                imgFX.amaro(image);
+                
             }
             function handleFiles(files){
                 for (var i = 0; i < files.length; i++) {  
@@ -114,9 +148,12 @@ alert(66)
                 
             }
             
-            // activate
-            bindEvent();
+            function errCallback() {
+                $con.html('Sorry, Your browser do not support webGL')
+            }
             
+            // activate
+            generateCanvas(bindEvent, errCallback);           
             
         })
     </script>
