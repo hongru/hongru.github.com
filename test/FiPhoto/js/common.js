@@ -71,10 +71,5 @@
         };
     }
     
-    
-    // public
-    $.NS = NS;
-    $.templateSettings = templateSettings;
-    $.template = template;
 
 })(jQuery);
