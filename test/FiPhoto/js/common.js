@@ -69,7 +69,6 @@
         return function (data) {
             return func.call(this, data, $);
         };
-    }
-    
+    }   
 
 })(jQuery);
