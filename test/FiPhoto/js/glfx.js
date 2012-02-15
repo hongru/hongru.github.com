@@ -1,8 +1,8 @@
 /*
  * glfx.js
- * http://evanw.github.com/glfx.js/
  *
  * Copyright 2011 Evan Wallace
+ * Modified by horizon(hongru.chenhr[at]gmail.com)
  * Released under the MIT license
  */
 var fx=function(){function n(b,c,d){return Math.max(b,Math.min(c,d))}function v(b){return{_:b,loadContentsOf:function(c){this._.loadContentsOf(c)},destroy:function(){this._.destroy()}}}function C(b){return v(r.fromElement(b))}function D(b,c){var d=a.getExtension("OES_texture_float")?a.FLOAT:a.UNSIGNED_BYTE;this._.texture&&this._.texture.destroy();this._.spareTexture&&this._.spareTexture.destroy();this.width=b;this.height=c;this._.texture=new r(b,c,a.RGBA,d);this._.spareTexture=new r(b,c,a.RGBA,d);
