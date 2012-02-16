@@ -2,7 +2,7 @@
 <html>
 <head>
 <meta charset="utf-8" />
-<title>FiPhoto</title>
+<title>Mr.Photo</title>
 <script src="js/jquery.min.js"></script>
 <script src="js/common.js"></script>
 <script src="js/glfx.js"></script>
@@ -122,12 +122,12 @@ h1 {
 </head>
 
 <body>
-    <h1>FiPhoto</h1>
+    <h1>Mr.Photo</h1>
     <div id="toolbar" class="toolbar hide">
         <a href="#" data-cmd="cut">裁剪</a>
-        <a href="#" data-cmd="roll-left">左旋</a>
-        <a href="#" data-cmd="roll-right">右旋</a>
-        <a href="#" data-cmd="blur">虚化</a>
+        <a href="#" data-cmd="roll-left">顺时针旋转</a>
+        <a href="#" data-cmd="roll-right">逆时针选装</a>
+
         <a href="#" data-cmd="save">保存</a>
         <a href="#" data-cmd="share">分享</a>
     </div>
@@ -527,14 +527,14 @@ h1 {
                 this.$cutWin.appendTo('body');
             };
             this.show = function () {
-                this.$mask.show();
+                /*this.$mask.show();
                 this.updateCutWin();
                 this.$cutWin.css({
                     backgroundImage: 'url('+FiPhoto.canvas.toDataURL()+')',
                     backgroundRepeat: 'no-repeat'
                 })
                 this.$cutWin.show();
-                
+                */
             };
             this.updateCutWin = function () {
                 var info = this.getCanvasInfo();
@@ -570,13 +570,51 @@ h1 {
         $.NS('FiPhoto.roll', function () {
             var pkg = this;
             this.init = function () {
-                
+                //this.create();
             };
+            this.create = function () {
+                this.$tmpCanvas = $('<canvas></canvas>').appendTo('body');
+                this.cvs = this.$tmpCanvas.get(0);
+                this.cvs.width = FiPhoto.canvas.height;
+                this.cvs.height = FiPhoto.canvas.width;
+                this.ctx = this.cvs.getContext('2d');
+            }
+            this.do = function (dir) {
+                if (dir == undefined) {
+                    dir = 'left';
+                }
+                var angle = 0;
+                if (dir == 'left') {
+                    angle = Math.PI/2;
+                } else if (dir == 'right') {
+                    angle = -Math.PI/2;
+                }
+                
+                this.create();
+                this.ctx.save();
+                this.ctx.translate(this.cvs.width/2, this.cvs.height/2);
+                this.ctx.rotate(angle);
+                this.ctx.drawImage(FiPhoto.image, -this.cvs.height/2, -this.cvs.width/2);
+                this.ctx.restore();
+                
+                //FiPhoto.image.src = this.ctx.toDataURL('image/png');
+                var type = FiPhoto.$tabWrap.find('li.current').attr('data-cmd');
+                var src = this.cvs.toDataURL('image/png');
+                FiPhoto.setFx(type, src);
+                
+                this.destory();
+            }
             this.left = function () {
-            
+                this.do('left');
+            };
+            this.destory = function () {
+                this.$tmpCanvas.remove();
+                this.$tmpCanvas = null;
+                this.cvs = null;
+                this.ctx = null;
             };
             this.right = function () {
-                
+                this.do('right');
             }
         });
         
