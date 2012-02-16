@@ -8,7 +8,7 @@ Laro.register('Emberwind', function (La) {
 	}).methods({
 		enter: function (msg, fromState) {
 			//alert('FG-wait')
-			console.log(this.host)
+			//console.log(this.host)
 			var state = {
 				frames: 6,
 				imgW: 372,

@@ -98,6 +98,7 @@ Laro.register('Emberwind', function (La) {
             var res = Emberwind.Resource.getInstance();
             this.animation = res.getAnimation('TimeTrap');
             this.timeInState = 0;
+            this.sound = Emberwind.Game.instance.sound;
         },
         leave: function () {},
         update: function (dt) {
@@ -105,7 +106,9 @@ Laro.register('Emberwind', function (La) {
             this.animation.update(dt);
             if (this.timeInState < 0.5 && this.timeInState + dt > 0.5) {
                 this.animation.play(false);
+                this.sound.play('timetrap')
             }
+            (this.timeInState + dt > 0.5) && this.sound.update(dt);
             this.timeInState += dt;
         },
         transition: function () {

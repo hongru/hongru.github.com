@@ -11,6 +11,7 @@
         .register('exception', base + 'src/base/exception.js')
         .register('util', base + 'src/geometry/util.js')
         .register('perlin', base + 'src/geometry/perlin.js')
+		.register('sound', base + 'src/sound/sound.js').require(['class'])
         
         .register('point2', base + 'src/geometry/point2.js').require(['class', 'exception'])
         .register('vector2', base + 'src/geometry/vector2.js').require(['class', 'exception', 'point2'])
@@ -30,7 +31,7 @@
         .register('resource', base + 'src/game/resource.class.js').require(['class', 'pixel32'])
         .register('state', base + 'src/game/state.js').require(['class', 'pixel32'])
         .register('fsm', base + 'src/game/fsm.js').require(['state'])
-        .register('laro', base + 'src/world/world.js').require(['class', 'exception', 'util', 'perlin', 'point2', 'vector2', 'chaikin', 'piexel32', 'rectf', 'imageW', 'layer', 'render', 'canvasRender', 'world', 'animation', 'animationHandle', 'resource', 'loop', 'state', 'fsm'])
+        .register('laro', base + 'src/world/world.js').require(['class', 'sound', 'exception', 'util', 'perlin', 'point2', 'vector2', 'chaikin', 'piexel32', 'rectf', 'imageW', 'layer', 'render', 'canvasRender', 'world', 'animation', 'animationHandle', 'resource', 'loop', 'state', 'fsm'])
         
         
         /*Laro.initialize = function (cb) {

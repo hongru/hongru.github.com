@@ -7,9 +7,9 @@ Laro.register('.game', function (La) {
 	
 	var Sound = La.Class(function (url, isAuto) {
 		this.url = url;
+		this.channels = {};
 		this.currentChannel = null;
 		this.genAudio();
-		this.channels = {};
 		this.bind();
 		this.audio.load();
 		
@@ -17,10 +17,30 @@ Laro.register('.game', function (La) {
 		genAudio: function () {
 			this.audio = new Audio();
 			this.audio.src = this.url;
-			this.addChannel('default', 0, this.getDuration());
+		
 		},
 		bind: function () {
-			
+			var _this = this;
+			this.audio.addEventListener('loadedmetadata', function (e) {
+				_this.addChannel('default', 0, _this.getDuration());	
+			}, false);
+			this.audio.addEventListener('playing', function(e) { 
+				// todo	
+			}, false);
+			this.audio.addEventListener('timeupdate', function (e) {
+				// todo
+			}, false);
+		},
+		update: function (dt) {
+			var cur = this.currentChannel,
+				t = (+ new Date);
+
+			if (t >= cur.startTime + cur.duration*1000) {
+				this.isPlayingChannel(cur.name) && this.pause();
+			}
+		},
+		isPlayingChannel: function (name) {
+			return !this.audio.paused && (name === this.currentChannel.name);				  
 		},
 		getDuration: function () {
 			return this.audio.duration;
@@ -74,8 +94,16 @@ Laro.register('.game', function (La) {
 			this.audio.play();
 			this.currentChannel = {
 				name: name,
-				isLoop: isLoop
+				start: channel.start,
+				duration: channel.duration,
+				end: channel.end,
+				isLoop: isLoop,
+				startTime: (+new Date)
 			};
 		}
 	})
+
+	this.Sound = Sound;
+	La.extend({Sound: Sound});
+
 })

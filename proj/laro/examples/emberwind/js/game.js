@@ -26,7 +26,9 @@ Laro.register('Emberwind', function (La) {
 			PKG.states.kStateLoadingStage, PKG.LoadingStage,
 			PKG.states.kStateInGame, PKG.InGame
         ];
-        this.fsm = new La.AppFSM(this, statesList);    
+        this.fsm = new La.AppFSM(this, statesList);   
+        this.sound = new La.Sound('resources/music/sfx.ogg');
+        this.sound.addChannel('timetrap', 320, 4.54);
         this.screenTransition = null;
         this.screenTransitions = [
             {
@@ -120,7 +122,7 @@ Laro.register('Emberwind', function (La) {
 						st.reset();
 						this.screenTransition = st;
 						this.stateMode = this.stateModes.kTransitionIn;
-                        console.log('----------- '+this.newState)
+                        //console.log('----------- '+this.newState)
 						this.fsm.setState(this.newState, this.newMessage);
 					} else {
 
