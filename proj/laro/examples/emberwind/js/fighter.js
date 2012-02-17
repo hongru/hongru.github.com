@@ -29,7 +29,9 @@ Laro.register('Emberwind', function (La) {
 			this.animation.draw(render, render.getWidth() / 2, render.getHeight() - 60, 0, 1, null);
 		},
 		transition: function () {
-		
+            if (PKG.keyboard.key('right')) {
+                this.host.fsm.setState(PKG.FG_states.goForward);
+            } 
 		}
 	});
 	
@@ -37,22 +39,33 @@ Laro.register('Emberwind', function (La) {
 		
 	}).methods({
 		enter: function (msg, fromState) {
-		
+            var state = {
+				frames: 6,
+				imgW: 396,
+				imgH: 92,
+				imgUrl: 'fighter/goForward.gif',
+				framerate: 10
+			};
+			this.animation = this.host.getAnimation(state);
+			this.animation.play();
 		},
 		leave: function () {
 		
 		},
 		update: function (dt) {
-		
+            this.animation.update(dt);
 		},
 		draw: function (render) {
-		
+            this.animation.draw(render, render.getWidth() / 2, render.getHeight() - 60, 0, 1, null);
 		},
 		transition: function () {
-		
+            if (!PKG.keyboard.key('right')) { 
+                this.host.fsm.setState(PKG.FG_states.wait);
+            } 
 		}
 	});
 	
+    /* fighter states */
 	var fStates = {
 		wait: 0,
 		goForward: 1
@@ -65,6 +78,7 @@ Laro.register('Emberwind', function (La) {
 	this.FG_states = fStates;
 	this.FG_statesList = statesList;
 	
+    /* Main fighter class */
 	this.Fighter = La.Class(function(render) {
 		//console.log(render)
 		this.fsm = new La.AppFSM(this, statesList);

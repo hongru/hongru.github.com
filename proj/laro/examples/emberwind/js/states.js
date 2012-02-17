@@ -20,6 +20,9 @@ Laro.register('Emberwind', function (La) {
 
     }).methods({
         enter : function (msg, fromState) {
+            pkg.sound = Emberwind.Game.instance.sound;
+            pkg.music = Emberwind.Game.instance.bgMusic;
+        
             La.ResourceLoader.getInstance().preloadImages(["laro.png"], La.curry(this.operaProgressCallback, this));
          
             var images = [
@@ -40,7 +43,10 @@ Laro.register('Emberwind', function (La) {
             La.ResourceLoader.getInstance().preloadImages(images, La.curry(this.progressCallback, this));
          
             this.font = Emberwind.Resource.getInstance().getFont("LoadingIntro");
-            this.operaLogo = Emberwind.Resource.getInstance().getImage("opera_logo", "opera_logo"); 
+            this.operaLogo = Emberwind.Resource.getInstance().getImage("opera_logo", "opera_logo");
+
+            pkg.sound.addChannel('timetrap', 320, 4.54);
+            pkg.music.addChannel('menu', 14, 119.4);
         },
         leave: function () {},
         progressCallback : function (status) {
@@ -100,18 +106,20 @@ Laro.register('Emberwind', function (La) {
             this.timeInState = 0;
             this.sound = Emberwind.Game.instance.sound;
         },
-        leave: function () {},
+        leave: function () {
+            this.sound.pause()
+        },
         update: function (dt) {
             dt = Math.min(dt, 1/15);
             this.animation.update(dt);
             if (this.timeInState < 0.5 && this.timeInState + dt > 0.5) {
                 this.animation.play(false);
-                this.sound.play('timetrap')
+                this.sound.play('timetrap');
             }
             (this.timeInState + dt > 0.5) && this.sound.update(dt);
             this.timeInState += dt;
         },
-        transition: function () {
+        transition: function () { 
             return this.host.tryChangeState(this.timeInState > 5, La.FSM.kNextState, 'stage0');
         },
         draw: function (render) {
@@ -133,9 +141,12 @@ Laro.register('Emberwind', function (La) {
         this.titleParam = 0;
         this.pressStartText = null;
         this.pressStartFlash = 0;
+        
 
     }).methods({
         enter: function (msg, fromState) {
+            pkg.keyboard = Emberwind.Game.instance.keyboard;
+            
             this.timeIntoStartScreen = 999;
   
             this.lastMusicPos = 0;
@@ -162,10 +173,12 @@ Laro.register('Emberwind', function (La) {
 				_this.buttonPressed = 1;
 			}, false)
 
-
+            // music
+            pkg.music.play('menu', true);
         },
         leave: function () {
 			this.cvs.removeEventListener('click');
+            pkg.music.pause();
 		},
         update: function (dt) {
             this.titleParam += dt;
@@ -185,6 +198,7 @@ Laro.register('Emberwind', function (La) {
             if (this.fogXPos < - this.titleImgs[3].textureWidth * 10) this.fogXPos = -8 * dt;
 			
 			this.fighter.update(dt);
+            
 
         },
         transition: function () {

@@ -14,9 +14,6 @@ Laro.register('Emberwind', function (La) {
     var Game = La.Class(function (id) {
         this.canvasId = id;
         this.canvas = document.getElementById(id);
-        this.resources = new Emberwind.Resource()
-        this.resources.setCallback(La.curry(this.resourceCallback, this));
-        Emberwind.Resource.instance = this.resources;
         
         var statesList = [
             PKG.states.kStateIntro, PKG.IntroState,
@@ -28,7 +25,12 @@ Laro.register('Emberwind', function (La) {
         ];
         this.fsm = new La.AppFSM(this, statesList);   
         this.sound = new La.Sound('resources/music/sfx.ogg');
-        this.sound.addChannel('timetrap', 320, 4.54);
+        this.bgMusic = new La.Sound('resources/music/music.ogg');
+        
+        this.resources = new Emberwind.Resource()
+        this.resources.setCallback(La.curry(this.resourceCallback, this));
+        Emberwind.Resource.instance = this.resources;
+
         this.screenTransition = null;
         this.screenTransitions = [
             {
@@ -69,13 +71,13 @@ Laro.register('Emberwind', function (La) {
 		this.stateMode = this.stateModes.kStateActive;
 
         this.render = null;
-		this.fillScreen = true;
 		Game.instance = this;
-		this.initialized = false;
 
 		this.createRender();
         this.resources.init();
-      //  console.log(this.resources)
+        
+        this.keyboard = new La.Keyboard();
+
     }).methods({
 		getInstance: function () {
 			if (!Game.instance) throw 'Game not init';

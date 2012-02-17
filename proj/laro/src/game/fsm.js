@@ -84,7 +84,7 @@ Laro.register('.game', function (La) {
 		},
 		// 设置状态
 		setState: function (state, msg, suspendedCurrent) {
-			if (state = FSM.kNextState) {
+			if (state == FSM.kNextState) {
 				state = this.currentState + 1;
 			}
 
@@ -108,6 +108,7 @@ Laro.register('.game', function (La) {
 					if (this.currentState != FSM.kNoState) {
 						this.stateArray[this.currentState].leave();
 					}
+
 					// 如果指定状态并没有挂起的话，需要把所有挂起的状态退出
 					if (!this.stateArray[state].isSuspended) {
 						for ( ; this.numSuspended > 0; this.numSuspended --) {

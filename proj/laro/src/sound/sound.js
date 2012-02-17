@@ -28,15 +28,33 @@ Laro.register('.game', function (La) {
 				// todo	
 			}, false);
 			this.audio.addEventListener('timeupdate', function (e) {
-				// todo
+				var cur = _this.currentChannel,
+					t = (+ new Date);
+
+				if (t >= cur.startTime + cur.duration*1000) {
+					_this.isPlayingChannel(cur.name) && _this.pause();
+					if (cur.isLoop) {
+						_this.play(cur.name, cur.isLoop);
+					}
+				}
 			}, false);
 		},
 		update: function (dt) {
-			var cur = this.currentChannel,
-				t = (+ new Date);
-
-			if (t >= cur.startTime + cur.duration*1000) {
-				this.isPlayingChannel(cur.name) && this.pause();
+			// todo
+		},
+		getVolume: function () {
+			return this.audio.volume;		   
+		},
+		setVolume: function (v) {
+			v = Math.max(0, Math.min(v, 100));
+			this.audio.volume = v;		   
+		},
+		haveData: function () {
+			var s = this.audio.readyState;
+			if (s == 1) {
+				return false;
+			} else if (s == 2 || s == 3 || s == 4 || s == 5) {
+				return true;
 			}
 		},
 		isPlayingChannel: function (name) {
@@ -89,17 +107,19 @@ Laro.register('.game', function (La) {
 			if (isLoop == undefined) {
 				isLoop = false;
 			}
-			var channel = this.channels[name];
-			this.audio.currentTime = channel.start;
-			this.audio.play();
-			this.currentChannel = {
-				name: name,
-				start: channel.start,
-				duration: channel.duration,
-				end: channel.end,
-				isLoop: isLoop,
-				startTime: (+new Date)
-			};
+			if (this.haveData()) {
+				var channel = this.channels[name];
+				this.audio.currentTime = channel.start;
+				this.audio.play();
+				this.currentChannel = {
+					name: name,
+					start: channel.start,
+					duration: channel.duration,
+					end: channel.end,
+					isLoop: isLoop,
+					startTime: (+new Date)
+				};
+			}
 		}
 	})
 
