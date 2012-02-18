@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8" />
+	<title>Mr.Photo</title>
+	<meta name="author" content="hongru.chenhr@gmail.com" />
+	<link href="css/main.css" rel="stylesheet" />
+	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>	
+	<script src="js/glfx.js"></script>
+	<script src="js/common.js"></script>
+</head>
+
+<body>
+	<div id="doc" class="doc">
+		<div class="main-con">
+			<h1>Mr.Photo</h1>
+			<div id="container" class="drop-area noimg">
+				<div class="drop-inner">
+				Drag an image here
+				</div>
+			</div>
+
+			<div id="fx-tab-container" class="fx-tab hide"></div>
+			<div id="toolbar" class="toolbar hide">
+				<a href="#" data-cmd="cut">裁剪</a>
+				<a href="#" data-cmd="roll-left">顺时针旋转</a>
+				<a href="#" data-cmd="roll-right">逆时针选装</a>
+
+				<a href="#" data-cmd="save">保存</a>
+				<a href="#" data-cmd="share">分享</a>
+			</div>
+			<div id="fx-image-wrap" class="hide"></div>
+		</div>
+		
+	</div>	
+	<script> 
+		$(function () { FiPhoto.init(); });
+	</script>
+</body>
+</html>

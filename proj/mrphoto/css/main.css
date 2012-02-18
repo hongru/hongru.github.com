@@ -1,0 +1,55 @@
+/* main css */
+body, p, h1, h2, h3, h4, h5, h6, ul, ol, dl {
+	margin: 0;
+	padding: 0;
+}
+ul, ol, dl {
+	list-style: none; 
+}
+
+body {
+	background: #303030 url(../images/bg.png);
+}
+#doc, .doc {
+	width: 800px;
+	margin: 0 auto;
+}
+.main-con {
+	background: #2D2E31;
+	width: 798px;
+	height: 100%;
+	border-left: 1px solid #3C3D3E;
+	border-right: 1px solid #3C3D3E;
+}
+h1 {
+	height: 223px;
+	background: url(../images/logo.png) no-repeat 50% 50px;
+	text-indent: -9999px;
+}
+.drop-area {
+	width: 575px;
+	height: 479px;
+	margin: 0 auto;
+	background: url(../images/bg1.png);
+	border-left: 1px solid #18181A;
+	border-right: 1px solid #18181A;
+	border-bottom: 1px solid #424346;
+	border-top: 1px solid #18181A;
+	-webkit-border-radius: 4px;
+	overflow: hidden;
+	margin-bottom: 68px;
+}
+.drop-inner {
+	width: 573px;
+	height: 477px;
+	background: url(../images/drop.png) no-repeat 50% 118px;
+	border-width: 1px;
+	border-color: #191A1F #1E2025 #18181A #1E2025;
+	border-style: solid;
+	-webkit-border-radius: 3px;
+	-webkit-box-shadow: inset 0 1px 2px #1C1E23;
+	text-indent: -9999px;
+}
+.hide {
+	display: none;
+}
