@@ -13,36 +13,108 @@ body {
 #doc, .doc {
 	width: 800px;
 	margin: 0 auto;
+	position: relative;
+}
+.mode {
+	position: absolute;
+	left: -6px;
+	top: 80px;
+}
+.mode li {
+	margin-bottom: 10px;
+	line-height: 40px;
+	border-width: 1px;
+	border-color: #A9101F #5C0C14 #5C0C14 #F44A5A;
+	border-style: solid;
+	background: #9C0E1C;
+	color: #f7f7f7;
+	font-size: 15px;
+	font-weight: bold;
+	padding-left: 20px;
+	width: 80px;
+	font-family: Microsoft Yahei, Arail;
+	-webkit-transition-duration: 600ms;
+	-webkit-border-radius: 0 20px 20px 0;
+	cursor: pointer;
+}
+.mode li.current {
+	background: #9F0D1B;
+	line-height: 40px;
+	-webkit-box-shadow: 2px 2px 5px #400B10;
+	width: 100px;
 }
 .main-con {
 	background: #2D2E31;
-	width: 798px;
 	height: 100%;
 	border-left: 1px solid #3C3D3E;
 	border-right: 1px solid #3C3D3E;
 }
 h1 {
-	height: 223px;
-	background: url(../images/logo.png) no-repeat 50% 50px;
+	height: 223px;	
 	text-indent: -9999px;
+	overflow: hidden;
+}
+.logo {
+	height: 115px;
+	width: 148px;
+	background: url(../images/logo.png) no-repeat;
+	margin: 50px auto 0 auto;
+	position: relative;
+}
+.hi {
+	position: absolute;
+	left: 132px;
+	top: -28px;
+	display: none;
+	width: 58px;
+	height: 60px;
+	background: url(../images/hi.png) no-repeat;
+}
+.logo:hover .hi {
+	display: block;
 }
 .drop-area {
+	
+	margin: 0 auto;
+	
+	overflow: hidden;
+	margin-bottom: 68px;
+	text-align: center;
+}
+
+.drop-area.noimg {
 	width: 575px;
 	height: 479px;
-	margin: 0 auto;
 	background: url(../images/bg1.png);
 	border-left: 1px solid #18181A;
 	border-right: 1px solid #18181A;
 	border-bottom: 1px solid #424346;
 	border-top: 1px solid #18181A;
 	-webkit-border-radius: 4px;
-	overflow: hidden;
-	margin-bottom: 68px;
+}
+.drop-area.dragover {
+	border-left: 1px solid #96BBDD;
+	border-right: 1px solid #96BBDD;
+	border-bottom: 1px solid #96BBDD;
+	border-top: 1px solid #96BBDD;
+	-webkit-box-shadow: 0 0 10px #96BBDD;
+}
+.drop-area.dragover .drop-inner {
+	background-image: url(../images/drop.png);
+}
+.drop-area img, canvas {
+    -webkit-box-shadow:2px 2px 5px #000;
+    background: #fff;
+	opacity: 0;
 }
 .drop-inner {
+	min-height: 480px;
+}
+.noimg .drop-inner {
 	width: 573px;
+	margin: 0 auto;
 	height: 477px;
-	background: url(../images/drop.png) no-repeat 50% 118px;
+	background: url(../images/drag.png) no-repeat 50% 118px;
 	border-width: 1px;
 	border-color: #191A1F #1E2025 #18181A #1E2025;
 	border-style: solid;

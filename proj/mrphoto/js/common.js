@@ -167,10 +167,14 @@ $.NS('FiPhoto', function () {
 	
 	function generateCanvas(succFunc, errFunc) {
 		pkg.$con = $('#container');
+		pkg.$wrap = pkg.$con.parent();
 		pkg.$imgWrap = $('#fx-image-wrap');
 		pkg.$tabWrap = $('#fx-tab-container');
 		pkg.$toolbar = $('#toolbar');
 		pkg.$toolbtns = $('#toolbar a');
+		pkg.$doc = $('#doc');
+		pkg.$mode = $('#mode');
+		pkg.$modeli = $('#mode li');
 		try {
 			var canvas = fx.canvas();
 			if (!!canvas) {
@@ -188,13 +192,14 @@ $.NS('FiPhoto', function () {
 	function bindEvent() {
 		pkg.$con.bind('dragenter', function (e) {
 			e.preventDefault();
-			pkg.$con.addClass('dragover');
-			pkg.$con.html('Drop here!');
-			pkg.$con.addClass('noimg');
+			pkg.$wrap.addClass('dragover');
+			pkg.$wrap.addClass('noimg');
+			pkg.$con.html('');
+			$(pkg.canvas).css({opacity: 0});
 		}).bind('dragleave', function (e) {
 			e.preventDefault();
-			pkg.$con.removeClass('dragover');
-			pkg.$con.html('Drag an image here');
+			pkg.$wrap.removeClass('dragover');
+			//pkg.$con.html('<div class="drop-inner"></div>');
 		}).bind('dragover', function (e) {
 			e.preventDefault();
 			
@@ -205,21 +210,45 @@ $.NS('FiPhoto', function () {
 			var files = dt.files; 
 
 			pkg.handleFiles(files);  
-		})
+		});
 		
+		pkg.$modeli.bind('click', function (e) {
+			pkg.setMode($(this).attr('data-mode'));
+		})
 	}
 	
 	function errCallback() {
 		pkg.$con.html('Sorry, Your browser do not support webGL')
 	}
 	
+	function _init () {
+		bindEvent();
+		pkg.setMode();
+	}
+	
+	this.mode = 'free'; // | limit
+	
 	this.init = function () {
-		generateCanvas(bindEvent, errCallback);
+		generateCanvas(_init, errCallback);
+		
 		FiPhoto.tab.init();
 		FiPhoto.toolbar.init();
 		FiPhoto.cut.init();
 		FiPhoto.roll.init();
 		FiPhoto.share.init();
+	};
+	this.setMode = function (mode) {
+		if (mode == undefined) {
+			mode = this.mode || 'free';
+		}
+		this.mode = mode;
+		pkg.$modeli.each(function () {
+			if ($(this).attr('data-mode') == mode) {
+				$(this).addClass('current');
+			} else {
+				$(this).removeClass('current');
+			}
+		})
 	};
 	this.handleFiles = function (files) {
 		for (var i = 0; i < files.length; i++) {  
@@ -234,8 +263,8 @@ $.NS('FiPhoto', function () {
 			reader.onload = function(e){ 
 			
 				pkg.setFx('normal', e.target.result);
-				pkg.$con.removeClass('dragover');
-				pkg.$con.removeClass('noimg');
+				pkg.$wrap.removeClass('dragover');
+				pkg.$wrap.removeClass('noimg');
 			}
 
 			reader.readAsDataURL(file);  
@@ -267,7 +296,7 @@ $.NS('FiPhoto', function () {
 			FiPhoto.toolbar.show();
 			return;
 		}
-		imgReady(url, function () {
+		$.imgReady(url, function () {
 		
 			var newW = this.width, newH = this.height;
 			var max = Math.max(newW, newH);
@@ -321,7 +350,12 @@ $.NS('FiPhoto.fx', function () {
 			var texture = canvas.texture(image);
 			canvas.draw(texture).brightnessContrast(0, 0).update();
 			FiPhoto.$con.empty().append(canvas);
-			//FiPhoto.image.src = canvas.toDataURL();
+			
+			var ww = Math.max(800, canvas.width + 100);
+			FiPhoto.$doc.animate({width: ww}, function () {
+				$(FiPhoto.canvas).animate({opacity: 1});
+			});
+			
 		}
 		if (image.complete) { 
 			setTimeout(imgLoadCallback, 0)
