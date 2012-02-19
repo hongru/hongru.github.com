@@ -11,7 +11,7 @@ body {
 	background: #303030 url(../images/bg.png);
 }
 #doc, .doc {
-	width: 800px;
+	width: 845px;
 	margin: 0 auto;
 	position: relative;
 }
@@ -70,27 +70,28 @@ h1 {
 	height: 60px;
 	background: url(../images/hi.png) no-repeat;
 }
+.logo:hover {
+	background: url(../images/logo-hover.png) no-repeat 6px -1px;
+}
 .logo:hover .hi {
 	display: block;
 }
 .drop-area {
-	
+	width: 652px;
 	margin: 0 auto;
-	
-	overflow: hidden;
-	margin-bottom: 68px;
-	text-align: center;
-}
-
-.drop-area.noimg {
-	width: 575px;
-	height: 479px;
-	background: url(../images/bg1.png);
 	border-left: 1px solid #18181A;
 	border-right: 1px solid #18181A;
 	border-bottom: 1px solid #424346;
 	border-top: 1px solid #18181A;
 	-webkit-border-radius: 4px;
+	overflow: hidden;
+	margin-bottom: 68px;
+	text-align: center;
+	position: relative;
+}
+
+.drop-area.noimg {
+	background: url(../images/bg1.png);	
 }
 .drop-area.dragover {
 	border-left: 1px solid #96BBDD;
@@ -103,24 +104,23 @@ h1 {
 	background-image: url(../images/drop.png);
 }
 .drop-area img, canvas {
-    -webkit-box-shadow:2px 2px 5px #000;
-    background: #fff;
-	opacity: 0;
+
 }
 .drop-inner {
-	min-height: 480px;
-}
-.noimg .drop-inner {
-	width: 573px;
+	
+	overflow: hidden;
+	width: 650px;
 	margin: 0 auto;
-	height: 477px;
-	background: url(../images/drag.png) no-repeat 50% 118px;
+	height: 650px;
 	border-width: 1px;
 	border-color: #191A1F #1E2025 #18181A #1E2025;
 	border-style: solid;
 	-webkit-border-radius: 3px;
 	-webkit-box-shadow: inset 0 1px 2px #1C1E23;
 	text-indent: -9999px;
+}
+.noimg .drop-inner {
+	background: url(../images/drag.png) no-repeat 50% 118px;
 }
 .hide {
 	display: none;

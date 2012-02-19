@@ -165,10 +165,13 @@ $.NS('FiPhoto', function () {
 	var pkg = this;
 	var downloadMime = 'image/octet-stream';
 	
+	this.size11 = {w: 650, h: 650};
+	this.size43 = {w: 800, h: 600};
+	
 	function generateCanvas(succFunc, errFunc) {
 		pkg.$con = $('#container');
 		pkg.$wrap = pkg.$con.parent();
-		pkg.$imgWrap = $('#fx-image-wrap');
+		pkg.$imgWrap = $('#image-wrap');
 		pkg.$tabWrap = $('#fx-tab-container');
 		pkg.$toolbar = $('#toolbar');
 		pkg.$toolbtns = $('#toolbar a');
@@ -190,6 +193,13 @@ $.NS('FiPhoto', function () {
 	}
 	
 	function bindEvent() {
+		freeModeBind();
+		pkg.$modeli.bind('click', function (e) {
+			pkg.setMode($(this).attr('data-mode'));
+		})
+	}
+	
+	function freeModeBind () {
 		pkg.$con.bind('dragenter', function (e) {
 			e.preventDefault();
 			pkg.$wrap.addClass('dragover');
@@ -211,10 +221,10 @@ $.NS('FiPhoto', function () {
 
 			pkg.handleFiles(files);  
 		});
+	}
+	
+	function limitModeBind () {
 		
-		pkg.$modeli.bind('click', function (e) {
-			pkg.setMode($(this).attr('data-mode'));
-		})
 	}
 	
 	function errCallback() {
@@ -226,16 +236,18 @@ $.NS('FiPhoto', function () {
 		pkg.setMode();
 	}
 	
-	this.mode = 'free'; // | limit
+	this.mode = 'limit'; // | limit
 	
 	this.init = function () {
 		generateCanvas(_init, errCallback);
-		
+		FiPhoto.operation.init();
+		/*
 		FiPhoto.tab.init();
 		FiPhoto.toolbar.init();
 		FiPhoto.cut.init();
 		FiPhoto.roll.init();
 		FiPhoto.share.init();
+		*/
 	};
 	this.setMode = function (mode) {
 		if (mode == undefined) {
@@ -261,10 +273,18 @@ $.NS('FiPhoto', function () {
 
 			var reader = new FileReader();  
 			reader.onload = function(e){ 
-			
-				pkg.setFx('normal', e.target.result);
-				pkg.$wrap.removeClass('dragover');
-				pkg.$wrap.removeClass('noimg');
+				if (pkg.mode == 'free') {
+					// 直接进入滤镜状态
+					pkg.setFx('normal', e.target.result);
+					pkg.$wrap.removeClass('dragover');
+					pkg.$wrap.removeClass('noimg');	
+				} else {
+					pkg.$wrap.removeClass('dragover');
+					pkg.$wrap.removeClass('noimg');	
+					!FiPhoto.$con.find('canvas')[0] && FiPhoto.operation.init();
+					FiPhoto.operation.initImage(e.target.result);
+				}
+				
 			}
 
 			reader.readAsDataURL(file);  
@@ -339,6 +359,96 @@ $.NS('FiPhoto', function () {
 		img.src = src;
 		return img;
 	}
+});
+
+/* FiPhoto.operation */
+// 第一步的图片手术
+$.NS('FiPhoto.operation', function () {
+	var pkg = this;
+	
+	this.imgInfo = {
+		src: '',
+		width: 0,
+		height: 0,
+		limitW: 0,
+		limitH: 0
+	}
+	
+	this.init = function (oSize) {
+		if (oSize == undefined) { oSize = FiPhoto.size11 };
+		this.size = oSize;
+		this.create();
+		this.setCvsPos();
+	};
+	
+	this.create = function () {
+		// 创建一个 canvas 用于 图片手术， 大小为 650*2；
+		this.$canvas = $('<canvas></canvas>').appendTo(FiPhoto.$con);
+		this.cvs = this.$canvas.get(0);
+		this.cvs.width = this.size.w;
+		this.cvs.height = this.size.h;
+		this.ctx = this.cvs.getContext('2d');
+	};
+	
+	this.setCvsPos = function () {
+		this.$canvas.css({
+			position: 'absolute',
+			display: 'none',
+			left: 1,
+			top: 1
+		});
+	};
+	
+	this.initImage = function (src) { 
+		var callCB = false;
+		var $img = $('#operation-image');
+		if (!$img[0]) {
+			$img = $('<img id="operation-image" alt="" src="'+ src +'" />').appendTo(FiPhoto.$imgWrap);
+		} else {
+			$img.attr('src', src);
+		}
+		this.$operationImage = $img;
+		
+		var img = this.$operationImage[0];
+		if (img.complete) { 
+			imgLoadedCallback();
+			return;
+		} 
+		this.$operationImage.load(function () { imgLoadedCallback() });
+		
+		function imgLoadedCallback () {
+			if (callCB) return; 
+			
+			FiPhoto.$imgWrap.show();
+			pkg.imgInfo = {
+				img: img,
+				src: img.src,
+				left: 0,
+				top: 0,
+				width: $(img).width(),
+				height: $(img).height(),
+				limitW: pkg.size.w,
+				limitH: pkg.size.h
+			};
+			FiPhoto.$imgWrap.hide();
+			pkg.drawImage();
+			callCB = true;
+		}
+	};
+	
+	this.drawImage = function () {
+		var ctx = this.ctx;
+		var cvs = this.cvs;
+		var info = this.imgInfo;
+		ctx.clearRect(0, 0, cvs.width, cvs.height);
+		ctx.save();
+		ctx.translate(cvs.width/2, cvs.height/2);
+		ctx.drawImage(info.img, (info.left-info.width/2), (info.top-info.height/2), info.width, info.height);
+		ctx.restore();
+		
+		this.$canvas.show();
+	}
+
 });
 	
 $.NS('FiPhoto.fx', function () {
