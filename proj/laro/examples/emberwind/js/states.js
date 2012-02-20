@@ -35,10 +35,16 @@ Laro.register('Emberwind', function (La) {
                 "titlescreen_wick_eyes.png", 
                 "titlescreen_kindle_eyes.png", 
                 "timetrap.png",
-
+                
+                // fighter
 				'fighter/wait.gif',
-				'fighter/goForward.gif'
-
+				'fighter/goForward.gif',
+                'fighter/RYU1_crouch.gif',
+                'fighter/RYU1_goBack.gif',
+                'fighter/RYU1_jump_back.gif',
+                'fighter/RYU1_jump_down.gif',
+                'fighter/RYU1_jumpUp.gif',
+                'fighter/RYU1_stand_up.gif'
             ];
             La.ResourceLoader.getInstance().preloadImages(images, La.curry(this.progressCallback, this));
          
