@@ -32,7 +32,12 @@ Laro.register('Emberwind', function (La) {
 			this.animation.draw(render, this.host.x, this.host.y, 0, 1, null);
 		},
 		transition: function () {
-            if (PKG.keyboard.key('right') && !PKG.keyboard.key('left')) {
+            // 攻击优先级比 行动高
+            if (PKG.keyboard.key('a')) {
+                this.host.fsm.setState(PKG.FG_states.lightBoxing);
+            } else if (PKG.keyboard.key('k')) {
+                this.host.fsm.setState(PKG.FG_states.lightKick);
+            } else if (PKG.keyboard.key('right') && !PKG.keyboard.key('left')) {
                 this.host.fsm.setState(PKG.FG_states.goForward);
             } else if (PKG.keyboard.key('left') && !PKG.keyboard.key('right')) {
                 this.host.fsm.setState(PKG.FG_states.goBack);
@@ -44,7 +49,7 @@ Laro.register('Emberwind', function (La) {
                 this.host.fsm.setState(PKG.FG_states.jump)
             } else if (PKG.keyboard.key('down')) {
                 this.host.fsm.setState(PKG.FG_states.crouch)
-            }
+            } 
             
 		}
 	});
@@ -145,7 +150,7 @@ Laro.register('Emberwind', function (La) {
             // 跳起高度和跳起时间
             // 根据物理公式 v0*t - g*t^2/2 = h 
             // 和 v0 = g*t 就可以算出 重力加速度以及每个dt 人物跳起的高度
-            this.jumpH = 140;
+            this.jumpH = 170;
             this.jumpT = this.animation.getLength()/2;
             // 上面已知了 h 和 t 可以算的 v0 和 g 
             this.g = 2*this.jumpH / Math.pow(this.jumpT, 2);
@@ -163,6 +168,7 @@ Laro.register('Emberwind', function (La) {
             this.host.y = this._oldy - h;
             
             if (this._t >= this.animation.getLength()) {
+                this.host.sfx.footfall.play();
                 this.host.y = this._oldy;
                 this._curJumpEnd = true;
             }
@@ -212,6 +218,7 @@ Laro.register('Emberwind', function (La) {
             this.animation.update(dt);
             
             if (this._t >= this.animation.getLength()) {
+                this.host.sfx.footfall.play();
                 this._curJumpEnd = true;
                 this.host.y = this._oldy;
             }
@@ -261,6 +268,7 @@ Laro.register('Emberwind', function (La) {
             this.animation.update(dt);
             
             if (this._t >= this.animation.getLength()) {
+                this.host.sfx.footfall.play();
                 this._curJumpEnd = true;
                 this.host.y = this._oldy;
             }
@@ -340,6 +348,78 @@ Laro.register('Emberwind', function (La) {
             } 
 		}
     });
+    
+    // 轻拳 
+    this.FG_LightBoxing = La.BaseState.extend().methods({
+        enter: function (msg, fromState) {
+            var state = {
+				frames: 3,
+				imgW: 282,
+				imgH: 91,
+				imgUrl: 'fighter/RYU1_light_boxing.gif',
+				framerate: 10
+			};
+			this.animation = this.host.getAnimation(state);
+			this.animation.play(false);
+            this._t = 0;
+            this._end = false;
+		},
+		leave: function () {
+		
+		},
+		update: function (dt) {
+            this._t += dt;
+            this.animation.update(dt);
+            
+            if (this._t >= this.animation.getLength()) {
+                this._end = true;
+            }
+		},
+		draw: function (render) {
+            this.animation.draw(render, this.host.x, this.host.y, 0, 1, null);
+		},
+		transition: function () {
+            if (this._end) { 
+                this.host.fsm.setState(PKG.FG_states.wait);
+            } 
+		}
+    })
+    
+    // 轻腿 
+    this.FG_LightKick = La.BaseState.extend().methods({
+        enter: function (msg, fromState) {
+            var state = {
+				frames: 5,
+				imgW: 580,
+				imgH: 94,
+				imgUrl: 'fighter/RYU1_light_kick.gif',
+				framerate: 10
+			};
+			this.animation = this.host.getAnimation(state);
+			this.animation.play(false);
+            this._t = 0;
+            this._end = false;
+		},
+		leave: function () {
+		
+		},
+		update: function (dt) {
+            this._t += dt;
+            this.animation.update(dt);
+            
+            if (this._t >= this.animation.getLength()) {
+                this._end = true;
+            }
+		},
+		draw: function (render) {
+            this.animation.draw(render, this.host.x, this.host.y, 0, 1, null);
+		},
+		transition: function () {
+            if (this._end) { 
+                this.host.fsm.setState(PKG.FG_states.wait);
+            } 
+		}
+    })
 	
     /* fighter states */
 	var fStates = {
@@ -350,7 +430,9 @@ Laro.register('Emberwind', function (La) {
         jumpForward: 4,
         jumpBack: 5,
         crouch: 6,
-        standUp: 7
+        standUp: 7,
+        lightBoxing: 8,
+        lightKick: 9
 	};
 	var statesList = [
 		fStates.wait, PKG.FG_Wait,
@@ -360,7 +442,9 @@ Laro.register('Emberwind', function (La) {
         fStates.jumpForward, PKG.FG_JumpForward,
         fStates.jumpBack, PKG.FG_JumpBack,
         fStates.crouch, PKG.FG_Crouch,
-        fStates.standUp, PKG.FG_StandUp
+        fStates.standUp, PKG.FG_StandUp,
+        fStates.lightBoxing, PKG.FG_LightBoxing,
+        fStates.lightKick, PKG.FG_LightKick
 	];
 	
 	this.FG_states = fStates;
@@ -373,6 +457,23 @@ Laro.register('Emberwind', function (La) {
 		this.fsm.setState(PKG.FG_states.wait);
 		
 		this.textures = {};
+        this.sfx = {
+            defense: new La.Sound('resources/music/fighter/defense.mp3'),
+            fall: new La.Sound('resources/music/fighter/fall.mp3'),
+            footfall: new La.Sound('resources/music/fighter/footfall.mp3'),
+            heavy_boxing: new La.Sound('resources/music/fighter/heavy_boxing.mp3'),
+            hit_heavy_boxing: new La.Sound('resources/music/fighter/hit_heavy_boxing.mp3'),
+            hit_heavy_kick: new La.Sound('resources/music/fighter/hit_heavy_kick.mp3'),
+            hit_light: new La.Sound('resources/music/fighter/hit_light.mp3'),
+            hit_middle_boxing: new La.Sound('resources/music/fighter/hit_middle_boxing.mp3'),
+            hit_middle_kick: new La.Sound('resources/music/fighter/hit_middle_kick.mp3'),
+            impact_boxing: new La.Sound('resources/music/fighter/impact_boxing.mp3'),
+            light_boxing: new La.Sound('resources/music/fighter/light_boxing.mp3'),
+            middle_boxing: new La.Sound('resources/music/fighter/middle_boxing.mp3'),
+            middle_boxing_hit: new La.Sound('resources/music/fighter/middle_boxing_hit.mp3'),
+            wave_boxing: new La.Sound('resources/music/fighter/wave_boxing.mp3'),
+            whirl_kick: new La.Sound('resources/music/fighter/whirl_kick.mp3')
+        }
 
 	}).methods({
 		update: function (dt) {
