@@ -26,6 +26,22 @@ Laro.register('.game', function (La) {
 		}
 	});
 
+	var checkFile = function (s) {
+		var suffix = s.lastIndexOf('.');
+		suffix = s.substr(suffix);
+		if (/png|jpg|jpeg|gif|bmp/.test(suffix)) {
+			return 'image';
+		} else if (/ogg|mp3|m4a|wav/.test(suffix)) {
+			return 'sound';
+		}
+	}
+	var isImage = function (s) {
+		return (checkFile(s) == 'image');
+	}
+	var isSound = function (s) {
+		return (checkFile(s) == 'sound');
+	}
+
 	/**
 	 * ResourceLoader
 	 * {Class}
@@ -34,7 +50,10 @@ Laro.register('.game', function (La) {
 	var ResourceLoader = Class(function (path) {
 		// imagePath 资源主路径，可配置
 		this.imagePath = path || 'resources/';
-		this.loadedImages = {};		
+		this.basePath = this.imagePath;
+		this.loadedImages = {};	
+		this.loadedSounds = {};
+
 	}).methods({
 
 		// 加载一张图片
@@ -75,7 +94,7 @@ Laro.register('.game', function (La) {
 				callCallback(imagesLoaded/length);
 			};
 			var imageError = function () {
-				alert('an image load error');
+				console.log('an image load error');
 			};
 
 			for (var i = 0; i < length; i ++) {
@@ -94,6 +113,58 @@ Laro.register('.game', function (La) {
 			}
 
 			callCallback(imagesLoaded / length);
+		},
+		// 预加载多个资源，包括图片和音乐等
+		preload: function (files, callback) {
+			var fileLoaded = 0,
+				_fileNames = [],
+				ind = -1,
+				args = arguments;
+
+			if (toType(files) == 'array') {
+				_fileNames = files;
+			} else {
+				while(toType(args[++ind]) == 'string') {
+					_fileNames.push(args[ind]);
+				}
+				callback = args[ind];
+			}
+
+			var length = _fileNames.length;
+			var callCallback = function (arg) {
+				!!callback && callback(arg);
+			}
+			var fileLoadedCB = function () {
+				fileLoaded ++;
+				callCallback(fileLoaded/length);
+			};
+			
+			for (var i = 0; i < length; i ++) {
+				// 先检查是否已经加载
+				var filename = _fileNames[i];
+				if (isImage(filename)) {
+					var image = this.loadedImages[filename];
+					if (!!image) {
+						fileLoaded ++;
+						continue;
+					}
+					image = new Image();
+					image.src = this.basePath + filename;
+					image.onload = fileLoadedCB;
+					image.onerror = fileLoadedCB;
+					this.loadedImages[filename] = image;
+				} else if (isSound(filename)) {
+					var sound = this.loadedSounds[filename];
+					if (!!sound) {
+						fileLoaded ++;
+						continue;
+					}
+					sound = new La.Sound(this.basePath + filename, fileLoadedCB);
+					this.loadedSounds[filename] = sound;
+				}
+			}
+
+			callCallback(fileLoaded/length);
 		}
 	}).statics({
         //获取当前实例

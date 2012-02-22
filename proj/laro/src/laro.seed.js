@@ -29,7 +29,7 @@
         .register('animation', base + 'src/actions/animation.js').require(['class', 'loop'])
         .register('animationHandle', base + 'src/actions/animation_handle.js').require(['animation'])
         
-        .register('resource', base + 'src/game/resource.class.js').require(['class', 'pixel32'])
+        .register('resource', base + 'src/game/resource.class.js').require(['class', 'pixel32', 'sound'])
         .register('state', base + 'src/game/state.js').require(['class', 'pixel32'])
         .register('fsm', base + 'src/game/fsm.js').require(['state'])
         .register('laro', base + 'src/world/world.js').require(['class', 'keyboard', 'sound', 'exception', 'util', 'perlin', 'point2', 'vector2', 'chaikin', 'piexel32', 'rectf', 'imageW', 'layer', 'render', 'canvasRender', 'world', 'animation', 'animationHandle', 'resource', 'loop', 'state', 'fsm'])

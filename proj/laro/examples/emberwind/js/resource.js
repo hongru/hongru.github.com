@@ -51,6 +51,11 @@ Laro.register('Emberwind', function (La) {
 			this.loadedImages[setName] = imageset;
 			return imageset[imageName];
 		},
+        getSound: function (filename) { 
+            var loader = La.ResourceLoader.getInstance(); 
+            var loadedSounds = loader.loadedSounds;
+            return loadedSounds[filename];
+        },
 		loadImageset: function (setName) {
 			var is = null;
 			for (var i in this.imageSets) {

@@ -24,8 +24,8 @@ Laro.register('Emberwind', function (La) {
 			PKG.states.kStateInGame, PKG.InGame
         ];
         this.fsm = new La.AppFSM(this, statesList);   
-        this.sound = new La.Sound('resources/music/sfx.ogg');
-        this.bgMusic = new La.Sound('resources/music/music.ogg');
+        //this.sound = new La.Sound('resources/music/sfx.ogg', function () {console.log('sfx ok')});
+        //this.bgMusic = new La.Sound('resources/music/music.ogg', function() {console.log('music ok')});
         
         this.resources = new Emberwind.Resource()
         this.resources.setCallback(La.curry(this.resourceCallback, this));

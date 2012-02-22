@@ -20,8 +20,8 @@ Laro.register('Emberwind', function (La) {
 
     }).methods({
         enter : function (msg, fromState) {
-            pkg.sound = Emberwind.Game.instance.sound;
-            pkg.music = Emberwind.Game.instance.bgMusic;
+            //pkg.sound = Emberwind.Game.instance.sound;
+            //pkg.music = Emberwind.Game.instance.bgMusic;
         
             La.ResourceLoader.getInstance().preloadImages(["laro.png"], La.curry(this.operaProgressCallback, this));
          
@@ -44,17 +44,29 @@ Laro.register('Emberwind', function (La) {
                 'fighter/RYU1_jump_back.gif',
                 'fighter/RYU1_jump_down.gif',
                 'fighter/RYU1_jumpUp.gif',
-                'fighter/RYU1_stand_up.gif'
+                'fighter/RYU1_stand_up.gif',
+                
+                // sound
+                'music/music.ogg',
+                'music/sfx.ogg'
             ];
-            La.ResourceLoader.getInstance().preloadImages(images, La.curry(this.progressCallback, this));
+            La.ResourceLoader.getInstance().preload(images, La.curry(this.progressCallback, this));
          
             this.font = Emberwind.Resource.getInstance().getFont("LoadingIntro");
             this.operaLogo = Emberwind.Resource.getInstance().getImage("opera_logo", "opera_logo");
 
-            pkg.sound.addChannel('timetrap', 320, 4.54);
-            pkg.music.addChannel('menu', 14, 119.4);
+            pkg.loader = Emberwind.Resource.getInstance();
+            //pkg.sound.addChannel('timetrap', 320, 4.54);
+            //pkg.music.addChannel('menu', 14, 119.4);
         },
-        leave: function () {},
+        leave: function () { // 资源加载完毕
+            pkg.sfx = pkg.loader.getSound('music/sfx.ogg');
+            pkg.music = pkg.loader.getSound('music/music.ogg');
+            
+            pkg.sfx.addChannel('timetrap', 320, 4.54);
+            pkg.music.addChannel('menu', 14, 119.4);
+            
+        },
         progressCallback : function (status) {
             this.progress = status;
          
@@ -72,7 +84,10 @@ Laro.register('Emberwind', function (La) {
             this.t += dt;
         },
         transition : function () { 
-            return this.host.tryChangeState(this.doneT != null && this.t >= this.doneT && this.logoStartT != null && this.t >= this.minLogoTime, La.FSM.kNextState);
+            return this.host.tryChangeState(this.doneT != null 
+                                            && this.t >= this.doneT 
+                                            && this.logoStartT != null 
+                                            && this.t >= this.minLogoTime, La.FSM.kNextState);
         },
         draw : function (render) {
             render.clear(render.white);
@@ -110,19 +125,19 @@ Laro.register('Emberwind', function (La) {
             var res = Emberwind.Resource.getInstance();
             this.animation = res.getAnimation('TimeTrap');
             this.timeInState = 0;
-            this.sound = Emberwind.Game.instance.sound;
+
         },
         leave: function () {
-            this.sound.pause()
+            pkg.sfx.pause()
         },
         update: function (dt) {
             dt = Math.min(dt, 1/15);
             this.animation.update(dt);
             if (this.timeInState < 0.5 && this.timeInState + dt > 0.5) {
                 this.animation.play(false);
-                this.sound.play('timetrap');
+                pkg.sfx.play('timetrap');
             }
-            (this.timeInState + dt > 0.5) && this.sound.update(dt);
+
             this.timeInState += dt;
         },
         transition: function () { 

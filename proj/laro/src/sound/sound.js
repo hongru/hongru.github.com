@@ -5,8 +5,10 @@
  
 Laro.register('.game', function (La) {
 	
-	var Sound = La.Class(function (url, isAuto) {
+	var Sound = La.Class(function (url, callback, isAuto) {
 		this.url = url;
+		this.loaded = false;
+		this.callback = callback;
 		this.channels = {};
 		this.currentChannel = null;
 		this.genAudio();
@@ -17,6 +19,7 @@ Laro.register('.game', function (La) {
 		genAudio: function () {
 			this.audio = new Audio();
 			this.audio.src = this.url;
+			this.audio.preload = 'auto';
 		
 		},
 		bind: function () {
@@ -37,6 +40,10 @@ Laro.register('.game', function (La) {
 						_this.play(cur.name, cur.isLoop);
 					}
 				}
+			}, false);
+			this.audio.addEventListener('canplaythrough', function (e) {
+				_this.loaded = true;
+				!!_this.callback && _this.callback();
 			}, false);
 		},
 		update: function (dt) {
