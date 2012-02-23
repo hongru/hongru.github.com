@@ -115,7 +115,7 @@ h1 {
 .renren-like-btn {
     display: none;
     position: absolute;
-    right: 0px;
+    right: 20px;
     top: 100px;
 }
 h1 .sp {
@@ -245,11 +245,17 @@ h1 .sp {
     top: 0;
     z-index: 11;
 }
+#___plusone_0 {
+    position: absolute;
+    top: 98px;
+    right: 20px;
+}
 </style>
 </head>
 
 <body>
     <h1>Mr.<span class="sp">Photo</span></h1>
+
     <div id="toolbar" class="toolbar hide">
         <!--<a href="#" data-cmd="cut">裁剪</a>-->
         <a href="#" data-cmd="roll-left">旋转</a>
@@ -264,6 +270,12 @@ h1 .sp {
 
     <div id="fx-tab-container" class="fx-tab"></div>
     <div id="fx-image-wrap" class="hide"></div>
+    
+
+<!-- 将此标记放在您希望呈现 +1 按钮的位置 -->
+<g:plusone annotation="none"></g:plusone>
+
+    
     <script>
         $.NS('FiPhoto', function () {
             var pkg = this;
@@ -893,6 +905,15 @@ $ifr.load(function () { $ifr.fadeIn() })
 <script type="text/javascript" src="http://widget.renren.com/js/forward.js"></script>
 <script type="text/javascript" charset="utf-8">
 Renren.forward({});
+</script>
+
+<!-- 将此呈现调用放在适当的位置 -->
+<script type="text/javascript">
+  (function() {
+    var po = document.createElement('script'); po.type = 'text/javascript'; po.async = true;
+    po.src = 'https://apis.google.com/js/plusone.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(po, s);
+  })();
 </script>
 </body>
 </html>
