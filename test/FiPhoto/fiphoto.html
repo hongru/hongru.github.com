@@ -153,7 +153,7 @@ h1 .sp {
     -webkit-box-shadow:2px 2px 5px #000;
     background: #fff;
 }
-.container canvas { display: none }
+
 .hide {
     display: none;
 }
@@ -425,7 +425,7 @@ h1 .sp {
                     var texture = canvas.texture(image);
                     canvas.draw(texture).brightnessContrast(0, 0).update();
                     FiPhoto.$con.css({'minHeight': canvas.height});
-                    FiPhoto.$con.empty().append(canvas).append('<img alt="" src="'+canvas.toDataURL()+'" />');
+                    FiPhoto.$con.empty().append(canvas)//.append('<img alt="" src="'+canvas.toDataURL()+'" />');
 					//FiPhoto.image.src = canvas.toDataURL();
                 }
                 if (image.complete) { 
@@ -447,7 +447,7 @@ h1 .sp {
                     texture = canvas.texture(canvas);
                     canvas.draw(texture).vignette(0.2, 0.4).update();
                     FiPhoto.$con.css({'minHeight': canvas.height});
-                    FiPhoto.$con.empty().append(canvas).append('<img alt="" src="'+canvas.toDataURL()+'" />');
+                    FiPhoto.$con.empty().append(canvas)//.append('<img alt="" src="'+canvas.toDataURL()+'" />');
                 }
                 if (image.complete) {
                     setTimeout(imgLoadCallback, 0)
@@ -469,7 +469,7 @@ h1 .sp {
                     texture = canvas.texture(canvas);
                     canvas.draw(texture).vignette(0.12, 0.4).update();
                     FiPhoto.$con.css({'minHeight': canvas.height});
-                    FiPhoto.$con.empty().append(canvas).append('<img alt="" src="'+canvas.toDataURL()+'" />');
+                    FiPhoto.$con.empty().append(canvas)//.append('<img alt="" src="'+canvas.toDataURL()+'" />');
                 }    
                 if (image.complete) {
                     setTimeout(imgLoadCallback, 0)
@@ -488,7 +488,7 @@ h1 .sp {
                     texture = canvas.texture(canvas);
                     canvas.draw(texture).vignette(0.2, 0.5).update();
                     FiPhoto.$con.css({'minHeight': canvas.height});
-                    FiPhoto.$con.empty().append(canvas).append('<img alt="" src="'+canvas.toDataURL()+'" />');
+                    FiPhoto.$con.empty().append(canvas)//.append('<img alt="" src="'+canvas.toDataURL()+'" />');
                 }    
                 if (image.complete) {
                     setTimeout(imgLoadCallback, 0)
@@ -507,7 +507,7 @@ h1 .sp {
                     texture = canvas.texture(canvas);
                     canvas.draw(texture).vignette(0, 0.5).update();
                     FiPhoto.$con.css({'minHeight': canvas.height});
-                    FiPhoto.$con.empty().append(canvas).append('<img alt="" src="'+canvas.toDataURL()+'" />');
+                    FiPhoto.$con.empty().append(canvas)//.append('<img alt="" src="'+canvas.toDataURL()+'" />');
                 }    
                 if (image.complete) {
                     setTimeout(imgLoadCallback, 0)
@@ -528,7 +528,7 @@ h1 .sp {
                     texture = canvas.texture(canvas);
                     canvas.draw(texture).vignette(0, 0.5).update();
                     FiPhoto.$con.css({'minHeight': canvas.height});
-                    FiPhoto.$con.empty().append(canvas).append('<img alt="" src="'+canvas.toDataURL()+'" />');
+                    FiPhoto.$con.empty().append(canvas)//.append('<img alt="" src="'+canvas.toDataURL()+'" />');
                 }    
                 if (image.complete) {
                     setTimeout(imgLoadCallback, 0)
@@ -547,7 +547,7 @@ h1 .sp {
                     texture = canvas.texture(canvas);
                     canvas.draw(texture).vignette(0.15, 0.5).update();
                     FiPhoto.$con.css({'minHeight': canvas.height});
-                    FiPhoto.$con.empty().append(canvas).append('<img alt="" src="'+canvas.toDataURL()+'" />');
+                    FiPhoto.$con.empty().append(canvas)//.append('<img alt="" src="'+canvas.toDataURL()+'" />');
                     
                 }    
                 if (image.complete) {
