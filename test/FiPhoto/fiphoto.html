@@ -289,10 +289,10 @@ h1 .sp {
                 pkg.$toolbtns = $('#toolbar a');
                 try {
                     var canvas = fx.canvas();
-                    if (!!canvas && canvas.getContext) {
+                    if (!!canvas && canvas.getContext) { 
                         pkg.canvas = canvas;                      
                         succFunc(canvas);
-                    } else {
+                    } else { 
                         !!errFunc && errFunc();
                     }
                     
@@ -330,7 +330,7 @@ h1 .sp {
                 pkg.$con.html('Sorry, Your browser do not support webGL')
             }
             
-            this.init = function () {
+            this.init = function () { 
                 generateCanvas(bindEvent, errCallback);
                 FiPhoto.tab.init();
                 FiPhoto.toolbar.init();
@@ -736,6 +736,7 @@ h1 .sp {
             }
             this.getCanvasInfo = function () {
                 var pos = $(FiPhoto.canvas).position();
+                if (!pos) return;
                 var ret = {
                     left: pos.left,
                     top: pos.top,
@@ -771,7 +772,7 @@ h1 .sp {
                 this.cvs.width = FiPhoto.canvas.height;
 				this.cvs.height = FiPhoto.canvas.width;
             }
-            this.do = function (dir) {
+            this.doroll = function (dir) {
                 if (dir == undefined) {
                     dir = 'left';
                 }
@@ -799,7 +800,7 @@ h1 .sp {
                 //this.destory();
             }
             this.left = function () {
-                this.do('left');
+                this.doroll('left');
             };
             this.destory = function () {
                 this.$tmpCanvas.remove();
@@ -808,7 +809,7 @@ h1 .sp {
                 this.ctx = null;
             };
             this.right = function () {
-                this.do('right');
+                this.doroll('right');
             }
         });
         
@@ -882,7 +883,7 @@ h1 .sp {
             };
         })
             
- 
+
         $(function () { FiPhoto.init(); });
     </script>
    
