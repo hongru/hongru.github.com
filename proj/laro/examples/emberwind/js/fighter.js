@@ -33,6 +33,8 @@ Laro.register('Emberwind', function (La) {
 		},
 		transition: function () {
             // 攻击优先级比 行动高
+            console.log(PKG.keyboard.keyStack)
+            //if (PKG.keyboard) { this.host.fsm.setState(PKG.FG_states.beforeWhirlKick) }
             if (PKG.keyboard.key('a')) {
                 this.host.fsm.setState(PKG.FG_states.lightBoxing);
             } else if (PKG.keyboard.key('k')) {
@@ -80,6 +82,12 @@ Laro.register('Emberwind', function (La) {
             this.animation.draw(render, this.host.x, this.host.y, 0, 1, null);
 		},
 		transition: function () {
+            if (PKG.keyboard.key('a')) {
+                this.host.fsm.setState(PKG.FG_states.lightBoxing);
+            }
+            if (PKG.keyboard.key('k')) {
+                this.host.fsm.setState(PKG.FG_states.lightKick);
+            }
             if (!PKG.keyboard.key('right')) { 
                 this.host.fsm.setState(PKG.FG_states.wait);
             } else if (PKG.keyboard.key('right') && PKG.keyboard.key('up')) {
@@ -116,6 +124,12 @@ Laro.register('Emberwind', function (La) {
             this.animation.draw(render, this.host.x, this.host.y, 0, 1, null);
 		},
 		transition: function () {
+            if (PKG.keyboard.key('a')) {
+                this.host.fsm.setState(PKG.FG_states.lightBoxing);
+            }
+            if (PKG.keyboard.key('k')) {
+                this.host.fsm.setState(PKG.FG_states.lightKick);
+            }
             if (!PKG.keyboard.key('left')) { 
                 this.host.fsm.setState(PKG.FG_states.wait);
             } else if (PKG.keyboard.key('left') && PKG.keyboard.key('up')) {
@@ -420,6 +434,110 @@ Laro.register('Emberwind', function (La) {
             } 
 		}
     })
+    
+    // before whirlkick
+    this.FG_BeforeWhirlKick = La.BaseState.extend().methods({
+        enter: function (msg, fromState) {
+            var state = {
+				frames: 3,
+				imgW: 213,
+				imgH: 120,
+				imgUrl: 'fighter/RYU1_before_whirl_kick.gif',
+				framerate: 10
+			};
+			this.animation = this.host.getAnimation(state);
+			this.animation.play(false);
+            this._t = 0;
+            this._end = false;
+		},
+		leave: function () {
+		
+		},
+		update: function (dt) {
+            this._t += dt;
+            this.animation.update(dt);
+            
+            if (this._t >= this.animation.getLength()) {
+                this._end = true;
+            }
+		},
+		draw: function (render) {
+            this.animation.draw(render, this.host.x, this.host.y, 0, 1, null);
+		},
+		transition: function () {
+            if (this._end) { 
+                this.host.fsm.setState(PKG.FG_states.whirlKicking);
+            } 
+		}
+    });
+    this.FG_WhirlKicking = La.BaseState.extend().methods({
+        enter: function (msg, fromState) {
+            var state = {
+				frames: 4,
+				imgW: 608,
+				imgH: 132,
+				imgUrl: 'fighter/RYU1_whirl_kick.gif',
+				framerate: 10
+			};
+			this.animation = this.host.getAnimation(state);
+			this.animation.play(false);
+            this._t = 0;
+            this._end = false;
+		},
+		leave: function () {
+		
+		},
+		update: function (dt) {
+            this._t += dt;
+            this.animation.update(dt);
+            
+            if (this._t >= this.animation.getLength()) {
+                this._end = true;
+            }
+		},
+		draw: function (render) {
+            this.animation.draw(render, this.host.x, this.host.y, 0, 1, null);
+		},
+		transition: function () {
+            if (this._end) { 
+                this.host.fsm.setState(PKG.FG_states.afterWhirlKick);
+            } 
+		}
+    });
+    this.FG_AfterWhirlKick = La.BaseState.extend().methods({
+        enter: function (msg, fromState) {
+            var state = {
+				frames: 5,
+				imgW: 285,
+				imgH: 132,
+				imgUrl: 'fighter/RYU1_after_whirl_kick.gif',
+				framerate: 10
+			};
+			this.animation = this.host.getAnimation(state);
+			this.animation.play(false);
+            this._t = 0;
+            this._end = false;
+		},
+		leave: function () {
+		
+		},
+		update: function (dt) {
+            this._t += dt;
+            this.animation.update(dt);
+            
+            if (this._t >= this.animation.getLength()) {
+                this._end = true;
+            }
+		},
+		draw: function (render) {
+            this.animation.draw(render, this.host.x, this.host.y, 0, 1, null);
+		},
+		transition: function () {
+            if (this._end) { 
+                this.host.fsm.setState(PKG.FG_states.wait);
+            } 
+		}
+    });
 	
     /* fighter states */
 	var fStates = {
@@ -432,7 +550,12 @@ Laro.register('Emberwind', function (La) {
         crouch: 6,
         standUp: 7,
         lightBoxing: 8,
-        lightKick: 9
+        lightKick: 9,
+        
+        beforeWhirlKick: 10,
+        whirlKicking: 11,
+        afterWhirlKick: 12
+        
 	};
 	var statesList = [
 		fStates.wait, PKG.FG_Wait,
@@ -444,7 +567,11 @@ Laro.register('Emberwind', function (La) {
         fStates.crouch, PKG.FG_Crouch,
         fStates.standUp, PKG.FG_StandUp,
         fStates.lightBoxing, PKG.FG_LightBoxing,
-        fStates.lightKick, PKG.FG_LightKick
+        fStates.lightKick, PKG.FG_LightKick,
+        
+        fStates.beforeWhirlKick, PKG.FG_BeforeWhirlKick,
+        fStates.whirlKicking, PKG.FG_WhirlKicking,
+        fStates.afterWhirlKick, PKG.FG_AfterWhirlKick
 	];
 	
 	this.FG_states = fStates;
