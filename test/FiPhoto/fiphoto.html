@@ -289,13 +289,14 @@ h1 .sp {
                 pkg.$toolbtns = $('#toolbar a');
                 try {
                     var canvas = fx.canvas();
-                    if (!!canvas) {
+                    if (!!canvas && canvas.getContext) {
                         pkg.canvas = canvas;                      
                         succFunc(canvas);
+                    } else {
+                        !!errFunc && errFunc();
                     }
                     
                 } catch(e) {
-                    alert(e);
                     !!errFunc && errFunc();
                     return;
                 }
