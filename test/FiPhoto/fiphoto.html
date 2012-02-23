@@ -102,11 +102,21 @@ body {
 }
 h1 {
     text-align: center;
-    background: #303030;
-    border-bottom: 1px solid #e0e0e0;
-    padding: 30px;
+    background: #303030 url(images/mesh.png);
+    border-bottom: 1px solid #000;
+    padding: 40px;
     color: #f7f7f7;
-    margin-bottom: 20px;
+    font-size: 48px;
+    font-family: Georgia;
+    margin-bottom: 40px;
+    text-shadow: 2px 2px 5px #eee;
+    -webkit-box-shadow: 0 4px 9px #000;
+}
+h1 .sp {
+    font-style: italic;
+    color: #6EACF5;
+    font-size: 36px;
+    text-shadow: 1px 1px 3px #999;
 }
 .container {
     margin: 0 auto;
@@ -123,9 +133,9 @@ h1 {
     
 }
 .container.noimg {
-    background: #FFF; 
+    background: rgba(0,0,0,0.1); 
     width: 500px;
-    -webkit-box-shadow: 0 0 10px #000;
+    -webkit-box-shadow: inset 0 0 10px #000;
     line-height: 200px;
     padding: 60px 0;
 }
@@ -150,23 +160,44 @@ h1 {
     list-style: none;
 }
 .fx-tab li {
-    height: 48px;
-    width: 48px;
+    width: 74px;
     float: left;
     margin-right: 8px;
-    -webkit-border-radius: 5px;
-    background: #fff;
-    font-size: 10px;
-    line-height: 46px;
+}
+.fx-tab li span {
+    display: block;
+    padding-top: 8px;
+    font-size: 14px;
+    color: #4D4F4C;
+    font-family: Tohoma;
+    text-shadow: 1px 1px 1px #fff;
+}
+.fx-tab li div {
+    height: 74px;
+    width: 74px;
+    
+    -webkit-border-radius: 8px;
+    text-indent: -999px;
+    overflow: hidden;
     cursor: pointer;
-    -webkit-box-shadow: 0 0 5px #ee6151;
+    background-repeat: no-repeat;
+    background-position: 0 0;
 }
-.fx-tab li:hover {
-    background: #edb23c;
+.fx-tab li.normal div { background-image: url(images/normal.jpg) }
+.fx-tab li.rise div { background-image: url(images/rise.jpg) }
+.fx-tab li.amaro div { background-image: url(images/amaro.jpg) }
+.fx-tab li.hudson div { background-image: url(images/hud.jpg) }
+.fx-tab li.xpoll div { background-image: url(images/xpoll.jpg) }
+.fx-tab li.sierra div { background-image: url(images/sierra.jpg) }
+.fx-tab li.inkwell div { background-image: url(images/inkwell.jpg) }
+
+.fx-tab li:hover div {
+    -webkit-box-shadow: 0 0 2px 1px #333;
 }
-.fx-tab li.current {
-    background: #fa4900;
+.fx-tab li.current div {
+    -webkit-box-shadow: 0 0 2px 1px #D7382C;
 }
+.fx-tab li.current span { font-weight: bold; }
 .toolbar {
     padding: 10px;
     text-align: center;
@@ -174,13 +205,16 @@ h1 {
 .toolbar a {
     text-decoration: none;
     display: inline-block;
-    line-height: 20px;
-    padding: 0 16px;
-    font-size: 12px;
-    color: #363636;
-    background: #999;
-    -webkit-border-radius: 4px;
-    -webkit-box-shadow: 0 0 2px #333;
+    line-height: 30px;
+    margin-right: 12px;
+    padding: 0 24px;
+    font-size: 15px;
+    font-family: 微软雅黑;
+    font-weight: bold;
+    color: #484441;
+    background: url(images/btn.png);
+    -webkit-border-radius: 30px;
+    -webkit-box-shadow: 0 0 2px #000;
 }
 .toolbar a:hover {
     background: #e0e0e0;
@@ -208,7 +242,7 @@ h1 {
 </head>
 
 <body>
-    <h1>Mr.Photo</h1>
+    <h1>Mr.<span class="sp">Photo</span></h1>
     <div id="toolbar" class="toolbar hide">
         <!--<a href="#" data-cmd="cut">裁剪</a>-->
         <a href="#" data-cmd="roll-left">旋转</a>
@@ -366,7 +400,7 @@ h1 {
             this.save = function () {
                 var dataURL = pkg.canvas.toDataURL();
                 document.location.href = dataURL.replace(/image\/png/i, downloadMime);
-                $('<a href="'+dataURL+'">img</a>').appendTo('body');
+                //$('<a href="'+dataURL+'">img</a>').appendTo('body');
             }
             this.createImage = function (src) {
                 var img = document.createElement('img');
@@ -520,7 +554,7 @@ h1 {
                 var dom = [];
                 dom.push('<ul>');
                 for (var k in FiPhoto.fx) {
-                    dom.push('<li data-cmd="'+ k +'">'+ k +'</li>');
+                    dom.push('<li data-cmd="'+ k +'" class="'+k+'"><div>'+ k +'</div><span>'+k+'</span></li>');
                 }
                 dom.push('</ul>');
                 FiPhoto.$tabWrap.html(dom.join(''));
