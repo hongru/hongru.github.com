@@ -33,7 +33,7 @@ Laro.register('Emberwind', function (La) {
 		},
 		transition: function () {
             // 攻击优先级比 行动高
-            console.log(PKG.keyboard.keyStack)
+            //console.log(PKG.keyboard.keyStack)
             //if (PKG.keyboard) { this.host.fsm.setState(PKG.FG_states.beforeWhirlKick) }
             if (PKG.keyboard.key('a')) {
                 this.host.fsm.setState(PKG.FG_states.lightBoxing);
