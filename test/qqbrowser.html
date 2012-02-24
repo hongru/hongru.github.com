@@ -25,17 +25,18 @@ html,body {
     -webkit-border-radius: 80px;
     background: #3C97F9;
     -webkit-box-shadow: 0 0 20px #2ABBFF;
+    z-index: 500;
 }
 .star {
     left: 50%;
     top: 50%;
-    width: 2px;
-    height: 2px;
+    width: 5px;
+    height: 5px;
     font-size: 0;
     overflow: hidden;
     background: yellow;
-    -webkit-border-radius: 2px;
-    -webkit-box-shadow: 0 0 4px yellow;
+    -webkit-border-radius: 5px;
+    -webkit-box-shadow: 0 0 10px yellow;
 }
 </style>
 
@@ -199,30 +200,109 @@ $.extend = $.extend || function (target, source, isOverwrite) {
 // Main Func
 $.NS('SunSys', function ($) {
     
+    // 椭圆 
+    // x = a*cos(angle)  0 <= angle < 360
+    // y = b*sin(angle)
     var Star = $.Class(function (opt) {
         var defaults = {
             longAxis: 200,
             shortAxis: 60,
-            angle: 20,
-            speed: 2,
-            startX: (100 - Math.random()*200)
+            longAxisAngle: 20,
+            opacity: [0.6, 1],
+            radius: [3, 5],
+            centerZ: 500,
+            speed: 0.01,
+            dirY: 1, // 为1 那么 (0-180)deg 在前， 为-1 (180-360)deg在前
+            dirX: 1, // 为1 逆时针， -1顺时针
+            startAngle: 60 // (0-360) 
         };
         opt = $.extend(defaults, opt);
         this.opt = opt;
         
-        this._x = this.opt.startX; // 未旋转前的x
-        this._y = 0; // 未旋转的y
+        this.a = this.opt.longAxis/2;
+        this.b = this.opt.shortAxis/2;
+        this.angle = Math.PI * (this.opt.startAngle/180);
+        
+        this._x = this.a * Math.cos(this.angle); // 未旋转前的x
+        this._y = this.b * Math.sin(this.angle); // 未旋转的y
         // 有角度的实际的xy
         this.x = 0; 
         this.y = 0;
         
+        this.create();
+        
     }).methods({
-        getXY: 
+        create: function () {
+            var dom = document.createElement('span');
+            dom.className = 'star';
+            document.body.appendChild(dom);
+            this.dom = dom;
+        },
+        get_x_y: function (ag) {
+            if (ag == undefined) {
+                ag = this.angle;
+            }
+            this._x = this.a * Math.cos(ag);
+            this._y = this.b * Math.sin(ag);
+        }, 
+        getxy: function () {
+            this.get_x_y();
+            var ang = Math.PI * this.opt.longAxisAngle / 180;
+            // 倾斜椭圆公式
+            this.x = this._x*Math.cos(ang) + this._y*Math.sin(ang);
+            this.y = this._x*Math.sin(ang) + this._y*Math.cos(ang);
+        },
         update: function (dt) {
-            
+            this.angle += this.opt.dirX * this.opt.speed;
+            this.render();
+        },
+        render: function () {
+            this.getxy();
+            var z = parseInt(this.opt.dirY*this.y + 500);
+            var _op = (this.opt.opacity[1]-this.opt.opacity[0])/2;
+            var op = this.opt.opacity[0] + _op + (this.opt.dirY*this.y*_op/this.b);
+            var _r = (this.opt.radius[1]-this.opt.radius[0])/2;
+            var r = this.opt.radius[0] + _r + (this.opt.dirY*this.y*_r/this.b);
+            op = Math.max(0, Math.min(1, op));
+            this.dom.style['marginLeft'] = this.x + 'px';
+            this.dom.style['marginTop'] = -this.y + 'px';
+            this.dom.style['zIndex'] = z;
+            this.dom.style['opacity'] = op;
+            this.dom.style['width'] = r + 'px';
+            this.dom.style['height'] = r + 'px';
         }
-    })
+    });
     
-})
+    this.init = function () {
+        this.stars = [];
+        for (var i = 0; i < 10; i ++) {
+            var opt = {
+                longAxis: (Math.random()*(250-120) + 120),
+                shortAxis: (Math.random()*(40-20) + 20),
+                longAxisAngle: (Math.random()*(20)-10),
+                opacity: [0.6, 1],
+                radius: [3, 5],
+                centerZ: 500,
+                speed: (Math.random()*(0.01-0.004) + 0.004),
+                dirY: (Math.random() > 0.5 ? 1 : -1), // 为1 那么 (0-180)deg 在前， 为-1 (180-360)deg在前
+                dirX: 1,//(Math.random() > 0.5 ? 1 : -1), // 为1 逆时针， -1顺时针
+                startAngle: (Math.random()*360) // (0-360) 
+            }
+            this.stars.push(new Star(opt));
+        }
+
+        this.loop = new $.Loop(this.update, this);
+    };
+    this.update = function (dt) {
+        for (var i = 0; i < this.stars.length; i ++) {
+            var star = this.stars[i];
+            star.update(dt);
+        }
+        
+    }
+    
+});
+
+onload = function () { SunSys.init() }
 </script>
 </html>
