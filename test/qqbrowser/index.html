@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html>
+<meta charset="utf-8" />
+
+<style>
+html,body {
+    margin: 0;
+    padding: 0;
+}
+body { background:#333 url(bg.jpg); }
+.header {
+	height: 361px;
+	background: #333 url(topbg.jpg) repeat-x;
+	position: relative;
+}
+.logo, .star {
+    position: absolute;
+}
+.logo {
+    width: 151px;
+    height: 145px;
+    left: 50%;
+    top: 50%;
+	background: url(logo.png) no-repeat;
+    margin-left: -75px;
+    margin-top: -125px;
+    z-index: 500;
+}
+.star {
+    left: 50%;
+    top: 50%;
+	margin-top: -53px;
+
+    font-size: 0;
+    overflow: hidden;
+
+}
+</style>
+
+<div id="header" class="header">
+	<div class="logo"></div>
+</div>
+
+<script>
+var $ = $ || {};
+window.requestAnimFrame = (function() {
+  				return window.requestAnimationFrame ||
+    			window.webkitRequestAnimationFrame ||
+     			window.mozRequestAnimationFrame ||
+     			window.oRequestAnimationFrame ||
+     			window.msRequestAnimationFrame ||
+     			function(/* function FrameRequestCallback */ callback, /* DOMElement Element */ element) {
+       				window.setTimeout(callback, 1000/60);
+     			};
+			})();
+            
+$.Class = function () {
+    var context = this,
+    old = context.Class,
+    f = 'function',
+    fnTest = /xyz/.test(function() {
+        xyz
+    }) ? /\bsupr\b/: /.*/,
+    proto = 'prototype';
+ 
+    function Class(o) {
+        return extend.call(isFn(o) ? o: function() {},
+        o, 1)
+    }
+ 
+    function isFn(o) {
+        return typeof o === f
+    }
+ 
+    function wrap(k, fn, supr) {
+        return function() {
+            var tmp = this.supr
+            this.supr = supr[proto][k]
+            var ret = fn.apply(this, arguments)
+            this.supr = tmp
+            return ret
+        }
+    }
+ 
+    function process(what, o, supr) {
+        for (var k in o) {
+            if (o.hasOwnProperty(k)) {
+                what[k] = isFn(o[k]) && isFn(supr[proto][k]) && fnTest.test(o[k]) ? wrap(k, o[k], supr) : o[k]
+            }
+        }
+    }
+ 
+    function extend(o, fromSub) {
+        // must redefine noop each time so it doesn't inherit from previous arbitrary classes
+        function noop() {}
+        noop[proto] = this[proto]
+        var supr = this,
+        prototype = new noop(),
+        isFunction = isFn(o),
+        _constructor = isFunction ? o: this,
+        _methods = isFunction ? {}: o
+        function fn() {
+            if (this.initialize) this.initialize.apply(this, arguments)
+            else {
+                fromSub || isFunction && supr.apply(this, arguments)
+                _constructor.apply(this, arguments)
+            }
+        }
+ 
+        fn.methods = function(o) {
+            process(prototype, o, supr)
+            fn[proto] = prototype
+            return this
+        }
+ 
+        fn.methods.call(fn, _methods).prototype.constructor = fn
+ 
+        fn.extend = arguments.callee
+        fn[proto].implement = fn.statics = function(o, optFn) {
+            o = typeof o == 'string' ? (function() {
+                var obj = {}
+                obj[o] = optFn
+                return obj
+            } ()) : o
+            process(this, o, supr)
+            return this
+        }
+ 
+        return fn
+    }
+    
+    return Class;  
+}();
+
+$.Loop = $.Class(function (callback, that) {
+        var keepUpdating = true,
+            lastLoopTime = new Date();
+            
+        function loop () {
+            if (!keepUpdating) { return }
+            requestAnimFrame(loop);
+            
+            var time = new Date(),
+                dt = (time - lastLoopTime) / 1000;
+
+            if (dt >= 3) {
+                dt = 0.25;
+            }
+            
+            callback.call(that, dt);
+            lastLoopTime = time;
+        }
+        
+        // stop
+        this.stop = function () {
+            keepUpdating = false;
+        }
+        
+        // resume
+        this.resume = function () {
+            keepUpdating = true;
+            lastLoopTime = new Date();
+            loop();
+        }
+        
+        loop();
+        return this;
+    });
+ 
+// namespace
+$.NS = function (name, fn) {
+    var names = name.split('.'),
+        i = -1,
+        loopName = window;
+    if (names[0] == '') {
+        names[0] = '$';
+    }
+    
+    while (names[++ i]) {
+        var na = names[i];
+        if (loopName[na] ===  undefined) {
+            loopName[na] = {};
+        }
+        loopName = loopName[na];
+    }
+    !!fn && fn.call(loopName, $);
+};
+
+$.extend = $.extend || function (target, source, isOverwrite) {
+    if (isOverwrite == undefined) { isOverwrite = true }
+    for (var k in source) {
+        if (!(k in target) || isOverwrite) {
+            target[k] = source[k];
+        }
+    }
+    return target;
+}
+
+
+// Main Func
+$.NS('SunSys', function ($) {
+    
+    // 椭圆 
+    // x = a*cos(angle)  0 <= angle < 360
+    // y = b*sin(angle)
+    var Star = $.Class(function (opt) {
+        var defaults = {
+			container: document.getElementById('header'),
+            longAxis: 200,
+            shortAxis: 60,
+			paramX: 0,
+			paramY: -70,
+            longAxisAngle: 20,
+            opacity: [0.6, 1],
+            radius: [3, 5],
+            centerZ: 500,
+            speed: 0.01,
+            dirY: 1, // 为1 那么 (0-180)deg 在前， 为-1 (180-360)deg在前
+            dirX: 1, // 为1 逆时针， -1顺时针
+            startAngle: 60 // (0-360) 
+        };
+        opt = $.extend(defaults, opt || {});
+        this.opt = opt;
+        
+        this.a = this.opt.longAxis/2;
+        this.b = this.opt.shortAxis/2;
+        this.angle = Math.PI * (this.opt.startAngle/180);
+        
+        this._x = this.a * Math.cos(this.angle); // 未旋转前的x
+        this._y = this.b * Math.sin(this.angle); // 未旋转的y
+        // 有角度的实际的xy
+        this.x = 0; 
+        this.y = 0;
+		
+		this.oflag = 1;
+        
+        this.create();
+        
+    }).methods({
+        create: function () {
+            var dom = document.createElement('img');
+			dom.src = '13.png';
+            dom.className = 'star';
+			dom.style['opacity'] = (Math.random()*0.7) + 0.3;
+			dom.width = Math.round(Math.random()*12) + 8;
+            this.opt.container.appendChild(dom);
+            this.dom = dom;
+        },
+        get_x_y: function (ag) {
+            if (ag == undefined) {
+                ag = this.angle;
+            }
+            this._x = this.a * Math.cos(ag);
+            this._y = this.b * Math.sin(ag);
+        }, 
+        getxy: function () {
+            this.get_x_y();
+            var ang = Math.PI * this.opt.longAxisAngle / 180;
+            // 倾斜椭圆公式
+            this.x = this._x*Math.cos(ang) + this._y*Math.sin(ang);
+            this.y = this._x*Math.sin(ang) + this._y*Math.cos(ang);
+        },
+        update: function (dt) {
+            this.angle += this.opt.dirX * this.opt.speed;
+            this.render();
+        },
+        render: function () {
+            this.getxy();
+            var z = parseInt(this.opt.dirY*this.y + 500);
+            var _op = parseFloat(this.dom.style['opacity']) + this.oflag*0.01;
+			if (_op > 1 || _op < 0.3) { 
+				this.oflag *= -1;
+			}
+            var op = parseFloat(this.dom.style['opacity']) + this.oflag*0.01;
+            var _r = (this.opt.radius[1]-this.opt.radius[0])/2;
+            var r = this.opt.radius[0] + _r + (this.opt.dirY*this.y*_r/this.b);
+            op = Math.max(0, Math.min(1, op));
+            this.dom.style['marginLeft'] = this.x + 'px';
+            this.dom.style['marginTop'] = -this.y + this.opt.paramY + 'px';
+            this.dom.style['zIndex'] = z;
+            this.dom.style['opacity'] = op;
+            //this.dom.style['width'] = r + 'px';
+            //this.dom.style['height'] = r + 'px';
+        }
+    });
+    
+    this.init = function () {
+        this.stars = [];
+		var ax = 160;
+        for (var i = 0; i < 10; i ++) {
+            var opt = {
+                longAxis: ax + i*12,
+                shortAxis: (Math.random()*(40-20) + 20),
+                longAxisAngle: (Math.random()*(20)-10),
+                opacity: [0.5, 1],
+                radius: [3, 5],
+                centerZ: 500,
+                speed: (Math.random()*(0.01-0.004) + 0.004),
+                dirY: (Math.random() > 0.5 ? 1 : -1), // 为1 那么 (0-180)deg 在前， 为-1 (180-360)deg在前
+                dirX: 1,//(Math.random() > 0.5 ? 1 : -1), // 为1 逆时针， -1顺时针
+                startAngle: i*36 // (0-360) 
+            }
+            this.stars.push(new Star(opt));
+        }
+
+        this.loop = new $.Loop(this.update, this);
+    };
+    this.update = function (dt) {
+        for (var i = 0; i < this.stars.length; i ++) {
+            var star = this.stars[i];
+            star.update(dt);
+        }
+        
+    }
+    
+});
+
+onload = function () { SunSys.init() }
+</script>
+</html>
