@@ -160,6 +160,144 @@
 
 })(jQuery);
 
+// jquery easing
+// t: current time, b: begInnIng value, c: change In value, d: duration
+jQuery.easing['jswing'] = jQuery.easing['swing'];
+ 
+jQuery.extend( jQuery.easing,
+{
+	def: 'easeOutQuad',
+	swing: function (x, t, b, c, d) {
+		//alert(jQuery.easing.default);
+		return jQuery.easing[jQuery.easing.def](x, t, b, c, d);
+	},
+	easeInQuad: function (x, t, b, c, d) {
+		return c*(t/=d)*t + b;
+	},
+	easeOutQuad: function (x, t, b, c, d) {
+		return -c *(t/=d)*(t-2) + b;
+	},
+	easeInOutQuad: function (x, t, b, c, d) {
+		if ((t/=d/2) < 1) return c/2*t*t + b;
+		return -c/2 * ((--t)*(t-2) - 1) + b;
+	},
+	easeInCubic: function (x, t, b, c, d) {
+		return c*(t/=d)*t*t + b;
+	},
+	easeOutCubic: function (x, t, b, c, d) {
+		return c*((t=t/d-1)*t*t + 1) + b;
+	},
+	easeInOutCubic: function (x, t, b, c, d) {
+		if ((t/=d/2) < 1) return c/2*t*t*t + b;
+		return c/2*((t-=2)*t*t + 2) + b;
+	},
+	easeInQuart: function (x, t, b, c, d) {
+		return c*(t/=d)*t*t*t + b;
+	},
+	easeOutQuart: function (x, t, b, c, d) {
+		return -c * ((t=t/d-1)*t*t*t - 1) + b;
+	},
+	easeInOutQuart: function (x, t, b, c, d) {
+		if ((t/=d/2) < 1) return c/2*t*t*t*t + b;
+		return -c/2 * ((t-=2)*t*t*t - 2) + b;
+	},
+	easeInQuint: function (x, t, b, c, d) {
+		return c*(t/=d)*t*t*t*t + b;
+	},
+	easeOutQuint: function (x, t, b, c, d) {
+		return c*((t=t/d-1)*t*t*t*t + 1) + b;
+	},
+	easeInOutQuint: function (x, t, b, c, d) {
+		if ((t/=d/2) < 1) return c/2*t*t*t*t*t + b;
+		return c/2*((t-=2)*t*t*t*t + 2) + b;
+	},
+	easeInSine: function (x, t, b, c, d) {
+		return -c * Math.cos(t/d * (Math.PI/2)) + c + b;
+	},
+	easeOutSine: function (x, t, b, c, d) {
+		return c * Math.sin(t/d * (Math.PI/2)) + b;
+	},
+	easeInOutSine: function (x, t, b, c, d) {
+		return -c/2 * (Math.cos(Math.PI*t/d) - 1) + b;
+	},
+	easeInExpo: function (x, t, b, c, d) {
+		return (t==0) ? b : c * Math.pow(2, 10 * (t/d - 1)) + b;
+	},
+	easeOutExpo: function (x, t, b, c, d) {
+		return (t==d) ? b+c : c * (-Math.pow(2, -10 * t/d) + 1) + b;
+	},
+	easeInOutExpo: function (x, t, b, c, d) {
+		if (t==0) return b;
+		if (t==d) return b+c;
+		if ((t/=d/2) < 1) return c/2 * Math.pow(2, 10 * (t - 1)) + b;
+		return c/2 * (-Math.pow(2, -10 * --t) + 2) + b;
+	},
+	easeInCirc: function (x, t, b, c, d) {
+		return -c * (Math.sqrt(1 - (t/=d)*t) - 1) + b;
+	},
+	easeOutCirc: function (x, t, b, c, d) {
+		return c * Math.sqrt(1 - (t=t/d-1)*t) + b;
+	},
+	easeInOutCirc: function (x, t, b, c, d) {
+		if ((t/=d/2) < 1) return -c/2 * (Math.sqrt(1 - t*t) - 1) + b;
+		return c/2 * (Math.sqrt(1 - (t-=2)*t) + 1) + b;
+	},
+	easeInElastic: function (x, t, b, c, d) {
+		var s=1.70158;var p=0;var a=c;
+		if (t==0) return b;  if ((t/=d)==1) return b+c;  if (!p) p=d*.3;
+		if (a < Math.abs(c)) { a=c; var s=p/4; }
+		else var s = p/(2*Math.PI) * Math.asin (c/a);
+		return -(a*Math.pow(2,10*(t-=1)) * Math.sin( (t*d-s)*(2*Math.PI)/p )) + b;
+	},
+	easeOutElastic: function (x, t, b, c, d) {
+		var s=1.70158;var p=0;var a=c;
+		if (t==0) return b;  if ((t/=d)==1) return b+c;  if (!p) p=d*.3;
+		if (a < Math.abs(c)) { a=c; var s=p/4; }
+		else var s = p/(2*Math.PI) * Math.asin (c/a);
+		return a*Math.pow(2,-10*t) * Math.sin( (t*d-s)*(2*Math.PI)/p ) + c + b;
+	},
+	easeInOutElastic: function (x, t, b, c, d) {
+		var s=1.70158;var p=0;var a=c;
+		if (t==0) return b;  if ((t/=d/2)==2) return b+c;  if (!p) p=d*(.3*1.5);
+		if (a < Math.abs(c)) { a=c; var s=p/4; }
+		else var s = p/(2*Math.PI) * Math.asin (c/a);
+		if (t < 1) return -.5*(a*Math.pow(2,10*(t-=1)) * Math.sin( (t*d-s)*(2*Math.PI)/p )) + b;
+		return a*Math.pow(2,-10*(t-=1)) * Math.sin( (t*d-s)*(2*Math.PI)/p )*.5 + c + b;
+	},
+	easeInBack: function (x, t, b, c, d, s) {
+		if (s == undefined) s = 1.70158;
+		return c*(t/=d)*t*((s+1)*t - s) + b;
+	},
+	easeOutBack: function (x, t, b, c, d, s) {
+		if (s == undefined) s = 1.70158;
+		return c*((t=t/d-1)*t*((s+1)*t + s) + 1) + b;
+	},
+	easeInOutBack: function (x, t, b, c, d, s) {
+		if (s == undefined) s = 1.70158; 
+		if ((t/=d/2) < 1) return c/2*(t*t*(((s*=(1.525))+1)*t - s)) + b;
+		return c/2*((t-=2)*t*(((s*=(1.525))+1)*t + s) + 2) + b;
+	},
+	easeInBounce: function (x, t, b, c, d) {
+		return c - jQuery.easing.easeOutBounce (x, d-t, 0, c, d) + b;
+	},
+	easeOutBounce: function (x, t, b, c, d) {
+		if ((t/=d) < (1/2.75)) {
+			return c*(7.5625*t*t) + b;
+		} else if (t < (2/2.75)) {
+			return c*(7.5625*(t-=(1.5/2.75))*t + .75) + b;
+		} else if (t < (2.5/2.75)) {
+			return c*(7.5625*(t-=(2.25/2.75))*t + .9375) + b;
+		} else {
+			return c*(7.5625*(t-=(2.625/2.75))*t + .984375) + b;
+		}
+	},
+	easeInOutBounce: function (x, t, b, c, d) {
+		if (t < d/2) return jQuery.easing.easeInBounce (x, t*2, 0, c, d) * .5 + b;
+		return jQuery.easing.easeOutBounce (x, t*2-d, 0, c, d) * .5 + c*.5 + b;
+	}
+});
+
+
 // main script
 $.NS('FiPhoto', function () {
 	var pkg = this;
@@ -167,6 +305,7 @@ $.NS('FiPhoto', function () {
 	
 	this.size11 = {w: 650, h: 650};
 	this.size43 = {w: 800, h: 600};
+    this.step = 0;
 	
 	function generateCanvas(succFunc, errFunc) {
 		pkg.$con = $('#container');
@@ -281,7 +420,7 @@ $.NS('FiPhoto', function () {
 				} else {
 					pkg.$wrap.removeClass('dragover');
 					pkg.$wrap.removeClass('noimg');	
-					!FiPhoto.$con.find('canvas')[0] && FiPhoto.operation.init();
+                    !FiPhoto.$con.find('canvas')[0] && FiPhoto.operation.initCanvas();
 					FiPhoto.operation.initImage(e.target.result);
 				}
 				
@@ -365,6 +504,7 @@ $.NS('FiPhoto', function () {
 // 第一步的图片手术
 $.NS('FiPhoto.operation', function () {
 	var pkg = this;
+    var step1 = {};
 	
 	this.imgInfo = {
 		src: '',
@@ -376,10 +516,84 @@ $.NS('FiPhoto.operation', function () {
 	
 	this.init = function (oSize) {
 		if (oSize == undefined) { oSize = FiPhoto.size11 };
-		this.size = oSize;
-		this.create();
-		this.setCvsPos();
+		this.size = oSize;		
+        this.getStepEls();
+        this.bind();
 	};
+    
+    this.initCanvas = function () {
+        this.create();
+		this.setCvsPos();
+    }
+    
+    this.getStepEls = function () {
+        step1.$tit = $('#fx-step1 .ea-title');
+        step1.$btns = $('#fx-step1 .btn');
+        
+        var titPos = step1.$tit.show().position();
+        step1.$tit.attr({
+            'data-left': titPos.left,
+            'data-top': titPos.top
+        }).hide();
+
+        step1.$btns.each(function () {
+            var pos = $(this).show().position();
+            $(this).attr({
+                'data-left': pos.left,
+                'data-top': pos.top
+            }).hide();
+        });
+        
+        this['step1'] = step1;
+    };
+    
+    this.bind = function () {
+        this['step1']['$btns'].unbind('click');
+        this['step1']['$btns'].bind('click', function (e) {
+            e.preventDefault();
+            var cmd = $(this).attr('data-cmd');
+
+            switch(cmd) {
+                case 'limit':
+                    pkg.toggleLimitBtn($(this));
+                    break;
+                case 'rotate':
+                    pkg.rotate();
+                    break;
+                case 'border':
+                    pkg.toggleBorderBtn($(this));
+                    break;
+                case 'scale':
+                    pkg.toggleScaleBtn($(this));
+                    break;
+            }
+        })
+    };
+    
+    this.toggleLimitBtn = function ($btn) { 
+        $btn.hasClass('active') ? this.deactiveLimitBtn($btn) : this.activeLimitBtn($btn);
+    };
+    this.deactiveLimitBtn = function ($btn) {
+        $btn.removeClass('active');
+        $('.limit-panel').hide();
+    };
+    this.activeLimitBtn = function ($btn) {
+        $btn.addClass('active');
+        $('.limit-panel').show();
+    };
+    
+    
+    this.rotate = function () {
+    
+    };
+    
+    this.toggleBorderBtn = function () {
+    
+    };
+    
+    this.toggleScaleBtn = function () {
+    
+    };
 	
 	this.create = function () {
 		// 创建一个 canvas 用于 图片手术， 大小为 650*2；
@@ -432,6 +646,8 @@ $.NS('FiPhoto.operation', function () {
 			};
 			FiPhoto.$imgWrap.hide();
 			pkg.drawImage();
+            pkg.checkStep(1);
+            
 			callCB = true;
 		}
 	};
@@ -447,7 +663,39 @@ $.NS('FiPhoto.operation', function () {
 		ctx.restore();
 		
 		this.$canvas.show();
-	}
+	};
+    
+    // 检测 当前step
+    this.checkStep = function (step) {
+        var easing = 'easeOutBack';
+        if (step == undefined) { step = 1; }
+       // if (step == FiPhoto.step) { return; }
+       // if (step > FiPhoto.step) { // 从右边出来
+            var $tit = pkg['step'+step]['$tit'],
+                $btns = pkg['step'+step]['$btns'],
+                timeout = 0;
+            
+            $tit.css({'left': 850}).show().animate({'left': parseInt($tit.attr('data-left'))}, {
+                duration: 1000,
+                easing: easing,
+                callback: function () {}
+            });
+            $btns.each(function () {
+                var _this = this;
+                timeout += 100;
+                setTimeout(function () {
+                    $(_this).css({'left': 850}).show()
+                        .animate({'left': parseInt($(_this).attr('data-left'))}, {
+                            duration: 1000,
+                            easing: easing,
+                            callback: function () {}
+                        })
+                }, timeout)
+                
+            })
+            FiPhoto.step = step;
+        //}
+    }
 
 });
 	

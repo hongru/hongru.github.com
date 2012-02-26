@@ -125,3 +125,80 @@ h1 {
 .hide {
 	display: none;
 }
+
+.edit-area {
+    position: relative;
+    overflow: hidden;
+    min-height: 175px;
+}
+.edit-area .ea-title {
+    display: none;
+    position: absolute;
+    top: 0;
+    left: 142px;
+    text-indent: -9999px;
+}
+.edit-area .btn1 {
+    display: none;
+    position: absolute;
+    width: 118px;
+    height: 45px;
+    background: url(../images/btn_03.png) no-repeat 0 0;
+    overflow:hidden;
+}
+.edit-area .btn1 span {
+    display: inline-block;
+    height: 44px;
+    width: 100%;
+    background: url(../images/btn-text_03.png) no-repeat;
+    text-indent: -9999px;
+}
+.btn1:hover {
+    background-position: -140px 0;
+}
+.btn1:active, .btn1.active {
+    background-position: -279px 0;
+}
+.edit {
+    width: 564px;
+    height: 34px;
+    background: url(../images/edit_03.png) no-repeat;
+}
+
+.limit {
+    left: 158px;
+    top: 58px;   
+}
+.limit-panel {
+    position: absolute;
+    width: 128px;
+    height: 52px;
+    background: url(../images/limit-panel_03.png) no-repeat;
+    left: 148px;
+    top: 110px;
+    display: none;
+}
+.btn1.limit span {
+    background-position: -140px 50%;
+}
+.rotate {
+    left: 298px;
+    top: 58px;   
+}
+.btn1.rotate span {
+    background-position: 0px 50%;
+}
+.pic-border {
+    left: 438px;
+    top: 58px;
+}
+.btn1.pic-border span {
+    background: url(../images/border-text_03.png) no-repeat 0 50%; 
+}
+.scale {
+    left: 578px;
+    top: 58px;  
+}
+.btn1.scale span {
+    background-position: -280px 50%;
+}
