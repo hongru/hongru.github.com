@@ -48,7 +48,22 @@ Laro.register('Emberwind', function (La) {
                 
                 // sound
                 'music/music.ogg',
-                'music/sfx.ogg'
+                'music/sfx.ogg',
+				'music/fighter/defense.mp3',
+				'music/fighter/fall.mp3',
+				'music/fighter/footfall.mp3',
+				'music/fighter/heavy_boxing.mp3',
+				'music/fighter/hit_heavy_boxing.mp3',
+				'music/fighter/hit_heavy_kick.mp3',
+				'music/fighter/hit_light.mp3',
+				'music/fighter/hit_middle_boxing.mp3',
+				'music/fighter/hit_middle_kick.mp3',
+				'music/fighter/impact_boxing.mp3',
+				'music/fighter/light_boxing.mp3',
+				'music/fighter/middle_boxing.mp3',
+				'music/fighter/middle_boxing_hit.mp3',
+				'music/fighter/wave_boxing.mp3',
+				'music/fighter/whirl_kick.mp3'
             ];
             La.ResourceLoader.getInstance().preload(images, La.curry(this.progressCallback, this));
          
@@ -62,6 +77,23 @@ Laro.register('Emberwind', function (La) {
         leave: function () { // 资源加载完毕
             pkg.sfx = pkg.loader.getSound('music/sfx.ogg');
             pkg.music = pkg.loader.getSound('music/music.ogg');
+			pkg.fighter_sfx = {
+				defense: pkg.loader.getSound('music/fighter/defense.mp3'),
+				fall: pkg.loader.getSound('music/fighter/fall.mp3'),
+				footfall: pkg.loader.getSound('music/fighter/footfall.mp3'),
+				heavy_boxing: pkg.loader.getSound('music/fighter/heavy_boxing.mp3'),
+				hit_heavy_boxing: pkg.loader.getSound('music/fighter/hit_heavy_boxing.mp3'),
+				hit_heavy_kick: pkg.loader.getSound('music/fighter/hit_heavy_kick.mp3'),
+				hit_light: pkg.loader.getSound('music/fighter/hit_light.mp3'),
+				hit_middle_boxing: pkg.loader.getSound('music/fighter/hit_middle_boxing.mp3'),
+				hit_middle_kick: pkg.loader.getSound('music/fighter/hit_middle_kick.mp3'),
+				impact_boxing: pkg.loader.getSound('music/fighter/impact_boxing.mp3'),
+				light_boxing: pkg.loader.getSound('music/fighter/light_boxing.mp3'),
+				middle_boxing: pkg.loader.getSound('music/fighter/middle_boxing.mp3'),
+				middle_boxing_hit: pkg.loader.getSound('music/fighter/middle_boxing_hit.mp3'),
+				wave_boxing: pkg.loader.getSound('music/fighter/wave_boxing.mp3'),
+				whirl_kick: pkg.loader.getSound('music/fighter/whirl_kick.mp3')
+			};
             
             pkg.sfx.addChannel('timetrap', 320, 4.54);
             pkg.music.addChannel('menu', 14, 119.4);

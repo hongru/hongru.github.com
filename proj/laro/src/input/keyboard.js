@@ -92,8 +92,28 @@ Laro.register('.input', function (La) {
 	}).methods({
 		bind: function () {
 			var _this = this;
-			this.target.addEventListener('keydown', function (e) { _this.keydown(e) }, false);
-			this.target.addEventListener('keyup', function (e) { _this.keyup(e) }, false);
+			this.target.addEventListener('keydown', function (e) {
+				if (e.keyCode == 32 || e.keyCode == 37 || e.keyCode == 38 || e.keyCode == 39 || e.keyCode == 40) {
+					if (e.preventDefault) {
+						e.preventDefault();
+					} else {
+						e.returnValue = false;
+					}
+				}
+				
+				_this.keydown(e) 
+			}, false);
+			this.target.addEventListener('keyup', function (e) { 
+				if (e.keyCode == 32 || e.keyCode == 37 || e.keyCode == 38 || e.keyCode == 39 || e.keyCode == 40) {
+					if (e.preventDefault) {
+						e.preventDefault();
+					} else {
+						e.returnValue = false;
+					}
+				}
+
+				_this.keyup(e) 
+			}, false);
 		},
 		getKeyName: function (keyCode) {
 			for (var name in keyHash) {

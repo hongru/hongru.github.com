@@ -34,7 +34,10 @@ Laro.register('Emberwind', function (La) {
 		transition: function () {
             // 攻击优先级比 行动高
             //console.log(PKG.keyboard.keyStack)
-            //if (PKG.keyboard) { this.host.fsm.setState(PKG.FG_states.beforeWhirlKick) }
+            if (PKG.keyboard.keyStack.join('') == 'asdf') { 
+				this.host.fsm.setState(PKG.FG_states.beforeWhirlKick);
+				PKG.keyboard.resetKeyStack();
+			}
             if (PKG.keyboard.key('a')) {
                 this.host.fsm.setState(PKG.FG_states.lightBoxing);
             } else if (PKG.keyboard.key('k')) {
@@ -182,7 +185,7 @@ Laro.register('Emberwind', function (La) {
             this.host.y = this._oldy - h;
             
             if (this._t >= this.animation.getLength()) {
-                this.host.sfx.footfall.play();
+				PKG.fighter_sfx.footfall.play();
                 this.host.y = this._oldy;
                 this._curJumpEnd = true;
             }
@@ -232,7 +235,7 @@ Laro.register('Emberwind', function (La) {
             this.animation.update(dt);
             
             if (this._t >= this.animation.getLength()) {
-                this.host.sfx.footfall.play();
+                PKG.fighter_sfx.footfall.play();
                 this._curJumpEnd = true;
                 this.host.y = this._oldy;
             }
@@ -282,7 +285,7 @@ Laro.register('Emberwind', function (La) {
             this.animation.update(dt);
             
             if (this._t >= this.animation.getLength()) {
-                this.host.sfx.footfall.play();
+                PKG.fighter_sfx.footfall.play();
                 this._curJumpEnd = true;
                 this.host.y = this._oldy;
             }
@@ -449,12 +452,16 @@ Laro.register('Emberwind', function (La) {
 			this.animation.play(false);
             this._t = 0;
             this._end = false;
+			
+			
+			PKG.beforeJumpY = this.host.y;
 		},
 		leave: function () {
 		
 		},
 		update: function (dt) {
             this._t += dt;
+			this.host.y = PKG.beforeJumpY - 40;
             this.animation.update(dt);
             
             if (this._t >= this.animation.getLength()) {
@@ -480,9 +487,11 @@ Laro.register('Emberwind', function (La) {
 				framerate: 10
 			};
 			this.animation = this.host.getAnimation(state);
-			this.animation.play(false);
+			this.animation.play();
             this._t = 0;
             this._end = false;
+			
+			PKG.fighter_sfx.whirl_kick.play();
 		},
 		leave: function () {
 		
@@ -490,8 +499,14 @@ Laro.register('Emberwind', function (La) {
 		update: function (dt) {
             this._t += dt;
             this.animation.update(dt);
+			
+			if (PKG.keyboard.key('right')) {
+				this.host.x += (dt*160);
+			} else if (PKG.keyboard.key('left')) {
+				this.host.x -= (dt*160);
+			}
             
-            if (this._t >= this.animation.getLength()) {
+            if (this._t >= 3*this.animation.getLength()) {
                 this._end = true;
             }
 		},
@@ -519,7 +534,7 @@ Laro.register('Emberwind', function (La) {
             this._end = false;
 		},
 		leave: function () {
-		
+			this.host.y = PKG.beforeJumpY;
 		},
 		update: function (dt) {
             this._t += dt;
@@ -584,23 +599,6 @@ Laro.register('Emberwind', function (La) {
 		this.fsm.setState(PKG.FG_states.wait);
 		
 		this.textures = {};
-        this.sfx = {
-            defense: new La.Sound('resources/music/fighter/defense.mp3'),
-            fall: new La.Sound('resources/music/fighter/fall.mp3'),
-            footfall: new La.Sound('resources/music/fighter/footfall.mp3'),
-            heavy_boxing: new La.Sound('resources/music/fighter/heavy_boxing.mp3'),
-            hit_heavy_boxing: new La.Sound('resources/music/fighter/hit_heavy_boxing.mp3'),
-            hit_heavy_kick: new La.Sound('resources/music/fighter/hit_heavy_kick.mp3'),
-            hit_light: new La.Sound('resources/music/fighter/hit_light.mp3'),
-            hit_middle_boxing: new La.Sound('resources/music/fighter/hit_middle_boxing.mp3'),
-            hit_middle_kick: new La.Sound('resources/music/fighter/hit_middle_kick.mp3'),
-            impact_boxing: new La.Sound('resources/music/fighter/impact_boxing.mp3'),
-            light_boxing: new La.Sound('resources/music/fighter/light_boxing.mp3'),
-            middle_boxing: new La.Sound('resources/music/fighter/middle_boxing.mp3'),
-            middle_boxing_hit: new La.Sound('resources/music/fighter/middle_boxing_hit.mp3'),
-            wave_boxing: new La.Sound('resources/music/fighter/wave_boxing.mp3'),
-            whirl_kick: new La.Sound('resources/music/fighter/whirl_kick.mp3')
-        }
 
 	}).methods({
 		update: function (dt) {
