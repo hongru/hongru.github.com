@@ -45,7 +45,12 @@ Laro.register('Emberwind', function (La) {
                 'fighter/RYU1_jump_down.gif',
                 'fighter/RYU1_jumpUp.gif',
                 'fighter/RYU1_stand_up.gif',
-                
+				'fighter/RYU1_after_whirl_kick.gif',
+				'fighter/RYU1_before_whirl_kick.gif',
+				'fighter/RYU1_light_boxing.gif',
+				'fighter/RYU1_light_kick.gif',
+				'fighter/RYU1_whirl_kick.gif',
+				               
                 // sound
                 'music/music.ogg',
                 'music/sfx.ogg',
@@ -225,6 +230,9 @@ Laro.register('Emberwind', function (La) {
 			this.cvs.addEventListener('click', function (e) {
 				_this.buttonPressed = 1;
 			}, false)
+			
+			// 显示操作介绍
+			this.showOPbox();
 
             // music
             pkg.music.play('menu', true);
@@ -232,6 +240,8 @@ Laro.register('Emberwind', function (La) {
         leave: function () {
 			this.cvs.removeEventListener('click');
             pkg.music.pause();
+			
+			this.hideOPbox();
 		},
         update: function (dt) {
             this.titleParam += dt;
@@ -263,6 +273,28 @@ Laro.register('Emberwind', function (La) {
             this.drawStartScreenBackground(render);
 			this.drawFighter(render);
         },
+		// 操作说明
+		showOPbox: function (con) {
+			if (con == undefined) {
+				con = '操作说明：上下左右键-方向|上跳|下蹲；a键-轻拳；k键-轻腿；连续并顺序按下asdf-回旋踢';
+			}
+			var box = document.getElementById('intro-box');
+			if (!box) {
+				box = document.createElement('div');
+				box.id = 'intro-box';
+			}
+			document.body.appendChild(box);
+			this.box = box;
+			this.box.style['padding'] = '10px 100px';
+			this.box.style['textAlign'] = 'center';
+			this.box.style['fontSize'] = '12px';
+			this.box.innerHTML = con;
+		},
+		hideOPbox: function () {
+			if (!!this.box) {
+				this.box.style['display'] = 'none';
+			}
+		},
         drawStartScreenBackground: function (render) {
             var center = new Vec2(render.getWidth() / 2, render.getHeight() / 2);
  
