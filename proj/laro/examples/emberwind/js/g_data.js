@@ -2,126 +2,6 @@ g_data = {
     "game": {
 		"stages": {
 			
-		/*	"Stage_0_H1": {
-				"preload": [
-					"atlas/friends/wick.png",
-					"atlas/gui/stage_banner.png",
-					"atlas/hero/kindle.png",
-					"atlas/hero/kindle_jumpattack.png",
-					"atlas/hero/kindle_sprint.png",
-					"atlas/hero/kindle_swing.png",
-					"atlas/hero/kindle_flurry.png",
-					"atlas/game/force_dash_right.png",
-					"atlas/game/brownie_houses.png",
-					"atlas/game/hiteffect.png",
-					"atlas/game/block_effect.png",
-					"atlas/game/battle_text.png",
-					"atlas/no_c_red/attackeffect.png",
-					"atlas/gui/controls_iphone.png",
-					"atlas/gui/btn_canvas.png",
-					"atlas/gui/btn_canvas_disabled.png",
-					"atlas/gui/btn_webgl.png",
-					"atlas/gui/floating_points.png",
-					"atlas/gui/frame.png",
-					"atlas/game/entrance_rocks.png",
-					"atlas/game/entrance_bricks.png",
-					"atlas/game/entrance_boarded.png",
-					"atlas/game/pickups.png",
-					"atlas/game/pickup_effects.png",
-					"atlas/game/apple_basket_pieces.png",
-					"atlas/game/chest_pieces.png",
-					"atlas/game/coins.png",
-					"atlas/game/flame.png",
-					"atlas/game/bullrush.png",
-					"localized/english/ObjectiveArrows.png",
-					"atlas/backgrounds/cave0.png",
-					"atlas/backgrounds/cave1.png",
-					"atlas/backgrounds/cave2.png",
-					"atlas/tilesets/indoors.png",
-					"atlas/tilesets/outer.png",
-					"atlas/tilesets/water.png",
-					"atlas/game/water_splash.png",
-					"atlas/no_c_red/mushrooms.png",
-					"atlas/foes/scout.png",
-					"atlas/foes/scoutburnt.png",
-					"atlas/foes/guard.png",
-					"atlas/foes/guardburnt.png",
-					"atlas/foes/bandit.png",
-					"atlas/foes/banditburnt.png",
-					"atlas/foes/soup.png",
-					"atlas/foes/soupburnt.png",
-					"atlas/foes/bouncer.png",
-					"atlas/foes/bouncerburnt.png",
-					"atlas/game/stalactites.png",
-					"atlas/gui/score_tally_items.png",
-					"atlas/no_c_red/kindle_tally.png",
-					"atlas/gui/tutorial_page.png",
-					"atlas/gui/padlock.png",
-					"atlas/game/tutips.png",
-					"atlas/friends/male.png",
-					"atlas/friends/female.png",
-					"atlas/gui/dialogue_idols.png",
-					"atlas/no_c_red/lamp_post_lit.png",
-					"atlas/game/lamp_post.png",
-					"atlas/gui/healthbar.png",
-					"atlas/gui/character_icons.png",
-					"atlas/gui/kindle_icons.png",
-					"localized/english/controls_mac_pc.png",
-					"atlas/gui/controls_xbox_large.png"
-				],
-				"coldepthmax": 0,
-				"spritelayers": [],
-				"referencestage": "house1",
-				"foregrounds": [],
-				"objectdepth": 0,
-				"layers": [],
-				"name": "Stage_0_H1",
-				"tilelayers": [],
-				"type": "house",
-				"backgrounds": [],
-				"objectlayers": [
-					{
-						"depth": -3,
-						"objects": [
-							{
-								"subtype": 0,
-								"name": "man3",
-								"grade": 0,
-								"x": 555,
-								"type": "villager",
-								"y": 316
-							},
-							{
-								"subtype": 0,
-								"target": "auto STR_TUTORIAL1",
-								"name": "object144",
-								"grade": 0,
-								"x": 256,
-								"type": "tutorialtip",
-								"y": 237
-							},
-							{
-								"subtype": 3,
-								"name": "object2722",
-								"grade": 3,
-								"x": 729,
-								"type": "gremlin",
-								"y": 324
-							},
-							{
-								"y": 322,
-								"x": 776,
-								"type": "chest",
-								"name": "object2723",
-								"grade": 2
-							}
-						],
-						"name": "hermit",
-						"reference": false
-					}
-				],
-				"coldepthmin": 0
-			} */
         }
 	},
     "resources": {
@@ -1270,7 +1150,7 @@ g_data = {
 							[
 								0,
 								0,
-								1065,
+								2131,
 								599,
 								0,
 								0,
@@ -1283,7 +1163,7 @@ g_data = {
 				],
 				"type": "atlas",
 				"name": "atlas/gui/titlescreen2",
-				"filename": "titlescreen2.png"
+				"filename": "gamebg.png"
 			},
             "atlas/no_c_red/titlescreen3": {
 				"sources": [

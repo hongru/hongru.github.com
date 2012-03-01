@@ -28,7 +28,7 @@ Laro.register('Emberwind', function (La) {
             var images = [
                 "titlescreen0.png", 
                 "titlescreen1.png", 
-                "titlescreen2.png", 
+                "gamebg.png", 
                 "titlescreen3.png", 
                 "titlescreen4.png", 
                 "titletext_html5.png", 
@@ -217,6 +217,7 @@ Laro.register('Emberwind', function (La) {
             this.titleImgs[3] = dep.getImage("Titlescreen3", "default");
             this.titleImgs[4] = dep.getImage("Titlescreen4", "default");
             this.titleImgs[5] = dep.getImage("TitlescreenLogo", "default");
+			console.log(this.titleImgs[2])
             
             this.cloudXPos = 0;
             this.fogXPos = 0;
@@ -261,8 +262,10 @@ Laro.register('Emberwind', function (La) {
             if (this.fogXPos < - this.titleImgs[3].textureWidth * 10) this.fogXPos = -8 * dt;
 			
 			this.fighter.update(dt);
+			
+			// bg 变化
+			this.titleImgs[2].offsetX -= 1;
             
-
         },
         transition: function () {
 			if (this.buttonPressed == 1) {
@@ -300,17 +303,20 @@ Laro.register('Emberwind', function (La) {
  
             render.clear();
             render.drawImage(this.titleImgs[0], center.x, center.y, 0, true, 1, null, false);
-            
+            // clouds
             for (var i = 0; i < 3; i++) {
                 render.drawParticle(this.titleImgs[1], this.cloudXPos + this.titleImgs[1].textureWidth * 2 * i, this.titleImgs[1].textureHeight - 150, 0, 2, 2, 1, new Pixel32(255, 255, 255), false);
             }
 
+			// bg city
             var castleScale = 1.25;
             if (this.timeIntoStartScreen > 0.5) {
                 castleScale = 1.25 - 0.25 * La.clamp(0, (this.timeIntoStartScreen - 0.5) / 2, 1);
             }
-         
-            render.drawParticle(this.titleImgs[2], center.x, center.y, 0, castleScale, castleScale, 1, new Pixel32(0xff, 0xff, 0xff, 0x0), false);
+			for (var i = 0; i < 1; i ++) {
+				render.drawParticle(this.titleImgs[2], center.x, center.y, 0, castleScale, castleScale, 1, new Pixel32(0xff, 0xff, 0xff, 0x0), false);
+			}
+            
          
             var fgScale = 5;
             if (this.timeIntoStartScreen > 0.5) {
