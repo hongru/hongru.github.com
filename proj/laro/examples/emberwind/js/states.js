@@ -238,9 +238,8 @@ Laro.register('Emberwind', function (La) {
             // music
             pkg.music.play('menu', true);
 			
-			this.bg1Pos = 0;
-			console.log(Emberwind.FG_states)
-			console.log(this.fighter.fsm.currentState)
+			pkg.BGPOS = 0;
+			pkg.BGPOS2 = 0;
         },
         leave: function () {
 			this.cvs.removeEventListener('click');
@@ -268,10 +267,13 @@ Laro.register('Emberwind', function (La) {
 			this.fighter.update(dt);
 			
 			// bg 变化
-			/*this.bg1Pos -= 1;
-			if (this.bg1Pos <= -this.titleImgs[2].width) {
-				this.bg1Pos = 0;
-			}*/           
+			//pkg.BGPOS -= 1;
+			if (pkg.BGPOS <= -this.titleImgs[2].width) {
+				pkg.BGPOS = 0;
+			}
+			if (pkg.BGPOS2 <= -this.titleImgs[0].width) {
+				pkg.BGPOS2 = 0;
+			}
         },
         transition: function () {
 			if (this.buttonPressed == 1) {
@@ -312,7 +314,11 @@ Laro.register('Emberwind', function (La) {
             var center = new Vec2(render.getWidth() / 2, render.getHeight() / 2);
  
             render.clear();
-            render.drawImage(this.titleImgs[0], center.x, center.y, 0, true, 1, null, false);
+			// mountains
+			for (var i = 0; i < 2; i ++) {
+				render.drawImage(this.titleImgs[0], i*this.titleImgs[0].width + center.x + pkg.BGPOS2, center.y, 0, true, 1, null, false);
+			}
+            
             // clouds
             for (var i = 0; i < 3; i++) {
                 render.drawParticle(this.titleImgs[1], this.cloudXPos + this.titleImgs[1].textureWidth * 2 * i, this.titleImgs[1].textureHeight - 150, 0, 2, 2, 1, new Pixel32(255, 255, 255), false);
@@ -324,7 +330,7 @@ Laro.register('Emberwind', function (La) {
                 castleScale = 1.25 - 0.25 * La.clamp(0, (this.timeIntoStartScreen - 0.5) / 2, 1);
             }
 			for (var i = 0; i < 2; i ++) {
-				render.drawParticle(this.titleImgs[2], i*this.titleImgs[2].width + center.x+this.bg1Pos, center.y, 0, castleScale, castleScale, 1, new Pixel32(0xff, 0xff, 0xff, 0x0), false);
+				render.drawParticle(this.titleImgs[2], i*this.titleImgs[2].width + center.x+pkg.BGPOS, center.y, 0, castleScale, castleScale, 1, new Pixel32(0xff, 0xff, 0xff, 0x0), false);
 			}
             
          

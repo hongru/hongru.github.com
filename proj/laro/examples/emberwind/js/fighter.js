@@ -78,7 +78,13 @@ Laro.register('Emberwind', function (La) {
 		
 		},
 		update: function (dt) {
-            if (this.host.x < 770) this.host.x += (dt*100);
+			if (document.getElementById('camera-ck').checked && this.host.x > 500) {
+				PKG.BGPOS -= dt*100;
+				PKG.BGPOS2 -= dt*40;
+			} else {
+				if (this.host.x < 770) this.host.x += (dt*100);
+			}
+            
             this.animation.update(dt);
 		},
 		draw: function (render) {
@@ -120,7 +126,13 @@ Laro.register('Emberwind', function (La) {
 		
 		},
 		update: function (dt) {
-            if (this.host.x > 30) this.host.x -= (dt*100);
+			if (document.getElementById('camera-ck').checked && this.host.x < 300 && PKG.BGPOS < 0) {
+				PKG.BGPOS += dt*100;
+				PKG.BGPOS2 += dt*40;
+			} else {
+				if (this.host.x > 30) this.host.x -= (dt*100);
+			}
+            
             this.animation.update(dt);
 		},
 		draw: function (render) {
@@ -229,7 +241,13 @@ Laro.register('Emberwind', function (La) {
 		},
 		update: function (dt) {
             this._t += dt;
-            if (this.host.x < 770) this.host.x += (dt*250);
+			if (document.getElementById('camera-ck').checked && this.host.x > 500) {
+				PKG.BGPOS -= dt*250;
+				PKG.BGPOS2 -= dt*250*0.4;
+			} else {
+				if (this.host.x < 770) this.host.x += (dt*250);
+			}
+            
             var h = this.v0*this._t - this.g * Math.pow(this._t, 2) / 2;
             this.host.y = this._oldy - h;
             this.animation.update(dt);
@@ -279,7 +297,13 @@ Laro.register('Emberwind', function (La) {
 		},
 		update: function (dt) {
             this._t += dt;
-            if (this.host.x > 30) this.host.x -= (dt*200);
+			if (document.getElementById('camera-ck').checked && this.host.x < 300 && PKG.BGPOS < 0) {
+				PKG.BGPOS += dt*200;
+				PKG.BGPOS2 += dt*200*0.4;
+			} else {
+				if (this.host.x > 30) this.host.x -= (dt*200);
+			}
+
             var h = this.v0*this._t - this.g * Math.pow(this._t, 2) / 2;
             this.host.y = this._oldy - h;
             this.animation.update(dt);
@@ -501,9 +525,19 @@ Laro.register('Emberwind', function (La) {
             this.animation.update(dt);
 			
 			if (PKG.keyboard.key('right')) {
-				if (this.host.x < 770) this.host.x += (dt*160);
+				if (document.getElementById('camera-ck').checked && this.host.x > 500) {
+					PKG.BGPOS -= dt*160;
+					PKG.BGPOS2 -= dt*160*0.4;
+				} else {
+					if (this.host.x < 770) this.host.x += (dt*160);
+				}
 			} else if (PKG.keyboard.key('left')) {
-				if (this.host.x > 30) this.host.x -= (dt*160);
+				if (document.getElementById('camera-ck').checked && this.host.x < 300 && PKG.BGPOS < 0) {
+					PKG.BGPOS += dt*160;
+					PKG.BGPOS2 += dt*160*0.4;
+				} else {
+					if (this.host.x > 30) this.host.x -= (dt*160);
+				}
 			}
             
             if (this._t >= 3*this.animation.getLength()) {
