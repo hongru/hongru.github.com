@@ -237,6 +237,10 @@ Laro.register('Emberwind', function (La) {
 
             // music
             pkg.music.play('menu', true);
+			
+			this.bg1Pos = 0;
+			console.log(Emberwind.FG_states)
+			console.log(this.fighter.fsm.currentState)
         },
         leave: function () {
 			this.cvs.removeEventListener('click');
@@ -264,8 +268,10 @@ Laro.register('Emberwind', function (La) {
 			this.fighter.update(dt);
 			
 			// bg 变化
-			this.titleImgs[2].offsetX -= 1;
-            
+			/*this.bg1Pos -= 1;
+			if (this.bg1Pos <= -this.titleImgs[2].width) {
+				this.bg1Pos = 0;
+			}*/           
         },
         transition: function () {
 			if (this.buttonPressed == 1) {
@@ -280,6 +286,8 @@ Laro.register('Emberwind', function (La) {
 		showOPbox: function (con) {
 			if (con == undefined) {
 				con = '操作说明：上下左右键-方向|上跳|下蹲；a键-轻拳；k键-轻腿；连续并顺序按下asdf-回旋踢';
+				con += '<br/>'
+				con += '<input type="checkbox" id="camera-ck" /><label for="camera-ck">move camera</label>';
 			}
 			var box = document.getElementById('intro-box');
 			if (!box) {
@@ -288,9 +296,11 @@ Laro.register('Emberwind', function (La) {
 			}
 			document.body.appendChild(box);
 			this.box = box;
-			this.box.style['padding'] = '10px 100px';
-			this.box.style['textAlign'] = 'center';
+			this.box.style['padding'] = '10px';
+			this.box.style['textAlign'] = 'left';
 			this.box.style['fontSize'] = '12px';
+			this.box.style['width'] = '740px';
+			this.box.style['margin'] = '0 auto';
 			this.box.innerHTML = con;
 		},
 		hideOPbox: function () {
@@ -313,8 +323,8 @@ Laro.register('Emberwind', function (La) {
             if (this.timeIntoStartScreen > 0.5) {
                 castleScale = 1.25 - 0.25 * La.clamp(0, (this.timeIntoStartScreen - 0.5) / 2, 1);
             }
-			for (var i = 0; i < 1; i ++) {
-				render.drawParticle(this.titleImgs[2], center.x, center.y, 0, castleScale, castleScale, 1, new Pixel32(0xff, 0xff, 0xff, 0x0), false);
+			for (var i = 0; i < 2; i ++) {
+				render.drawParticle(this.titleImgs[2], i*this.titleImgs[2].width + center.x+this.bg1Pos, center.y, 0, castleScale, castleScale, 1, new Pixel32(0xff, 0xff, 0xff, 0x0), false);
 			}
             
          

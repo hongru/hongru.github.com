@@ -78,7 +78,7 @@ Laro.register('Emberwind', function (La) {
 		
 		},
 		update: function (dt) {
-            this.host.x += (dt*100);
+            if (this.host.x < 770) this.host.x += (dt*100);
             this.animation.update(dt);
 		},
 		draw: function (render) {
@@ -120,7 +120,7 @@ Laro.register('Emberwind', function (La) {
 		
 		},
 		update: function (dt) {
-            this.host.x -= (dt*100);
+            if (this.host.x > 30) this.host.x -= (dt*100);
             this.animation.update(dt);
 		},
 		draw: function (render) {
@@ -229,7 +229,7 @@ Laro.register('Emberwind', function (La) {
 		},
 		update: function (dt) {
             this._t += dt;
-            this.host.x += (dt*250);
+            if (this.host.x < 770) this.host.x += (dt*250);
             var h = this.v0*this._t - this.g * Math.pow(this._t, 2) / 2;
             this.host.y = this._oldy - h;
             this.animation.update(dt);
@@ -279,7 +279,7 @@ Laro.register('Emberwind', function (La) {
 		},
 		update: function (dt) {
             this._t += dt;
-            this.host.x -= (dt*200);
+            if (this.host.x > 30) this.host.x -= (dt*200);
             var h = this.v0*this._t - this.g * Math.pow(this._t, 2) / 2;
             this.host.y = this._oldy - h;
             this.animation.update(dt);
@@ -501,9 +501,9 @@ Laro.register('Emberwind', function (La) {
             this.animation.update(dt);
 			
 			if (PKG.keyboard.key('right')) {
-				this.host.x += (dt*160);
+				if (this.host.x < 770) this.host.x += (dt*160);
 			} else if (PKG.keyboard.key('left')) {
-				this.host.x -= (dt*160);
+				if (this.host.x > 30) this.host.x -= (dt*160);
 			}
             
             if (this._t >= 3*this.animation.getLength()) {

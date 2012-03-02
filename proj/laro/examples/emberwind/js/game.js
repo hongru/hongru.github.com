@@ -185,4 +185,39 @@ Laro.register('Emberwind', function (La) {
     // interface
     this.Game = Game;
 
+});
+
+/**
+ * Camera of game
+ * 通常用来控制背景层的移动，让人感觉是摄像区域在移动
+ */
+Laro.register('Emberwind.camera', function (La) {
+	this.x = 0;
+	this.y = 0;
+	this.objects = [];
+	/*
+		{
+			name: ,
+			texture: ,
+			
+		}
+	*/
+	this.addObject = function (obj) {
+		this.objects.push(obj);
+	};
+	
+	this.update = function (dt) {
+		
+	};
+	this.draw = function (render) {
+	
+	};
+	this.left = function (dis) {
+		
+	};
+	this.right = function (dis) {
+		
+	}
+	
 })
+
