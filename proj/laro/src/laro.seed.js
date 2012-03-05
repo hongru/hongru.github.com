@@ -2,7 +2,7 @@
  * laro seed for module loader
  */
 (function () {
-    var scriptList = document.getElementsByTagName('head')[0].getElementsByTagName('script');
+    var scriptList = document.getElementsByTagName('script');
     var lastScriptNode = scriptList[scriptList.length - 1];
    
     var base = lastScriptNode.getAttribute('baseUrl') || '../';
