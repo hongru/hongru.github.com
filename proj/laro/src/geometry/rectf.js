@@ -4,12 +4,18 @@
  */
 
 Laro.register('.geometry', function (La) {
+
+	this.Circle = function Circle(cent, rad) {
+		this.c = cent;
+		this.r = rad;
+	};
+	La.Circle = this.Circle;
 		
 	var Class = La.base.Class || La.Class,
 		assert = La.err.assert,
 		Vector2 = La.geometry.Vector2,
 		Point2 = La.geometry.Point2,
-		Circle = La.geometry.Circle;
+		Circle = La.geometry.Circle || this.Circle;
 
 	var Rectf = Class(function (x0, y0, x1, y1) {
 		this.x0 = x0;

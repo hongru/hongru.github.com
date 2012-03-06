@@ -3,6 +3,16 @@ Laro.register('Emberwind', function (La) {
     var Vec2 = La.Vector2, Pixel32 = La.Pixel32;
     var pkg = this;
 	
+	pkg.getBlockNumToShow = function () {
+		var stage1 = g_data.game.stage1;
+		var blocks = stage1.blocks;
+		var unitW = stage1.unitW;
+		var beforeN = Math.floor(Math.abs(pkg.cameraPos)/unitW);
+		var len = Math.ceil(pkg.render.getWidth()/unitW);
+		var end = Math.min(stage1.cols, (beforeN + len+1));
+		return {from: beforeN, to: end};
+	}
+	
     this.IntroState = La.BaseState.extend(function () {
         this.t = 0;
         this.delayAfter = 1;
@@ -35,6 +45,7 @@ Laro.register('Emberwind', function (La) {
                 "titlescreen_wick_eyes.png", 
                 "titlescreen_kindle_eyes.png", 
                 "timetrap.png",
+				"BlockA0.png",
                 
                 // fighter
 				'fighter/wait.gif',
@@ -217,12 +228,13 @@ Laro.register('Emberwind', function (La) {
             this.titleImgs[3] = dep.getImage("Titlescreen3", "default");
             this.titleImgs[4] = dep.getImage("Titlescreen4", "default");
             this.titleImgs[5] = dep.getImage("TitlescreenLogo", "default");
-			console.log(this.titleImgs[2])
+			this.stoneImg = dep.getImage('game_stone', 'default');
+			//console.log(this.stoneImg)
             
             this.cloudXPos = 0;
             this.fogXPos = 0;
 			
-			this.fighter = Emberwind.Fighter.getInstance(Emberwind.Game.instance.render);
+			this.fighter = Emberwind.Fighter.getInstance(Emberwind.Game.instance.render, {x: 200,  w:58, h:90});
 			
 			// add event
 			var cvs = Emberwind.Game.instance.canvas;
@@ -240,6 +252,7 @@ Laro.register('Emberwind', function (La) {
 			
 			pkg.BGPOS = 0;
 			pkg.BGPOS2 = 0;
+			pkg.cameraPos = 0;
         },
         leave: function () {
 			this.cvs.removeEventListener('click');
@@ -268,11 +281,17 @@ Laro.register('Emberwind', function (La) {
 			
 			// bg 变化
 			//pkg.BGPOS -= 1;
-			if (pkg.BGPOS <= -this.titleImgs[2].width) {
+			if (pkg.BGPOS < -this.titleImgs[2].width) {
 				pkg.BGPOS = 0;
 			}
-			if (pkg.BGPOS2 <= -this.titleImgs[0].width) {
+			if (pkg.BGPOS > 0) {
+				pkg.BGPOS = -this.titleImgs[2].width;
+			}
+			if (pkg.BGPOS2 < -this.titleImgs[0].width) {
 				pkg.BGPOS2 = 0;
+			}
+			if (pkg.BGPOS2 > 0) {
+				pkg.BGPOS2 = -this.titleImgs[0].width
 			}
         },
         transition: function () {
@@ -282,8 +301,21 @@ Laro.register('Emberwind', function (La) {
         },
         draw: function (render) {
             this.drawStartScreenBackground(render);
+			this.drawMap(render);
 			this.drawFighter(render);
         },
+		drawMap: function (render) {
+			//render.drawImage(this.stoneImg, 1000+pkg.cameraPos, render.getHeight()-this.stoneImg.height-20, 0, false, 1, null, false)
+			var oo = pkg.getBlockNumToShow();
+			var blocks = g_data.game.stage1.blocks;
+			// 只取需要渲染的显示的部分，那么循环次数会少很多
+			for (var i = 0; i < blocks.length; i ++) {
+				var row = blocks[i];
+				for (var j = oo.from; j < oo.to; j ++) {
+					row[j]&&render.drawImage(this.stoneImg, pkg.cameraPos+(j*this.stoneImg.width), render.getHeight()-((i+1)*this.stoneImg.height), 0, false, 1, null, false)
+				}
+			}
+		},
 		// 操作说明
 		showOPbox: function (con) {
 			if (con == undefined) {

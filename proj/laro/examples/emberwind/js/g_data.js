@@ -1,8 +1,17 @@
 g_data = {
     "game": {
-		"stages": {
-			
-        }
+		"stage1": {
+			max: 3200,
+			unitW: 64,
+			unitH: 48,
+			cols: 50,
+			rows: 3,
+			blocks: [
+				[1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+				[0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1],
+				[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1],
+			]
+		}
 	},
     "resources": {
         "fonts": [
@@ -31,6 +40,12 @@ g_data = {
 				],
 				"atlas": "atlas/gui/opera_logo",
 				"type": "imageset"
+			},
+			{
+				"name": 'game_stone',
+				"frames": ['default'],
+				"type": "imageset",
+				"atlas": "atlas/game_stone"
 			},
             {
 				"atlas": "atlas/gui/titletext_html5",
@@ -171,6 +186,28 @@ g_data = {
 				"type": "atlas",
 				"name": "atlas/gui/opera_logo",
 				"filename": "laro.png"
+			},
+			"atlas/game_stone": {
+				"sources": [
+					{
+						"data": [
+							[
+								0,
+								0,
+								63,
+								47,
+								0,
+								0,
+								63,
+								47
+							]
+						],
+						"name": "game_stone"
+					}
+				],
+				"type": "atlas",
+				"name": "atlas/game_stone",
+				"filename": "BlockA0.png"
 			},
             "atlas/gui/titlescreen_kindle_eyes": {
 				"sources": [

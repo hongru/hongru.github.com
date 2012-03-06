@@ -96,6 +96,8 @@ Laro.register('Emberwind', function (La) {
 			this.render = new La.CanvasRender(canvas, 1, false);
 			canvasParent.replaceChild(canvas, oldCanvas);
 			this.canvas = canvas;
+			
+			PKG.render = this.render;
 		},
 		resourceCallback: function () {
 			if (this.initialized) return;
