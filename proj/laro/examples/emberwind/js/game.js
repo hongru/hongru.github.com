@@ -58,8 +58,8 @@ Laro.register('Emberwind', function (La) {
 				transition: new La.ScreenTransitionFade(new La.Pixel32(255, 255, 255, 255), new La.Pixel32(255, 255, 255, 0), 0.25)
 			}
         ];
-		this.screenTransitionDefaultIn = new La.ScreenTransitionFade(new La.Pixel32(255, 255, 255, 255), new La.Pixel32(255, 255, 255, 0), 0.25);
-		this.screenTransitionDefaultOut = new La.ScreenTransitionFade(new La.Pixel32(255, 255, 255, 0), new La.Pixel32(255, 255, 255, 255), 0.25);
+		this.screenTransitionDefaultIn = new La.ScreenTransitionFade(new La.Pixel32(255, 255, 255, 255), new La.Pixel32(255, 255, 255, 0), 1);
+		this.screenTransitionDefaultOut = new La.ScreenTransitionFade(new La.Pixel32(255, 255, 255, 0), new La.Pixel32(255, 255, 255, 255), 1);
 
 		this.newState = -1;
 		this.newMessage = null;

@@ -116,21 +116,24 @@ Laro.register('Emberwind', function (La) {
 			this._t = 0;
 			this.animation = this.host.getAnimation(state);
 			this.animation.play();
+			this._oldy = this.host.y;
 		},
 		leave: function () {
 		
 		},
 		update: function (dt) {
 			this._t += dt;
-			if (document.getElementById('camera-ck').checked && this.host.x > 500) {
+			if (document.getElementById('camera-ck').checked && this.host.x > 500 && PKG.cameraPos > -(g_data.game.stage1.max - PKG.render.getWidth())) {
 				if (!this.host.check(this.host.x, this.host.y, PKG.cameraPos - dt*100)) {
 					PKG.BGPOS -= dt*100;
 					PKG.cameraPos -= dt*100;
 					PKG.BGPOS2 -= dt*40;	
 				}
 				
+				this.host.setPos(this.host.x, this.host.y + dt*800);
+				
 			} else {
-				var h = this._t*this._t*100;
+				this.host.setPos(this.host.x, this.host.y + dt*800);
 				if (this.host.x < 770) {
 					this.host.setPos(this.host.x + dt*100, this.host.y);
 				}
@@ -173,12 +176,13 @@ Laro.register('Emberwind', function (La) {
 			this._t = 0;
 			this.animation = this.host.getAnimation(state);
 			this.animation.play();
+			this._oldy = this.host.y;
 		},
 		leave: function () {
 		
 		},
 		update: function (dt) {
-			this._t += dt;
+
 			if (document.getElementById('camera-ck').checked && this.host.x < 300 && PKG.cameraPos < 0) {
 				if (!this.host.check(this.host.x, this.host.y, PKG.cameraPos + dt*100)) {
 					PKG.BGPOS += dt*100;
@@ -186,10 +190,10 @@ Laro.register('Emberwind', function (La) {
 					PKG.BGPOS2 += dt*40;	
 				}
 				
+				this.host.setPos(this.host.x, this.host.y + dt*1000);
+				
 			} else {
-				if (!this.host.check(this.host.x, this.host.y + dt*200)) {
-					this.host.y += dt*200;
-				}
+				this.host.setPos(this.host.x, this.host.y + dt*1000);
 				if (this.host.x > 30) {
 					this.host.setPos(this.host.x - dt*100, this.host.y);
 				}
@@ -303,7 +307,7 @@ Laro.register('Emberwind', function (La) {
 		},
 		update: function (dt) {
             this._t += dt;
-			if (document.getElementById('camera-ck').checked && this.host.x > 500 && PKG.keyboard.key('right')) {
+			if (document.getElementById('camera-ck').checked && this.host.x > 500 && PKG.keyboard.key('right') && PKG.cameraPos > -(g_data.game.stage1.max - PKG.render.getWidth())) {
 				if (!this.host.check(this.host.x, this.host.y, PKG.cameraPos - dt*250)) {
 					PKG.BGPOS -= dt*250;
 					PKG.cameraPos -= dt*250;
@@ -743,21 +747,12 @@ Laro.register('Emberwind', function (La) {
 			return new La.AnimationHandle(anim); 
 		},
 		setPos: function (x, y, cameraPos) {
-			if (this.check(x, y)) {
+			if (this.check(x, y, cameraPos)) {
 				return;
 			} 
 
-			if ((this.lockX == 1 && x > this.x) || (this.lockX == -1 && x < this.x)) {
-				this.x = this.x;
-			} else {
-				this.x = x;
-			}
-			
-			if ((this.lockY == -1 && y > this.y) || (this.lockY == 1 && y < this.y)) {
-				this.y = this.y;
-			} else {
-				this.y = y;
-			}
+			this.x = x;
+			this.y = y;
 			
 			if (cameraPos != undefined) {
 				PKG.cameraPos = cameraPos;
@@ -837,7 +832,7 @@ Laro.register('Emberwind', function (La) {
 			var bks = g_data.game.stage1.blocks;
 			var unitW = g_data.game.stage1.unitW;
 			var unitH = g_data.game.stage1.unitH;
-			var oo = PKG.getBlockNumToShow();
+			var oo = PKG.getNearestBlocks(this);
 			
 			for (var i = 0; i < bks.length; i ++) {
 				var row = bks[i];

@@ -11,6 +11,16 @@ Laro.register('Emberwind', function (La) {
 		var len = Math.ceil(pkg.render.getWidth()/unitW);
 		var end = Math.min(stage1.cols, (beforeN + len+1));
 		return {from: beforeN, to: end};
+	};
+	// 获取离人物最近的三列block 用于碰撞检测
+	pkg.getNearestBlocks = function (fg, n) {
+		if (n == undefined) { n = 3 }
+		var stage1 = g_data.game.stage1;
+		var blocks = stage1.blocks;
+		var unitW = stage1.unitW;
+		var beforeN = Math.floor((Math.abs(pkg.cameraPos)+fg.x)/unitW) - 1;
+		var end = Math.min(stage1.cols, (beforeN + n));
+		return {from: beforeN, to: end};
 	}
 	
     this.IntroState = La.BaseState.extend(function () {
@@ -235,7 +245,9 @@ Laro.register('Emberwind', function (La) {
             this.cloudXPos = 0;
             this.fogXPos = 0;
 			
-			this.fighter = Emberwind.Fighter.getInstance(Emberwind.Game.instance.render, {x: 200,  w:58, h:90});
+			this.fighter = new Emberwind.Fighter(Emberwind.Game.instance.render, {x: 200,  w:58, h:90});
+			
+			this.enemys = [];
 			
 			// add event
 			var cvs = Emberwind.Game.instance.canvas;
@@ -298,6 +310,9 @@ Laro.register('Emberwind', function (La) {
         transition: function () {
 			if (this.gameover) {
 				pkg.Game.instance.setState(pkg.states.kStateLoadingStage, 'Game Over');
+			}
+			if (this.toNextStage) {
+				pkg.Game.instance.setState(pkg.states.kStateLoadingStage, 'Stage 1 clear');
 			}
         },
         draw: function (render) {
@@ -391,6 +406,9 @@ Laro.register('Emberwind', function (La) {
 		drawFighter: function (render) {
 			if (this.fighter.y > render.getHeight()) {
 				this.gameover = true;
+			}
+			if (this.fighter.x > (render.getWidth()-64) && pkg.cameraPos <= -(g_data.game.stage1.max - render.getWidth())) {
+				this.toNextStage = true;
 			}
 			this.fighter.draw(render);
 		}
