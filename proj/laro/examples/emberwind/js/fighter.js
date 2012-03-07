@@ -51,6 +51,8 @@ Laro.register('Emberwind', function (La) {
 				framerate: 10
 			};
 			this._t = 0;
+			this.onFloor = false;
+			this._oldy = this.host.y;
 			this.animation = this.host.getAnimation(state);
 			this.animation.play();
 		},
@@ -58,11 +60,13 @@ Laro.register('Emberwind', function (La) {
 		
 		},
 		update: function (dt) {
-			this.host._t += dt;
-			var h = this.host._t*this.host._t*1000;
+			this._t += dt;
+			var h = this._t*this._t*1000;
 			//this.host.setPos(this.host.x, this.host.y+h);
-			if (!this.host.check(this.host.x, this.host.y + h)) {
-				this.host.y += h
+			if (!this.onFloor && !this.host.check(this.host.x, this._oldy + h)) {
+				this.host.y = this._oldy + h;
+			} else {
+				this.onFloor = true;
 			}
 			this.animation.update(dt)
 		},
@@ -119,9 +123,12 @@ Laro.register('Emberwind', function (La) {
 		update: function (dt) {
 			this._t += dt;
 			if (document.getElementById('camera-ck').checked && this.host.x > 500) {
-				PKG.BGPOS -= dt*100;
-				PKG.cameraPos -= dt*100;
-				PKG.BGPOS2 -= dt*40;
+				if (!this.host.check(this.host.x, this.host.y, PKG.cameraPos - dt*100)) {
+					PKG.BGPOS -= dt*100;
+					PKG.cameraPos -= dt*100;
+					PKG.BGPOS2 -= dt*40;	
+				}
+				
 			} else {
 				var h = this._t*this._t*100;
 				if (this.host.x < 770) {
@@ -173,9 +180,12 @@ Laro.register('Emberwind', function (La) {
 		update: function (dt) {
 			this._t += dt;
 			if (document.getElementById('camera-ck').checked && this.host.x < 300 && PKG.cameraPos < 0) {
-				PKG.BGPOS += dt*100;
-				PKG.cameraPos += dt*100;
-				PKG.BGPOS2 += dt*40;
+				if (!this.host.check(this.host.x, this.host.y, PKG.cameraPos + dt*100)) {
+					PKG.BGPOS += dt*100;
+					PKG.cameraPos += dt*100;
+					PKG.BGPOS2 += dt*40;	
+				}
+				
 			} else {
 				if (!this.host.check(this.host.x, this.host.y + dt*200)) {
 					this.host.y += dt*200;
@@ -294,9 +304,12 @@ Laro.register('Emberwind', function (La) {
 		update: function (dt) {
             this._t += dt;
 			if (document.getElementById('camera-ck').checked && this.host.x > 500 && PKG.keyboard.key('right')) {
-				PKG.BGPOS -= dt*250;
-				PKG.cameraPos -= dt*250;
-				PKG.BGPOS2 -= dt*250*0.4;
+				if (!this.host.check(this.host.x, this.host.y, PKG.cameraPos - dt*250)) {
+					PKG.BGPOS -= dt*250;
+					PKG.cameraPos -= dt*250;
+					PKG.BGPOS2 -= dt*250*0.4;
+				}
+				
 			} else {
 				if (this.host.x < 770 && PKG.keyboard.key('right')) {
 					this.host.setPos(this.host.x + dt*250, this.host.y);
@@ -350,9 +363,12 @@ Laro.register('Emberwind', function (La) {
 		update: function (dt) {
             this._t += dt;
 			if (document.getElementById('camera-ck').checked && this.host.x < 300 && PKG.cameraPos < 0) {
-				PKG.BGPOS += dt*200;
-				PKG.cameraPos += dt*200;
-				PKG.BGPOS2 += dt*200*0.4;
+				if (!this.host.check(this.host.x, this.host.y, PKG.cameraPos + dt*200)) {
+					PKG.BGPOS += dt*200;
+					PKG.cameraPos += dt*200;
+					PKG.BGPOS2 += dt*200*0.4;
+				}
+				
 			} else {
 				if (this.host.x > 30) {
 					this.host.setPos(this.host.x - dt*200, this.host.y);
@@ -579,9 +595,12 @@ Laro.register('Emberwind', function (La) {
 			
 			if (PKG.keyboard.key('right')) {
 				if (document.getElementById('camera-ck').checked && this.host.x > 500) {
-					PKG.BGPOS -= dt*160;
-					PKG.cameraPos -= dt * 160;
-					PKG.BGPOS2 -= dt*160*0.4;
+					if (!this.host.check(this.host.x, this.host.y, PKG.cameraPos - dt*160)) {
+						PKG.BGPOS -= dt*160;
+						PKG.cameraPos -= dt * 160;
+						PKG.BGPOS2 -= dt*160*0.4;
+					}
+					
 				} else {
 					if (this.host.x < 770) {
 						this.host.setPos(this.host.x + dt*160, this.host.y);
@@ -589,9 +608,12 @@ Laro.register('Emberwind', function (La) {
 				}
 			} else if (PKG.keyboard.key('left')) {
 				if (document.getElementById('camera-ck').checked && this.host.x < 300 && PKG.cameraPos < 0) {
-					PKG.BGPOS += dt*160;
-					PKG.cameraPos += dt*160;
-					PKG.BGPOS2 += dt*160*0.4;
+					if (!this.host.check(this.host.x, this.host.y, PKG.cameraPos + dt*160)) {
+						PKG.BGPOS += dt*160;
+						PKG.cameraPos += dt*160;
+						PKG.BGPOS2 += dt*160*0.4;
+					}
+					
 				} else {
 					if (this.host.x > 30) {
 						this.host.setPos(this.host.x - dt*160, this.host.y);
@@ -623,19 +645,22 @@ Laro.register('Emberwind', function (La) {
 			};
 			this.animation = this.host.getAnimation(state);
 			this.animation.play(false);
+			this._oldy = this.host.y;
             this._t = 0;
             this._end = false;
 		},
 		leave: function () {
-			this.host.y = PKG.beforeJumpY;
 		},
 		update: function (dt) {
             this._t += dt;
             this.animation.update(dt);
             
-            if (this._t >= this.animation.getLength()) {
-                this._end = true;
-            }
+			var h = this._t * this._t * 1000;
+            if (this.host.check(this.host.x, this._oldy+h)) {
+				this._end = true;
+			} else {
+				this.host.y = this._oldy + h;
+			}
 		},
 		draw: function (render) {
             this.animation.draw(render, this.host.x, this.host.y, 0, 1, null);
@@ -717,7 +742,7 @@ Laro.register('Emberwind', function (La) {
 			var anim = this.genAnimation(stateObj);
 			return new La.AnimationHandle(anim); 
 		},
-		setPos: function (x, y) {
+		setPos: function (x, y, cameraPos) {
 			if (this.check(x, y)) {
 				return;
 			} 
@@ -732,6 +757,10 @@ Laro.register('Emberwind', function (La) {
 				this.y = this.y;
 			} else {
 				this.y = y;
+			}
+			
+			if (cameraPos != undefined) {
+				PKG.cameraPos = cameraPos;
 			}
 		},
 		genAnimation: function (state) {
@@ -797,11 +826,14 @@ Laro.register('Emberwind', function (La) {
 		},
 		// 检测 将要到达的位置是否可用
 		// 用矩形 overlaps 交叠判断
-		check: function (x, y) {
+		check: function (x, y, cameraPos) {
+			if (cameraPos == undefined) {  
+				cameraPos = PKG.cameraPos;
+			}
 			this.lockX = 0;
 			this.lockY = 0;
 			
-			var fighterRect = new Laro.Rectf(x-this.w/2-2, y-this.h/3, x+this.w/2-2, y+this.h/3);
+			var fighterRect = new Laro.Rectf(x-this.w/2+8, y-this.h/3, x+this.w/2-2, y+this.h/3);
 			var bks = g_data.game.stage1.blocks;
 			var unitW = g_data.game.stage1.unitW;
 			var unitH = g_data.game.stage1.unitH;
@@ -810,7 +842,7 @@ Laro.register('Emberwind', function (La) {
 			for (var i = 0; i < bks.length; i ++) {
 				var row = bks[i];
 				for (var j = oo.from; j < oo.to; j ++) {
-					var scrX = j*unitW + PKG.cameraPos,
+					var scrX = j*unitW + cameraPos,
 						scrY = this.render.getHeight() - (i + 1)*unitH;
 					if (row[j]) {
 						var bkRect = new Laro.Rectf(scrX, scrY, scrX + unitW-1, scrY + unitH-1);

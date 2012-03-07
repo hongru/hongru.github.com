@@ -210,6 +210,7 @@ Laro.register('Emberwind', function (La) {
         this.titleParam = 0;
         this.pressStartText = null;
         this.pressStartFlash = 0;
+		this.gameover = false;
         
 
     }).methods({
@@ -295,8 +296,8 @@ Laro.register('Emberwind', function (La) {
 			}
         },
         transition: function () {
-			if (this.buttonPressed == 1) {
-				pkg.Game.instance.setState(pkg.states.kStateLoadingStage, 'stage0');
+			if (this.gameover) {
+				pkg.Game.instance.setState(pkg.states.kStateLoadingStage, 'Game Over');
 			}
         },
         draw: function (render) {
@@ -305,7 +306,7 @@ Laro.register('Emberwind', function (La) {
 			this.drawFighter(render);
         },
 		drawMap: function (render) {
-			//render.drawImage(this.stoneImg, 1000+pkg.cameraPos, render.getHeight()-this.stoneImg.height-20, 0, false, 1, null, false)
+			
 			var oo = pkg.getBlockNumToShow();
 			var blocks = g_data.game.stage1.blocks;
 			// 只取需要渲染的显示的部分，那么循环次数会少很多
@@ -388,6 +389,9 @@ Laro.register('Emberwind', function (La) {
             render.drawParticle(this.titleImgs[5], center.x + offsetX, titlePos + offsetY, 0, 1, 1, 1, new Pixel32(0xff, 0xff, 0xff, 0xff), false);
         },
 		drawFighter: function (render) {
+			if (this.fighter.y > render.getHeight()) {
+				this.gameover = true;
+			}
 			this.fighter.draw(render);
 		}
     });
@@ -395,10 +399,10 @@ Laro.register('Emberwind', function (La) {
 	
 	// LoadingStage state
 	this.LoadingStage = La.BaseState.extend(function () {
-	
+		this.msg = '';
 	}).methods({
 		enter: function (msg, fromState) {
-		
+			this.msg = msg;
 		},
 		leave: function () {},
 		update: function (dt) {
@@ -408,7 +412,7 @@ Laro.register('Emberwind', function (La) {
 			render.clear(render.black);
 			render.context.font = '32pt Arial';
 			render.context.fillStyle = '#ffffff';
-			render.context.fillText('Loading Stage 0', render.getWidth()/2 - 100, render.getHeight()/2)
+			render.context.fillText(this.msg, render.getWidth()/2 - 100, render.getHeight()/2)
 		},
 		transition: function () {
 		
