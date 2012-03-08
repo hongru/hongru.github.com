@@ -53,6 +53,18 @@ g_data = {
 				"size": 16,
 				"id": "enemy",
 				"outline_g": 0
+		},
+		enemy_red: {
+			"outline_b": 0,
+				"font": "Allan",
+				"outline": 2.0,
+				"base_b": 40,
+				"base_g": 115,
+				"outline_r": 0,
+				"base_r": 245,
+				"size": 16,
+				"id": "enemy",
+				"outline_g": 0
 		}
 	}
 }

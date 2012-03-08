@@ -83,6 +83,10 @@ Laro.register('.input', function (La) {
 		this.keyHash = keyHash;
 		this.keyStatus = {};
 		this.keyStack = [];
+		
+		this.keydownCallbacks = {};
+		this.keyupCallbacks = {};
+		
 		this._downKey = null;
 		this._upKey = null;
 		this._lastKeyupTime = (+new Date);
@@ -101,7 +105,17 @@ Laro.register('.input', function (La) {
 					}
 				}
 				
-				_this.keydown(e) 
+				if (!e.$keyName) {
+					e.$keyName = _this.getKeyName(e.keyCode);
+				}
+				
+				_this.keydown(e);
+				for (var i in _this.keydownCallbacks) {
+					var fn = _this.keydownCallbacks[i];
+					if (typeof fn == 'function') {
+						fn(e);
+					}
+				}
 			}, false);
 			this.target.addEventListener('keyup', function (e) { 
 				if (e.keyCode == 32 || e.keyCode == 37 || e.keyCode == 38 || e.keyCode == 39 || e.keyCode == 40) {
@@ -111,9 +125,26 @@ Laro.register('.input', function (La) {
 						e.returnValue = false;
 					}
 				}
+				
 
-				_this.keyup(e) 
+				_this.keyup(e);
+				for (var i in _this.keyupCallbacks) {
+					var fn = _this.keyupCallbacks[i];
+					typeof fn == 'function ' && fn(e);
+				}
 			}, false);
+		},
+		addKeydownCallback: function (name, cb) {
+			this.keydownCallbacks[name] = cb;
+		},
+		addKeyupCallback: function (name, cb) {
+			this.keyupCallbacks[name] = cb;
+		},
+		removeKeydownCallback: function (name) {
+			delete this.keydownCallbacks[name];
+		},
+		removeKeyupCallback: function (name) {
+			delete this.keyupCallbacks[name];
 		},
 		getKeyName: function (keyCode) {
 			for (var name in keyHash) {
