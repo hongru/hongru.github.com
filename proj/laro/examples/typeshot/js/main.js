@@ -71,8 +71,8 @@ Laro.register('TypeShot.sClass', function (La) {
 				"outline_g": 0
 				
 			};
-		this.barW = 100;
-		this.barH = 10;
+		this.barW = 160;
+		this.barH = 6;
 		this.loadAll = false;
 		this.progress = 0;
 
@@ -89,7 +89,7 @@ Laro.register('TypeShot.sClass', function (La) {
 				'images/destroyer.png',
 				'images/explosion.png',
 				'images/gezi.png',
-				'images/grid.png',
+				'images/grid_w.png',
 				'images/mine.png',
 				'images/missle.png',
 				'images/oppressor.png',
@@ -116,9 +116,6 @@ Laro.register('TypeShot.sClass', function (La) {
 			this.drawProgressBar(render);
 		},	
 		transition: function () {
-		/*	if (this._t > 5) {
-				this.host.setState(this.host.states.inGame);
-			}*/
 			if (this.loadAll) {
 				this.host.setState(this.host.states.inGame);
 			}
@@ -135,13 +132,116 @@ Laro.register('TypeShot.sClass', function (La) {
 				x1 = (render.getWidth()+this.barW)/2,
 				y1 = render.getHeight()/2 + this.barH;
 			render.drawRect(x0, y0, x1, y1, '#F5D74F');
-			render.drawFilledRect(x0, y0, (x0 + this.progress*this.barW), y1, '#fff');
+			render.drawFilledRect(x0, y0, (x0 + this.progress*this.barW), y1, '#F5D74F');
 		}
 	});
 	
-	this.InGame = La.BaseState.extend().methods({
+	/**
+	 * in game states
+	 */
+	this.InGame = La.BaseState.extend(function () {
+		
+		$TS.textures = {};
+		this.bgPos = 0;
+
+		$TS.enemyCollection = [];
+		
+	}).methods({
 		enter: function (msg, fromState) {
-			console.log('inGame', fromState)
+			console.log('inGame', fromState);
+			$TS.textures['bg'] = $TS.$res.getImage('bg');
+			$TS.textures['grid'] = $TS.$res.getImage('grid');
+			$TS.textures['ship'] = $TS.$res.getImage('ship');
+			$TS.textures['enemy'] = $TS.$res.getImage('enemy');
+
+			$TS.textures['explosion_0'] = $TS.$res.getImage('explosion', 0);
+			$TS.textures['explosion_1'] = $TS.$res.getImage('explosion', 1);
+			$TS.textures['explosion_2'] = $TS.$res.getImage('explosion', 2);
+
+			$TS.ship = new $TS.Ship();
+			for (var i = 0; i < 5; i ++) {
+				$TS.enemyCollection.push(new $TS.Enemy());
+			}
+		},
+		leave: function () {
+		
+		},
+		update: function (dt) {
+			if (this.bgPos + 100*dt >= 62) {
+				this.bgPos = 0;
+			} else {
+				this.bgPos += dt * 100;
+			}
+
+			$TS.ship.update(dt);
+			for (var i in $TS.enemyCollection) {
+				$TS.enemyCollection[i].update(dt);
+			}
+		},
+		draw: function (render) {
+			var cx = render.getWidth()/2,
+				cy = render.getHeight()/2;
+
+			render.drawImage($TS.textures['bg'], cx, cy, 0, 1, 1, false, false);
+
+			this.drawGrid(render);
+			$TS.ship.draw(render);
+
+			render.context.globalCompositeOperation = 'lighter';
+			for (var i in $TS.enemyCollection) {
+				$TS.enemyCollection[i].draw(render);
+			}
+			
+		},
+		drawGrid: function (render) {
+			for (var i = -2; i < 11; i ++) {
+				render.drawImage($TS.textures['grid'], 0, i*$TS.textures['grid'].height + this.bgPos, 0, false, 0.5, false, false);
+			}		  
+		},
+
+		transition: function () {
+			
+		} 
+	});
+		
+});
+
+/**
+ * 飞船 ship
+ */
+Laro.register('TypeShot', function (La) {
+	var pkg = this,
+		$TS = this;
+
+	// wait
+	this.Ship_Wait = La.BaseState.extend(function () {
+		
+	}).methods({
+		enter: function (msg, fromState) {
+			
+		},
+		leave: function () {
+		
+		},
+		update: function (dt) {
+		
+		},
+		draw: function (render) {
+			render.drawImage($TS.textures['ship'], this.host.x, this.host.y, 0, 1, 1, false, false)
+		},
+		transition: function () {
+			if (this.host.collapse) {
+				this.host.setState(shipStates.collapse);
+			}
+		}
+	});
+
+	// shoot
+	this.Ship_Shoot = La.BaseState.extend(function () {
+		
+	}).methods({
+		enter: function (msg, fromState) {
+		
 		},
 		leave: function () {
 		
@@ -151,11 +251,269 @@ Laro.register('TypeShot.sClass', function (La) {
 		},
 		draw: function (render) {
 		
-		},	
-		transition: function () {
-			
-		} 
+		}
 	});
+
+	// wrong
+	this.Ship_Wrong = La.BaseState.extend(function () {
+		
+	}).methods({
+		enter: function (msg, fromState) {
+		
+		},
+		leave: function () {
+		
+		},
+		update: function (dt) {
+		
+		},
+		draw: function (render) {
+		
+		}
+	});
+
+	this.Ship_Collapse = La.BaseState.extend(function () {
+			
+	}).methods({
+		enter: function (msg, fromState) {
+			console.log('ship collapse');
+			this._t = 0;
+			this.explosionImgs = [];
+			this.al = 1;
+	
+		},
+		leave: function () {
+		
+		},
+		update: function (dt) {
+			this._t += dt;
+			this.al = Math.max((3-this._t)/3, 0);
+		},
+		draw: function (render) {
+			for (var i = 0; i < 10; i ++) {
+				var ag = Math.PI*i*36/180;
+				var x = this.host.x + Math.sin(ag)*this._t*50;
+				var y = this.host.y + Math.cos(ag)*this._t*50;
+				render.drawImage($TS.textures['explosion_'+Math.floor(Math.random()*3)], x, y, this._t, 1, this.al, false, false)
+			}
+		}
+	});
+
+
+	var shipStates = {
+		wait: 0,
+		shoot: 1,
+		wrong: 2,
+		collapse: 3
+	};
+	var shipStatesList = [
+		0, this.Ship_Wait,
+		1, this.Ship_Shoot,
+		2, this.Ship_Wrong,
+		3, this.Ship_Collapse
+	];
+	// main constructor
+	this.Ship = La.Class(function (x, y) {
+		this.x = x || $TS.render.getWidth()/2;
+		this.y = y || $TS.render.getHeight()-30;
+		this.cx = this.x + $TS.textures['ship'].width/2;
+		this.cy = this.y + $TS.textures['ship'].height/2;
+
+		this.fsm = new La.AppFSM(this, shipStatesList);
+		this.setState(shipStates.wait);
+		this.collapse = false;
+
+	}).methods({
+		update: function (dt) {
+			this.fsm.update(dt);
+			this.check();
+		},
+		draw: function (render) {
+			this.fsm.draw(render);
+		},
+		setState: function (state, msg) {
+			this.fsm.setState(state, msg);
+		},
+		check: function () {
+			if ($TS.enemyCollection) {
+				for (var i = 0; i < $TS.enemyCollection.length; i ++) {
+					var ene = $TS.enemyCollection[i];
+					var dis = Math.sqrt(Math.pow(this.x - ene.x, 2) + Math.pow(this.y - ene.y, 2));
+					if (dis < 20) {
+						this.collapse = true;
+					}
+					
+				}
+			}
+		}
+	});
+		
+});
+
+
+/**
+ * enemy
+ */
+Laro.register('TypeShot', function (La) {
+	var pkg = this;
+	var $TS = this;
+
+	var chars = 'abcdefghijklmnopqrstuvwxyz'.split('');
+
+	this.Enemy_Normal = La.BaseState.extend(function () {
+		
+	}).methods({
+		enter: function (msg, fromState) {
+			this._t = 0;
+			this.angle = 0;
+
+			this.fontObj = g_data.font.enemy;
+			this.font = new La.Font(this.fontObj);
+			this.text = this.font.generateCanvas('test');
+		},
+		leave: function () {
+		
+		},
+		update: function (dt) {
+			this._t += dt;
+			this.a = Math.abs(Math.cos(this._t*2));
+			this.a = Math.max(this.a, 0.3);
+			this.angle += dt;
+
+			var dis = Math.sqrt(Math.pow($TS.ship.x - this.host.x, 2) + Math.pow($TS.ship.y - this.host.y, 2));
+			var v = 30*dt,
+				vx = v*($TS.ship.x - this.host.x)/dis,
+				vy = v*($TS.ship.y - this.host.y)/dis;
+			this.host.x += vx;
+			this.host.y += vy;
+		},
+		draw: function (render) {
+			render.drawImage($TS.textures['enemy'], this.host.x, this.host.y, this.angle, 1, this.a, false, false);
+			render.drawText(this.text, this.host.x-this.text.width/2, this.host.y-this.text.height, 1);
+		}
+	});
+
+	this.Enemy_Attacked = La.BaseState.extend(function () {
+		
+	}).methods({
+		enter: function (msg, fromState) {
+		
+		},
+		leave: function () {
+		
+		},
+		update: function (dt) {
+		
+		},
+		draw: function (render) {
+		
+		}
+	});
+
+	this.Enemy_Dead = La.BaseState.extend(function () {
+		
+	}).methods({
+		enter: function (msg, fromState) {
+		
+		},
+		leave: function () {
+		
+		},
+		update: function (dt) {
+		
+		},
+		draw: function (render) {
+		
+		}
+	});
+
+
+	var enemyStates = {
+		normal: 0,
+		attacked: 1,
+		dead:2
+	};
+	var enemyStatesList = [
+		0, this.Enemy_Normal,
+		1, this.Enemy_Attacked,
+		2, this.Enemy_Dead
+	];
+		
+	this.Enemy = La.Class(function (x, y) {
+		this.x = x || Math.random()*360;
+		this.y = y || (-Math.random()*50);
+
+		this.fsm = new La.AppFSM(this, enemyStatesList);
+		this.setState(0);
+	}).methods({
+		update: function (dt) {
+			this.fsm.update(dt);
+		},
+		draw: function (render) {
+			this.fsm.draw(render);
+		},
+		setState: function (state, msg) {
+			this.fsm.setState(state, msg);
+		},
+		currentState: function () {
+			return this.fsm.currentState;
+		},
+		isDead: function () {
+			return (this.fsm.currentState == 2);
+		}
+	});
+})
+
+
+/**
+ * resource
+ * 从g_data 里面拿数据
+ */
+Laro.register('TypeShot.$res', function (La) {
+	var pkg = this,
+		$TS = TypeShot;
+
+	this.EMBImages = {};
+	
+	// 获取经包装过的image资源
+	// 默认是取第一帧相关数据
+	this.getImage = function (name, frame) {
+		if (frame == undefined) {
+			frame = 0;
+		}
+
+		var emb = this.EMBImages[name];
+		if (!!emb) {
+			return emb[frame];
+		}
+		for (var k in g_data.imageW) {
+			if (name == k) {
+				this.EMBImages[k] = {};
+				for (var i = 0; i < g_data.imageW[k].data.length; i ++) {
+					var data = g_data.imageW[k],
+						source = data.data[i],
+						filename = data.filename;
+					this.EMBImages[k][i] = this.getEMBImage(source, filename);
+				}
+				return this.EMBImages[name][frame];
+			}
+		}
+	};
+
+	this.getEMBImage = function (source, filename) {
+		var width = source[2] - source[0] + 1;
+  		var height = source[3] - source[1] + 1;
+ 
+  		var xOffset = source[0] - source[4];
+ 		var yOffset = source[1] - source[5];
+ 
+    	var textureWidth = xOffset + width + source[6] - source[2];
+    	var textureHeight = yOffset + height + source[7] - source[3];
+ 
+   		var image = $TS.loader.loadImage(filename);
+    	return new La.EMBImage(image, source[0], source[1], width, height, xOffset, yOffset, textureWidth, textureHeight);
+		
+	}
 		
 })
 
