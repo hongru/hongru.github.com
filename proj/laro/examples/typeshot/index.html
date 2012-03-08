@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8" />
+<title>Laro Type Shot</title>
+
+<link href='http://fonts.googleapis.com/css?family=Lobster&subset=latin&v2' rel='stylesheet' type='text/css'/> 
+<link href='http://fonts.googleapis.com/css?family=Allan:700&v2' rel='stylesheet' type='text/css'/> 
+<link href='http://fonts.googleapis.com/css?family=Meddon&v2' rel='stylesheet' type='text/css'/> 
+
+<script src="../../src/laro.global.js"></script>
+<script src="../../src/base/module.js"></script>
+<script baseUrl="../../" src="../../src/laro.seed.js"></script>
+<style>
+#canvas { text-align: center; line-height: 600px; font-size:30px; font-style:italic; display:block; margin: 0 auto }
+</style>
+</head>
+
+<body>
+<div id="canvas">Loading...</div>
+
+<script>
+Laro.module.loadProgressCallback = function (name, url) {document.getElementById('canvas').innerHTML = 'loading module ' + name; }
+
+Laro.module.register('typeshot', 'js/main.js').require('laro')
+    
+Laro.use('typeshot', function () {
+    TypeShot.init('canvas', 360, 640);
+})
+
+</script>
+
+<div style="font-family: Lobster; visibility: hidden; height:0; overflow:hidden">one</div> 
+<div style="font-family: Allan; visibility: hidden;height:0; overflow:hidden">two</div> 
+<div style="font-family: Meddon; visibility: hidden;height:0; overflow:hidden">three</div> 
+</body>
+</html>
