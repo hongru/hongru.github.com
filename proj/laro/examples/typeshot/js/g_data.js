@@ -38,6 +38,12 @@ g_data = {
 				[64, 0, 95, 31, 64, 0, 95, 31]
 			],
 			filename: 'images/explosion.png'
+		},
+		plasma: {
+			data: [
+				[42, 42, 49, 95, 42, 42, 49, 95]
+			],
+			filename: 'images/plasma.png'
 		}
 	},
 	
@@ -63,7 +69,32 @@ g_data = {
 				"outline_r": 0,
 				"base_r": 245,
 				"size": 16,
-				"id": "enemy",
+				"id": "enemy_red",
+				"outline_g": 0
+		},
+		bigFont: {
+				"outline_b": 0,
+				"font": "Allan",
+				"outline": 1.0,
+				"base_b": 255,
+				"base_g": 255,
+				"outline_r": 0,
+				"base_r": 255,
+				"size": 26,
+				"id": "bigFont",
+				"outline_g": 0
+				
+			},
+		scoreFont: {
+			"outline_b": 0,
+				"font": "Allan",
+				"outline": 1.0,
+				"base_b": 255,
+				"base_g": 255,
+				"outline_r": 0,
+				"base_r": 255,
+				"size": 12,
+				"id": "scoreFont",
 				"outline_g": 0
 		}
 	}

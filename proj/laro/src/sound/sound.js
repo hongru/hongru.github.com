@@ -41,8 +41,9 @@ Laro.register('.game', function (La) {
 					}
 				}
 			}, false);
-			this.audio.addEventListener('canplaythrough', function (e) {
+			this.audio.addEventListener('canplaythrough', function (e) { 
 				_this.loaded = true;
+				!_this.channels['default'] && _this.addChannel('default', 0, _this.getDuration());
 				!!_this.callback && _this.callback();
 			}, false);
 		},

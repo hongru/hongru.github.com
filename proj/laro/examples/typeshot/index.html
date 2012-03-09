@@ -12,13 +12,30 @@
 <script src="../../src/base/module.js"></script>
 <script baseUrl="../../" src="../../src/laro.seed.js"></script>
 <style>
-#canvas { text-align: center; line-height: 600px; font-size:30px; font-style:italic; display:block; margin: 0 auto }
+#canvas { text-align: center; line-height: 600px; font-size:30px; font-style:italic; display:block; margin: 0 auto;
+	-webkit-box-shadow : 0 0 8px #f3f3f3;
+ }
+body {
+	background: #25272B;
+}
+.info {
+	width: 100%;
+	font-size: 12px;
+	color: #EED669;
+	line-height: 1.8;
+	text-align: center;
+	padding-top: 10px;
+}
 </style>
 </head>
 
 <body>
-<div id="canvas">Loading...</div>
 
+<div id="canvas">Loading...</div>
+<div class="info">
+	素材均来自网络，请勿用于商业用途。<br/>
+	操作说明： 打字游戏，击毁一个字母2分，机会一组字母5分。
+</div>
 <script src="js/g_data.js"></script>
 <script>
 Laro.module.loadProgressCallback = function (name, url) {document.getElementById('canvas').innerHTML = 'loading module ' + name; }

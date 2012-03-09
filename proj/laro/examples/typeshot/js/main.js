@@ -3,6 +3,8 @@
 Laro.register('TypeShot', function (La) {
 
 	var pkg = this;
+	
+	this.score = 0;
 
 	this.render = null;
 	this.getUid = function () {
@@ -104,7 +106,13 @@ Laro.register('TypeShot.sClass', function (La) {
 				'images/ship.png',
 				'images/tungsten-18.png',
 				'images/tungsten-18-orange.png',
-				'images/tungsten-48.png'
+				'images/tungsten-48.png',
+				
+				//music
+				'music/endure.mp3',
+				'music/explosion.mp3',
+				'music/hit.mp3',
+				'music/plasma.mp3'
 			];
 			$TS.loader.preload(images, La.curry(this.resourceLoadCallback, this));
 		},
@@ -149,9 +157,33 @@ Laro.register('TypeShot.sClass', function (La) {
 	this.InGame = La.BaseState.extend(function () {
 		
 		$TS.textures = {};
+		$TS.music = {};
+		
 		this.bgPos = 0;
-
+		
+		$TS.enemyNum = 2;
 		$TS.enemyCollection = {};
+		$TS.addEnemys = function (n) {
+			for (var i = 0; i < n; i ++) {
+				var id = $TS.getUid();
+				$TS.enemyCollection[id] = new $TS.Enemy(id);
+			}
+		}
+		$TS.checkEnemys = function () {
+			var isEmpty = true;
+			for (var k in $TS.enemyCollection) {
+				if (k != undefined) {
+					isEmpty = false;
+					break;
+				}
+			}
+			if (isEmpty) {
+				$TS.enemyNum ++;
+				$TS.addEnemys($TS.enemyNum);
+			}
+		}
+		
+		this.scoreFont = new La.Font(g_data.font.scoreFont);
 		
 	}).methods({
 		enter: function (msg, fromState) {
@@ -164,12 +196,18 @@ Laro.register('TypeShot.sClass', function (La) {
 			$TS.textures['explosion_0'] = $TS.$res.getImage('explosion', 0);
 			$TS.textures['explosion_1'] = $TS.$res.getImage('explosion', 1);
 			$TS.textures['explosion_2'] = $TS.$res.getImage('explosion', 2);
+			
+			$TS.textures['plasma'] = $TS.$res.getImage('plasma');
+			
+			$TS.music['bgm'] = $TS.$res.getSound('music/endure.mp3');
+			$TS.music['explosion'] = $TS.$res.getSound('music/explosion.mp3');
+			$TS.music['hit'] = $TS.$res.getSound('music/hit.mp3');
+			$TS.music['plasma'] = $TS.$res.getSound('music/plasma.mp3');
 
 			$TS.ship = new $TS.Ship();
-			for (var i = 0; i < 5; i ++) {
-				var id = $TS.getUid();
-				$TS.enemyCollection[id] = new $TS.Enemy(id);
-			}
+			$TS.addEnemys($TS.enemyNum);
+
+			$TS.music['bgm'].play('default', true);
 		},
 		leave: function () {
 		
@@ -200,6 +238,9 @@ Laro.register('TypeShot.sClass', function (La) {
 				$TS.enemyCollection[i].draw(render);
 			}
 			
+			var score = this.scoreFont.generateCanvas('score: ' + $TS.score);
+			render.drawText(score, render.getWidth()- 80, render.getHeight()-30, 1);
+			
 		},
 		drawGrid: function (render) {
 			for (var i = -2; i < 11; i ++) {
@@ -211,6 +252,27 @@ Laro.register('TypeShot.sClass', function (La) {
 			
 		} 
 	});
+	
+	// Game over
+	this.GameOver = La.BaseState.extend(function () {
+		
+	}).methods({
+		enter: function (msg, fromState) {
+			console.log('Game Over')
+			this.font = new La.Font(g_data.font.bigFont);
+			this.title = this.font.generateCanvas('Game Over');
+			this.score = this.font.generateCanvas('Your score:' + $TS.score);
+		},
+		leave: function () {},
+		update: function (dt) {
+		
+		},
+		draw: function (render) {
+			render.drawFillScreen('#000');
+			render.drawText(this.title, (render.getWidth()-this.title.width)/2, (render.getHeight()/3), 1);
+			render.drawText(this.score, (render.getWidth()-this.score.width)/2, (render.getHeight()/3 + this.title.height + 40), 1);
+		}
+	})
 		
 });
 
@@ -220,6 +282,43 @@ Laro.register('TypeShot.sClass', function (La) {
 Laro.register('TypeShot', function (La) {
 	var pkg = this,
 		$TS = this;
+		
+	$TS.plasmas = [];
+	
+	$TS.Plasma = La.Class(function (ship, enemyId) {
+		this.from = ship;
+		this.enemyId = enemyId;
+		var to = $TS.enemyCollection[enemyId];
+		var from = ship;
+		
+		this.x = from.x;
+		this.y = from.y;
+		this.v = 500;
+		this.angle = Math.atan((to.x-from.x)/(from.y-to.y));
+		this.vx = Math.cos(Math.PI/2 - this.angle)*this.v;
+		this.vy = -Math.sin(Math.PI/2 - this.angle)*this.v;
+		
+		this.end = false;
+		
+	}).methods({
+		update: function (dt) { 
+			var ene = $TS.enemyCollection[this.enemyId];
+			if (Math.sqrt(Math.pow(this.x-ene.x, 2) + Math.pow(this.y-ene.y, 2)) < 20) { 
+				this.end = true;
+				this.x = this.from.x;
+				this.y = this.from.y;
+				
+				ene.setState(1, this.enemyId);
+			} else {
+				this.x += this.vx*dt;
+				this.y += this.vy*dt;
+			}
+
+		},
+		draw: function (render) {
+			!this.end && render.drawImage($TS.textures['plasma'], this.x, this.y, this.angle, 1, 1, false, false);
+		}
+	})
 		
 
 	// wait
@@ -236,7 +335,7 @@ Laro.register('TypeShot', function (La) {
 		
 		},
 		draw: function (render) {
-			render.drawImage($TS.textures['ship'], this.host.x, this.host.y, 0, 1, 1, false, false)
+			render.drawImage($TS.textures['ship'], this.host.x, this.host.y, this.host.angle, 1, 1, false, false)
 		},
 		transition: function () {
 			if (this.host.collapse) {
@@ -250,9 +349,15 @@ Laro.register('TypeShot', function (La) {
 		
 	}).methods({
 		enter: function (msg, fromState) {
-			console.log(msg);
-			$TS.enemyCollection[msg].cur = true;
-			$TS.enemyCollection[msg].txt = $TS.enemyCollection[msg].txt.substr(1);
+			$TS.score += 2;
+			var ene = $TS.enemyCollection[msg];
+			ene.cur = true;
+			ene.txt = ene.txt.substr(1);
+			
+			this.host.angle = Math.atan((ene.x-this.host.x)/(this.host.y-ene.y));
+			
+			$TS.plasmas.push(new $TS.Plasma(this.host, msg))
+			$TS.music['plasma'].play()
 		},
 		leave: function () {
 		
@@ -261,7 +366,7 @@ Laro.register('TypeShot', function (La) {
 		
 		},
 		draw: function (render) {
-		
+			render.drawImage($TS.textures['ship'], this.host.x, this.host.y, this.host.angle, 1, 1, false, false)
 		},
 		transition: function () {
 			this.host.setState(shipStates.wait);
@@ -294,6 +399,7 @@ Laro.register('TypeShot', function (La) {
 			this._t = 0;
 			this.explosionImgs = [];
 			this.al = 1;
+			$TS.music['explosion'].play();
 	
 		},
 		leave: function () {
@@ -309,6 +415,12 @@ Laro.register('TypeShot', function (La) {
 				var x = this.host.x + Math.sin(ag)*this._t*50;
 				var y = this.host.y + Math.cos(ag)*this._t*50;
 				render.drawImage($TS.textures['explosion_'+Math.floor(Math.random()*3)], x, y, this._t, 1, this.al, false, false)
+			}
+		},
+		transition: function () {
+			// game over
+			if (this._t > 2) {
+				$TS.$fsm.setState(2);
 			}
 		}
 	});
@@ -332,6 +444,8 @@ Laro.register('TypeShot', function (La) {
 		this.y = y || $TS.render.getHeight()-30;
 		this.cx = this.x + $TS.textures['ship'].width/2;
 		this.cy = this.y + $TS.textures['ship'].height/2;
+		
+		this.angle = 0;
 
 		this.fsm = new La.AppFSM(this, shipStatesList);
 		this.setState(shipStates.wait);
@@ -341,24 +455,35 @@ Laro.register('TypeShot', function (La) {
 		$TS.keyboard.addKeydownCallback('type', function (e) {
 			var tmpKeys = [];
 			var key = null;
+			var hasCur = false;
+			
 			if ($TS.enemyCollection) {
 				for (var i in $TS.enemyCollection) {
 					var ene = $TS.enemyCollection[i];
 					if (ene.cur) {
+						hasCur = true;
 						key = ene.txt.substr(0, 1);
-						key == e.$keyName && _this.setState(shipStates.shoot, i);
-
-						break;
+						if (key == e.$keyName) {
+							_this.setState(shipStates.shoot, i);
+							return;
+						} 
 					}
 					tmpKeys.push({
 						key: ene.txt.substr(0, 1),
 						id: i
 					});
 				}
-				for (var i = 0; i < tmpKeys.length; i ++) {
-					var o = tmpKeys[i];
-					o.key == e.$keyName && _this.setState(shipStates.shoot, o.id);
+				
+				if (!hasCur) {
+					for (var i = 0; i < tmpKeys.length; i ++) {
+						var o = tmpKeys[i];
+						if (o.key == e.$keyName) {
+							_this.setState(shipStates.shoot, o.id);
+							return;
+						} 
+					}
 				}
+				
 			}
 			
 		})
@@ -367,9 +492,38 @@ Laro.register('TypeShot', function (La) {
 		update: function (dt) {
 			this.fsm.update(dt);
 			this.check();
+			
+			for (var i = 0; i < $TS.plasmas.length; i ++) {
+				var p = $TS.plasmas[i];
+				p && p.update(dt);
+				if (p && p.end) {
+					$TS.plasmas.splice(i, 1);
+					i --;
+				}
+			}
+			
+			// explosion
+			for (var i = 0; i < $TS.explosions.length; i ++) {
+				var ex = $TS.explosions[i];
+				ex && ex.update(dt);
+				if (ex.isDead) {
+					$TS.explosions.splice(i, 1);
+					i --;
+				}
+			}
 		},
 		draw: function (render) {
 			this.fsm.draw(render);
+			
+			for (var i = 0; i < $TS.plasmas.length; i ++) {
+				var p = $TS.plasmas[i];
+				p && p.draw(render);
+			}
+			
+			for (var i = 0; i < $TS.explosions.length; i ++) {
+				var p = $TS.explosions[i];
+				p && p.draw(render);
+			}
 		},
 		setState: function (state, msg) {
 			this.fsm.setState(state, msg);
@@ -397,6 +551,33 @@ Laro.register('TypeShot', function (La) {
 Laro.register('TypeShot', function (La) {
 	var pkg = this;
 	var $TS = this;
+	
+	$TS.explosions = [];
+	$TS.Explosion = La.Class(function (pos) {
+		this.pos = pos;
+		this.life = 1;
+		this._t = 0;
+		this.a = 1;
+		
+		this.isDead = false;
+	}).methods({
+		update: function (dt) {
+			this._t += dt;
+			this.a = Math.max(0, this.life-this._t)/this.life;
+			this.isDead = (this._t > this.life);
+		},
+		draw: function (render) {
+			if (!this.isDead) {
+				for (var i = 0; i < 4; i ++) {
+					var ag = Math.PI*i/2;
+					var x = this.pos.x + Math.sin(ag)*this._t*50;
+					var y = this.pos.y + Math.cos(ag)*this._t*50;
+					render.drawImage($TS.textures['explosion_'+Math.floor(Math.random()*3)], x, y, this._t, 1, this.a, false, false)
+				}
+			}
+		}
+		
+	})
 
 	var chars = 'abcdefghijklmnopqrstuvwxyz'.split('');
 	
@@ -414,20 +595,20 @@ Laro.register('TypeShot', function (La) {
 	}
 
 	this.Enemy_Normal = La.BaseState.extend(function () {
+		this._t = 0;
+		this.angle = 0;
+
+		this.fontObj = g_data.font.enemy;
+		this.host.font = new La.Font(this.fontObj);
+		this.host.redFont = new La.Font(g_data.font.enemy_red);
 		
+		this.host.txt = pkg.getRandomWord(3, 7);
+		this.host.text = this.host.font.generateCanvas(this.host.txt);
+		this.host.textR = this.host.redFont.generateCanvas(this.host.txt);
+		this.host.cur = false;
 	}).methods({
 		enter: function (msg, fromState) {
-			this._t = 0;
-			this.angle = 0;
-
-			this.fontObj = g_data.font.enemy;
-			this.font = new La.Font(this.fontObj);
-			this.redFont = new La.Font(g_data.font.enemy_red);
 			
-			this.host.txt = pkg.getRandomWord(3, 7);
-			this.host.text = this.font.generateCanvas(this.host.txt);
-			this.host.textR = this.redFont.generateCanvas(this.host.txt);
-			this.host.cur = false;
 		},
 		leave: function () {
 		
@@ -439,7 +620,7 @@ Laro.register('TypeShot', function (La) {
 			this.angle += dt;
 
 			var dis = Math.sqrt(Math.pow($TS.ship.x - this.host.x, 2) + Math.pow($TS.ship.y - this.host.y, 2));
-			var v = 30*dt,
+			var v = 20*dt,
 				vx = v*($TS.ship.x - this.host.x)/dis,
 				vy = v*($TS.ship.y - this.host.y)/dis;
 			this.host.x += vx;
@@ -448,10 +629,10 @@ Laro.register('TypeShot', function (La) {
 		draw: function (render) {
 			var drawT = this.host.text;
 			if (this.host.cur) {
-				if (!this.host.txt || this.host.txt == '') {
+				/*if (!this.host.txt || this.host.txt == '') {
 					this.host.setState(enemyStates.dead, this.host.id);
-				}
-				drawT = this.redFont.generateCanvas(this.host.txt);
+				}*/
+				drawT = this.host.redFont.generateCanvas(this.host.txt);
 			}
 			render.drawImage($TS.textures['enemy'], this.host.x, this.host.y, this.angle, 1, this.a, false, false);
 			render.drawText(drawT, this.host.x-drawT.width/3, this.host.y-drawT.height, 1);
@@ -462,7 +643,11 @@ Laro.register('TypeShot', function (La) {
 		
 	}).methods({
 		enter: function (msg, fromState) {
-		
+			this.host.y -= 2;
+			this.id = msg;
+			
+			$TS.explosions.push(new $TS.Explosion({x: this.host.x, y: this.host.y}));
+			$TS.music['hit'].play();
 		},
 		leave: function () {
 		
@@ -471,7 +656,16 @@ Laro.register('TypeShot', function (La) {
 		
 		},
 		draw: function (render) {
-		
+			var drawT = this.host.redFont.generateCanvas(this.host.txt);
+			render.drawImage($TS.textures['enemy'], this.host.x, this.host.y, this.angle, 1, this.a, false, false);
+			render.drawText(drawT, this.host.x-drawT.width/3, this.host.y-drawT.height, 1);
+		},
+		transition: function () {
+			if (this.host.txt && this.host.txt != '') {
+				this.host.setState(0);
+			} else {
+				this.host.setState(2, this.id);
+			}
 		}
 	});
 
@@ -481,16 +675,27 @@ Laro.register('TypeShot', function (La) {
 		enter: function (msg, fromState) {
 			this._t = 0;
 			this.id = msg;
-			delete $TS.enemyCollection[this.id];
+			$TS.score += 5;
 		},
 		leave: function () {
 		
 		},
 		update: function (dt) {
-		
+			var hass = false;
+			for (var i = 0; i < $TS.plasmas.length; i ++) {
+				if ($TS.plasmas[i].enemyId == this.id) {
+					hass = true;
+					break;
+				}
+			}
+			if (this.id == this.host.id && !hass) {
+				delete $TS.enemyCollection[this.id];
+				
+				$TS.checkEnemys();
+			}
 		},
 		draw: function (render) {
-		
+			render.drawImage($TS.textures['enemy'], this.host.x, this.host.y, this.angle, 1, this.a, false, false);
 		}
 	});
 
@@ -508,7 +713,7 @@ Laro.register('TypeShot', function (La) {
 		
 	this.Enemy = La.Class(function (id, x, y) {
 		this.id = id;
-		this.x = x || Math.random()*360;
+		this.x = x || (410-Math.random()*460);
 		this.y = y || (-Math.random()*50);
 
 		this.fsm = new La.AppFSM(this, enemyStatesList);
@@ -581,6 +786,12 @@ Laro.register('TypeShot.$res', function (La) {
    		var image = $TS.loader.loadImage(filename);
     	return new La.EMBImage(image, source[0], source[1], width, height, xOffset, yOffset, textureWidth, textureHeight);
 		
+	};
+	
+	this.getSound = function (filename) {
+		var loader = $TS.loader; 
+        var loadedSounds = loader.loadedSounds;
+        return loadedSounds[filename];
 	}
 		
 })
@@ -593,11 +804,13 @@ Laro.register('TypeShot.$fsm', function (La) {
 
 	var states = {
 		loading: 0,
-		inGame: 1
+		inGame: 1,
+		gameOver: 2
 	};
 	var statesList = [
 		states.loading, $sClass.Loading,
-		states.inGame, $sClass.InGame
+		states.inGame, $sClass.InGame,
+		states.gameOver, $sClass.GameOver
 	];
 
 	this.stateModes = {
@@ -642,6 +855,8 @@ Laro.register('TypeShot.$loop', function (La) {
 	var pkg = this;
 	var $fsm = TypeShot.$fsm;
 	var $TS = TypeShot;
+	
+	this.scoreFont = new La.Font(g_data.font.scoreFont);
 
 	this.init = function () {
 		this.$ = new La.Loop(this.looper, this);
@@ -677,8 +892,13 @@ Laro.register('TypeShot.$loop', function (La) {
 		$TS.render.clear();
 		$fsm.$.draw($TS.render);
 		$TS.screenTransition && $TS.screenTransition.draw($TS.render);
+		this.drawScore($TS.render);
 		$TS.render.flush();
 	};
+	
+	this.drawScore = function (render) {
+		
+	}
 
 		
 })
