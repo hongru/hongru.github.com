@@ -166,7 +166,7 @@ Laro.register('TypeShot.sClass', function (La) {
 		$TS.addEnemys = function (n) {
 			for (var i = 0; i < n; i ++) {
 				var id = $TS.getUid();
-				$TS.enemyCollection[id] = new $TS.Enemy(id);
+				$TS.enemyCollection[id] = new $TS.Enemy(id, (20-Math.random()*10));
 			}
 		}
 		$TS.checkEnemys = function () {
@@ -238,8 +238,9 @@ Laro.register('TypeShot.sClass', function (La) {
 				$TS.enemyCollection[i].draw(render);
 			}
 			
-			var score = this.scoreFont.generateCanvas('score: ' + $TS.score);
-			render.drawText(score, render.getWidth()- 80, render.getHeight()-30, 1);
+			//var score = this.scoreFont.generateCanvas('score: ' + $TS.score);
+			score = 'score: ' + $TS.score;
+			render.drawSystemText(score, render.getWidth()- 80, render.getHeight()-30, '#fff');
 			
 		},
 		drawGrid: function (render) {
@@ -460,7 +461,7 @@ Laro.register('TypeShot', function (La) {
 			if ($TS.enemyCollection) {
 				for (var i in $TS.enemyCollection) {
 					var ene = $TS.enemyCollection[i];
-					if (ene.cur) {
+					if (ene.cur && ene.txt != '') {
 						hasCur = true;
 						key = ene.txt.substr(0, 1);
 						if (key == e.$keyName) {
@@ -620,7 +621,7 @@ Laro.register('TypeShot', function (La) {
 			this.angle += dt;
 
 			var dis = Math.sqrt(Math.pow($TS.ship.x - this.host.x, 2) + Math.pow($TS.ship.y - this.host.y, 2));
-			var v = 20*dt,
+			var v = this.host.v*dt,
 				vx = v*($TS.ship.x - this.host.x)/dis,
 				vy = v*($TS.ship.y - this.host.y)/dis;
 			this.host.x += vx;
@@ -632,10 +633,10 @@ Laro.register('TypeShot', function (La) {
 				/*if (!this.host.txt || this.host.txt == '') {
 					this.host.setState(enemyStates.dead, this.host.id);
 				}*/
-				drawT = this.host.redFont.generateCanvas(this.host.txt);
+				//drawT = this.host.redFont.generateCanvas(this.host.txt);
 			}
 			render.drawImage($TS.textures['enemy'], this.host.x, this.host.y, this.angle, 1, this.a, false, false);
-			render.drawText(drawT, this.host.x-drawT.width/3, this.host.y-drawT.height, 1);
+			render.drawSystemText(this.host.txt, this.host.x-this.host.txt.length*2, this.host.y-10, this.host.cur ? '#ff4a00' : '#fff');
 		}
 	});
 
@@ -656,9 +657,9 @@ Laro.register('TypeShot', function (La) {
 		
 		},
 		draw: function (render) {
-			var drawT = this.host.redFont.generateCanvas(this.host.txt);
+			//var drawT = this.host.redFont.generateCanvas(this.host.txt);
 			render.drawImage($TS.textures['enemy'], this.host.x, this.host.y, this.angle, 1, this.a, false, false);
-			render.drawText(drawT, this.host.x-drawT.width/3, this.host.y-drawT.height, 1);
+			render.drawSystemText(this.host.txt, (this.host.x-this.host.txt.length*2), (this.host.y-10), '#ff4a00');
 		},
 		transition: function () {
 			if (this.host.txt && this.host.txt != '') {
@@ -711,10 +712,11 @@ Laro.register('TypeShot', function (La) {
 		2, this.Enemy_Dead
 	];
 		
-	this.Enemy = La.Class(function (id, x, y) {
+	this.Enemy = La.Class(function (id,v, x, y) {
 		this.id = id;
 		this.x = x || (410-Math.random()*460);
 		this.y = y || (-Math.random()*50);
+		this.v = v || 20-Math.random()*10;
 
 		this.fsm = new La.AppFSM(this, enemyStatesList);
 		this.setState(0);
