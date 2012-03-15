@@ -238,9 +238,28 @@ Laro.register('.world', function (La) {
 		},
 		// 纯文本
 		drawSystemText: function (txt, x, y, color) {
-			this.context.textAlign = 'left';
-			this.context.fillStyle = color.toString();
-			this.context.fillText(txt, x, y);
+			if (color instanceof La.Font) {
+				// 如果是以Font Class 标准的字体样式
+				this.context.font = color.getFont();
+				this.context.fillStyle = color.baseColor.toString();
+				this.context.textBaseline = 'middle';
+				this.context.textAlign = 'left';
+				var outline = color.outline * 2;
+				
+				if (outline != 0) {
+					this.context.strokeStyle = color.outlineColor.toString();
+					this.context.lineWidth = outline;
+					this.context.strokeText(txt, x, y);
+				}
+				this.context.fillText(txt, x, y);
+				
+			} else {
+				// 简单的设置个颜色
+				this.context.textBaseline = 'middle';
+				this.context.textAlign = 'left';
+				this.context.fillStyle = color.toString();
+				this.context.fillText(txt, x, y);
+			}
 		},
 		setScaleFactor: function (factor, reset) {
 			if (!!reset) {

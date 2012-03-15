@@ -636,7 +636,7 @@ Laro.register('TypeShot', function (La) {
 				//drawT = this.host.redFont.generateCanvas(this.host.txt);
 			}
 			render.drawImage($TS.textures['enemy'], this.host.x, this.host.y, this.angle, 1, this.a, false, false);
-			render.drawSystemText(this.host.txt, this.host.x-this.host.txt.length*2, this.host.y-10, this.host.cur ? '#ff4a00' : '#fff');
+			render.drawSystemText(this.host.txt, this.host.x-this.host.txt.length*2, this.host.y-10, this.host.cur ? this.host.redFont : this.host.font);
 		}
 	});
 
@@ -659,7 +659,7 @@ Laro.register('TypeShot', function (La) {
 		draw: function (render) {
 			//var drawT = this.host.redFont.generateCanvas(this.host.txt);
 			render.drawImage($TS.textures['enemy'], this.host.x, this.host.y, this.angle, 1, this.a, false, false);
-			render.drawSystemText(this.host.txt, (this.host.x-this.host.txt.length*2), (this.host.y-10), '#ff4a00');
+			render.drawSystemText(this.host.txt, (this.host.x-this.host.txt.length*2), (this.host.y-10), this.host.redFont);
 		},
 		transition: function () {
 			if (this.host.txt && this.host.txt != '') {
