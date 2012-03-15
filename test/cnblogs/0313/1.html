@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style type="text/css">
+#container {width: 800px; margin: 40px auto;border:1px solid #333; position: relative; height: 20px}
+#move {width: 20px; height: 20px; background: red; position:absolute; left: 0; top: 0}
+</style>
+</head>
+
+<body>
+<div id="container">
+<div id="move" style="left:0; top:0"></div>
+</div>
+<script type="text/javascript">
+window.requestAnimFrame = this.requestAnimationFrame =  (function() {
+      return window.requestAnimationFrame ||
+             window.webkitRequestAnimationFrame ||
+             window.mozRequestAnimationFrame ||
+             window.oRequestAnimationFrame ||
+             window.msRequestAnimationFrame ||
+             function(/* function FrameRequestCallback */ callback, /* DOMElement Element */ element) {
+               window.setTimeout(callback, 1000/60);
+             };
+    })();
+	
+(function () {
+	var moveDis = 0,
+		conEl = document.getElementById('container'),
+		maxDis = (conEl.offsetWidth-22) || (800-20), // 总距离
+		moveEl = document.getElementById('move');
+		
+	function step () { 
+		var nowLeft = parseInt(moveEl.style['left']),
+			leftDis = maxDis - nowLeft, // 获取距离目的地的距离
+			stepDis = Math.ceil(leftDis*.015); // 每次移动 剩余距离的 固定百分比。
+			
+		nowLeft += stepDis; // 不断叠加
+		moveEl.style['left'] = nowLeft + 'px';
+
+		requestAnimFrame(step);
+	}
+	
+	step();
+
+})();
+</script>
+</body>
+</html>

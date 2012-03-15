@@ -14,32 +14,29 @@ Laro.register('.game', function (La) {
 		this.genAudio();
 		this.bind();
 		this.audio.load();
+			
 		
 	}).methods({
 		genAudio: function () {
-			this.audio = new Audio();
+			this.audio = document.createElement('audio');//new Audio();
 			this.audio.src = this.url;
 			this.audio.preload = 'auto';
-		
+		if (this.audio.play && navigator.userAgent.toLowerCase().indexOf('msie') < 0) {
+				this.audio.play();
+				this.audio.pause();
+			}
+			document.body.appendChild(this.audio)
 		},
 		bind: function () {
 			var _this = this;
-			this.audio.addEventListener('loadedmetadata', function (e) {
+			this.audio.addEventListener('loadedmetadata', function (e) { 
 				_this.addChannel('default', 0, _this.getDuration());	
 			}, false);
 			this.audio.addEventListener('playing', function(e) { 
 				// todo	
 			}, false);
 			this.audio.addEventListener('timeupdate', function (e) {
-				var cur = _this.currentChannel,
-					t = (+ new Date);
-
-				if (t >= cur.startTime + cur.duration*1000) {
-					_this.isPlayingChannel(cur.name) && _this.pause();
-					if (cur.isLoop) {
-						_this.play(cur.name, cur.isLoop);
-					}
-				}
+				// todo
 			}, false);
 			this.audio.addEventListener('canplaythrough', function (e) { 
 				_this.loaded = true;
@@ -93,6 +90,7 @@ Laro.register('.game', function (La) {
 				end: (start + duration),
 				duration: duration
 			};
+			
 			return this.channels[name];
 		},
 		removeChannel: function (name) {
@@ -109,23 +107,39 @@ Laro.register('.game', function (La) {
 			}
 		},
 		play: function (name, isLoop) {
+			var _this = this, timer = -1;
+			
 			if (name == undefined) {
 				name = 'default';
 			}
 			if (isLoop == undefined) {
 				isLoop = false;
 			}
+			
+			if (this.currentChannel) {
+				clearTimeout(this.currentChannel.timer);
+			}
 			if (this.haveData()) {
 				var channel = this.channels[name];
+				clearTimeout(channel.timer);
 				this.audio.currentTime = channel.start;
 				this.audio.play();
+				
+				if (isLoop) {
+					timer = setTimeout(function () {
+						_this.play(name, i)
+					}, channel.duration*1000);
+				}
+				
+				
 				this.currentChannel = {
 					name: name,
 					start: channel.start,
 					duration: channel.duration,
 					end: channel.end,
 					isLoop: isLoop,
-					startTime: (+new Date)
+					startTime: (+new Date),
+					timer: timer
 				};
 			}
 		}
