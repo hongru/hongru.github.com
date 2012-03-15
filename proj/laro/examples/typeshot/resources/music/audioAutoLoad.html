@@ -1,0 +1,32 @@
+<html>
+<body>
+
+<script>
+// audio auto load test for FF
+// FF 暂不直接支持mp3 的播放
+
+(function () {
+	var audio = document.createElement('audio');
+	audio.src="endure.mp3";
+	audio.volume = 1;
+    audio.preload = 'auto';
+	
+	console.log(audio.canPlayType, 
+		audio.canPlayType('audio/ogg; codecs="vorbis"'), //ogg
+		audio.canPlayType('audio/aac'), // m4a
+		audio.canPlayType('audio/mpeg;'), // mp3
+		audio.canPlayType('audio/wav') // wav
+	);
+	
+	audio.addEventListener('canplaythrough', function (e) {alert('all through')}, false)
+	if (audio.play && navigator.userAgent.toLowerCase().indexOf('msie') < 0) {
+        audio.play();
+        audio.pause();
+    }
+	audio.play()
+	
+	document.body.appendChild(audio);
+})();
+</script>
+</body>
+</html>

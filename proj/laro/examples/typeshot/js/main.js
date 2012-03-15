@@ -109,10 +109,10 @@ Laro.register('TypeShot.sClass', function (La) {
 				'images/tungsten-48.png',
 				
 				//music
-				'music/endure.mp3',
-				'music/explosion.mp3',
-				'music/hit.mp3',
-				'music/plasma.mp3'
+				'music/endure.ogg',
+				'music/explosion.ogg',
+				'music/hit.ogg',
+				'music/plasma.ogg'
 			];
 			$TS.loader.preload(images, La.curry(this.resourceLoadCallback, this));
 		},
@@ -199,10 +199,10 @@ Laro.register('TypeShot.sClass', function (La) {
 			
 			$TS.textures['plasma'] = $TS.$res.getImage('plasma');
 			
-			$TS.music['bgm'] = $TS.$res.getSound('music/endure.mp3');
-			$TS.music['explosion'] = $TS.$res.getSound('music/explosion.mp3');
-			$TS.music['hit'] = $TS.$res.getSound('music/hit.mp3');
-			$TS.music['plasma'] = $TS.$res.getSound('music/plasma.mp3');
+			$TS.music['bgm'] = $TS.$res.getSound('music/endure.ogg');
+			$TS.music['explosion'] = $TS.$res.getSound('music/explosion.ogg');
+			$TS.music['hit'] = $TS.$res.getSound('music/hit.ogg');
+			$TS.music['plasma'] = $TS.$res.getSound('music/plasma.ogg');
 
 			$TS.ship = new $TS.Ship();
 			$TS.addEnemys($TS.enemyNum);

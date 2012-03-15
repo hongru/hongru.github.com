@@ -12,20 +12,41 @@ Laro.register('.game', function (La) {
 		this.channels = {};
 		this.currentChannel = null;
 		this.genAudio();
+		
+		this.can = this.canPlayThisType();
+		if (!this.can) {
+			!!this.callback && this.callback();
+			return;
+		}
+		
 		this.bind();
 		this.audio.load();
 			
 		
 	}).methods({
 		genAudio: function () {
-			this.audio = document.createElement('audio');//new Audio();
+			this.audio = new Audio();
 			this.audio.src = this.url;
 			this.audio.preload = 'auto';
-		if (this.audio.play && navigator.userAgent.toLowerCase().indexOf('msie') < 0) {
+		
+			if (this.audio.play && navigator.userAgent.toLowerCase().indexOf('msie') < 0) {
 				this.audio.play();
 				this.audio.pause();
 			}
-			document.body.appendChild(this.audio)
+
+		},
+		canPlayThisType: function (type) {
+			var checkTypeHash = {
+				'mp3': 'audio/mpeg;',
+				'm4a': 'audio/aac',
+				'ogg': 'audio/ogg; codecs="vorbis"',
+				'wav': 'audio/wav'
+			};
+			if (type == undefined) {
+				type = this.url.substr(this.url.lastIndexOf('.')).replace(/\./g, '');
+			}
+			
+			return !!(this.audio && this.audio.canPlayType && this.audio.canPlayType(checkTypeHash[type]).replace(/no/, ''));
 		},
 		bind: function () {
 			var _this = this;
@@ -56,7 +77,7 @@ Laro.register('.game', function (La) {
 		},
 		haveData: function () {
 			var s = this.audio.readyState;
-			if (s == 1) {
+			if (s == 1 || !s) {
 				return false;
 			} else if (s == 2 || s == 3 || s == 4 || s == 5) {
 				return true;
@@ -107,6 +128,8 @@ Laro.register('.game', function (La) {
 			}
 		},
 		play: function (name, isLoop) {
+			if (!this.can) { return; }
+			
 			var _this = this, timer = -1;
 			
 			if (name == undefined) {
@@ -127,7 +150,7 @@ Laro.register('.game', function (La) {
 				
 				if (isLoop) {
 					timer = setTimeout(function () {
-						_this.play(name, i)
+						_this.play(name, isLoop)
 					}, channel.duration*1000);
 				}
 				
