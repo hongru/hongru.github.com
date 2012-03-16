@@ -289,13 +289,13 @@ $.NS('SunSys', function ($) {
 		var ax = 160;
         for (var i = 0; i < 10; i ++) {
             var opt = {
-                longAxis: ax + i*20,
+                longAxis: ax + i*7,
                 shortAxis: (Math.random()*(40-20) + 20),
                 longAxisAngle: (Math.random()*(20)-10),
                 opacity: [0.5, 1],
                 radius: [3, 5],
                 centerZ: 500,
-                speed: 0.005,//(Math.random()*(0.01-0.004) + 0.004),
+                speed: 0.01,//(Math.random()*(0.01-0.004) + 0.004),
                 dirY: (Math.random() > 0.5 ? 1 : -1), // 为1 那么 (0-180)deg 在前， 为-1 (180-360)deg在前
                 dirX: 1,//(Math.random() > 0.5 ? 1 : -1), // 为1 逆时针， -1顺时针
                 startAngle: i*36 // (0-360) 
