@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8" />
+<style type="text/css">
+#container {width: 800px; margin: 40px auto;border:1px solid #333; position: relative; height: 20px}
+#move {width: 20px; height: 20px; background: red; position:absolute; left: 0; top: 0}
+#roadmap {
+	width: 800px;
+	background: #606060;
+	height: 400px;
+	margin: 0 auto;
+	position: relative;
+}
+.doc {
+	width: 810px;
+	margin: 0 auto;
+}
+.point {
+	position: absolute;
+	width: 2px;
+	height: 2px;
+	overflow: hidden;
+	font-size: 0;
+	background: #fff;
+}
+p {width: 800px; margin: 0 auto;}
+.t {
+	position: absolute;
+	color: #fff;
+	font-size: 12px;
+	left: 10px;
+	top: 6px;
+}
+.s {
+	position: absolute;
+	color: #fff;
+	font-size: 12px;
+	left: 740px;
+	top: 380px;
+}
+textarea {width: 99%; min-height: 60px;}
+</style>
+</head>
+
+<body>
+<div class="doc">
+<div id="container">
+<div id="move" style="left:0; top:0"></div>
+</div>
+
+<div id="roadmap">
+<span class="t">t(时间)</span>
+<span class="s">s(位移)</span>
+
+</div>
+<p>tween(from, to, duration)</p>
+<textarea id="code">
+tween(0, 780, 2);
+</textarea>
+<p><input type="button" id="btn" value="Start" /></p>
+</div>
+<script type="text/javascript">
+window.requestAnimationFrame = this.requestAnimationFrame =  (function() {
+  return window.requestAnimationFrame ||
+		 window.webkitRequestAnimationFrame ||
+		 window.mozRequestAnimationFrame ||
+		 window.oRequestAnimationFrame ||
+		 window.msRequestAnimationFrame ||
+		 function(/* function FrameRequestCallback */ callback, /* DOMElement Element */ element) {
+		   window.setTimeout(callback, 1000/60);
+		 };
+})();
+var $ = typeof $ == 'undefined' ? {} : $;    
+$.Loop = function (callback, that) {
+	var keepUpdating = true,
+		lastLoopTime = new Date();
+		
+	function loop () {
+		if (!keepUpdating) { return }
+		requestAnimationFrame(loop);
+		
+		var time = new Date(),
+			dt = (time - lastLoopTime) / 1000;
+		// 时间间隔太长(大于3秒)，强制拉回dt
+		if (dt >= 3) {
+			dt = 0.25;
+		}
+		
+		callback.call(that, dt);
+		lastLoopTime = time;
+	}
+	
+	// 停止
+	this.stop = function () {
+		keepUpdating = false;
+	}
+	
+	// 继续
+	this.resume = function () {
+		keepUpdating = true;
+		lastLoopTime = new Date();
+		loop();
+	}
+	
+	loop();
+	return this;
+};	
+$.id = function (s) {
+	return document.getElementById(s) || s;
+};
+
+$.addEvent = function (o, e, f) {
+	return o.addEventListener ? o.addEventListener(e, f, false) : o.attachEvent('on'+e, function () { f.call(o) });
+};
+	
+//我们设计个简单api，为了简单起见，只做演示
+// tween(from, to, t)
+var o = $.id('move'), st = 0, looper, _fr, _to,
+	codet = $.id('code'),
+	roadmap = $.id('roadmap');
+function tween (from, to, t) {
+	o.style['left'] = from + 'px';
+	// 二次函数 s = a*t^2 + b*t;
+	// 顶点： (to-from) = a*t^2 + b*t
+	// 右侧x轴交点： 0 = a*(2t)^2 + b*2t
+	// 得出 a = -(to-from)/t^2; b = 2(to-from)/t;
+	_fr = from;
+	_to = to;
+	a = (from-to)/Math.pow(t, 2);
+	b = 2*(to-from)/t;
+	st = 0;
+	
+	if (typeof looper == 'undefined') {
+		looper = new $.Loop(update);
+	} else {
+		looper.resume();
+	}
+	
+} 
+function update (dt) {
+	st += dt;
+	var left = a*st*st + b*st;
+
+	if (Math.abs(_fr - _to + left) <= 1) {
+		looper.stop();
+		o.style['left'] = _to + 'px'; 
+	}
+	o.style['left'] = _fr + left + 'px';
+	
+	drawMap(st, _fr + left);
+}
+function drawMap (t, s) {
+	var p = document.createElement('div');
+	p.className = 'point';
+	p.style['left'] = s + 'px';
+	p.style['top'] = 398 - t*100 + 'px';
+	roadmap.appendChild(p);
+}
+var btn = $.id('btn');
+$.addEvent(btn, 'click', function () {
+	eval(codet.value)
+})
+</script>
+</body>
+</html>
