@@ -337,7 +337,7 @@ Laro.register('Emberwind', function (La) {
 			if (con == undefined) {
 				con = '操作说明：上下左右键-方向|上跳|下蹲；a键-轻拳；k键-轻腿；连续并顺序按下asdf-回旋踢';
 				con += '<br/>'
-				con += '<input type="checkbox" id="camera-ck" /><label for="camera-ck">move camera</label>';
+				con += '<input type="checkbox" id="camera-ck" checked="true" /><label for="camera-ck">move camera</label>';
 			}
 			var box = document.getElementById('intro-box');
 			if (!box) {
