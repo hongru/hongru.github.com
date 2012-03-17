@@ -9,6 +9,8 @@ ul, ol, dl {
 
 body {
 	background: #303030 url(../images/bg.png);
+	-webkit-user-select: none;
+	-moz-user-select: none;
 }
 #doc, .doc {
 	width: 845px;
@@ -146,6 +148,12 @@ h1 {
     background: url(../images/btn_03.png) no-repeat 0 0;
     overflow:hidden;
 }
+.edit-area .btn2 {
+	display: none;
+	position: absolute;
+	left: 354px;
+	top: 170px;
+}
 .edit-area .btn1 span {
     display: inline-block;
     height: 44px;
@@ -201,4 +209,17 @@ h1 {
 }
 .btn1.scale span {
     background-position: -280px 50%;
+}
+
+.operation-cvs {
+	cursor: move;
+}
+.btn2 {
+	display: inline-block;
+	background-repeat: none;
+	background-image: url(../images/btn2.png);
+	background-position: 0 0;
+	width: 130px;
+	height: 48px;
+	overflow: hidden;
 }

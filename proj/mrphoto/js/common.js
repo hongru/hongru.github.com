@@ -297,6 +297,79 @@ jQuery.extend( jQuery.easing,
 	}
 });
 
+// jq.mousewheel
+(function($) {
+
+var types = ['DOMMouseScroll', 'mousewheel'];
+
+if ($.event.fixHooks) {
+    for ( var i=types.length; i; ) {
+        $.event.fixHooks[ types[--i] ] = $.event.mouseHooks;
+    }
+}
+
+$.event.special.mousewheel = {
+    setup: function() {
+        if ( this.addEventListener ) {
+            for ( var i=types.length; i; ) {
+                this.addEventListener( types[--i], handler, false );
+            }
+        } else {
+            this.onmousewheel = handler;
+        }
+    },
+    
+    teardown: function() {
+        if ( this.removeEventListener ) {
+            for ( var i=types.length; i; ) {
+                this.removeEventListener( types[--i], handler, false );
+            }
+        } else {
+            this.onmousewheel = null;
+        }
+    }
+};
+
+$.fn.extend({
+    mousewheel: function(fn) {
+        return fn ? this.bind("mousewheel", fn) : this.trigger("mousewheel");
+    },
+    
+    unmousewheel: function(fn) {
+        return this.unbind("mousewheel", fn);
+    }
+});
+
+
+function handler(event) {
+    var orgEvent = event || window.event, args = [].slice.call( arguments, 1 ), delta = 0, returnValue = true, deltaX = 0, deltaY = 0;
+    event = $.event.fix(orgEvent);
+    event.type = "mousewheel";
+    
+    // Old school scrollwheel delta
+    if ( orgEvent.wheelDelta ) { delta = orgEvent.wheelDelta/120; }
+    if ( orgEvent.detail     ) { delta = -orgEvent.detail/3; }
+    
+    // New school multidimensional scroll (touchpads) deltas
+    deltaY = delta;
+    
+    // Gecko
+    if ( orgEvent.axis !== undefined && orgEvent.axis === orgEvent.HORIZONTAL_AXIS ) {
+        deltaY = 0;
+        deltaX = -1*delta;
+    }
+    
+    // Webkit
+    if ( orgEvent.wheelDeltaY !== undefined ) { deltaY = orgEvent.wheelDeltaY/120; }
+    if ( orgEvent.wheelDeltaX !== undefined ) { deltaX = -1*orgEvent.wheelDeltaX/120; }
+    
+    // Add event and delta to the front of the arguments
+    args.unshift(event, delta, deltaX, deltaY);
+    
+    return ($.event.dispatch || $.event.handle).apply(this, args);
+}
+
+})(jQuery);
 
 // main script
 $.NS('FiPhoto', function () {
@@ -584,7 +657,11 @@ $.NS('FiPhoto.operation', function () {
     
     
     this.rotate = function () {
-    
+		pkg.imgInfo.rotate += Math.PI/2;
+		if (pkg.imgInfo.rotate == 2*Math.PI) {
+			pkg.imgInfo.rotate = 0;
+		}
+		pkg.drawImage();
     };
     
     this.toggleBorderBtn = function () {
@@ -597,11 +674,12 @@ $.NS('FiPhoto.operation', function () {
 	
 	this.create = function () {
 		// 创建一个 canvas 用于 图片手术， 大小为 650*2；
-		this.$canvas = $('<canvas></canvas>').appendTo(FiPhoto.$con);
+		this.$canvas = $('<canvas class="operation-cvs"></canvas>').appendTo(FiPhoto.$con);
 		this.cvs = this.$canvas.get(0);
 		this.cvs.width = this.size.w;
 		this.cvs.height = this.size.h;
 		this.ctx = this.cvs.getContext('2d');
+
 	};
 	
 	this.setCvsPos = function () {
@@ -642,14 +720,79 @@ $.NS('FiPhoto.operation', function () {
 				width: $(img).width(),
 				height: $(img).height(),
 				limitW: pkg.size.w,
-				limitH: pkg.size.h
+				limitH: pkg.size.h,
+				offsetX: 0,
+				offsetY: 0,
+				rotate: 0,
+				scale : 1
 			};
 			FiPhoto.$imgWrap.hide();
+			pkg.setScale(1);
 			pkg.drawImage();
             pkg.checkStep(1);
+			pkg.bindCanvas();
             
 			callCB = true;
 		}
+	};
+	
+	this.setScale = function (s) {
+		if (this.cvs && this.ctx && this.imgInfo) {
+			this.imgInfo.scale = s;
+			this.imgInfo.showWidth = this.imgInfo.width * s;
+			this.imgInfo.showHeight = this.imgInfo.height * s;
+		}
+	}
+	
+	// bind canvas to move image and scale
+	this.bindCanvas = function () {
+		this.$canvas.unbind('mousewheel');
+		this.$canvas.unbind('mousedown');
+		
+		this.$canvas.bind('mousewheel', function (e, delta, deltaX, deltaY) {
+			e.preventDefault();
+			//console.log(delta, deltaX, deltaY);
+			
+			if (delta > 0 && pkg.imgInfo.scale < 3) {
+				// zoom +
+				pkg.setScale(pkg.imgInfo.scale + 0.1);
+				//pkg.ctx.scale(pkg.imgInfo.scale, pkg.imgInfo.scale);
+				pkg.drawImage();
+
+			} else if (delta < 0 && pkg.imgInfo.scale > 0.2) {
+				// zoom -
+				pkg.setScale(pkg.imgInfo.scale - 0.1);
+				pkg.drawImage();
+			}
+		});
+		
+		this.$canvas.bind('mousedown', function (e) {
+			pkg.startDrag = true;
+			pkg.dragInfo = {
+				mouseX: e.clientX,
+				mouseY: e.clientY,
+				imgOffsetX: pkg.imgInfo.offsetX,
+				imgOffsetY: pkg.imgInfo.offsetY
+			};
+		}).bind('mouseleave', function (e) {
+			pkg.startDrag = false;
+		});
+		
+		$(window).bind('mouseup', function (e) {
+			pkg.startDrag = false;
+		}).bind('mousemove', function (e) {
+			if (!!pkg.startDrag && pkg.dragInfo) {
+				var disX = e.clientX - pkg.dragInfo.mouseX,
+					disY = e.clientY - pkg.dragInfo.mouseY;
+				
+				var deg = pkg.imgInfo.rotate;
+				var flag = (2*deg/Math.PI)%2 == 0 ? 1 : -1;
+				pkg.imgInfo.offsetX = pkg.dragInfo.imgOffsetX + flag*(disX*Math.cos(deg) - disY*Math.sin(deg));
+				pkg.imgInfo.offsetY = pkg.dragInfo.imgOffsetY + flag*(disX*Math.sin(deg) + disY*Math.cos(deg));
+				
+				pkg.drawImage();
+			}
+		})
 	};
 	
 	this.drawImage = function () {
@@ -659,7 +802,9 @@ $.NS('FiPhoto.operation', function () {
 		ctx.clearRect(0, 0, cvs.width, cvs.height);
 		ctx.save();
 		ctx.translate(cvs.width/2, cvs.height/2);
-		ctx.drawImage(info.img, (info.left-info.width/2), (info.top-info.height/2), info.width, info.height);
+		ctx.rotate(info.rotate);
+		ctx.translate(-cvs.width/2, -cvs.height/2);
+		ctx.drawImage(info.img, 0, 0, info.width, info.height, cvs.width/2 - info.showWidth/2 + info.offsetX, cvs.height/2 - info.showHeight/2 + info.offsetY, info.showWidth, info.showHeight);
 		ctx.restore();
 		
 		this.$canvas.show();
@@ -675,27 +820,42 @@ $.NS('FiPhoto.operation', function () {
                 $btns = pkg['step'+step]['$btns'],
                 timeout = 0;
             
-            $tit.css({'left': 850}).show().animate({'left': parseInt($tit.attr('data-left'))}, {
-                duration: 1000,
-                easing: easing,
-                callback: function () {}
-            });
-            $btns.each(function () {
-                var _this = this;
-                timeout += 100;
-                setTimeout(function () {
-                    $(_this).css({'left': 850}).show()
-                        .animate({'left': parseInt($(_this).attr('data-left'))}, {
-                            duration: 1000,
-                            easing: easing,
-                            callback: function () {}
-                        })
-                }, timeout)
-                
-            })
-            FiPhoto.step = step;
+			$('#edit-area').css({'height': 306});
+			this.scrollToBottom(btnsMove);
+			
+			function btnsMove () {
+				$tit.css({'left': 850}).show().animate({'left': parseInt($tit.attr('data-left'))}, {
+					duration: 1000,
+					easing: easing,
+					callback: function () {}
+				});
+				$btns.each(function () {
+					var _this = this;
+					timeout += 100;
+					setTimeout(function () {
+						$(_this).css({'left': 850}).show()
+							.animate({'left': parseInt($(_this).attr('data-left'))}, {
+								duration: 1000,
+								easing: easing,
+								callback: function () {}
+							})
+					}, timeout)
+					
+				})
+				FiPhoto.step = step;
+			}
+            
         //}
-    }
+    };
+	
+	this.scrollToBottom = function (cb) {
+		if (cb == undefined) { cb = function () {} }
+		var h = Math.max($('body').height(), $('html').height());
+		var wh = $(window).height();
+		$('html, body').animate({
+			scrollTop: (h-wh)
+		}, cb);
+	}
 
 });
 	
