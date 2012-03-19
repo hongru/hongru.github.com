@@ -45,8 +45,8 @@ p {text-align: center; font-size:12px;color:#454545;}
 					this.ctx.beginPath();
 					this.ctx.arc(0, 0, this.width/2, 0, Math.PI*2, true);
 					this.ctx.closePath();
-                    this.ctx.strokeStyle = color;
-					this.ctx.stroke();
+                    this.ctx.fillStyle = color;
+					this.ctx.fill();
 				}
 			});
 			ball.setVanishPoint(vpx, vpy);

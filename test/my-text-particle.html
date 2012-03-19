@@ -51,6 +51,8 @@ var TextParticles = function () {
         this.opt = {
             canvasId: null
         }
+		this.place = 0;
+		
         extend(this.opt, opt);
         
         this.initialize();
@@ -94,7 +96,8 @@ var TextParticles = function () {
                     //var i = 4*(x * imageData.height + y);
                     var i = 4*(y * imageData.width + x);
                     if (imageData.data[i + 3] > 128) {
-                        this.particles.push(new Particle(x, y, this.canvas));
+						this.place ++;
+                        (this.place%4 == 0) && this.particles.push(new Particle(x, y, this.canvas));
                     }
                 }
             }
