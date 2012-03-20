@@ -32,13 +32,13 @@ g_data = {
 		"imagesets": [
 			
 			{
-				"name": "opera_logo",
+				"name": "laro_logo",
 				"atlasparams": "png16",
 				"image": "gui/btn_canvas.png.png",
 				"frames": [
-					"opera_logo"
+					"laro_logo"
 				],
-				"atlas": "atlas/gui/opera_logo",
+				"atlas": "atlas/gui/laro_logo",
 				"type": "imageset"
 			},
 			{
@@ -47,15 +47,7 @@ g_data = {
 				"type": "imageset",
 				"atlas": "atlas/game_stone"
 			},
-            {
-				"atlas": "atlas/gui/titletext_html5",
-				"frames": [
-					"default"
-				],
-				"image": "titlescreen/titletext.png",
-				"type": "imageset",
-				"name": "TitlescreenLogo"
-			},
+			// 第一种背景 Titlescreen0,Titlescreen2
             {
 				"atlas": "atlas/gui/titlescreen0",
 				"frames": [
@@ -92,80 +84,24 @@ g_data = {
 				"type": "imageset",
 				"name": "Titlescreen3"
 			},
+			// 第二种背景 bg1, bg2
 			{
-				"atlas": "atlas/no_c_red/titlescreen4",
-				"frames": [
-					"default"
-				],
-				"image": "titlescreen/titlescreen_04.png",
+				"name": 'bg1',
+				"frames": ['default'],
 				"type": "imageset",
-				"name": "Titlescreen4"
+				"atlas": "atlas/bg1"
 			},
-            {
-				"atlas": "atlas/gui/floating_points",
-				"frames": [
-					"1200_points",
-					"1000_points",
-					"800_points",
-					"700_points",
-					"600_points",
-					"500_points",
-					"400_points",
-					"300_points",
-					"150_points",
-					"100_points",
-					"75_points",
-					"50_points",
-					"25_points",
-					"10_points",
-					"1_points"
-				],
-				"image": "images/points.png",
+			{
+				"name": 'bg2',
+				"frames": ['default'],
 				"type": "imageset",
-				"name": "floating_points"
-			},
-            {
-				"atlas": "atlas/gui/titlescreen_kindle_eyes",
-				"frames": [
-					"default"
-				],
-				"image": "titlescreen/titlescreen_kindle_eyes.png",
-				"type": "imageset",
-				"name": "TitlescreenKindleEyes"
-			},
-            {
-				"atlas": "atlas/gui/button",
-				"frames": [
-					"topleft",
-					"top",
-					"topright",
-					"left",
-					"centre",
-					"right",
-					"bottomleft",
-					"bottom",
-					"bottomright"
-				],
-				"image": "gui/ButtonNormal.png",
-				"type": "imageset",
-				"name": "ButtonNormal"
-			},
-            {
-				"atlas": "atlas/gui/titlescreen_wick_eyes",
-				"frames": [
-					"eyes0",
-					"eyes1",
-					"eyes2",
-					"eyes3"
-				],
-				"image": "titlescreen/titlescreen_wick_eyes.png",
-				"type": "imageset",
-				"name": "TitlescreenWickEyes"
+				"atlas": "atlas/bg2"
 			}
+ 
 		],
         
         "atlases": {
-            "atlas/gui/opera_logo": {
+            "atlas/gui/laro_logo": {
 				"sources": [
 					{
 						"data": [
@@ -180,12 +116,56 @@ g_data = {
 								209
 							]
 						],
-						"name": "opera_logo"
+						"name": "laro_logo"
 					}
 				],
 				"type": "atlas",
-				"name": "atlas/gui/opera_logo",
+				"name": "atlas/gui/laro_logo",
 				"filename": "laro.png"
+			},
+			"atlas/bg1": {
+				"sources": [
+					{
+						"data": [
+							[
+								0,
+								0,
+								1697,
+								599,
+								0,
+								0,
+								1697,
+								599
+							]
+						],
+						"name": "bg1"
+					}
+				],
+				"type": "atlas",
+				"name": "atlas/bg1",
+				"filename": "0.png"
+			},
+			"atlas/bg2" : {
+				"sources": [
+					{
+						"data": [
+							[
+								0,
+								0,
+								1703,
+								399,
+								0,
+								0,
+								1703,
+								100
+							]
+						],
+						"name": "bg2"
+					}
+				],
+				"type": "atlas",
+				"name": "atlas/bg2",
+				"filename": "1.png"
 			},
 			"atlas/game_stone": {
 				"sources": [
@@ -208,190 +188,6 @@ g_data = {
 				"type": "atlas",
 				"name": "atlas/game_stone",
 				"filename": "BlockA0.png"
-			},
-            "atlas/gui/titlescreen_kindle_eyes": {
-				"sources": [
-					{
-						"data": [
-							[
-								0,
-								0,
-								88,
-								30,
-								0,
-								0,
-								88,
-								30
-							]
-						],
-						"name": "TitlescreenKindleEyes"
-					}
-				],
-				"type": "atlas",
-				"name": "atlas/gui/titlescreen_kindle_eyes",
-				"filename": "titlescreen_kindle_eyes.png"
-			},
-            "atlas/gui/floating_points": {
-				"sources": [
-					{
-						"data": [
-							[
-								0,
-								0,
-								30,
-								8,
-								-1,
-								-3,
-								30,
-								12
-							],
-							[
-								0,
-								9,
-								30,
-								16,
-								-1,
-								4,
-								30,
-								19
-							],
-							[
-								31,
-								0,
-								56,
-								7,
-								28,
-								-3,
-								59,
-								12
-							],
-							[
-								31,
-								9,
-								56,
-								16,
-								28,
-								5,
-								59,
-								20
-							],
-							[
-								0,
-								33,
-								24,
-								40,
-								-4,
-								28,
-								27,
-								43
-							],
-							[
-								0,
-								17,
-								25,
-								24,
-								-4,
-								12,
-								27,
-								27
-							],
-							[
-								26,
-								17,
-								51,
-								24,
-								22,
-								13,
-								53,
-								28
-							],
-							[
-								0,
-								25,
-								25,
-								32,
-								-3,
-								21,
-								28,
-								36
-							],
-							[
-								0,
-								41,
-								22,
-								48,
-								-6,
-								38,
-								25,
-								53
-							],
-							[
-								0,
-								49,
-								22,
-								56,
-								-6,
-								44,
-								25,
-								59
-							],
-							[
-								26,
-								42,
-								42,
-								49,
-								18,
-								37,
-								49,
-								52
-							],
-							[
-								26,
-								34,
-								43,
-								41,
-								19,
-								30,
-								50,
-								45
-							],
-							[
-								26,
-								25,
-								42,
-								33,
-								19,
-								20,
-								50,
-								35
-							],
-							[
-								43,
-								25,
-								56,
-								32,
-								33,
-								20,
-								64,
-								35
-							],
-							[
-								52,
-								17,
-								56,
-								24,
-								39,
-								13,
-								70,
-								28
-							]
-						],
-						"name": "floating_points"
-					}
-				],
-				"type": "atlas",
-				"name": "atlas/gui/floating_points",
-				"filename": "floating_points.png"
 			},
             
             "atlas/game/timetrap": {
@@ -1245,84 +1041,10 @@ g_data = {
 				"type": "atlas",
 				"name": "atlas/no_c_red/titlescreen4",
 				"filename": "titlescreen4.png"
-			},
-            "atlas/gui/titletext_html5": {
-				"sources": [
-					{
-						"data": [
-							[
-								0,
-								0,
-								612,
-								142,
-								0,
-								0,
-								612,
-								142
-							]
-						],
-						"name": "TitlescreenLogo"
-					}
-				],
-				"type": "atlas",
-				"name": "atlas/gui/titletext_html5",
-				"filename": "titletext_html5.png"
-			},
-            "atlas/gui/titlescreen_wick_eyes": {
-				"sources": [
-					{
-						"data": [
-							[
-								0,
-								0,
-								114,
-								34,
-								0,
-								0,
-								114,
-								34
-							],
-							[
-								0,
-								35,
-								100,
-								69,
-								-6,
-								35,
-								108,
-								69
-							],
-							[
-								0,
-								70,
-								86,
-								102,
-								-10,
-								70,
-								104,
-								104
-							],
-							[
-								0,
-								103,
-								86,
-								135,
-								-10,
-								103,
-								104,
-								137
-							]
-						],
-						"name": "TitlescreenWickEyes"
-					}
-				],
-				"type": "atlas",
-				"name": "atlas/gui/titlescreen_wick_eyes",
-				"filename": "titlescreen_wick_eyes.png"
 			}
             
         },
-        
+        // 用于设置 帧动画 数据
         "animations": [
 			{
 				"nbrOfFrames": 73,

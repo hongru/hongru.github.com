@@ -25,11 +25,11 @@ Laro.register('Emberwind', function (La) {
 	
     this.IntroState = La.BaseState.extend(function () {
         this.t = 0;
-        this.delayAfter = 1;
+        this.delayAfter = Emberwind.CONFIG.loadingStatus ? 1 : 0;;
         this.doneT = null;
         this.progress = 0;
-     
-        this.minLogoTime = 3;
+		
+        this.minLogoTime = Emberwind.CONFIG.loadingStatus ? 2 : 0;
         this.logoStartT = null;
      
         this.font = null;
@@ -50,12 +50,10 @@ Laro.register('Emberwind', function (La) {
                 "titlescreen1.png", 
                 "gamebg.png", 
                 "titlescreen3.png", 
-                "titlescreen4.png", 
-                "titletext_html5.png", 
-                "titlescreen_wick_eyes.png", 
-                "titlescreen_kindle_eyes.png", 
                 "timetrap.png",
 				"BlockA0.png",
+				"0.png",
+				"1.png",
                 
                 // fighter
 				'fighter/wait.gif',
@@ -94,7 +92,7 @@ Laro.register('Emberwind', function (La) {
             La.ResourceLoader.getInstance().preload(images, La.curry(this.progressCallback, this));
          
             this.font = Emberwind.Resource.getInstance().getFont("LoadingIntro");
-            this.operaLogo = Emberwind.Resource.getInstance().getImage("opera_logo", "opera_logo");
+            this.operaLogo = Emberwind.Resource.getInstance().getImage("laro_logo", "laro_logo");
 
             pkg.loader = Emberwind.Resource.getInstance();
             //pkg.sound.addChannel('timetrap', 320, 4.54);
@@ -121,7 +119,7 @@ Laro.register('Emberwind', function (La) {
 				whirl_kick: pkg.loader.getSound('music/fighter/whirl_kick.mp3')
 			};
             
-            pkg.sfx.addChannel('timetrap', 320, 4.54);
+            //pkg.sfx.addChannel('timetrap', 320, 4.54);
             pkg.music.addChannel('menu', 14, 119.4);
             
         },
@@ -148,6 +146,7 @@ Laro.register('Emberwind', function (La) {
                                             && this.t >= this.minLogoTime, La.FSM.kNextState);
         },
         draw : function (render) {
+			if (!Emberwind.CONFIG.loadingStatus) { return; }
             render.clear(render.white);
          
             var centerW = render.getWidth() / 2;
@@ -193,7 +192,7 @@ Laro.register('Emberwind', function (La) {
             this.animation.update(dt);
             if (this.timeInState < 0.5 && this.timeInState + dt > 0.5) {
                 this.animation.play(false);
-                pkg.sfx.play('timetrap');
+                //pkg.sfx.play('timetrap');
             }
 
             this.timeInState += dt;
@@ -233,19 +232,37 @@ Laro.register('Emberwind', function (La) {
          
             this.buttonPressed = -1;
             var dep = Emberwind.Resource.getInstance();
-            this.titleImgs[0] = dep.getImage("Titlescreen0", "default");
+			
+			var scene = Emberwind.CONFIG.__sceneBg,
+				usebg = Emberwind.CONFIG.usebg;
+            this.titleImgs[0] = dep.getImage(scene[usebg][0], "default");
             this.titleImgs[1] = dep.getImage("Titlescreen1", "default");
-            this.titleImgs[2] = dep.getImage("Titlescreen2", "default");
+            this.titleImgs[2] = dep.getImage(scene[usebg][1], "default");
             this.titleImgs[3] = dep.getImage("Titlescreen3", "default");
-            this.titleImgs[4] = dep.getImage("Titlescreen4", "default");
-            this.titleImgs[5] = dep.getImage("TitlescreenLogo", "default");
+
 			this.stoneImg = dep.getImage('game_stone', 'default');
 			//console.log(this.stoneImg)
             
             this.cloudXPos = 0;
             this.fogXPos = 0;
 			
-			this.fighter = new Emberwind.Fighter(Emberwind.Game.instance.render, {x: 200,  w:58, h:90});
+
+			this.fighter = Emberwind.CONFIG.showPeople ? new Emberwind.Fighter(Emberwind.Game.instance.render, {x: 200, y:-200, w:58, h:90}) : new function () {
+				this.update = function (dt) {
+					if (pkg.keyboard.key('right')) {
+						pkg.BGPOS -= dt*100;
+						pkg.cameraPos -= dt*100;
+						pkg.BGPOS2 -= dt*40;
+					} else if (pkg.keyboard.key('left')) {
+						pkg.BGPOS += dt*100;
+						pkg.cameraPos += dt*100;
+						pkg.BGPOS2 += dt*40;
+					}
+				};
+				this.draw = function () {};
+			};
+
+			
 			
 			this.enemys = [];
 			
@@ -257,8 +274,9 @@ Laro.register('Emberwind', function (La) {
 				_this.buttonPressed = 1;
 			}, false)
 			
-			// 显示操作介绍
 			this.showOPbox();
+			// 显示操作介绍
+			if (!Emberwind.CONFIG.showOperatingGuide) this.hideOPbox(); 
 
             // music
             pkg.music.play('menu', true);
@@ -316,9 +334,15 @@ Laro.register('Emberwind', function (La) {
 			}
         },
         draw: function (render) {
-            this.drawStartScreenBackground(render);
-			this.drawMap(render);
-			this.drawFighter(render);
+			if (Emberwind.CONFIG.showSceneBg) {
+				this.drawStartScreenBackground(render);
+			}
+			
+            if (Emberwind.CONFIG.showPeople) {
+				this.drawMap(render);
+				this.drawFighter(render);
+			}
+			
         },
 		drawMap: function (render) {
 			
@@ -380,28 +404,7 @@ Laro.register('Emberwind', function (La) {
 			for (var i = 0; i < 2; i ++) {
 				render.drawParticle(this.titleImgs[2], i*this.titleImgs[2].width + center.x+pkg.BGPOS, center.y, 0, castleScale, castleScale, 1, new Pixel32(0xff, 0xff, 0xff, 0x0), false);
 			}
-            
          
-            var fgScale = 5;
-            if (this.timeIntoStartScreen > 0.5) {
-                fgScale = 5 - 4 * La.clamp(0, (this.timeIntoStartScreen - 0.5) / 2, 1);
-            }
-            //render.drawParticle(this.titleImgs[4], center.x, center.y, 0, fgScale, fgScale, 1, new Pixel32(0xff, 0xff, 0xff, 0x0), false);
-            
-            var titlePos = center.y;
-            if (this.timeIntoStartScreen > 2.5) {
-                titlePos = -(this.titleImgs[5].textureHeight / 2) + this.titleImgs[5].textureHeight * La.clamp(0, (this.timeIntoStartScreen - 2.5) * 2, 1);
-            } else {
-                var tp = La.clamp(0, this.timeIntoStartScreen * 4, 1) * Math.PI / 2;
-                titlePos = center.y - Math.sin(tp) * render.getHeight() * 2 / 3;
-            }
-         
-         
-            var offsetX = perlin.noise(this.titleParam / 2) * 5;
-            var offsetY = perlin.noise(this.titleParam / 2 + 100) * 5;
-         
-            offsetY += 10; // Maybe
-            render.drawParticle(this.titleImgs[5], center.x + offsetX, titlePos + offsetY, 0, 1, 1, 1, new Pixel32(0xff, 0xff, 0xff, 0xff), false);
         },
 		drawFighter: function (render) {
 			if (this.fighter.y > render.getHeight()) {

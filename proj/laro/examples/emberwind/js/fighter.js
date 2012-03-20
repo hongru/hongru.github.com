@@ -130,10 +130,10 @@ Laro.register('Emberwind', function (La) {
 					PKG.BGPOS2 -= dt*40;	
 				}
 				
-				this.host.setPos(this.host.x, this.host.y + dt*800);
+				this.host.setPos(this.host.x, this.host.y + dt*1000);
 				
 			} else {
-				this.host.setPos(this.host.x, this.host.y + dt*800);
+				this.host.setPos(this.host.x, this.host.y + dt*1000);
 				if (this.host.x < 770) {
 					this.host.setPos(this.host.x + dt*100, this.host.y);
 				}
@@ -793,6 +793,7 @@ Laro.register('Emberwind', function (La) {
 				"pivotx": 30,
 				"events": []
 			};
+			info = Laro.extend(info, state)
 			var data = {
 				"data": [],
 				"filename": ''
@@ -844,6 +845,7 @@ Laro.register('Emberwind', function (La) {
 					
 						if (fighterRect.overlaps(bkRect)) { 
 							this._t = 0;
+							this.y = scrY - 1 - this.h/3;
 							/*if (bkRect.contains(fighterRect.x1, (fighterRect.y1 - fighterRect.height/2))) {this.lockX = 1}
 							if (bkRect.contains(fighterRect.x0, (fighterRect.y1 - fighterRect.height/2))) {this.lockX = -1}
 							if (bkRect.contains((fighterRect.x0 + fighterRect.width/2), fighterRect.y1)) {this.lockY = -1}

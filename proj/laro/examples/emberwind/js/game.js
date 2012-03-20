@@ -1,6 +1,19 @@
 // emberwind eg.
 Laro.register('Emberwind', function (La) {
     var PKG = this;
+	
+	/* 演示用 设置 */
+	PKG.CONFIG = {
+		__sceneBg: {
+			'one': ['Titlescreen0', 'Titlescreen2'], // back, front
+			'two': ['bg1', 'bg2']
+		},
+		usebg: 'two',
+		showPeople: true,
+		showSceneBg: true,
+		loadingStatus: false,
+		showOperatingGuide: false,
+	}
 
 	PKG.states = {
 		kStateIntro: 0,
@@ -24,8 +37,6 @@ Laro.register('Emberwind', function (La) {
 			PKG.states.kStateInGame, PKG.InGame
         ];
         this.fsm = new La.AppFSM(this, statesList);   
-        //this.sound = new La.Sound('resources/music/sfx.ogg', function () {console.log('sfx ok')});
-        //this.bgMusic = new La.Sound('resources/music/music.ogg', function() {console.log('music ok')});
         
         this.resources = new Emberwind.Resource()
         this.resources.setCallback(La.curry(this.resourceCallback, this));
@@ -188,38 +199,4 @@ Laro.register('Emberwind', function (La) {
     this.Game = Game;
 
 });
-
-/**
- * Camera of game
- * 通常用来控制背景层的移动，让人感觉是摄像区域在移动
- */
-Laro.register('Emberwind.camera', function (La) {
-	this.x = 0;
-	this.y = 0;
-	this.objects = [];
-	/*
-		{
-			name: ,
-			texture: ,
-			
-		}
-	*/
-	this.addObject = function (obj) {
-		this.objects.push(obj);
-	};
-	
-	this.update = function (dt) {
-		
-	};
-	this.draw = function (render) {
-	
-	};
-	this.left = function (dis) {
-		
-	};
-	this.right = function (dis) {
-		
-	}
-	
-})
 
