@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<style>
+td {
+	width: 10px;
+	height: 10px;
+	border-bottom: 1px solid #333;
+	border-right: 1px solid #333;
+}
+.red {
+	background:#ff4a00;
+}
+</style>
+
+<table id="tab"></table>
+<script src="http://code.jquery.com/jquery.min.js"></script>
+<script>
+var N = 30;
+var ret = [];
+for (var i = 0; i < N; i ++) {
+	ret.push('<tr>');
+	for (var j = 0; j < N; j ++) {
+		ret.push('<td></td>');
+	}
+	ret.push('</tr>');
+}
+$('#tab').html(ret.join(''));
+$('td').click(function () {
+	var method = $(this).hasClass('red') ? 'removeClass' : 'addClass';
+	$(this)[method]('red');
+})
+</script>
+</html>
