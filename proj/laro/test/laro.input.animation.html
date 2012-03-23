@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8" />
+<script src="../build/laro.0.1.js"></script>
+<script src="../build/jcanvas.0.1.js"></script>
+<style>
+canvas {display:block; margin: 0 auto; border: 1px solid #333}
+img {display: none}
+</style>
+</head>
+
+<body>
+<div id="canvas">loading</div>
+
+<img id="one" src="resources/fighter/RYU1_wait.gif" />
+<img id="two" src="resources/fighter/RYU1_light_boxing.gif" />
+<img id="three" src="resources/fighter/RYU1_light_kick.gif" />
+
+<script>
+var g_data = {
+    'one': {
+        "nbrOfFrames": 6,
+        "pivoty": 50,
+        "framerate": 10,
+        "pivotx": 40,
+        "events": [],
+        "imageW": 372,
+        "imageH": 93,
+        
+        "data": []
+    },
+    'two': {
+        "nbrOfFrames": 3,
+        "pivoty": 50,
+        "framerate": 10,
+        "pivotx": 40,
+        "events": [],
+        "imageW": 282,
+        "imageH": 91,
+        
+        "data": []
+    },
+    'three': {
+        "nbrOfFrames": 5,
+        "pivoty": 50,
+        "framerate": 10,
+        "pivotx": 60,
+        "events": [],
+        "imageW": 580,
+        "imageH": 94,
+        
+        "data": []
+    }
+}
+
+Laro.register('IA', function (La) {
+
+    this.animInstance = {};
+
+    this.init = function (cvsId, w, h) {
+		this.canvasId = cvsId;
+		this.w = w;
+		this.h = h;
+		this.canvas = document.getElementById(cvsId);
+		this.createRender();
+        
+        this.stage = new La.$stage(this.canvas);
+        this.stage.CONFIG.isClear = false;
+		this.$fsm.init();
+		this.$loop.init();
+		this.keyboard = new La.Keyboard();
+
+	};
+
+	this.createRender = function () {
+		this.oldRender = this.render;
+		var oldCanvas = document.getElementById(this.canvasId);
+		var canvasParent = oldCanvas.parentNode;
+
+		var canvas = document.createElement('canvas');
+		canvas.width = this.w;
+		canvas.height = this.h;
+		canvas.id = this.canvasId;
+
+		this.render = new La.CanvasRender(canvas, 1, false);
+		canvasParent.replaceChild(canvas, oldCanvas);
+		this.canvas = canvas;
+	};
+    
+    //生成animation
+    this.createData = function (id) {
+        var o = g_data[id];
+        var unitW = o.imageW/o.nbrOfFrames,
+            unitH = o.imageH;
+        for (var i = 0; i < o.nbrOfFrames; i ++) {
+            var imgX1 = i * unitW,
+                imgY1 = 0,
+                imgX2 = imgX1 + unitW,
+                imgY2 = unitH;
+                
+            var coord = [imgX1, imgY1, imgX2, imgY2, imgX1, imgY1, imgX2, imgY2];
+            o['data'].push(coord);
+        }
+        return o;
+    };
+    this.createAnimation = function (id) {
+        if (IA.animInstance[id]) {
+            return IA.animInstance[id];
+        }
+        var image = document.getElementById(id);
+        var frames = [];
+        var o = this.createData(id);
+        for (var i = 0; i < o.data.length; i ++) {
+            var source = o.data[i];
+            
+            var width = source[2] - source[0];
+            var height = source[3] - source[1];
+     
+            var xOffset = source[0] - source[4];
+            var yOffset = source[1] - source[5];
+     
+            var textureWidth = xOffset + width + source[6] - source[2];
+            var textureHeight = yOffset + height + source[7] - source[3];
+
+            frames.push(new Laro.ImageRegion(image, source[0], source[1], width, height, xOffset, yOffset, textureWidth, textureHeight));
+
+        }
+        
+        var anim = new Laro.Animation(o, frames);
+        var animH = new Laro.AnimationHandle(anim); 
+        IA.animInstance[id] = animH;
+        return animH;
+    }
+});
+
+Laro.register('IA.states', function (La) {
+    this.One = La.BaseState.extend().methods({
+        enter: function (msg, from) {
+        
+        // 里面有很多冗余代码，比如 生成的限制框， 或者 对于 事件批量绑定 ，条件判断等 代码 都可以把对于3个分开写的 整合到一起 :)
+            this.anim1 = IA.createAnimation('one');
+            this.anim2 = IA.createAnimation('two');
+            this.anim3 = IA.createAnimation('three');
+            
+            this.anim1.play();
+            this.anim1.stop();
+            this.anim2.play();
+            this.anim2.stop();
+            this.anim3.play();
+            this.anim3.stop();
+            
+            var A = new La.$sprite(IA.stage.ctx, function () {
+                this.x = IA.render.getWidth()/6 - 50;
+                this.y = IA.render.getHeight()/2 - 50;
+                this.width = 100;
+                this.height = 100;
+                this.draw = function () {
+                    this.ctx.beginPath();
+                    this.ctx.rect(0, 0, this.width, this.height);
+                    this.ctx.closePath();
+                    this.ctx.strokeStyle = 'black';
+                    this.ctx.stroke();
+                }
+            });
+            var B = new La.$sprite(IA.stage.ctx, function () {
+                this.x = IA.render.getWidth()/2 - 50;
+                this.y = IA.render.getHeight()/2 - 50;
+                this.width = 100;
+                this.height = 100;
+                this.draw = function () {
+                    this.ctx.beginPath();
+                    this.ctx.rect(0, 0, this.width, this.height);
+                    this.ctx.closePath();
+                    this.ctx.strokeStyle = 'black';
+                    this.ctx.stroke();
+                }
+            });
+            var C = new La.$sprite(IA.stage.ctx, function () {
+                this.x = IA.render.getWidth()*5/6 - 50;
+                this.y = IA.render.getHeight()/2 - 50;
+                this.width = 100;
+                this.height = 100;
+                this.draw = function () {
+                    this.ctx.beginPath();
+                    this.ctx.rect(0, 0, this.width, this.height);
+                    this.ctx.closePath();
+                    this.ctx.strokeStyle = 'black';
+                    this.ctx.stroke();
+                }
+            });
+            IA.stage.addChild(A);
+            IA.stage.addChild(B);
+            IA.stage.addChild(C);
+
+            
+            // addEventListener
+            var _this = this;
+            A.addEventListener('mouseover', function () { 
+                _this.startOne = true;
+            });
+            A.addEventListener('mouseout', function () {
+                _this.startOne = false;
+            });
+            B.addEventListener('mouseover', function () { 
+                _this.startTwo = true;
+            });
+            B.addEventListener('mouseout', function () {
+                _this.startTwo = false;
+            });
+            C.addEventListener('mouseover', function () { 
+                _this.startThree = true;
+            });
+            C.addEventListener('mouseout', function () {
+                _this.startThree = false;
+            });
+            
+            this._t = 0;
+        },
+        leave: function () {},
+        update: function (dt) {
+            this._t += dt;
+            if (!this.anim1.playing && this.startOne) {
+                this.anim1.play();
+            } else if (!this.startOne && this.anim1.playing) {
+                this.anim1.stop();
+            }
+            if (!this.anim2.playing && this.startTwo) {
+                this.anim2.play();
+            } else if (!this.startTwo && this.anim2.playing) {
+                this.anim2.stop();
+            }
+            if (!this.anim3.playing && this.startThree) {
+                this.anim3.play();
+            } else if (!this.startThree && this.anim3.playing) {
+                this.anim3.stop();
+            }
+            this.anim1.update(dt);
+            this.anim2.update(dt);
+            this.anim3.update(dt);
+        },
+        draw: function (render) {
+            this.anim1.draw(render, render.getWidth()/6, render.getHeight()/2, 0, 1, null);
+            this.anim2.draw(render, render.getWidth()/2, render.getHeight()/2, 0, 1, null);
+            this.anim3.draw(render, render.getWidth()*5/6, render.getHeight()/2, 0, 1, null);
+            IA.stage.render();
+        },
+        transition: function () {
+        }
+    })
+    
+});
+
+Laro.register('IA.$fsm', function (La) {
+    var statesList = [
+        0, IA.states.One
+    ];
+
+    this.init = function () {
+        this.$ = new La.AppFSM(this, statesList);	
+		this.setState(0);
+    };
+    this.setState = function (state, msg, suspendCurrent) {
+        this.$.setState(state, msg, suspendCurrent);
+    }
+});
+
+Laro.register('IA.$loop', function (La) {
+    this.init = function () {
+		this.$ = new La.Loop(this.looper, this);
+	}
+	this.looper = function (dt) {
+		this.update(dt);
+		this.draw();
+	}
+
+	this.update = function (dt) {
+        IA.$fsm.$.update(dt);		
+	};
+
+	this.draw = function () {
+		IA.render.clear();
+		IA.$fsm.$.draw(IA.render);
+		IA.render.flush();
+	};
+});
+
+onload = function () {
+    IA.init('canvas', 600, 400);
+}
+
+</script>
+</body>
+</html>
