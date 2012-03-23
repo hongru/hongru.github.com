@@ -1,0 +1,32 @@
+<!DOCTYPE HTML>
+<meta charset="utf-8" />
+<style>
+	canvas {display:block; margin: 60px auto; border: 2px solid #ccc}
+</style>
+<script src="JCanvas.0.1.js"></script>
+<canvas id="canvas" width="600" height="400"></canvas>
+<script>
+        var Vector2 = CVS.$vector2,
+        ParticleBlock = CVS.$particleBlock,
+        Stage = CVS.$stage,
+        Particle = CVS.$particle,
+        Color = CVS.$color;
+	var position = new Vector2(0, 200), // 初始位置
+		velocity = new Vector2(50, -50), // 初始速度
+		acceleration = new Vector2(0, 10), // 加速度
+		dt = .1; //单位时间（微分）
+		var stage = new Stage(document.getElementById('canvas'), {
+			draw: function () {
+				position = position.add(velocity.multiply(dt));
+				velocity = velocity.add(acceleration.multiply(dt));
+
+				this.ctx.beginPath();
+				this.ctx.arc(position.x, position.y, 5, 0, Math.PI*2, true);
+				this.ctx.closePath();
+				this.ctx.fill();
+			}
+		}); 	
+
+		stage.CONFIG.isClear = false;
+		stage.start();
+</script>

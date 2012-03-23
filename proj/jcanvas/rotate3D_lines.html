@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html>
+<meta charset="utf-8"/>
+<style>
+html {overflow:hidden}
+body {position: absolute; margin:0; padding:0;width:100%; height:100%;text-align:center}
+canvas {display:block;border:2px solid #ccc; margin:10px auto;}
+p {text-align: center; font-size:12px;color:#454545;}
+</style>
+<script src="JCanvas.0.1.js"></script>
+<canvas id="canvas" width="600" height="400"></canvas>
+<p> <label for="ck">显示端点 </label><input type="checkbox" checked="true" id="ck" /></p>
+<script>
+    var Stage = CVS.$stage, Sprite = CVS.$sprite;
+	var canvas = document.getElementById('canvas');
+	var stage = new Stage(canvas);
+	var createBall = function (radius) {
+		radius = (radius === undefined) ? 20 : radius;
+        var r = Math.floor(Math.random()*255),
+            g = Math.floor(Math.random()*255),
+            b = Math.floor(Math.random()*255);
+		return new Sprite(stage.ctx, {
+			x: 0,
+			y: 0,
+			width: radius*2,
+			draw: function () { 
+				this.ctx.beginPath();
+				this.ctx.arc(0, 0, this.width/2, 0, Math.PI*2, true);
+				this.ctx.closePath();
+				this.ctx.fillStyle = 'rgba('+r+','+g+','+b+','+ Math.min(1, this.width/(2*radius)) +')';
+				this.ctx.fill();
+			}
+		});
+	};
+
+	var initialize = function () {
+		var focalLength = 250,
+			ballR = 2,
+			ballN = 8,
+			balls = [],
+            plusPoints = [],
+            pos = [
+                [0, -150, 20],
+                [100, -150, 20],
+                [100, 0, 20],
+                [100, 150, 20],
+                [0, 150, 20],
+                [-100, 150, 20],
+                [-100, 0, 20],
+                [-100, -150, 20]
+            ],
+            posi = [
+                [0, -130, 20],
+                [80, -130, 20],
+                [80, 0, 20],
+                [80, 130, 20],
+                [0, 130, 20],
+                [-80, 130, 20],
+                [-80, 0, 20],
+                [-80, -130, 20]
+            ],
+            posPlus = [
+                [100, -200, 20],
+                [120, -200, 20],
+                [120, -150, 20],
+                [170, -150, 20],
+                [170, -130, 20],
+                [120, -130, 20],
+                [120, -80, 20],
+                [100, -80, 20],
+                [100, -130, 20],
+                [50, -130, 20],
+                [50, -150, 20],
+                [100, -150, 20]
+            ],
+            posw = [
+                [-70, 150, 20],
+                [20, 120, 20],
+                [70, 150, 20],
+                [90, 160, 20],
+                [110, 150, 20],
+                [80, 180, 20],
+                [40, 165, 20],
+                [10, 150, 20]
+            ],
+
+			vpx = 0,
+			vpy = 0,
+			angleY = .0,
+            angleX = 0;
+
+		pushBalls(pos);
+        pushBalls(posi);
+        pushBalls(posPlus);
+        pushBalls(posw);
+        
+		vpx = canvas.width/2;
+		vpy = canvas.height/2;
+
+		stage.addEventListener('mousemove', function (x, y) {
+			angleY = (x - vpx) * .0005;
+            angleX = (y - vpy) * .0005;
+		});
+        stage.addEventListener('mouseout', function (x, y) {
+            angleY = .05;
+            angleX = 0;
+        })
+        
+        function pushBalls(arr) {
+            for (var i=0; i<arr.length; i++) {
+                var ball = createBall(ballR);
+                stage.addChild(ball);
+                ball.xpos = arr[i][0];
+                ball.ypos = arr[i][1];
+                ball.zpos = arr[i][2];
+                balls.push(ball);
+            }
+        }
+        
+		
+		function rotateY(ball, angleY) {
+			var cosy = Math.cos(angleY),
+				siny = Math.sin(angleY),
+				x1 = ball.xpos * cosy - ball.zpos * siny,
+				z1 = ball.zpos * cosy + ball.xpos * siny;
+			ball.xpos = x1;
+			ball.zpos = z1;
+		}
+        
+        function rotateX(ball, angleX) {
+            var cosx = Math.cos(angleX),
+                sinx = Math.sin(angleX),
+                y1 = ball.ypos * cosx - ball.zpos * sinx,
+                z1 = ball.zpos * cosx + ball.ypos * sinx;
+            ball.ypos = y1;
+            ball.zpos = z1;
+        }
+        
+        function render (ball) {
+            if (ball.zpos > -focalLength) {
+                var scale = focalLength / (focalLength + ball.zpos);
+                ball.x = vpx + ball.xpos * scale;
+                ball.y = vpy + ball.ypos * scale;
+                ball.width = ballR*2*scale;
+                
+                var ck = document.getElementById('ck').checked;
+                if (ck == false) ball.width = 0;
+            }
+        }
+        
+        function drawLinesBetweenBalls () {
+            var ctx = stage.ctx;
+            drawO(0, getFillStyle(['#d5fdfd', '#00366f']));
+            drawO(8, 'white');
+            drawPlus(16, getFillStyle('#faa400', '#e94917'));
+            drawWave(28, getFillStyle(['#d5fdfd', '#00366f']));
+        }
+        
+        function drawWave(from, fillStyle) {
+            var ctx = stage.ctx;
+            ctx.beginPath();
+           ctx.moveTo(balls[from].x, balls[from].y);
+            for (var i = 0; i < ballN; i += 2) {
+                var cp = i + 1,
+                    to = i + 2 >= ballN ? 0 : i+2;
+                ctx.quadraticCurveTo(balls[from + cp].x, balls[from + cp].y, balls[from + to].x, balls[from + to].y);
+            }
+            ctx.closePath();
+            ctx.fillStyle = fillStyle;
+            ctx.fill();
+            ctx.strokeStyle = 'white';
+            ctx.stroke();
+        }
+        
+        function drawPlus(from, fillStyle) {
+            var ctx = stage.ctx;
+            ctx.beginPath();
+            ctx.moveTo(balls[from].x, balls[from].y);
+            for (var i=0; i<12; i++) {
+                ctx.lineTo(balls[from+i].x, balls[from+i].y);
+            }
+            ctx.closePath();
+            ctx.fillStyle = fillStyle;
+            ctx.fill();
+        }
+        
+        function getFillStyle(c) {
+            if (typeof c == 'string') {
+                c = [c, c];
+            }
+            var gradient = stage.ctx.createLinearGradient(0, 0, 600, 400);
+
+              gradient.addColorStop("0", c[0]);
+              gradient.addColorStop("1.0", c[1]);
+              
+            return gradient;
+        }
+        
+        function drawO (from, fillStyle) {
+            var ctx = stage.ctx;
+            ctx.beginPath();
+           ctx.moveTo(balls[from].x, balls[from].y);
+            for (var i = 0; i < ballN; i += 2) {
+                var cp = i + 1,
+                    to = i + 2 >= ballN ? 0 : i+2;
+                ctx.quadraticCurveTo(balls[from + cp].x, balls[from + cp].y, balls[from + to].x, balls[from + to].y);
+            }
+            ctx.closePath();
+            ctx.fillStyle = fillStyle;
+            ctx.fill();
+           // ctx.stroke();
+        }
+        
+        function sortZ () {
+            balls.sort(function (a, b) { return b.zpos-a.zpos })
+            stage.children.sort(function (a, b) { return b.zpos-a.zpos })
+        }
+        
+    //    stage.CONFIG.isClear = false;
+		stage.onRefresh = function () { 
+			for (var i=0,ball; ball=balls[i]; i++) { 
+                rotateX(ball, angleX);
+                rotateY(ball, angleY);
+                render(ball);
+            }
+            //sortZ();
+            drawLinesBetweenBalls();
+    //        this.ctx.fillStyle = 'rgba(0, 0, 0, 0.1)';
+	//		this.ctx.fillRect(0, 0, 600, 400);
+		}
+
+		stage.start();
+	};
+
+	onload = initialize;
+
+
+</script>
+</html>
+

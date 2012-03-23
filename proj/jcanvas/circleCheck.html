@@ -1,0 +1,62 @@
+<!DOCTYPE HTML>
+<meta charset="utf-8" />
+<style>
+	canvas {display:block; margin: 60px auto; border: 2px solid #ccc}
+</style>
+<script src="JCanvas.0.1.js"></script>
+<canvas id="canvas" width="600" height="400"></canvas>
+<script>
+    // 暂没处理 mouseover 透传的问题
+	var canvas = document.getElementById('canvas');
+    var Stage = CVS.$stage,
+        Sprite = CVS.$sprite;
+	var stage = new Stage(canvas);
+
+	var circle = new Sprite(stage.ctx, {
+		x: 200,
+		y: 200,
+        checkType: 'circle',
+        radius: 100,
+        color: 'black',
+		draw: function () { 
+			this.ctx.beginPath();
+			this.ctx.arc(0, 0, this.radius, 0, Math.PI*2, true);
+			this.ctx.closePath();
+			this.ctx.fillStyle = this.color;
+			this.ctx.fill();
+		}
+	});
+    var circle2 = new Sprite(stage.ctx, {
+		x: 250,
+		y: 200,
+        checkType: 'circle',
+		radius: 100,
+        color: 'green',
+		draw: function () { 
+			this.ctx.beginPath();
+			this.ctx.arc(0, 0, this.radius, 0, Math.PI*2, true);
+			this.ctx.closePath();
+			this.ctx.fillStyle = this.color;
+			this.ctx.fill();
+		}
+	})
+	
+	stage.addChild(circle);
+    stage.addChild(circle2);
+
+	circle.addEventListener('mouseover', function () {
+		circle.color = 'red';
+	});
+    circle.addEventListener('mouseout', function () {
+		circle.color = 'black';
+	});
+    
+    circle2.addEventListener('mouseover', function () {
+		circle2.color = 'yellow';
+	});
+    circle2.addEventListener('mouseout', function () {
+		circle2.color = 'green';
+	});
+
+	stage.start();
+</script>

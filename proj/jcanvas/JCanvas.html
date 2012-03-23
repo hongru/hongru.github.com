@@ -1,0 +1,75 @@
+<!DOCTYPE HTML>
+<meta charset="utf-8" />
+<style>
+	canvas {display:block; margin: 60px auto; border: 2px solid #ccc}
+</style>
+<script src="JCanvas.0.1.js"></script>
+<canvas id="canvas" width="600" height="400"></canvas>
+<script>
+	var canvas = document.getElementById('canvas');
+    var Stage = CVS.$stage,
+        Sprite = CVS.$sprite;
+	var stage = new Stage(canvas);
+
+	var A = new Sprite(stage.ctx, {
+		x: 50,
+		y: 50,
+		width: 50,
+		height: 50,
+		draw: function () { 
+			this.ctx.beginPath();
+			this.ctx.arc(0, 0, this.width/2, 0, Math.PI*2, true);
+			this.ctx.closePath();
+			this.ctx.fillStyle = 'black';
+			this.ctx.fill();
+		}
+	})
+	var B = new Sprite(stage.ctx, {
+		x: 100,
+		y: 100,
+		width: 40,
+		height: 40,
+		draw: function () {
+			this.ctx.beginPath();
+			this.ctx.rect(0, 0, this.width, this.height);
+			this.ctx.closePath();
+			this.ctx.fillStyle = 'red';
+			this.ctx.fill();
+		}
+	});
+	var C = new Sprite(stage.ctx, {
+		x: stage.width/2,
+		y: stage.height/2,
+		width: 100,
+		height: 50,
+		draw: function () {
+			this.ctx.beginPath();
+			this.ctx.rect(0, 0, this.width, this.height);
+			this.ctx.closePath();
+			if (this.mouseState == 'over') { this.ctx.fillStyle = 'yellow' } 
+			else { this.ctx.fillStyle = '#CCCCCC' }
+			this.ctx.fill();
+		}
+	})
+
+	
+	stage.addChild(A);
+	stage.addChild(B);
+	stage.addChild(C);
+	stage.onRefresh = function () {
+		B.x += (A.x - B.x)*.1;
+		B.y += (A.y - B.y)*.1;
+	};
+	stage.addEventListener('mousemove', function (x, y) {
+		A.x = x;
+		A.y = y;
+	});
+	C.addEventListener('mouseover', function () {
+		C.mouseState = 'over';
+	});
+	C.addEventListener('mouseout', function () {
+		C.mouseState = 'out';
+	});
+	C.addEventListener('click', function () { alert('click C') })
+	stage.start();
+</script>

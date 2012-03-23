@@ -1,0 +1,54 @@
+<!DOCTYPE HTML>
+<meta charset="utf-8" />
+<style>
+	canvas {display:block; margin: 60px auto; border: 2px solid #ccc}
+</style>
+<script src="JCanvas.0.1.js"></script>
+<canvas id="canvas" width="600" height="400"></canvas>
+<script>
+    var Vector2 = CVS.$vector2,
+        ParticleBlock = CVS.$particleBlock,
+        Stage = CVS.$stage,
+        Particle = CVS.$particle,
+        Color = CVS.$color;
+	var system = new CVS.$particleSystem(), 
+		dt = .01,
+		newMousePos = Vector2.zero,
+		oldMousePos = Vector2.zero;
+
+	system.effectors.push(new ParticleBlock(0, 0, 600, 400));
+	var randomDirection = function () {
+		var theta = Math.random()*2*Math.PI;
+		return new Vector2(Math.cos(theta), Math.sin(theta));
+	}
+	var randomColor = function (c1, c2) {
+		var t = Math.random();
+		return c1.multiply(t).add(c2.multiply(1-t));
+	}
+
+	var stage = new Stage(document.getElementById('canvas'), {
+		draw: function () {
+			var v = newMousePos.subtract(oldMousePos).multiply(5);
+			v = v.add(randomDirection().multiply(10)).multiply(5);
+			system.emit( new Particle({
+				position: newMousePos,
+				velocity: v,
+				life: 2,
+				color: randomColor(Color.red, Color.yellow),
+				size: 5
+			}) );
+			system.simulate(dt);
+			oldMousePos = newMousePos;
+			// 每帧让背景黑色半透，可以实现动态模糊的效果
+			this.ctx.fillStyle = 'rgba(0, 0, 0, 0.1)';
+			this.ctx.fillRect(0, 0, 600, 400);
+			system.render(this.ctx);
+		}
+	});
+	stage.CONFIG.isClear = false;
+	// 加上鼠标控制
+	stage.addEventListener('mousemove', function (x, y) {
+		newMousePos = new Vector2(x, y);
+	})
+	stage.start();
+</script>
