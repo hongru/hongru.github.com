@@ -72,6 +72,7 @@ Laro.register('PD', function (La) {
 			PD.MOUSEDOWN_Y = y;
 		});
 		this.stage.addEventListener('touchmove', function (x, y) {
+			e.preventDefault();
 			PD.MOUSEDOWN_X = x;
 			PD.MOUSEDOWN_Y = y;
 		});

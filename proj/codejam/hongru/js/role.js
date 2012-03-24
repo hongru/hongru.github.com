@@ -41,6 +41,7 @@ Laro.register('PD', function (La) {
 		
 		},
 		update: function (dt) {
+			this.speed = 200*dt;
 			this.anim.renderMirrored = !PD.roleFaceRight;
 			this.anim.update(dt);
 			
@@ -133,6 +134,7 @@ Laro.register('PD', function (La) {
 			PD.showCircle = true;
 		});
 		this.checkSprite.addEventListener('touchstart', function (x, y) {
+			e.preventDefault();
 			PD.roleMousedown = true;
 			PD.showCircle = true;
 		});
