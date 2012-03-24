@@ -1,0 +1,89 @@
+<div class="stage scene_2" id="M_s">
+	<canvas id="big_skill" width="960" height="640"></canvas>
+	<div id="skill_panel"></div>
+	<div class="ground" id="main_ground">
+    	<div id="skill_effect"><img src="animate/skill_3.png" width="800" height="7293" alt="star" class="preload"/></div>
+    	<canvas id="ground_dw" width="960" height="512"></canvas>
+    </div>
+</div>
+<script type="text/javascript" src="dollar.js"></script>
+<script type="text/javascript" src="big_skill.js"></script>
+<script type="text/javascript" src="battleModule.js"></script>
+<script type="text/javascript">
+//
+//<div class="role"></div>
+//选择进入的战斗场次
+	if(BattleStep==0){
+		Battle0();
+	}
+	else if(BattleStep==1){
+		Battle1();
+	}
+	else{}
+	//第一场战斗
+	var standUp=true;
+	function Tstand(){
+		if(standUp){
+			$("#p_1").css({'backgroundPosition':"0 bottom"});
+			standUp=false;
+		}
+		else{
+			$("#p_1").css({'backgroundPosition':"-106px bottom"});
+			standUp=true;
+		}
+	}
+	var walk_num=[-212,-318,-212,-424];
+	var current_step=0;
+	function Twalk(){
+		$("#p_1").css({'backgroundPosition':walk_num[(current_step++)%5]+"px bottom"});
+	}
+	function Battle0(){
+		//初始化贫道
+		var Taoist=new Player(10000,'p_1',2,1);
+		Taoist.Stand=function(){
+			if(Taoist.IntervalId){clearInterval(Taoist.IntervalId);}
+			Taoist.IntervalId=setInterval('Tstand()',500);
+		}
+		Taoist.Run=function(){
+			if(Taoist.IntervalId){clearInterval(Taoist.IntervalId);}
+			Taoist.IntervalId=setInterval('Twalk()',100);
+		}
+		Taoist.Stand();
+		for(var i=1;i<4;i++){
+			Taoist.Skills[i-1]=new skill(i,5000,'s_'+i);
+		}
+		
+		$("#p_1").delegate(this,'mousedown',function(){
+			$("#skill_panel").find('.skill').hide();
+			for(var i=0;i<3;i++){
+				Taoist.Skills[i].show();
+			}
+			Taoist.Run();
+		});
+		$("#p_1").delegate(this,'touchstart',function(){
+			$("#skill_panel").find('.skill').hide();
+			for(var i=0;i<3;i++){
+				Taoist.Skills[i].show();
+			}
+			Taoist.Run();
+		});
+		$('#s_3').delegate(this,'mousedown',function(){$("#big_skill").show()});
+	}
+	//第二场战斗
+	function Battle1(){
+		//初始化贫道
+		var Taoist=new Player(10000,'p_1',2);
+		for(var i=1;i<3;i++){
+			Taoist.Skills[i-1]=new skill(i,5000,'s_'+i);
+		}
+		$("#p_1").delegate(this,'click',function(){
+		$("#skill_panel").find('.skill').hide();
+		for(var i=0;i<2;i++){
+			Taoist.Skills[i].show();
+			}
+		});
+	}
+	//第三场战斗
+	function Battle2(){}
+	
+</script>

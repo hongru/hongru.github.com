@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8" />
+<style>
+html,body {
+	margin: 0;
+	padding: 0;
+	background: #333;
+}
+canvas, #canvas {
+	margin: 0 auto;
+	display:block;
+	text-align: center;
+}
+</style>
+<script src="js/laro.0.1.js"></script>
+<script src="js/jcanvas.0.1.js"></script>
+<script src="js/role.js"></script>
+</head>
+
+<body>
+	<div id="canvas">loading</div>
+
+<script src="js/g_data.js"></script>
+<script>
+Laro.register('PD', function (La) {
+
+	var pkg = this;
+	
+	this.score = 0;
+	this.textures = {};
+
+	this.render = null;
+	this.getUid = function () {
+		var id = 0;
+		return function () {
+			return id ++;
+		}
+	}();
+
+	this.init = function (cvsId, w, h) {
+		this.canvasId = cvsId;
+		this.w = w;
+		this.h = h;
+		this.canvas = document.getElementById(cvsId);
+		this.createRender();
+
+		this.$fsm.init();
+		this.$loop.init();
+		this.stage = new La.$stage(this.canvas);
+		this.stage.CONFIG.isClear = false;
+
+		this.stage.addEventListener('mouseup', function (x, y) {			
+			if (PD.roleMousedown) {
+				PD.startMove = true;
+			}
+			PD.pieX = x;
+			PD.pieY = y;
+			PD.roleMousedown = false;
+		});
+		this.stage.addEventListener('mousemove', function (x, y) {
+			PD.MOUSEDOWN_X = x;
+			PD.MOUSEDOWN_Y = y;
+		});
+		
+//		this.keyboard = new La.Keyboard();
+
+	};
+
+	this.createRender = function () {
+		this.oldRender = this.render;
+		var oldCanvas = document.getElementById(this.canvasId);
+		var canvasParent = oldCanvas.parentNode;
+
+		var canvas = document.createElement('canvas');
+		canvas.width = this.w;
+		canvas.height = this.h;
+		canvas.id = this.canvasId;
+
+		this.render = new La.CanvasRender(canvas, 1, false);
+		canvasParent.replaceChild(canvas, oldCanvas);
+		this.canvas = canvas;
+		
+		
+	};
+
+	// findScreenTransition
+	this.findScreenTransition = function (from, to, out) {
+		
+	};
+
+	this.screenTransition = null;
+	this._c = 255;
+	this.screenTransitionDefaultIn = new La.ScreenTransitionFade(new La.Pixel32(this._c, this._c, this._c, 255), new La.Pixel32(this._c, this._c, this._c, 0), 1);
+	this.screenTransitionDefaultOut = new La.ScreenTransitionFade(new La.Pixel32(this._c, this._c, this._c, 0), new La.Pixel32(this._c, this._c, this._c, 255), 1);
+	
+	this.loader = new La.ResourceLoader();
+	
+	this.roleFaceRight = 1;
+	
+
+});
+
+Laro.register('PD.$states', function (La) {
+	var pkg = this;
+
+	// Loading states
+	this.Loading = La.BaseState.extend(function () {
+		this.barW = 400;
+		this.barH = 10;
+		
+	}).methods({
+		enter: function (msg, fromState) {
+			console.log('loading', fromState)
+			this._t = 0;
+			this.font = new La.Font(g_data.font.loading);
+			this.title = this.font.generateCanvas('大侠的世界');
+			this.progress = 0;
+			this.done = false;
+			this.doneT = -1;
+
+			this.delayAfter = 0.5;
+
+			var images = [
+				'images/map.jpg',
+				'images/role/role-right.png',
+				'images/circle.png',
+				'images/pie.png'
+			];
+			PD.loader.preload(images, La.curry(this.resourceLoadCallback, this));
+			
+		},
+		resourceLoadCallback: function (p) {
+			this.progress = p;
+			if (p >= 1) {
+				this.done = true;
+				this.doneT = this._t;
+			}
+		},
+		leave: function () {
+		
+		},
+		update: function (dt) {
+			this._t += dt;
+		},
+		draw: function (render) {
+			var rw = render.getWidth(),
+				rh = render.getHeight();
+		//	render.drawFillScreen('#000');
+			render.drawText(this.title, (rw-this.title.width)/2, rh/3 - this.title.height, 1);
+			
+			this.drawProgressBar(render);
+		},
+		drawProgressBar: function (render) {
+			var x0 = (render.getWidth()-this.barW)/2,
+				y0 = (render.getHeight()/2),
+				x1 = (render.getWidth()+this.barW)/2,
+				y1 = render.getHeight()/2 + this.barH;
+			render.drawRect(x0, y0, x1, y1, '#F5D74F');
+			render.drawFilledRect(x0, y0, (x0 + this.progress*this.barW), y1, '#F5D74F');
+			
+		},
+		transition: function () { 
+			if (this.done && this.doneT >= 0 && this._t > this.doneT + this.delayAfter) {
+				this.host.setState(1);
+			}
+		}
+	});
+
+	// Stage1
+	this.Stage1 = La.BaseState.extend(function () {
+	
+	}).methods({
+		enter: function (msg, fromState) {
+			console.log('stage1');
+
+			this._t = 0;
+			//get resources 放在全局 PD 里，以便其他类调用
+			PD.textures['map1'] = PD.$res.getImage('map1');
+			PD.textures['circle'] = PD.$res.getImage('circle');
+			PD.textures['pie'] = PD.$res.getImage('pie');
+
+			PD.$role = new PD.Role(100, 200);
+			PD.$role.setState(0);
+		},
+		leave: function () {
+			
+		},
+		update: function (dt) {
+			this._t += 0;
+			PD.$role.update(dt);
+		},
+		draw: function (render) {
+			var cx = render.getWidth()/2,
+				cy = render.getHeight()/2;
+
+			render.drawImage(PD.textures['map1'], cx, cy, 0, 1, 1, false, false);
+			
+			// 画控制人物的圆饼
+			PD.showCircle && this.drawPie(render);
+			PD.$role.draw(render);
+		},
+		drawPie: function (render) {
+			var x = PD.roleMousedown ? PD.MOUSEDOWN_X : PD.pieX;
+			var y = PD.roleMousedown ? PD.MOUSEDOWN_Y : PD.pieY;
+			
+			render.drawImage(PD.textures['pie'], x, y, 0, 1, 1, false, false);
+			// 连接线
+			var ctx = render.context;
+			ctx.save();
+			ctx.beginPath();
+			ctx.moveTo(PD.$role.x, PD.$role.y);
+			ctx.lineTo(x, y);
+			ctx.closePath();
+			ctx.strokeStyle = '#fff';
+			ctx.lineWidth = 5;
+			ctx.stroke();
+			ctx.restore();
+			
+			// 判断 左右
+			if (x >= PD.$role.x) {
+				PD.roleFaceRight = 1;
+			} else {
+				PD.roleFaceRight = 0;
+			}
+		},
+		transition: function () {
+		
+		}
+	})
+});
+
+
+/**
+ * resource
+ * 从g_data 里面拿数据
+ */
+Laro.register('PD.$res', function (La) {
+	var pkg = this;
+
+	this.EMBImages = {};
+	
+	// 获取经包装过的image资源
+	// 默认是取第一帧相关数据
+	this.getImage = function (name, frame) {
+		if (frame == undefined) {
+			frame = 0;
+		}
+
+		var emb = this.EMBImages[name];
+		if (!!emb) {
+			return emb[frame];
+		}
+		for (var k in g_data.imageW) {
+			if (name == k) {
+				this.EMBImages[k] = {};
+				for (var i = 0; i < g_data.imageW[k].data.length; i ++) {
+					var data = g_data.imageW[k],
+						source = data.data[i],
+						filename = data.filename;
+					this.EMBImages[k][i] = this.getEMBImage(source, filename);
+				}
+				return this.EMBImages[name][frame];
+			}
+		}
+	};
+
+	this.getEMBImage = function (source, filename) {
+		var width = source[2] - source[0] + 1;
+  		var height = source[3] - source[1] + 1;
+ 
+  		var xOffset = source[0] - source[4];
+ 		var yOffset = source[1] - source[5];
+ 
+    	var textureWidth = xOffset + width + source[6] - source[2];
+    	var textureHeight = yOffset + height + source[7] - source[3];
+ 
+   		var image = PD.loader.loadImage(filename);
+    	return new La.EMBImage(image, source[0], source[1], width, height, xOffset, yOffset, textureWidth, textureHeight);
+		
+	};
+	
+	this.getSound = function (filename) {
+		var loader = PD.loader; 
+        var loadedSounds = loader.loadedSounds;
+        return loadedSounds[filename];
+	}
+		
+})
+
+
+Laro.register('PD.$fsm', function (La) {
+	var pkg = this;
+
+	var statesList = [
+		0, PD.$states.Loading,
+		1, PD.$states.Stage1
+	];
+	//stateModes
+	this.stateModes = {
+		kStateActive: 0,
+		kTransitionOut: 1,
+		kTransitionIn: 2
+	};
+	this.stateMode = this.stateModes.kStateActive;
+	
+
+	this.init = function () {
+		this.$ = new La.AppFSM(this, statesList);
+		this.setState(0);
+	};
+	this.setState = function (state, msg, suspendCurrent) {
+		this.newState = state;
+		this.newMessage = msg;
+
+		if (suspendCurrent || state == -1 || this.$.isSuspended(state)) {
+			this.$.setState(state, msg, suspendCurrent);
+		} else {
+			var st = PD.screenTransitionDefaultOut;
+			st.reset();
+
+			this.stateMode = this.stateModes.kTransitionOut;
+			PD.screenTransition = st;
+		}
+	}
+	
+});
+
+// looper
+Laro.register('PD.$loop', function (La) {
+	var pkg = this;
+	this.init = function () {
+		this.$ = new La.Loop(this.looper, this);
+	};
+	this.looper = function (dt) {
+		this.update(dt);
+		this.draw();
+	};
+	this.update = function (dt) {
+		if (PD.$fsm.stateMode == PD.$fsm.stateModes.kStateActive) { //属于状态机状态转换
+                PD.$fsm.$.update(dt);
+		} else {
+			!!PD.screenTransition && PD.screenTransition.update(dt);
+			if (PD.screenTransition.isDone) {
+				if (PD.$fsm.stateMode == PD.$fsm.stateModes.kTransitionOut) {
+					var st = PD.screenTransitionDefaultIn;
+
+					st.reset();
+					PD.screenTransition = st;
+					PD.$fsm.stateMode = PD.$fsm.stateModes.kTransitionIn;
+					PD.$fsm.$.setState(PD.$fsm.newState, PD.$fsm.newMessage);
+				} else {
+					PD.screenTransition = null;
+					PD.$fsm.stateMode = PD.$fsm.stateModes.kStateActive;
+				}
+			}
+		}
+		
+	};
+	this.draw = function () {
+		PD.render.clear();
+		PD.$fsm.$.draw(PD.render);
+		PD.screenTransition && PD.screenTransition.draw(PD.render);
+		PD.stage && PD.stage.render();
+		PD.render.flush();
+	}
+
+});
+
+
+onload = function () {
+	PD.init('canvas', 960, 640);
+}
+
+</script>
+</body>
+</html>

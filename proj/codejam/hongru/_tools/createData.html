@@ -1,0 +1,54 @@
+<!doctype html>
+<html>
+<meta charset="utf-8" />
+<style>
+input {text-align: center; width: 30px; padding: 4px }
+textarea {
+	width: 80%;
+	height: 300px;
+}
+</style>
+
+<div>
+<h4>仅适用于 涂片帧横排并且 等距的情况</h4>
+图片宽: <input id="aw" type="text" />
+图片高: <input id="ah" type="text" />
+单位帧宽: <input id="uw" type="text" />
+帧数： <input id="num" type="text" />
+</div>
+<div>
+<input type="button" id="btn" value="Go" />
+</div> 
+
+<textarea id="result"></textarea>
+<script>
+var $ = function (id) {
+	return document.getElementById(id);
+}
+
+$('btn').onclick = function () {
+	var aw = parseInt($('aw').value),
+		ah = parseInt($('ah').value),
+		num = parseInt($('num').value),
+		uw = parseInt($('uw').value);
+	var ret = [];
+	for (var i = 0; i < num; i ++) {
+		var arr = [];
+		
+		arr.push(i*uw);
+		arr.push(0);
+		arr.push((i+1)*uw - 1);
+		arr.push(ah-1);
+		//repeat
+		arr.push(i*uw);
+		arr.push(0);
+		arr.push((i+1)*uw - 1);
+		arr.push(ah-1);
+		
+		ret.push(arr.join(','));
+	}
+	$('result').value = ret.join('\n');
+	
+}
+</script>
+</html>
