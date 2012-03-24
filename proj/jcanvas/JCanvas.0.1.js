@@ -379,6 +379,7 @@
 							
 							if (isTouchDevice) {
 								var touch = e.touches[0];
+								alert(touch.pageX);
 								var x = touch.pageX - offset.left + winScroll.x,
 									y = touch.pageY - offset.top + winScroll.y;
 							} else {
