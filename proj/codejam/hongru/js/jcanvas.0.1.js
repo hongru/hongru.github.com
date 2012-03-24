@@ -378,7 +378,7 @@
                                 winScroll = getWindowScroll();
 							
 							if (isTouchDevice) {
-								var touch = e.touches[0];
+								var touch = evArr[i] == 'touchend' ? e : e.touches[0];
 								var x = touch.pageX - offset.left + winScroll.x,
 									y = touch.pageY - offset.top + winScroll.y;
 							} else {

@@ -72,8 +72,12 @@
 	});
 	C.addEventListener('click', function () { alert('click C') });
 	
-	stage.addEventListener('touchstart', function (x, y) {
+/*	stage.addEventListener('touchend', function (x, y) {
 		alert(x + '\n' + y);
+	}); */
+	canvas.addEventListener('touchend', function (e) {
+		alert(e.pageX);
+		alert('touchend');
 	})
 	stage.start();
 </script>
