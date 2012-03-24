@@ -5,7 +5,10 @@
  */
 
 (function () {
- 	
+ 	// mobile navigator
+	var isTouchDevice = (/andriod|iphone|ipad/.test(navigator.userAgent));
+	
+	
  	var initializing = false,
 		superTest = /horizon/.test(function () {horizon;}) ? /\b_super\b/ : /.*/;
 	// 临时Class
@@ -373,9 +376,16 @@
 						return function (e) { 
                             var offset = getOffset(),
                                 winScroll = getWindowScroll();
-
-							var x = e.clientX - offset.left + winScroll.x,
-								y = e.clientY - offset.top + winScroll.y;
+							
+							if (isTouchDevice) {
+								var touch = e.touches[0];
+								var x = touch.pageX - offset.left + winScroll.x,
+									y = touch.pageY - offset.top + winScroll.y;
+							} else {
+								var x = e.clientX - offset.left + winScroll.x,
+									y = e.clientY - offset.top + winScroll.y;
+							}
+							
 							if (!!param.eventListener[evArr[i]]) {
 								for (var j=0; j<param.eventListener[evArr[i]].length; j++) {
 									param.eventListener[evArr[i]][j](x, y);
@@ -399,7 +409,7 @@
 							}(context, i), false);
 				}
 			};
-			batchAddMouseEventListener(this.canvas, ['mousemove', 'mouseup', 'mousedown', 'click', 'mouseover', 'mouseout', 'mouseenter', 'mouseleave']);	
+			batchAddMouseEventListener(this.canvas, ['mousemove', 'mouseup', 'mousedown', 'click', 'mouseover', 'mouseout', 'mouseenter', 'mouseleave', 'touchstart', 'touchmove', 'touchend']);	
 			batchAddKeyEventListener(this.canvas, ['keyup', 'keydown', 'keypress']);
 		},
 		onRefresh: function () {},

@@ -70,6 +70,10 @@
 	C.addEventListener('mouseout', function () {
 		C.mouseState = 'out';
 	});
-	C.addEventListener('click', function () { alert('click C') })
+	C.addEventListener('click', function () { alert('click C') })；
+	
+	stage.addEventListener('touchstart', function (x, y) {
+		alert(x + '\n' + y);
+	})
 	stage.start();
 </script>
