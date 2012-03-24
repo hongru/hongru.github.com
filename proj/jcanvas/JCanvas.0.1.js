@@ -6,8 +6,7 @@
 
 (function () {
  	// mobile navigator
-	var isTouchDevice = (/andriod|iphone|ipad/.test(navigator.userAgent));
-	alert(isTouchDevice);
+	var isTouchDevice = (/andriod|iphone|ipad/.test(navigator.userAgent.toLowerCase()));
 	
 	
  	var initializing = false,
@@ -380,7 +379,6 @@
 							
 							if (isTouchDevice) {
 								var touch = e.touches[0];
-								alert(touch.pageX);
 								var x = touch.pageX - offset.left + winScroll.x,
 									y = touch.pageY - offset.top + winScroll.y;
 							} else {
