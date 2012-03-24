@@ -132,6 +132,10 @@ Laro.register('PD', function (La) {
 			PD.roleMousedown = true;
 			PD.showCircle = true;
 		});
+		this.checkSprite.addEventListener('touchstart', function (x, y) {
+			PD.roleMousedown = true;
+			PD.showCircle = true;
+		});
 
 	}).methods({
 		setState: function (state, msg) {

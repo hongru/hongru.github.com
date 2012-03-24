@@ -59,7 +59,19 @@ Laro.register('PD', function (La) {
 			PD.pieY = y;
 			PD.roleMousedown = false;
 		});
+		this.stage.addEventListener('touchend', function (x, y) {
+			if (PD.roleMousedown) {
+				PD.startMove = true;
+			}
+			PD.pieX = x;
+			PD.pieY = y;
+			PD.roleMousedown = false;
+		});
 		this.stage.addEventListener('mousemove', function (x, y) {
+			PD.MOUSEDOWN_X = x;
+			PD.MOUSEDOWN_Y = y;
+		});
+		this.stage.addEventListener('touchmove', function (x, y) {
 			PD.MOUSEDOWN_X = x;
 			PD.MOUSEDOWN_Y = y;
 		});
