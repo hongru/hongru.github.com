@@ -134,7 +134,6 @@ Laro.register('PD', function (La) {
 			PD.showCircle = true;
 		});
 		this.checkSprite.addEventListener('touchstart', function (x, y) {
-			e.preventDefault();
 			PD.roleMousedown = true;
 			PD.showCircle = true;
 		});
