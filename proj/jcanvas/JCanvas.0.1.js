@@ -7,6 +7,7 @@
 (function () {
  	// mobile navigator
 	var isTouchDevice = (/andriod|iphone|ipad/.test(navigator.userAgent));
+	alert(isTouchDevice);
 	
 	
  	var initializing = false,
