@@ -428,17 +428,17 @@
 		contains: function (child) { return this._super(child) },
 		dispatchMouseEvent: function (type, x, y) { return this._super(type, x, y) },
 		clearHoverChildren: function () { return this._super() },
-		render: function () {
+		render: function (rd) { 
 			// 重绘
 			!!this.CONFIG.isClear && this.clear();
 			// 画舞台
 			//console.log(this.children)
-			this.draw();
+			this.draw(rd);
 			// 画舞台元素
 			for (var i=0; i<this.children.length; i++) {
 				// 坐标系移到对应位置
 				this.ctx.translate(this.children[i].x, this.children[i].y);
-				this.children[i].render();
+				this.children[i].render(rd);
 				this.ctx.translate(-this.children[i].x, -this.children[i].y);
 			}
 		},
@@ -500,8 +500,8 @@
 		contains: function (child) { return this._super(child) },
 		dispatchMouseEvent: function (type, x, y) { return this._super(type, x, y) },
 		clearHoverChildren: function () { return this._super() },
-		render: function () {
-			this.draw();
+		render: function (rd) {
+			this.draw(rd);
 			// 强制缩放，保证子对象不会比自己大
 			this.ctx.scale(
 						this.width < this.maxWidth ? this.width/this.maxWidth : 1,
@@ -510,7 +510,7 @@
 			// 绘制子对象
 			for (var i=0; i<this.children.length; i++) {
 				this.ctx.translate(this.children[i].x, this.children[i].y);
-				this.children[i].render();
+				this.children[i].render(rd);
 				this.children[i].translate(-this.children[i].x, this.children[i].y);
 			}
 			this.ctx.scale(

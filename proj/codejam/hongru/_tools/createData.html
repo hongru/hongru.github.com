@@ -30,12 +30,12 @@ $('btn').onclick = function () {
 	var aw = parseInt($('aw').value),
 		ah = parseInt($('ah').value),
 		num = parseInt($('num').value),
-		uw = parseInt($('uw').value);
+		uw = parseInt($('uw').value) || aw/num;
 	var ret = [];
 	for (var i = 0; i < num; i ++) {
 		var arr = [];
-		
-		arr.push(i*uw);
+
+		arr.push('['+i*uw);
 		arr.push(0);
 		arr.push((i+1)*uw - 1);
 		arr.push(ah-1);
@@ -43,11 +43,11 @@ $('btn').onclick = function () {
 		arr.push(i*uw);
 		arr.push(0);
 		arr.push((i+1)*uw - 1);
-		arr.push(ah-1);
+		arr.push(ah-1 + ']');
 		
 		ret.push(arr.join(','));
 	}
-	$('result').value = ret.join('\n');
+	$('result').value = ret.join(',\n');
 	
 }
 </script>
