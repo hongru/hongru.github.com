@@ -11,8 +11,8 @@ Laro.register('Emberwind', function (La) {
 		usebg: 'two',
 		showPeople: true,
 		showSceneBg: true,
-		loadingStatus: false,
-		showOperatingGuide: false,
+		loadingStatus: true,
+		showOperatingGuide: true,
 	}
 
 	PKG.states = {

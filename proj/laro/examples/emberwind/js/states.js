@@ -271,7 +271,7 @@ Laro.register('Emberwind', function (La) {
 			this.cvs = cvs;
 			var _this = this;
 			this.cvs.addEventListener('click', function (e) {
-				_this.buttonPressed = 1;
+			//	_this.buttonPressed = 1;
 			}, false)
 			
 			this.showOPbox();
@@ -286,7 +286,7 @@ Laro.register('Emberwind', function (La) {
 			pkg.cameraPos = 0;
         },
         leave: function () {
-			this.cvs.removeEventListener('click');
+			//this.cvs.removeEventListener('click');
             pkg.music.pause();
 			
 			this.hideOPbox();

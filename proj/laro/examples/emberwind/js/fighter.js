@@ -845,7 +845,10 @@ Laro.register('Emberwind', function (La) {
 					
 						if (fighterRect.overlaps(bkRect)) { 
 							this._t = 0;
-							this.y = scrY - 1 - this.h/3;
+							if (fighterRect.contains(bkRect.x0+bkRect.width/2, bkRect.y0)) {
+								this.y = scrY - 1 - this.h/3;
+							}
+							
 							/*if (bkRect.contains(fighterRect.x1, (fighterRect.y1 - fighterRect.height/2))) {this.lockX = 1}
 							if (bkRect.contains(fighterRect.x0, (fighterRect.y1 - fighterRect.height/2))) {this.lockX = -1}
 							if (bkRect.contains((fighterRect.x0 + fighterRect.width/2), fighterRect.y1)) {this.lockY = -1}
