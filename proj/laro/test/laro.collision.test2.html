@@ -1,0 +1,116 @@
+<!doctype html>
+<html>
+<meta charset="utf-8" />
+<style>
+canvas {display: block; border:1px solid #333; margin:0 auto;}
+</style>
+<script src="../build/laro.0.2.js"></script>
+<script src="../src/movement/laro.collision.js"></script>
+
+<canvas id="canvas"></canvas>
+<script>
+Laro.register('CO', function (La) {
+	var range = function (a, b) {
+		var min = Math.min(a, b),
+			max = Math.max(a, b);
+		return Math.random()*(max-min) + min;
+	}
+	var Vec2 = La.Vector2,
+		Circle = La.Circle;
+
+	this.init = function (id, w, h) {
+		this.canvas = document.getElementById(id);
+		this.canvas.width = w || 800;
+		this.canvas.height = h || 600;
+		this.render = new La.CanvasRender(this.canvas, 1, false);
+		this.stage = new La.$stage(this.canvas);
+		this.stage.CONFIG.isClear = false;
+		
+		this.createCircle();
+		this.createConvex();
+		
+		this.movement = new Vec2(3, 4.8);		
+		
+		this.looper = new La.Loop(this.looper, this);
+		
+	};
+	
+	this.createCircle = function () {
+		this.circle = new Circle(new Vec2(100, 10), 10);
+	};
+	this.createConvex = function () {
+		this.convex = new La.ConvexShape();
+		
+		// convex push 坐标时需要是 逆时针的， 这样能配合 collision的碰撞 方向检测
+		this.convex.addPoint(new Vec2(10, 500));
+		this.convex.addPoint(new Vec2(10, 510));
+		this.convex.addPoint(new Vec2(600, 510));
+		this.convex.addPoint(new Vec2(600, 400));
+		this.convex.addPoint(new Vec2(400, 400));
+		this.convex.addPoint(new Vec2(450, 410));
+		this.convex.addPoint(new Vec2(590, 410));
+		this.convex.addPoint(new Vec2(590, 500));
+	};
+	
+	this.looper = function (dt) {
+		this.update(dt);
+		this.draw();
+	};
+	
+	this.update = function (dt) {
+		this.circle.c.add(this.movement);
+		if (this.circle.c.x < 0) {
+			this.movement.x *= -1;
+		}
+		this.cs = La.getCollisionShape(this.circle, this.movement, this.convex);
+		this.ptt = La.getPenetrations(this.circle, new Vec2(0, 0), [this.convex]);
+	};
+	
+	this.draw = function () {
+		this.render.clear();
+		this.stage.render(this.render);
+		
+		if (!!this.ptt.length) {
+			console.log(this.ptt)
+		}
+		if (this.cs) {
+
+			var nc = this.cs.cts[0].normal.copy(),
+				mc = this.movement.copy();
+			this.movement.add(nc.mul(2*Math.abs(mc.dot(nc))));
+			
+			this.circle.c = new Vec2(
+				this.cs.cts[0].point.x + this.cs.cts[0].normal.x * (this.circle.r+2),
+				this.cs.cts[0].point.y + this.cs.cts[0].normal.y * (this.circle.r+2)
+			);
+
+		}
+		this.drawCircle();
+		this.drawConvex();
+	}
+	
+	this.drawCircle = function () {
+		this.render.drawCircle(this.circle.c.x, this.circle.c.y, this.circle.r, '#333');
+	}
+	
+	this.drawConvex = function () {
+		var ctx = this.render.context;
+		ctx.beginPath();
+		ctx.moveTo(this.convex.points[0].x, this.convex.points[0].y);
+		
+		for (var i = 1; i < this.convex.points.length; i ++) {
+			var p = this.convex.points[i];
+			ctx.lineTo(p.x, p.y);
+		}
+		ctx.lineTo(this.convex.points[0].x, this.convex.points[0].y);
+		ctx.closePath();
+		ctx.strokeStyle = '#000';
+		ctx.stroke();
+	}
+});
+
+onload = function () {
+	CO.init('canvas')
+}
+</script>
+</html>

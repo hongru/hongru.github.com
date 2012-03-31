@@ -1,0 +1,168 @@
+<!doctype html>
+<html>
+<meta charset="utf-8" />
+<style>
+canvas {display: block; border:1px solid #333;}
+</style>
+<script src="../build/laro.0.2.js"></script>
+<script src="../src/movement/laro.collision.js"></script>
+
+<canvas id="canvas">Need Canvas Support</canvas>
+<div>
+弹性碰撞系数：<span id="param">0.5</span>
+<button onclick="CO.upParam(0.01)">系数 +0.01</button>
+<button onclick="CO.downParam(0.01)">系数 -0.01</button>
+<button onclick="CO.replay()">replay</button>
+<br/>
+碰撞弹性系数介于 0~1 之间，0表示完全非弹性碰撞，1表示完全弹性碰撞
+</div>
+<script>
+Laro.register('CO', function (La) {
+	var range = function (a, b) {
+		var min = Math.min(a, b),
+			max = Math.max(a, b);
+		return Math.random()*(max-min) + min;
+	}
+	var Vec2 = La.Vector2,
+		Circle = La.Circle;
+
+	this.init = function (id, w, h) {
+		this.canvas = document.getElementById(id);
+		this.canvas.width = w || 800;
+		this.canvas.height = h || 600;
+		this.render = new La.CanvasRender(this.canvas, 1, false);
+		this.stage = new La.$stage(this.canvas);
+		this.stage.CONFIG.isClear = false;
+		
+		this.createCircle();
+		this.createConvex();
+		
+		this.movement = new Vec2(1, 5);		
+		
+		this.looper = new La.Loop(this.looper, this);
+		
+	};
+	
+	this.createCircle = function () {
+		this.circle = new Circle(new Vec2(10, 10), 10);
+	};
+	this.createConvex = function () {
+		this.convex = new La.ConvexShape();
+		
+		// convex push 坐标时需要是 逆时针的， 这样能配合 collision的碰撞 方向检测
+		this.convex.addPoint(new Vec2(0, 500));
+		this.convex.addPoint(new Vec2(100, 500));
+		this.convex.addPoint(new Vec2(100, 400));
+		this.convex.addPoint(new Vec2(150, 400));
+		this.convex.addPoint(new Vec2(150, 450));
+		this.convex.addPoint(new Vec2(300, 450));
+		this.convex.addPoint(new Vec2(400, 510));
+		this.convex.addPoint(new Vec2(0, 510));
+		
+		this.convex.points.reverse();
+	};
+	
+	this.looper = function (dt) {
+		this.update(dt);
+		this.draw();
+	};
+	
+	this.update = function (dt) {
+		
+		//this.circle.c.add(this.movement.copy().mul(dt));
+		// 处理movement 的时候，这里把mul(dt) 省了，相当于dt 都按 1来处理。
+		this.circle.c.add(this.movement.copy());
+		if (this.movement.y < 0 ) {
+			this.onFloor = false;
+		}
+		if (!this.onFloor) {
+			this.movement.add((new Vec2(0, 0.2)));
+		} 
+		if (this.circle.c.x - this.circle.r < 0) {
+			this.movement.x *= -1;
+		}
+		
+		if (this.onFloor) {
+			var cs = La.getPenetrations(this.circle, new Vec2(0, 2), [this.convex]);
+			if (!cs.length) { 
+				this.onFloor = false;
+			}
+		} 
+		this.cs = La.getCollisionShape(this.circle, this.movement, this.convex);
+
+		
+		// 判断
+		if (this.cs) { 
+
+			var nc = this.cs.cts[0].normal.copy(),
+				mc = this.movement.copy();
+			if (nc.y == -1) {
+				this.onFloor = true;
+			}
+			this.movement.add(nc.mul((1+this.getParam())*Math.abs(mc.dot(nc))));
+			if (Math.abs(this.movement.y) < 0.7) {this.movement.y = 0}
+			
+			this.circle.c = new Vec2(
+				this.cs.cts[0].point.x + this.cs.cts[0].normal.x * (this.circle.r+2),
+				this.cs.cts[0].point.y + this.cs.cts[0].normal.y * (this.circle.r+2)
+			);
+
+		}
+
+	};
+	
+	this.draw = function () {
+		this.render.clear();
+		this.stage.render(this.render);
+
+		this.drawCircle();
+		this.drawConvex();
+	}
+	
+	this.drawCircle = function () {
+		this.render.drawCircle(this.circle.c.x, this.circle.c.y, this.circle.r, '#333');
+	}
+	
+	this.drawConvex = function () {
+		var ctx = this.render.context;
+		ctx.beginPath();
+		ctx.moveTo(this.convex.points[0].x, this.convex.points[0].y);
+		
+		for (var i = 1; i < this.convex.points.length; i ++) {
+			var p = this.convex.points[i];
+			ctx.lineTo(p.x, p.y);
+		}
+		ctx.lineTo(this.convex.points[0].x, this.convex.points[0].y);
+		ctx.closePath();
+		ctx.strokeStyle = '#000';
+		ctx.stroke();
+	};
+	
+	// change param
+	this.getParam = function () {
+		return parseFloat(document.getElementById('param').innerHTML);
+	}
+	this.upParam = function (n) {
+		var el = document.getElementById('param');
+		var p = parseFloat(el.innerHTML);
+		p = Math.min(1, p+n);
+		el.innerHTML = p.toFixed(2);
+	};
+	this.downParam = function (n) {
+		var el = document.getElementById('param');
+		var p = parseFloat(el.innerHTML);
+		p = Math.max(0, p-n);
+		el.innerHTML = p.toFixed(2);
+	};
+	
+	this.replay = function () {
+		this.circle.c = new Vec2(10, 10);
+		this.movement = new Vec2(1, 5);	
+	}
+});
+
+onload = function () {
+	CO.init('canvas')
+}
+</script>
+</html>

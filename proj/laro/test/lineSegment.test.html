@@ -1,0 +1,194 @@
+<!doctype html>
+<html>
+<meta charset="utf-8" />
+<title>collsion & movement</title>
+<style>
+canvas {display: block; border:1px solid #333; margin:0 auto;}
+</style>
+<script src="../build/laro.0.2.js"></script>
+
+<script>
+// 适配
+var Vec2 = Laro.Vector2;
+</script>
+<script src="../src/movement/laro.collision.js"></script>
+
+<canvas id="canvas"></canvas>
+
+<p style="width:800px; margin: 0 auto">
+红色的点 为 在线段上且距 绿色点 最近的点。<br/>
+可拖动端点或者绿色点进行测试。 <br/>
+所得的红色的点距离端点所占整个线段长度的比例为：<span id="param"></span> <br/>
+绿色点到红色点之间的距离为： <span id="dis"></span>
+</p>
+<script>
+// test case
+Laro.register('Test', function (La) {
+	
+	this.init = function (id, w, h) {
+		this.canvas = document.getElementById(id);
+		this.canvas.width = w || 800;
+		this.canvas.height = h || 600;
+		this.render = new La.CanvasRender(this.canvas, 1, false);
+		this.stage = new La.$stage(this.canvas);
+		this.stage.CONFIG.isClear = false;
+		
+		Test.LineSegment2.init();
+		
+		this.pos = new Vec2(0, 0);
+		this.looper = new La.Loop(this.looper, this);
+		
+		
+	}
+	
+	this.looper = function (dt) {
+		this.update(dt);
+		this.draw();
+	}
+	
+	this.update = function (dt) {
+		//this.pos = this.pos.add(this.movement);
+	}
+	
+	this.draw = function () {
+		this.render.clear();
+
+		Test.LineSegment2.draw();
+		this.stage.render(this.render);
+	}
+
+	
+});
+
+Laro.register('Test.LineSegment2', function (La) {
+	this.init = function () {
+		this.addLSPoints();
+		this.addP();
+		this.line();
+	};
+	this.addP = function () {
+		this.p = new La.$sprite(Test.stage.ctx, function () {
+			this.radius = 5;
+			this.checkType = 'circle';
+			this.x = 300;
+			this.y = 300;
+			this.color = 'green';
+			this.draw = function (render) {
+				this.ctx.beginPath();
+				this.ctx.arc(0, 0, this.radius, 0, Math.PI*2, true);				
+				this.ctx.closePath();
+				this.ctx.fillStyle = this.color;
+				this.ctx.fill();
+			}
+		});
+		var _this = this;
+		this.p.addEventListener('mousedown', function () {
+			_this.p.mousedown = true;
+		});
+		
+		Test.stage.addChild(this.p);
+	};
+	this.addLSPoints = function () {
+		var a = new La.$sprite(Test.stage.ctx, function () {
+			this.radius = 5;
+			this.checkType = 'circle';
+			this.x = 100;
+			this.y = 100;
+			this.color = 'black';
+			this.draw = function (render) {
+				this.ctx.beginPath();
+				this.ctx.arc(0, 0, this.radius, 0, Math.PI*2, true);				
+				this.ctx.closePath();
+				this.ctx.strokeStyle = this.color;
+				this.ctx.stroke();
+			}
+		});
+		var b = new La.$sprite(Test.stage.ctx, function () {
+			this.radius = 5;
+			this.checkType = 'circle';
+			this.x = 600;
+			this.y = 200;
+			this.color = 'black';
+			this.draw = function (render) {
+				this.ctx.beginPath();
+				this.ctx.arc(0, 0, this.radius, 0, Math.PI*2, true);				
+				this.ctx.closePath();
+				this.ctx.strokeStyle = this.color;
+				this.ctx.stroke();
+			}
+		});
+		a.addEventListener('mousedown', function () {
+			a.mousedown = true;
+		});
+		b.addEventListener('mousedown', function () {
+			b.mousedown = true;
+		});
+		Test.stage.addEventListener('mousemove', function (x, y) {
+			for (var i = 0; i < Test.stage.children.length; i ++) {
+				var child = Test.stage.children[i];
+				if (child.mousedown) {
+					child.x = x;
+					child.y = y;
+				}
+			}
+		});
+		Test.stage.addEventListener('mouseup', function () {
+			for (var i = 0; i < Test.stage.children.length; i ++) {
+				var child = Test.stage.children[i];
+				child.mousedown = false;
+			}
+		});
+		
+		Test.stage.addChild(a);
+		Test.stage.addChild(b);
+		this.a = a;
+		this.b = b;
+	};
+	
+	this.line = function () {
+		var ctx = Test.stage.ctx;
+		ctx.moveTo(this.a.x, this.a.y);
+		ctx.lineTo(this.b.x, this.b.y);
+		ctx.strokeStyle = '#000';
+		ctx.stroke();
+		
+		this.ls2 = new La.LineSegment2(this.a, this.b);
+		this.getClosetP();
+	};
+	this.getClosetP = function () {
+		var p = new Vec2(this.p.x, this.p.y)
+		this.cp = this.ls2.getClosestPoint(p);
+		this.param = this.ls2.getProjectionParam(p);
+		this.dis = this.ls2.getProjectionDistance(p);
+		
+		this.drawCP();
+	};
+	this.drawCP = function () {
+		var ctx = Test.stage.ctx;
+
+		ctx.beginPath();
+		ctx.arc(this.cp.x, this.cp.y, 5, 0, Math.PI*2, true);
+		ctx.fillStyle = 'red';
+		ctx.closePath();
+		ctx.fill();
+		
+		// 连接红绿点
+		ctx.moveTo(this.cp.x, this.cp.y);
+		ctx.lineTo(this.p.x, this.p.y);
+		ctx.strokeStyle = '#ccc';
+		ctx.stroke();
+		
+		document.getElementById('param').innerHTML = this.param;
+		document.getElementById('dis').innerHTML = this.dis;
+	};
+	
+	this.draw = function () {
+		this.line();
+	}
+})
+
+onload = function () {
+	Test.init('canvas');
+}
+</script>
+</html>
