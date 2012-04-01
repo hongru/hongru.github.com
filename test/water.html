@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html>
+<style>
+html,body {overflow:hidden;position:absolute;height:100%;width:100%;margin:0;padding:0;}
+</style>
+<canvas id="canvas"></canvas>
+<script>
+var Wave = function () {
+
+	var addEvent = function (o, e, f) {
+		o.addEventListener ? o.addEventListener(e, f, false) : o.attachEvent('on'+e, function () {f.call(o)});
+	};
+
+	var WIDTH = window.innerWidth,
+		HEIGHT = window.innerHeight,
+		DENSITY = .75,
+		FRICTION = 1.14,
+		MOUSEPULL = .09,
+		AOE = 200,
+		DETAIL = Math.round(WIDTH/50),
+		WATER_DENSITY = 1.07,
+		AIR_DENSITY = 1.02,
+		MAX_BUBBLES = 10,
+		BIG_BUBBLE_DISSOLVE = 20,
+		SMALL_BUBBLE_DISSOLVE = 6,
+		isMouseDown = false,
+		ms = {x: 0, y: 0},
+		mp = {x: 0, y: 0},
+		canvas,
+		ctx,
+		particles = [],
+		bubbles = [],
+		mainTimer,
+		twitchTimer;
+
+	var init = function (id) {
+		canvas = document.getElementById(id);
+		var _this = this;
+		if (canvas && canvas.getContext) {
+			ctx = canvas.getContext('2d');
+
+			// Generate wave particles
+			for (var i = 0; i <= DETAIL; i ++) {
+				particles.push({
+					x: WIDTH/(DETAIL-4)*(i-2),
+					y: HEIGHT/2,
+					original: {x: 0, y: HEIGHT/2},
+					velocity: {x: 0, y: Math.random()*3},
+					force: {x: 0, y: 0},
+					mass: 10
+				});
+			}
+
+			addEvent(canvas, 'mousemove', mouseMove);
+			addEvent(canvas, 'mousedown', mouseDown);
+			addEvent(canvas, 'mouseup', mouseUp);
+			addEvent(window, 'resize', resize);
+
+			mainTimer = setInterval(mainLoop, 40);
+			twitchTimer = setInterval(createBubble, 400);
+
+			createBubble();
+			resize();
+		} 
+	}
+	//extend(init.prototype, {
+		
+	//})
+
+	function mainLoop () {
+		var gradient = ctx.createLinearGradient(WIDTH*.5, HEIGHT*.2, WIDTH*.5, HEIGHT);
+		gradient.addColorStop(0, '#00aabb');
+		gradient.addColorStop(1, 'rgba(0,200,250,0)');
+
+		ctx.clearRect(0, 0, WIDTH, HEIGHT);
+		ctx.fillStyle = gradient;
+		ctx.beginPath();
+		ctx.moveTo(particles[0].x, particles[0].y);
+
+		var current, previous, next;
+		for (var i=0; i< particles.length; i ++) {
+			current = particles[i];
+			previous = particles[i-1];
+			next = particles[i+1];
+
+			if (previous && next) {
+				var forceY = 0;
+				forceY += -DENSITY * (previous.y - current.y);
+				forceY += DENSITY * (current.y - next.y);
+				forceY += DENSITY/15 * (current.y - current.original.y);	
+				current.velocity.y += -(forceY/current.mass) + current.force.y;
+				current.velocity.y /= FRICTION;
+				current.force.y /= FRICTION;
+				current.y += current.velocity.y;
+
+				var distance = getDistanceBetween(mp, current);
+				if (distance < AOE) {
+					var distance = getDistanceBetween(mp, {x: current.original.x, y: current.original.y});
+					ms.x = ms.x * .98;
+					ms.y = ms.y * .98;
+
+					current.force.y += (MOUSEPULL * (1-(distance/AOE))) * ms.y;
+				}
+
+				ctx.quadraticCurveTo(previous.x, previous.y, previous.x + (current.x-previous.x)/2, previous.y+(current.y-previous.y)/2);
+			}
+		}
+
+		ctx.lineTo(particles[particles.length-1].x, particles[particles.length-1].y);
+		ctx.lineTo(WIDTH, HEIGHT);
+		ctx.lineTo(0, HEIGHT);
+		ctx.lineTo(particles[0].x, particles[0].y);
+		ctx.fill();
+		ctx.fillStyle = '#rgba(0,200,255,0)';
+
+		ctx.beginPath();
+		for (var i=0; i<bubbles.length; i++) {
+			var b = bubbles[i],
+				p = getClosetParticle(b);
+				d = getDistanceBetween(mp, b);
+
+			b.velocity.y /= (b.y > p.y) ? WATER_DENSITY : AIR_DENSITY;
+			b.velocity.y += (b.y > p.y) ? -((b.y-p.y)*.01)/b.mass : 1/b.mass;
+			b.y += b.velocity.y;
+
+			if (b.x > WIDTH-b.currentSize) b.velocity.x = -b.velocity.x;
+			if (b.x < b.currentSize) b.velocity.x = Math.abs(b.velocity.x);
+
+			b.velocity.x /= 1.04;
+			b.velocity.x = b.velocity.x < 0 ? Math.min(b.velocity.x, -.8/b.mass) : Math.max(b.velocity.x, .8/b.mass);
+			b.x += b.velocity.x;
+
+			if (b.dissolved === false) {
+				ctx.moveTo(b.x, b.y);
+				ctx.arc(b.x, b.y, b.currentSize, 0, Math.PI*2, true);
+			} else {
+				b.velocity.x /= 1.15;
+				b.velocity.y /= 1.05;
+
+				while(b.children.length < b.dissolveSize) {
+					b.children.push({
+						x: 0,
+						y: 0,
+						size: Math.random()*b.dissolveSize,
+						velocity: {
+							x: Math.random()*20 - 10,
+							y: -(Math.random()*10)
+						}
+					})
+				}
+
+				for (var j =0; j< b.children.length; j ++) {
+					var c = b.children[j];
+					c.x += c.velocity.x;
+					c.y += c.velocity.y;
+					c.velocity.x /= 1.1;
+					c.velocity.y += .4;
+					c.size /= 1.1;
+
+					ctx.moveTo(b.x+c.x, b.y+c.y);
+					ctx.arc(b.x+c.y, b.y+c.y, c.size, 0, Math.PI*2, true);
+				}
+			}
+		}
+		ctx.fill();
+	}
+
+	function getClosetParticle(point) {
+		var closestIndex = 0, 
+			closestDistance = 1000;
+		for (var i = 0; i < particles.length; i ++) {
+			var thisDistance = getDistanceBetween(particles[i], point);
+			if (thisDistance < closestDistance) {
+				closestDistance = thisDistance;
+				closestIndex = i;
+			}
+		}
+
+		return particles[closestIndex];
+	}
+
+	function createBubble () {
+		if (bubbles.length > MAX_BUBBLES) {
+			var i = 0;
+			if (bubbles[i].dissolved) {
+				for (; i < bubbles.length; i ++) {
+					if (bubbles[i].dissolved == false) {
+						bubbles[i].dissolveSize = SMALL_BUBBLE_DISSOLVE;
+						dissolveBubble(i);
+						break;
+					}
+				}
+			} else {
+				dissolveBubble(i)
+			}
+		}
+
+		var minSize = 15,
+			maxSize = 30,
+			size = minSize + Math.random() * (maxSize - minSize),
+			catapult = 30,
+			b = {
+				x: maxSize + (Math.random() * (WIDTH- maxSize)),
+				y: HEIGHT - maxSize,
+				velocity: {
+					x: (Math.random()*catapult) - catapult/2,
+					y: 0
+				},
+				size: size,
+				mass: (size/maxSize) + 1,
+				dissolved: false,
+				dissolveSize: BIG_BUBBLE_DISSOLVE,
+				children: []
+			};
+
+			b.currentSize = b.size;
+			bubbles.push(b);
+	}
+
+	function dissolveBubble(index) {
+		var b = bubbles[index];
+		if (b.dissolved == false) {
+			b.dissolved = true;
+			setTimeout(function () {
+				for (var i=0; i<bubbles.length; i ++) {
+					if (bubbles[i] == b) {
+						bubbles.splice(i, 1);
+						break;
+					}
+				}
+			}, 2000)
+		}
+	}
+
+	function getDistanceBetween (p1, p2) {
+		var dx = p2.x - p1.x,
+			dy = p2.y - p1.y;
+		return Math.sqrt(dx*dx + dy*dy);
+	}
+
+	function mouseMove(e) {
+		ms.x = Math.max( Math.min( e.layerX - mp.x, 40 ), -40 );
+		ms.y = Math.max( Math.min( e.layerY - mp.y, 40 ), -40 );
+		
+		mp.x = e.layerX;
+		mp.y = e.layerY;
+		
+	}
+	function mouseDown(e) {
+		mouseIsDown = true;
+		
+		var len = bubbles.length;
+		
+		var closestIndex = 0;
+		var closestDistance = 1000;
+		
+		for( var i = 0; i < len; i++ ) {
+			var thisDistance = getDistanceBetween( bubbles[i], mp );
+			
+			if( thisDistance < closestDistance ) {
+				closestDistance = thisDistance;
+				closestIndex = i;
+			}
+			
+		}
+		
+	}
+	function mouseUp(e) {
+		mouseIsDown = false;
+	}
+	
+	
+	function resize () {
+		WIDTH = window.innerWidth;
+		HEIGHT = window.innerHeight;
+		canvas.width = WIDTH;
+		canvas.height = HEIGHT;
+
+		for (var i=0; i<=DETAIL; i++) {
+			particles[i].x = WIDTH/(DETAIL-4)*(i-2);
+			particles[i].y = HEIGHT * .5;
+			particles[i].original.x = particles[i].x;
+			particles[i].original.y = particles[i].y;
+		}
+	}
+
+	return init;
+}();
+
+new Wave('canvas');
+</script>
+</html>
