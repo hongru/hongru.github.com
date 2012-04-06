@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html>
+<meta charset="utf-8" />
+<script src="../build/laro.0.2.js"></script>
+<script src="../src/tools/astar.js"></script>
+
+<canvas id="canvas"></canvas>
+<p style="font-size:12px">
+点击放置障碍物（黑色方块），进行寻路测试。
+绿色方块为起点，红色方块为终点。
+</p>
+<script>
+Laro.register('AStarTest', function (La) {
+	var pkg = this;
+	var map = [];
+	
+	this.init = function (id, w, h) {
+		this.canvas = document.getElementById(id);
+		this.canvas.width = w || 600;
+		this.canvas.height = h || 400;
+		this.size = 20;
+		this.render = new La.CanvasRender(this.canvas, 1);
+		this.stage = new La.$stage(this.canvas);
+		this.stage.CONFIG.isClear = false;
+		
+		this.createMap(this.size);
+		this.setStartPos([10, 5]);
+		this.setEndPos([10, 25]);
+		this.bind();
+		
+		this.astarM = new La.tools.AStar(map);
+		this.path = this.astarM.getPath(this.startPos, this.endPos);
+		
+		this.loop = new La.Loop(this.looper, this);
+	};
+	
+	this.bind = function () {
+		this.stage.addEventListener('click', function (x, y) {
+			var pos = pkg.getIndexByPos(x, y);
+			if (pos.join() == pkg.startPos.join() || pos.join() == pkg.endPos.join()) {
+				return false;
+			}
+			map[pos[0]][pos[1]] = (map[pos[0]][pos[1]] + 1)%2;
+			pkg.path = pkg.astarM.getPath(pkg.startPos, pkg.endPos);
+		});
+	};
+	
+	this.setStartPos = function (pos) {
+		this.startPos = pos;
+	};
+	this.setEndPos = function (pos) {
+		this.endPos = pos;
+	};
+	
+	this.getIndexByPos = function (x, y) {
+		var r = Math.floor(y/this.size),
+			c = Math.floor(x/this.size);
+		return [r, c];
+	};
+	
+	this.looper = function (dt) {
+		this.update(dt);
+		this.draw();
+	};
+	
+	this.update = function (dt) {
+
+	};
+	
+	this.draw = function () {
+		this.render.clear();
+		this.drawGrid();
+	};
+	
+	this.inPath = function (r, c) {
+		for (var i = 0; i < this.path.length; i ++) {
+			if (r == this.path[i][0] && c == this.path[i][1]) {
+				return true;
+			}
+		}
+		return false;
+	};
+	
+	this.drawGrid = function () {
+		for (var r = 0; r < map.length; r ++) {
+			var row = map[r];
+			for (var c = 0; c < row.length; c ++) {
+				var x0 = this.size*c,
+					y0 = this.size*r,
+					color = row[c] == 0 ? '#ccc' : '#000';
+					if (this.inPath(r, c)) { color = '#9EDA45'; }
+					if (r == this.startPos[0] && c == this.startPos[1]) {
+						color = 'green';
+					}
+					if (r == this.endPos[0] && c == this.endPos[1]) {
+						color = 'red';
+					}
+				this.render.drawFilledRect(x0, y0, x0+this.size-1, y0+this.size-1, color);
+			}
+		}
+	};
+	
+	this.createMap = function (size) {
+		var row = Math.ceil(this.canvas.height/size),
+			col = Math.ceil(this.canvas.width/size);
+		for (var r = 0; r < row; r ++) {
+			var rowArr = [];
+			for (var c = 0; c < col; c ++) {
+				rowArr.push(0);
+			}
+			map.push(rowArr);
+		}	
+	};
+});
+
+AStarTest.init('canvas');
+</script>
+</html>
