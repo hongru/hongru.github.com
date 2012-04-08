@@ -86,7 +86,6 @@ h1 {
 	border-bottom: 1px solid #424346;
 	border-top: 1px solid #18181A;
 	-webkit-border-radius: 4px;
-	overflow: hidden;
 	margin-bottom: 68px;
 	text-align: center;
 	position: relative;
@@ -222,4 +221,46 @@ h1 {
 	width: 130px;
 	height: 48px;
 	overflow: hidden;
+}
+.limit-btn {
+	position: absolute;
+	width: 60px;
+	height: 29px;
+	color: #fff;
+	font-weight: bold;
+	line-height: 29px;
+	font-size: 14px;
+	text-align: center;
+	font-family: Arial;
+	cursor: pointer;
+}
+.limit11 {
+	left: 8px;
+	top: 15px;
+	z-index:1;
+}
+.limit43 {
+	left: 61px;
+	top: 15px;
+	z-index:1;
+}
+.limit-btn-bg {
+	background: url(../images/limit-cur.png) no-repeat;
+	left: 8px;
+	top: 15px;
+}
+.ctrl-info {
+	height: 24px;
+	line-height: 24px;
+	background: #EFD86C;
+	font-size: 12px;
+	color: #4C2F16;
+	width: 320px;
+	text-align: center;
+	-webkit-border-radius: 0 0 4px 4px;
+	position: absolute;
+	bottom: -25px;
+	left: 50%;
+	margin-left: -160px;
+	display: none;
 }

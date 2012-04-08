@@ -570,7 +570,30 @@ $.NS('FiPhoto', function () {
 		var img = document.createElement('img');
 		img.src = src;
 		return img;
-	}
+	};
+	
+	// get click cmd el & info
+	this.CLICKIN = {};
+	this.getCmdInfo = function (el, toEl, filterAttr) {
+		if (!toEl) {toEl = document.body}
+		if (!filterAttr) {filterAttr = 'data-cmd'}
+		if (!el) { return null; }
+		
+		var related = el.getAttribute('data-related');
+		if (!!related) {
+			this.CLICKIN[related] = 1;
+		}
+		
+		var cmd = el.getAttribute(filterAttr);
+		if (!!cmd) {
+			return {
+				el: el,
+				cmd: cmd
+			};
+		} else if (el.parentNode && el.parentNode.nodeType == 1) {
+			return arguments.callee.call(this, el.parentNode, toEl, filterAttr);
+		}
+	};
 });
 
 /* FiPhoto.operation */
@@ -585,6 +608,11 @@ $.NS('FiPhoto.operation', function () {
 		height: 0,
 		limitW: 0,
 		limitH: 0
+	}
+	this.limitMode = '11';
+	this.limitInfo = {
+		'11': [650, 650],
+		'43': [800, 600]
 	}
 	
 	this.init = function (oSize) {
@@ -602,6 +630,10 @@ $.NS('FiPhoto.operation', function () {
     this.getStepEls = function () {
         step1.$tit = $('#fx-step1 .ea-title');
         step1.$btns = $('#fx-step1 .btn');
+		step1.$l_btns = $('#fx-step1 .limit-btn');
+		step1.$l_btnbg = $('#limit-btn-bg');
+		step1.$dropArea = $('#drop-area');
+		step1.$container = $('#container');
         
         var titPos = step1.$tit.show().position();
         step1.$tit.attr({
@@ -621,32 +653,79 @@ $.NS('FiPhoto.operation', function () {
     };
     
     this.bind = function () {
-        this['step1']['$btns'].unbind('click');
-        this['step1']['$btns'].bind('click', function (e) {
-            e.preventDefault();
-            var cmd = $(this).attr('data-cmd');
+		$('body').unbind('click.dispatch');
+		$('body').bind('click.dispatch', function (e) {
+			e.preventDefault();
+			// reset
+			FiPhoto.CLICKIN = {};
+			var bubble = FiPhoto.getCmdInfo(e.target);
+			if (bubble) {
+				var cmd = bubble.cmd,
+					el = bubble.el;
+				switch(cmd) {
+					case 'limit':
+						FiPhoto.CLICKIN['limit'] = 1;
+						pkg.toggleLimitBtn($(el));
+						break;
+					case 'limitin':
+						FiPhoto.CLICKIN['limit'] = 1;
+						pkg.l_btnClick($(el));
+						break;
+					case 'rotate':
+						pkg.rotate();
+						break;
+					case 'border':
+						pkg.toggleBorderBtn($(el));
+						break;
+					case 'scale':
+						pkg.toggleScaleBtn($(el));
+						break;
+				}
+			}
+			
+			if (!FiPhoto.CLICKIN['limit']) { pkg.deactiveLimitBtn(); }
 
-            switch(cmd) {
-                case 'limit':
-                    pkg.toggleLimitBtn($(this));
-                    break;
-                case 'rotate':
-                    pkg.rotate();
-                    break;
-                case 'border':
-                    pkg.toggleBorderBtn($(this));
-                    break;
-                case 'scale':
-                    pkg.toggleScaleBtn($(this));
-                    break;
-            }
-        })
+		});
     };
+	
+	this.hideAllPanel = function () {
+		
+	};
+	
+	this.l_btnClick = function ($el) {
+		var cur = parseInt(pkg['step1']['$l_btnbg'].css('left'));
+		var ccur = parseInt($el.css('left'));
+		if (cur != ccur) {
+			pkg.limitMode = ccur > cur ? '43' : '11';
+			pkg['step1']['$l_btnbg'].stop().animate({'left': ccur});
+
+			step1.$dropArea.stop().animate({'width': (pkg.limitInfo[pkg.limitMode][0]+2) });
+			step1.$container.stop().animate({
+				'width': pkg.limitInfo[pkg.limitMode][0],
+				'height': pkg.limitInfo[pkg.limitMode][1]
+			}, {
+				step: function (now, fx) {
+					if (pkg.cvs) {
+						if (fx.prop == 'width') {
+							pkg.cvs.width = now;
+						} else if (fx.prop == 'height') {
+							pkg.cvs.height = now;
+						}
+						pkg.drawImage();
+					}
+
+				}
+			});
+			
+		} 
+		
+	};
     
     this.toggleLimitBtn = function ($btn) { 
         $btn.hasClass('active') ? this.deactiveLimitBtn($btn) : this.activeLimitBtn($btn);
     };
     this.deactiveLimitBtn = function ($btn) {
+		$btn = $btn || $('.btn.limit');
         $btn.removeClass('active');
         $('.limit-panel').hide();
     };
@@ -742,7 +821,8 @@ $.NS('FiPhoto.operation', function () {
 			this.imgInfo.showWidth = this.imgInfo.width * s;
 			this.imgInfo.showHeight = this.imgInfo.height * s;
 		}
-	}
+	};
+	
 	
 	// bind canvas to move image and scale
 	this.bindCanvas = function () {
@@ -776,6 +856,13 @@ $.NS('FiPhoto.operation', function () {
 			};
 		}).bind('mouseleave', function (e) {
 			pkg.startDrag = false;
+			clearTimeout(pkg.canvasTimer);
+			$('#ctrl-info').fadeOut();		
+		}).bind('mouseenter', function (e) {
+			clearTimeout(pkg.canvasTimer);
+			pkg.canvasTimer = setTimeout(function () {
+				$('#ctrl-info').fadeIn();
+			}, 500);	
 		});
 		
 		$(window).bind('mouseup', function (e) {

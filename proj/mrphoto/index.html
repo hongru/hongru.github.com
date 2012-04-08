@@ -21,24 +21,33 @@
 					<span class="hi"></span>
 				</p>
 			</h1>
-			<div class="drop-area noimg">
+			<div id="drop-area" class="drop-area noimg">
 				<div id="container" class="drop-inner">
+				</div>
+				<div class="ctrl-info" id="ctrl-info">
+					鼠标中键滚动缩放；拖拽移动图片；（按住shift微调）
 				</div>
 			</div>
             
+			
             <div id="edit-area" class="edit-area">
                 <div id="fx-step1" class="step1">
                     <h3 class="ea-title edit">Edit</h3>
-                    <a href="#" data-cmd="limit" class="btn btn1 limit"><span>限制</span></a>
+                    <a href="#" data-related="limit" data-cmd="limit" class="btn btn1 limit"><span>限制</span></a>
                     <a href="#" data-cmd="rotate" class="btn btn1 rotate"><span>旋转</span></a>
-                    <a href="#" data-cmd="border" class="btn btn1 pic-border"><span>边框</span></a>
-                    <a href="#" data-cmd="scale" class="btn btn1 scale"><span>缩放</span></a>
+                    <a href="#" data-related="border" data-cmd="border" class="btn btn1 pic-border"><span>边框</span></a>
+                    <a href="#" data-related="scale" data-cmd="scale" class="btn btn1 scale"><span>缩放</span></a>
 					<a href="#" class="btn btn2"><span class="next-t"></span></a>
-                    <div class="limit-panel"></div>
-                    <div class="border-panel"></div>
-                    <div class="scale-panel"></div>
+                    <div data-related="limit" class="limit-panel">
+						<span data-cmd="limitin" class="limit-btn limit11">1:1</span>
+						<span data-cmd="limitin" class="limit-btn limit43">4:3</span>
+						<span class="limit-btn limit-btn-bg" id="limit-btn-bg"></span>
+					</div>
+                    <div data-related="border" class="border-panel"></div>
+                    <div data-related="scale" class="scale-panel"></div>
                 </div>
             </div>
+			
 
 			<div id="fx-tab-container" class="fx-tab hide"></div>
 			<div id="toolbar" class="toolbar hide">
