@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8" />
+<title>Animation Editor</title>
+<link href="../css/common.css" rel="stylesheet" />
+<script src="../js/lib/leta.0.1.js"></script>
+<style>
+.container {
+    margin: 0 auto;
+    text-align: center;
+    min-height: 200px;
+    padding: 10px 0;
+    font-size: 20px;
+    fong-weight: bold;
+    font-family: Georgia;
+    font-style: italic;
+    color: #333;
+}
+.container.noimg {
+    background: rgba(0,0,0,0.1); 
+    width: 500px;
+    -webkit-box-shadow: inset 0 0 10px #000;
+    line-height: 200px;
+    padding: 60px 0;
+}
+.container.dragover {
+    background: #b0e24a;
+}
+
+</style>
+</head>
+
+<body>
+<section>
+	<div class="doc">
+		<h1>Animation Editor</h1>
+		<div id="container" class="container noimg">
+			Drag an image here
+		</div>
+	</div>
+</section>
+
+<script>
+Leta.NS('LAE', function ($L) {
+	var pkg = this;
+	var els = {};
+	var $E = $L.event;
+	var $ = function (sel) {
+		return (/^\s*<([^\s>]+)/).test(sel) ? $L.$dom($L.$dom.create(sel)) : $L.$dom($L.$qsa(sel));
+	};
+	this.$ = $;
+	
+	this.init = function () {
+		//alert($L.browser.msie)
+		this.getEls();
+		this.bind();
+	};
+	this.getEls = function () {
+		els.$con = $('#container');
+	};
+	this.bind = function () {
+		this.bindDragDrop();
+		
+	};
+	this.bindDragDrop = function () {
+		$E.on(els.$con[0], 'dragenter', function (e) {
+			e.preventDefault();
+			els.$con.addClass('dragover').html('Drop Here!');
+		});
+		$E.on(els.$con[0], 'dragover', function (e) {
+			e.preventDefault();
+		});
+		$E.on(els.$con[0], 'dragleave', function (e) {
+			e.preventDefault();
+			els.$con.removeClass('dragover').html('Drag an image here')
+		});
+		$E.on(els.$con[0], 'drop', function (e) {
+			e.preventDefault();
+
+			var dt = e.dataTransfer || e.originalEvent.dataTransfer;  
+			var files = dt.files; 
+			console.log(files)
+
+			pkg.handleFiles(files); 
+		});
+	};
+	this.handleFiles = function (files) {
+		for (var i = 0; i < files.length; i++) {  
+			var file = files[i];  
+			var imageType = /image.*/;  
+			  
+			if (!file.type.match(imageType)) {  
+				continue;  
+			}  
+
+			var reader = new FileReader();  
+			reader.onload = function(e){ 
+				console.log(e)
+				//pkg.setFx('normal', e.target.result);
+			/*	var nodes = $L.$dom.create('<img src="'+e.target.result+'" />');
+				$L.$dom(nodes).appendTo(els.$con);
+				els.$con.removeClass('dragover');
+				els.$con.removeClass('noimg');*/
+			}
+
+			reader.readAsDataURL(file);  
+		}  
+	}
+	
+});
+Leta.domReady(function () { LAE.init(); })
+</script>
+</body>
+</html>

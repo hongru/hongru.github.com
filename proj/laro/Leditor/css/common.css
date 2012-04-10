@@ -1,0 +1,20 @@
+body,p,ul,ol,h1,h2,h3,h4,h5,h6 {
+    margin: 0;
+    padding: 0;
+}
+body {
+    background: #e0e0e0 url(../images/bg.png);
+}
+
+h1 {
+    text-align: center;
+    background: #303030 url(../images/mesh.png);
+    border-bottom: 1px solid #000;
+    padding: 40px;
+    color: #f7f7f7;
+    font-size: 48px;
+    font-family: Georgia;
+    margin-bottom: 40px;
+    text-shadow: 2px 2px 5px #eee;
+    -webkit-box-shadow: 0 4px 9px #000;
+}
