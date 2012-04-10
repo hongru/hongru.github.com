@@ -4,7 +4,7 @@
 <meta charset="utf-8" />
 <title>Animation Editor</title>
 <link href="../css/common.css" rel="stylesheet" />
-<script src="../js/lib/leta.0.1.js"></script>
+<script src="../js/lib/leta.0.2.js"></script>
 <style>
 .container {
     margin: 0 auto;
@@ -46,10 +46,7 @@ Leta.NS('LAE', function ($L) {
 	var pkg = this;
 	var els = {};
 	var $E = $L.event;
-	var $ = function (sel) {
-		return (/^\s*<([^\s>]+)/).test(sel) ? $L.$dom($L.$dom.create(sel)) : $L.$dom($L.$qsa(sel));
-	};
-	this.$ = $;
+	var $ = $L.$;
 	
 	this.init = function () {
 		//alert($L.browser.msie)
@@ -80,7 +77,6 @@ Leta.NS('LAE', function ($L) {
 
 			var dt = e.dataTransfer || e.originalEvent.dataTransfer;  
 			var files = dt.files; 
-			console.log(files)
 
 			pkg.handleFiles(files); 
 		});
@@ -96,7 +92,8 @@ Leta.NS('LAE', function ($L) {
 
 			var reader = new FileReader();  
 			reader.onload = function(e){ 
-				console.log(e)
+				//$('body').append($('<img alt="" src="'+e.target.result+'" />'))
+				pkg.pushToCanvas(src);
 				//pkg.setFx('normal', e.target.result);
 			/*	var nodes = $L.$dom.create('<img src="'+e.target.result+'" />');
 				$L.$dom(nodes).appendTo(els.$con);
@@ -106,6 +103,9 @@ Leta.NS('LAE', function ($L) {
 
 			reader.readAsDataURL(file);  
 		}  
+	};
+	this.pushToCanvas = function (src) {
+	
 	}
 	
 });
