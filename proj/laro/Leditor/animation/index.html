@@ -27,7 +27,39 @@
 .container.dragover {
     background: #b0e24a;
 }
-
+canvas {
+	display: block;
+	margin: 0 auto;
+	background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQAQMAAAAlPW0iAAAABlBMVEW/v7////+Zw/90AAAAEUlEQVQI12P4z8CAFWEX/Q8Afr8P8erzE9cAAAAASUVORK5CYII=);
+	-webkit-box-shadow: 0 0 5px #000;
+}
+.hide {
+	display:none;
+}
+.edit-area {
+	
+}
+.ea-show {
+	width: 600px;
+	overflow:hidden;
+	background: #fff;
+	border: 1px solid #999;
+	margin: 16px auto;
+	list-style: none;
+}
+.ea-show li {
+	list-style: none;
+}
+.ea-input {
+	width: 40px;
+	text-align: center;
+}
+.ea-setting {
+	float: left;
+	padding: 10px 14px;
+	font-size: 12px;
+	font-family: 微软雅黑;
+}
 </style>
 </head>
 
@@ -38,6 +70,23 @@
 		<div id="container" class="container noimg">
 			Drag an image here
 		</div>
+		
+		<div id="edit-area" class="edit-area hide">
+			<canvas id="frame-canvas"></canvas>
+			<div class="ea-show">
+				<ul class="ea-setting">
+					<li><label>图片宽：</label><input class="ea-input" type="text" /></li>
+					<li><label>图片高：</label><input class="ea-input" type="text" /></li>
+					<li><label>总帧数：</label><input class="ea-input" type="text" /></li>
+					<li><label>帧排列：</label>
+						<select>
+							<option>横向</option>
+							<option>纵向</option>
+						</select>
+					</li>
+				</ul>
+			</div>
+		</div>
 	</div>
 </section>
 
@@ -47,6 +96,7 @@ Leta.NS('LAE', function ($L) {
 	var els = {};
 	var $E = $L.event;
 	var $ = $L.$;
+	var $id = document.getElementById;
 	
 	this.init = function () {
 		//alert($L.browser.msie)
@@ -55,10 +105,10 @@ Leta.NS('LAE', function ($L) {
 	};
 	this.getEls = function () {
 		els.$con = $('#container');
+		els.$ea = $('#edit-area');
 	};
 	this.bind = function () {
 		this.bindDragDrop();
-		
 	};
 	this.bindDragDrop = function () {
 		$E.on(els.$con[0], 'dragenter', function (e) {
@@ -74,7 +124,7 @@ Leta.NS('LAE', function ($L) {
 		});
 		$E.on(els.$con[0], 'drop', function (e) {
 			e.preventDefault();
-
+			console.log(e);
 			var dt = e.dataTransfer || e.originalEvent.dataTransfer;  
 			var files = dt.files; 
 
@@ -93,19 +143,40 @@ Leta.NS('LAE', function ($L) {
 			var reader = new FileReader();  
 			reader.onload = function(e){ 
 				//$('body').append($('<img alt="" src="'+e.target.result+'" />'))
-				pkg.pushToCanvas(src);
-				//pkg.setFx('normal', e.target.result);
-			/*	var nodes = $L.$dom.create('<img src="'+e.target.result+'" />');
-				$L.$dom(nodes).appendTo(els.$con);
+				pkg.pushToCanvas(e.target.result);
 				els.$con.removeClass('dragover');
-				els.$con.removeClass('noimg');*/
+				
 			}
 
 			reader.readAsDataURL(file);  
 		}  
 	};
 	this.pushToCanvas = function (src) {
+		els.$con.hide();
+		els.$ea.show('block');
 	
+		var cvs = $('#frame-canvas').get(0);
+		var frameImg = $('#frame-img').get(0);
+		if (!cvs) {
+			$('<canvas id="frame-canvas"></canvas>').appendTo(els.$ea);
+			cvs = $('#frame-canvas').get(0);
+		}
+		
+		if (!frameImg) {
+			$('<img id="frame-img" style="display:none" src="'+src+'" />').appendTo(els.$ea);
+			frameImg = $('#frame-canvas').get(0);
+		} else {
+			frameImg.src = src;
+		}
+		
+		var ctx = cvs.getContext('2d');
+		$L.imgReady(src, function () {
+			cvs.width = this.width;
+			cvs.height = this.height;
+		}, function () {
+			ctx.clearRect(0, 0, cvs.width, cvs.height);
+			ctx.drawImage(this, 0, 0);
+		});
 	}
 	
 });
