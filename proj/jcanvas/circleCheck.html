@@ -3,10 +3,10 @@
 <style>
 	canvas {display:block; margin: 60px auto; border: 2px solid #ccc}
 </style>
-<script src="JCanvas.0.1.js"></script>
+<script src="js/jcanvas.0.4.js"></script>
 <canvas id="canvas" width="600" height="400"></canvas>
 <script>
-    // 暂没处理 mouseover 透传的问题
+  
 	var canvas = document.getElementById('canvas');
     var Stage = CVS.$stage,
         Sprite = CVS.$sprite;
@@ -50,6 +50,7 @@
     circle.addEventListener('mouseout', function () {
 		circle.color = 'black';
 	});
+	circle.addEventListener('click', function () {alert(1)})
     
     circle2.addEventListener('mouseover', function () {
 		circle2.color = 'yellow';
@@ -57,6 +58,7 @@
     circle2.addEventListener('mouseout', function () {
 		circle2.color = 'green';
 	});
+	circle2.addEventListener('click', function () {alert(2)})
 
 	stage.start();
 </script>

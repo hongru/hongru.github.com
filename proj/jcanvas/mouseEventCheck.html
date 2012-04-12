@@ -1,0 +1,48 @@
+<!DOCTYPE HTML>
+<meta charset="utf-8" />
+<style>
+	canvas {display:block; margin: 60px auto; border: 2px solid #ccc}
+</style>
+<script src="js/jcanvas.0.4.js"></script>
+<canvas id="canvas" width="600" height="400"></canvas>
+<script>
+  
+	var canvas = document.getElementById('canvas');
+    var Stage = CVS.$stage,
+        Sprite = CVS.$sprite;
+	var stage = new Stage(canvas);
+	function range (a, b) {
+		return (b-a)*Math.random() + a;
+	}
+
+	for (var i = 0; i < 40; i ++) {
+		var rect = new Sprite(stage.ctx, function () {
+			this.width = 40;
+			this.height = 40;
+			this.x = range(0, canvas.width-this.width);
+			this.y = range(0, canvas.height-this.height);
+			this.color = '#999';
+			this.strokeColor = '#000';
+			this.draw = function (render) {
+				this.ctx.beginPath();
+				this.ctx.rect(0, 0, this.width, this.height);
+				this.ctx.closePath();
+				this.ctx.fillStyle = this.color;
+				this.ctx.fill();
+				
+				this.ctx.lineWidth = 1;
+				this.ctx.strokeStyle = this.strokeColor;
+				this.ctx.stroke();
+			}
+		});
+		
+		(function (r) {
+			r.addEventListener('mouseover', function (x, y) { r.color = '#fa4a00' });
+			r.addEventListener('mouseout', function (x, y) { r.color = '#999' });
+		})(rect);
+		
+		stage.addChild(rect);
+	}
+
+	stage.start();
+</script>
