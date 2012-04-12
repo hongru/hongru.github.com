@@ -59,6 +59,22 @@ canvas {
 	padding: 10px 14px;
 	font-size: 12px;
 	font-family: 微软雅黑;
+	background: #f3f3f3;
+	border-right: 1px solid #999;
+	padding-bottom: 9999px;
+	margin-bottom: -9989px;
+}
+.ea-setting label {
+	display: inline-block;
+	text-align: right;
+}
+.output-wrap {
+	width: 600px;
+	margin: 0 auto;
+}
+.output-wrap textarea {
+	width: 99%;
+	min-height: 200px;
 }
 </style>
 </head>
@@ -75,17 +91,28 @@ canvas {
 			<canvas id="frame-canvas"></canvas>
 			<div class="ea-show">
 				<ul class="ea-setting">
-					<li><label>图片宽：</label><input class="ea-input" type="text" /></li>
-					<li><label>图片高：</label><input class="ea-input" type="text" /></li>
-					<li><label>总帧数：</label><input class="ea-input" type="text" /></li>
+					<li><label>图片宽：</label><input id="imgw" class="ea-input" type="text" /></li>
+					<li><label>图片高：</label><input id="imgh" class="ea-input" type="text" /></li>
+					<li><label>总帧数：</label><input id="frame-num" class="ea-input" type="text" /></li>
 					<li><label>帧排列：</label>
-						<select>
-							<option>横向</option>
-							<option>纵向</option>
+						<select id="frame-sel">
+							<option value="h" selected="true">横向</option>
+							<option value="v">纵向</option>
 						</select>
 					</li>
+					<li><label>帧速率：</label><input id="frame-rate" class="ea-input" type="text" /></li>
+					<li><label>中心x：</label><input id="pivot-x" class="ea-input" type="text" /></li>
+					<li><label>中心y：</label><input id="pivot-y" class="ea-input" type="text" /></li>
+					
+					<li style="padding-top:10px;border-top:1px solid #999"><label>name：</label><input id="anim-name" class="ea-input" type="text" /></li>
+					<li><button id="btn-go">GO!</button></li>
 				</ul>
 			</div>
+		</div>
+		
+		<div id="output-wrap" class="output-wrap hide">
+			<textarea id="anim-info"></textarea>
+			<textarea id ="anim-data"></textarea>
 		</div>
 	</div>
 </section>
@@ -98,6 +125,8 @@ Leta.NS('LAE', function ($L) {
 	var $ = $L.$;
 	var $id = document.getElementById;
 	
+	var fnum = 0, unitW, unitH, picW, picH;
+	
 	this.init = function () {
 		//alert($L.browser.msie)
 		this.getEls();
@@ -106,9 +135,86 @@ Leta.NS('LAE', function ($L) {
 	this.getEls = function () {
 		els.$con = $('#container');
 		els.$ea = $('#edit-area');
+		els.$imgw = $('#imgw');
+		els.$imgh = $('#imgh');
+		els.$fnum = $('#frame-num');
+		els.$fsel = $('#frame-sel');
+		els.$frate = $('#frame-rate');
+		els.$pivotx = $('#pivot-x');
+		els.$pivoty = $('#pivot-y');
+		els.$btngo = $('#btn-go');
+		els.$aname = $('#anim-name');
+		
+		els.$animInfo = $('#anim-info');
+		els.$animData = $('#anim-data');
+		
+		fnum = els.$fnum.val();
 	};
 	this.bind = function () {
 		this.bindDragDrop();
+		this.bindSetting();
+	};
+	this.bindSetting = function () {
+		$E.on(els.$btngo[0], 'click', function (e) {
+			pkg.go();
+		});
+		$E.on(els.$fnum[0], 'keyup', function (e) {
+			pkg.setPivotDefaultValue();
+		});
+		$E.on(els.$fsel[0], 'change', function (e) {
+			//alert($(this).val())
+			pkg.setPivotDefaultValue();
+		})
+	};
+	this.setPivotDefaultValue = function () {
+		if (els.$fsel.val() == 'h') {
+			unitH = picH;
+			unitW = picW/(Number(els.$fnum.val()));
+		} else {
+			unitW = picW;
+			unitH = picH/(Number(els.$fnum.val()));
+		}
+		
+		els.$pivotx.val(''+Math.floor(unitW/2));
+		els.$pivoty.val(''+Math.floor(unitH/2));
+	};
+	this.go = function () {
+		this.outputData();
+	};
+	this.outputData = function () {
+		this.opAnimInfo();
+		this.opAnimData();
+		
+		$('#output-wrap').show('block');
+	};
+	this.opAnimInfo = function () {
+		var ret = [];
+		ret.push('info :{');
+		ret.push('nbrOfFrames: ' + els.$fnum.val() + ',');
+		ret.push('name: ' + els.$aname.val() + ',');
+		ret.push('type: animation,');
+		ret.push('framerate: ' + els.$frate.val() + ',');
+		ret.push('pivotx: ' + els.$pivotx.val() + ',');
+		ret.push('pivoty: ' + els.$pivoty.val() + ',');
+		ret.push('events: []');
+		ret.push('}');
+		
+		els.$animInfo.val(ret.join('\n'));
+	};
+	this.opAnimData = function () {
+		var ret = [];
+		
+		for (var i = 0; i < Number(els.$fnum.val()); i ++) {
+			var arr = [];
+			
+			els.$fsel.val() == 'h' ? 
+			arr.push('['+i*unitW + ',0,' + (i+1)*unitW + ',' + unitH + ',' + i*unitW + ',0,' + (i+1)*unitW + ',' + unitH + ']') :
+			arr.push('[0,'+ i*unitH + ',' + unitW + ',' + (i+1)*unitH + ',' + '0,'+ i*unitH + ',' + unitW + ',' + (i+1)*unitH + ']');
+			
+			ret.push(arr.join());
+		}
+		
+		els.$animData.val(ret.join(',\n'));
 	};
 	this.bindDragDrop = function () {
 		$E.on(els.$con[0], 'dragenter', function (e) {
@@ -173,6 +279,13 @@ Leta.NS('LAE', function ($L) {
 		$L.imgReady(src, function () {
 			cvs.width = this.width;
 			cvs.height = this.height;
+			picW = this.width;
+			picH = this.height;
+			
+			els.$imgw.val(String(this.width));
+			els.$imgh.val(String(this.height));
+			els.$frate.val('10');
+		
 		}, function () {
 			ctx.clearRect(0, 0, cvs.width, cvs.height);
 			ctx.drawImage(this, 0, 0);
@@ -180,6 +293,9 @@ Leta.NS('LAE', function ($L) {
 	}
 	
 });
+
+
+
 Leta.domReady(function () { LAE.init(); })
 </script>
 </body>
