@@ -3,13 +3,27 @@
 <head>
     <meta charset="utf-8" />
     <title>HTML5-走近曾遥远的梦</title>
-
     <meta name="author" content="Horizon" />
-
-    <link href="http://fonts.googleapis.com/css?family=Open+Sans:regular,semibold,italic,italicsemibold|PT+Sans:400,700,400italic,700italic|PT+Serif:400,700,400italic,700italic" rel="stylesheet" />
-
     <link href="../impress.css" rel="stylesheet" />
 	<script src="../impress.js"></script>
+	
+	<style>
+		.rl {
+			text-align: center;
+		}
+		.rl p, .rl a {
+			color: #f3f3f3;
+			font-family: Georgia;
+		}
+		.dme {
+			font-size: 26px;
+		}
+		.dme a {
+			display: inline-block;
+			min-width: 200px;
+			margin: 5px 0;
+		}
+	</style>
 </head>
 <body>
 
@@ -72,52 +86,77 @@
     </div>
 
     <div id="its" class="step" data-x="850" data-y="3000" data-rotate="90" data-scale="5">
-        <p>* <strong class="r">关于：</strong> <br/>
-          3D 建模<br/>
-			游戏引擎</p>
+        <p>* <strong class="r">For Example:</strong> <br/>
+          <ul>
+			<li><a class="bga" href="http://hongru.github.com/proj/laro/examples/emberwind/" target="_blank">Simple Fighter</a></li>
+			<li><a class="bga" href="http://hongru.github.com/proj/laro/examples/typeshot/index.html" target="_blank">TypeShot</a></li>
+			<li><a class="bga" href="http://heroes.github.com/world-of-heroes/stable/" target="_blank">World of Heroes</a></li>
+		  </ul>
     </div>
 	
-	<div class="step" data-x="1000" data-y="4000" data-z="-3000" data-rotate="0" data-rotate-y="90" data-scale="0.5">
-		<iframe style="width:100%; min-height:850px" frameborder="0" src="http://hongru.github.com/share/3D.html"></iframe>
+	<div class="step" data-x="1000" data-y="4000" data-z="-3000" data-rotate="0" data-rotate-y="90" data-scale="0.5" style="text-align: center">
+		<h2>About Finite State Machine</h2>
+		<a href="http://hongru.github.com/proj/laro/test/laro.fsm.html" target="_blank"><img alt="FSM" src="images/green.png" /></a>
 	</div>
 
-    <div id="big" class="step" data-x="3500" data-y="2100" data-rotate="180" data-scale="6">
-        <p>* webGL 除了3D之外还能做什么？<a href="http://hongru.github.com/test/FiPhoto/fiphoto.html" target="_blank"><b class="r">Mr.Photo</b></a> </p>
+    <div class="step rl" data-x="3500" data-y="1000" data-rotate="180" data-scale="6">
+        <h2>Resource Loader</h2>
+		<p><a href="http://hongru.github.com/proj/laro/test/laro.resource.html" target="_blank">100%</a></p>
     </div>
 
-    <div id="tiny" class="step" data-x="2825" data-y="2325" data-z="-3000" data-rotate="300" data-scale="1">
-        <p><b class="r">Game</b> Engine</p>
+    <div style="text-align: center" class="step" data-x="2825" data-y="2325" data-z="-3000" data-rotate="300" data-scale="1">
+		<h2>Dispatch Mouse Event</h2>
+		<ul class="dme">
+			<li><a class="bga" href="http://hongru.github.com/proj/jcanvas/JCanvas.html" target="_blank">Normal</a></li>
+			<li><a class="bga" href="http://hongru.github.com/proj/jcanvas/circleCheck.html" target="_blank">Circle Check</a></li>
+			<li><a class="bga" href="http://hongru.github.com/proj/jcanvas/mouseEventCheck.html" target="_blank">No Penetrate</a></li>
+		</ul>
+
     </div>
 	
 	<div class="step" data-x="3825" data-y="2325" data-z="-3000" data-rotate="0" data-scale="1">
-        <ul>
-			<li>Framework</li>
-			<li>Game Editor</li>
+		<h2>About Sprite</h2>
+        <ul class="my-list">
+			<li>Frame Animation
+				<ul class="my-list">
+					<li><a class="bga" href="http://hongru.github.com/proj/laro/test/laro.animation.html" target="_blank">Demo 1</a></li>
+					<li><a class="bga" href="http://hongru.github.com/proj/laro/test/laro_fighter2.html" target="_blank">Demo 2</a></li>
+				</ul>
+			</li>
+			<li>Create Animation Data
+				<ul class="my-list">
+					<li><a class="bga" href="http://hongru.github.com/proj/laro/Leditor/animation/index.html" target="_blank">Export Data</a></li>
+				</ul>
+			</li>
 		</ul>
     </div>
 	
 	<div class="step" data-x="5000" data-y="2325" data-z="-3000" data-rotate="0" data-scale="1" style="text-align:center">
-        <img src="images/laro.png" />
+        <h2>About Collision</h2>
+		<div style="font-size:20px;">
+			<img alt="" src="images/coll1.png" /><br/>我们只考虑最简单的 (^^)
+		</div>
     </div>
 	
 	<div class="step" data-x="6000" data-y="2325" data-z="-3000" data-rotate="0" data-scale="1" style="text-align:center">
-        <img src="images/code.png" />
+		But... <br/>
+        <img src="images/coll2.png" />
     </div>
 	
-	<div class="step" data-x="6000" data-y="2325" data-z="-4000" data-rotate="0" data-scale="0.5" >
-        <h2>游戏中必要的几个点：</h2>
-		<ul class="my-list">
-			<li>场景切换 [optional]</li>
-			<li>输入输出</li>
-			<li>进程控制</li>
-			<li>音乐效果 [optional]</li>
-			<li>资源预加载 [optional]</li>
-			<li>关键帧动画 [optional]</li>
-			<li>相关算法（碰撞检测，寻路算法...）[optional]</li>
-			<li>地图系统 [optional]</li>
-			<li>others...</li>
-		</ul>
+	<div class="step" style="text-align: center" data-x="6000" data-y="4000" data-rotate="0" data-scale="0.5" >
+        <h4>那么，我们换个思路</h4>
+		<img src="images/coll3.png" />
     </div>
+	
+	<div class="step" style="text-align: center" data-x="6500" data-y="4000" data-rotate="0" data-scale="0.5" >
+        <ul style="font-size: 30px">
+			<li>line A: a1*x + b1 - y = 0</li>
+			<li>line B: a2*x + b2 - y = 0</li>
+		</ul>
+		<img src="images/coll4.png" /><br/>
+		<img src="images/coll5.png" />
+    </div>
+	
 
 	<div class="step" data-x="5000" data-y="2325" data-z="-4000" data-rotate="0" data-scale="0.5" >
         <h2>Laro Test Cases</h2>
