@@ -1,191 +1,177 @@
-<script src="../src/laro.global.js"></script>
-<script src="../src/base/module.js"></script>
-<script src="../src/laro.seed.js"></script>
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8" />
+<title>Laro FSM Test</title>
+<script src="../build/laro.0.2.js"></script>
 <style>
-    #canvas {
-        font-weight: bold;
-        font-size: 40px;
-        text-align: center;
-        font-style: italic;
-    }
+.doc { width: 600px; margin: 0 auto; font-family: Georgia; text-align: center }
+h1 { border-bottom: 1px solid #aaa; padding-bottom: 20px; }
+.hide { display: none }
+textarea {
+	width: 300px;
+	text-align: left;
+	min-height: 400px;
+	overflow: auto;
+}
 </style>
-<div id="canvas">loading...</div>
+</head>
 
-<script src="data.timetrap.js"></script>
+<body>
+<div class="doc">
+	<h1>Laro Finite State Machine</h1>
+	<canvas id="canvas"></canvas>
+	<div class="btn-wrap">
+		<button id="btn-clear" onclick="FT.setState('green')">clear</button>
+		<button id="btn-calm" onclick="FT.setState('yellow')">calm</button>
+		<button id="btn-warn" onclick="FT.setState('yellow')">warn</button>
+		<button id="btn-panic" onclick="FT.setState('red')">panic</button>
+	</div>
+	<div class="log-wrap">
+		<textarea id="log"></textarea>
+	</div>
+</div>
+
+<img id="img-green" class="hide" src="resources/green.png" />
+<img id="img-red" class="hide" src="resources/red.png" />
+<img id="img-yellow" class="hide" src="resources/yellow.png" />
+
 <script>
-Laro.multiModule('fsm', 'resource', 'canvasRender','animationHandle', function () {
-    /**
-     * anim one
-     */
-     var animTest;
-     var AnimTest = Laro.Class(function (canvasID) {                       
-            this.canvasID = canvasID;
-            this.render = this.createRender();
-            this.animation = this.getAnimation();
-            this.loop = new Laro.Loop(this.update, this);
-            this.animation.play(false)
-            
-        }).methods({          
-            createRender: function () {
-                var oldCanvas = document.getElementById(this.canvasID);
-                var canvas = document.createElement('canvas');
-                canvas.width = window.innerWidth;
-                canvas.height = window.innerHeight;
-                canvas.id = this.canvasID;
-                
-                var render = new Laro.CanvasRender(canvas, 1, false);
-                oldCanvas.parentNode.replaceChild(canvas, oldCanvas);
-                
-                return render;
-            },
-            getAnimation: function () {
-                var anim = this._genAnimation();
-                return new Laro.AnimationHandle(anim); 
-            },
-            _genAnimation: function () {
-                var image = Laro.ResourceLoader.instance.loadImage(animData.filename);
-                var frames = [];
-                for (var i = 0; i < animData.data.length; i ++) {
-                    var source = animData.data[i];
-                    
-                    var width = source[2] - source[0] + 1;
-                    var height = source[3] - source[1] + 1;
-             
-                    var xOffset = source[0] - source[4];
-                    var yOffset = source[1] - source[5];
-             
-                    var textureWidth = xOffset + width + source[6] - source[2];
-                    var textureHeight = yOffset + height + source[7] - source[3];
-                    
-                    console.log(xOffset + width);
-                    
-                    frames.push(new Laro.ImageRegion(image, source[0], source[1], width, height, xOffset, yOffset, textureWidth, textureHeight));
+Laro.register('FT', function (La) {
+	var pkg = this;
+	var els = {};
+	
+	this.id = function (id) { return document.getElementById(id); }
+	this.textures = {
+		'green': pkg.id('img-green'),
+		'yellow': pkg.id('img-yellow'),
+		'red': pkg.id('img-red')
+	};
+	
+	this.init = function (id, w, h) {
+		this.cvsid = id;
+		this.w = w || 600;
+		this.h = h || 400;
+		this.canvas = this.id(id);
+		this.canvas.width = this.w;
+		this.canvas.height = this.h;
+		
+		this.getEls();
+		this.getRender();
+		this.fsm = new La.AppFSM(this, FT.states.list);
+		FT.log('Ready!');
+		this.setState('green');
+	};
+	this.getEls = function () {
+		els.clear = pkg.id('btn-clear');
+		els.calm = pkg.id('btn-calm');
+		els.warn = pkg.id('btn-warn');
+		els.panic = pkg.id('btn-panic');
+		els.ta = pkg.id('log');
+	};
+	this.getRender = function () {
+		this.render = new La.CanvasRender(this.canvas, 1, false);
+	}; 
+	this.setState = function (id) {
+		id = FT.states[id];
+		this.fsm.setState(id);
+		this.fsm.draw(this.render);
+		
+		els.clear.disabled = !FT.states.isAvailable('clear');
+		els.calm.disabled = !FT.states.isAvailable('calm');
+		els.warn.disabled = !FT.states.isAvailable('warn');
+		els.panic.disabled = !FT.states.isAvailable('panic');
+	};
 
-                }
-                
-                return new Laro.Animation(animInfo, frames);
-            },
-            update: function (dt) {
-                this.render.clear(this.render.white);
-                this.animation.update(dt); 
-                this.animation.draw(this.render, this.render.getWidth() / 2, this.render.getHeight() / 2, 0, 1, null);
-                
-                fsmTest.update && fsmTest.update(dt);
-            }
-        });
+	this.log = function (msg, sep) {
+		els.ta.value = ' > ' + msg + '\n' + (sep ? '\n' : '') + els.ta.value;
 
-    
-    Laro.register('fsmTest', function () {
-        var Class = Laro.Class,
-            BaseState = Laro.BaseState,
-            AppFSM = Laro.AppFSM,
-            pkgContext = this;
-        
-        var states = {
-            intro: 0,
-            fighterWait: 1,
-            fighterImpactBoxing: 2,
-            fighterWhirlKick: 3
-        };
-        
-        var IntroState = BaseState.extend(function () {
-            console.log('intro state init');
-        }).methods({
-            enter: function (msg, from) {
-                console.log('enter introState', msg, from);
-                        // loader
-                var loader = new Laro.ResourceLoader();
-                loader.preloadImages([
-                    animData.filename
-                ], loaderCallback);
-                Laro.ResourceLoader.instance = loader;
-                
-                function loaderCallback(p) {
-                    if (p == 1) {
-                        animTest = new AnimTest('canvas');
-                    }
-                }
-            },
-            suspended: function () {}
-        });
-        var FighterWait = BaseState.extend(function () {
-            console.log('wait init')
-        }).methods({
-            enter: function () { console.log('wait enter') },
-            suspended: function () {}
-        });
-        var FighterImpactBoxing = BaseState.extend();
-        var FighterWhirlKick = BaseState.extend();  
-        
-        var statesList = [
-            states.intro, IntroState,
-            states.fighterWait, FighterWait,
-            states.fighterImpactBoxing, FighterImpactBoxing,
-            states.fighterWhirlKick, FighterWhirlKick
-        ];
-        
-          
-        
-        this.fsm = new AppFSM(this, statesList);
-        this.newState = -1;
-        this.message = null;
-        
-        this.setState = function (state, msg, suspendCurrent) {
-            this.newState = state;
-            this.message = msg;
-            console.log(this.fsm.isSuspended(state))
+	}
+});
 
-            this.fsm.setState(state, msg, suspendCurrent);
+Laro.register('FT.states', function (La) {
+	var pkg = this;
+	
+	var Green = La.BaseState.extend().methods({
+		enter: function (msg, fromState) { 
+			FT.log('Enter State: green [from '+getStateName(fromState)+']', 1);
+		},
+		leave: function () {
+			FT.log('Leave State: green')
+		},
+		update: function (dt) {
+		},
+		draw: function (render) {
+			render.clear();
+			render.context.drawImage(FT.textures.green, 0, 0)
+		}
+	});
+	
+	var Yellow = La.BaseState.extend().methods({
+		enter: function (msg, fromState) {
+			FT.log('Enter State: yellow [from '+getStateName(fromState)+']', 1);
+		},
+		leave: function () {
+			FT.log('Leave State: yellow')
+		},
+		update: function (dt) {
+		},
+		draw: function (render) {
+			render.clear();
+			render.context.drawImage(FT.textures.yellow, 0, 0)
+		}
+	});
+	
+	var Red = La.BaseState.extend().methods({
+		enter: function (msg, fromState) {
+			FT.log('Enter State: red [from '+getStateName(fromState)+']', 1);
+		},
+		leave: function () {
+			FT.log('Leave State: red')
+		},
+		update: function (dt) {
+		},
+		draw: function (render) {
+			render.clear();
+			render.context.drawImage(FT.textures.red, 0, 0)
+		}
+	});
+	
+	function getStateName (id) {
+		for (var k in pkg) {
+			if (pkg[k] == id) {
+				return k;
+			}
+		}
+		return 'none';
+	};
+	
+	La.extend(pkg, {
+		'green': 0,
+		'yellow': 1,
+		'red': 2
+	});
+	
+	var judgeHash = {
+		green: {panic: 1, warn: 1},
+		yellow: {clear: 1, panic: 1},
+		red: {clear:1, calm: 1}
+	};
+	this.isAvailable = function (id) {
+		id = typeof id == 'number' ? getStateName(id) : id;
+		var cs = getStateName(FT.fsm.currentState);
 
-        }
-        this.update = function (dt) {
-           // this.fsm.tryChangeState(animTest && animTest.animation.isStopped(), Laro.FSM.kNextState)
-            console.log(animTest && animTest.animation.isStopped())
-        }
-        
-        Laro.use('resource', function () {            
-            // ResourceLoader test
-            // 主要功能是preloadImages
-            var loader = new Laro.ResourceLoader();
-            loader.preloadImages([
-                'fighter/RYU1_after_impact_boxing.gif',
-                'fighter/RYU1_after_whirl_kick.gif',
-                'fighter/RYU1_beAttacked_bottom.gif',
-                'fighter/RYU1_beAttacked_electric.gif',
-                'fighter/RYU1_beAttacked_fall.gif',
-                'fighter/RYU1_beAttacked_fire.gif',
-                'fighter/RYU1_beAttacked_heavy.gif',
-                'fighter/RYU1_beAttacked_impact.gif',
-                'fighter/RYU1_beAttacked_top.gif',
-                'fighter/RYU1_before_fall_down.gif',
-                'fighter/RYU1_before_whirl_kick.gif',
-                'fighter/RYU1_crouch.gif',
-                'fighter/RYU1_crouch_heavy_boxing.gif',
-                'fighter/RYU1_crouch_heavy_kick.gif',
-                'fighter/RYU1_crouch_light_boxing.gif',
-                'fighter/RYU1_crouch_light_kick.gif',
-                'fighter/RYU1_crouch_middle_boxing.gif',
-                'fighter/RYU1_crouch_middle_kick.gif',
-                'fighter/RYU1_fall_down.gif',
-                'fighter/RYU1_goBack.gif',
-                'fighter/RYU1_goForward.gif',
-                'fighter/RYU1_heavy_kick.gif',
-                'fighter/RYU1_impact_boxing.gif',
-                'fighter/RYU1_jump_back.gif',
-                'fighter/RYU1_jump_down.gif',
-            ], myCallback);
-            
-            function myCallback (progress) {
-                document.getElementById('canvas').innerHTML = progress*100 + '%';
-                if (progress == 1) {
-                    pkgContext.setState(states.intro);
-                }
-            }
-            
-        })
-        
-    });
+		return !!(judgeHash[cs][id]);
+	}
+	
+	this.list = [
+		pkg.green, Green,
+		pkg.yellow, Yellow,
+		pkg.red, Red
+	];
+});
 
-       
-})
+onload = function () { FT.init('canvas', 400, 275) }
 </script>
+</body>
+</html>

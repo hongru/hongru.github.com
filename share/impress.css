@@ -489,4 +489,9 @@ a:hover {
 	list-style: circle;
 	padding-left: 60px;
 }
-
+.my-list li {
+	-webkit-transition-duration: 1000ms;
+}
+.pointer li{
+	cursor: pointer;
+}

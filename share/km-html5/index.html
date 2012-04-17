@@ -37,35 +37,38 @@
 
     <div id="bored" class="step" data-x="-1000" data-y="-1500" data-rotate-x="20">
 		<h4>关于感性和理性的认知：</h4>
-		<ul>
-			<li>Web Workers</li>
-			<li>Sql-database</li>
-			<li>Storage</li>
-			
+		<ul class="my-list pointer">
+			<li data-flag="f">Web Workers</li>
+			<li data-flag="f">Sql-database</li>
+			<li data-flag="f">Storage</li>
+			<li data-flag="f">Offline</li>
+			<li data-flag="m">Video/Audio</li>
+			<li data-flag="f">Websocket</li>
+			<li data-flag="m">Canvas</li>
+			<li data-flag="f">File Api</li>
+			<li data-flag="f">History Api</li>
+			<li data-flag="f">Postmessage</li>
+			<li data-flag="f">Geolocation</li>
+			<li>...</li>
 		</ul>
-        <q><b class="r">相识，相恋</b>  相知，相许</q>
 
     </div>
 	
 	<div class="step" data-x="0" data-y="-1500" data-rotate-x="40" style="text-align:center">
-        <img src="images/2.jpg" />
+        About Canvas
     </div>
 
     <div class="step" data-x="1000" data-y="-1500" data-rotate-x="40">
-        <q>为什么会爱上她~~ <br/>
-			她有哪些迷人的地方？
-			
-		</q>
+        App? <br/>
+		Web Game?
     </div>
 
     <div class="step" data-x="1000" data-y="-1500" data-scale="2" data-rotate-x="130" style="text-align:center">
-		<img src="images/1.png" />
+		<img src="images/game.png" />
     </div>
 
-    <div id="title2" class="step" data-x="0" data-y="0" data-scale="4">
-        <span class="try">在没遇到她之前，我都不知道</span>
-        <h1><sup class="r">*</sup> 原来我的世界还可以这么立体</h1>
-        <span class="footnote"><sup class="r">*</sup> 原来我的世界可以这样的多姿多彩</span>
+    <div id="title2" class="step" data-x="0" data-y="-5000" data-scale="4" style="text-align:center">
+        <img src="images/game2.png" />
     </div>
 
     <div id="its" class="step" data-x="850" data-y="3000" data-rotate="90" data-scale="5">
@@ -149,5 +152,28 @@
 </div>
 -->
 
+<script>
+;(function () {
+	var qs = function (sel) { return document.querySelector(sel) };
+	
+	function bindBoredUl () {
+		var boredUl = qs('#bored .my-list');
+		boredUl.addEventListener('click', function (e) {
+			var tar = e.target;
+			if (tar.nodeName.toLowerCase() == 'li') {
+				var flag = tar.getAttribute('data-flag');
+				tar.style['color'] = flag == 'm' ? '#fa4a00' : '#999';
+			}
+		}, false);	
+	}
+	
+	return {
+		init: function () {
+			bindBoredUl();
+		}
+	};
+	
+})().init();
+</script>
 </body>
 </html>
