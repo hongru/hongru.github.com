@@ -143,18 +143,43 @@
         <img src="images/coll2.png" />
     </div>
 	
-	<div class="step" style="text-align: center" data-x="6000" data-y="4000" data-rotate="0" data-scale="0.5" >
+	<div class="step" style="text-align: center" data-x="4500" data-y="4000" data-rotate="0" data-scale="0.5" >
         <h4>那么，我们换个思路</h4>
 		<img src="images/coll3.png" />
     </div>
 	
-	<div class="step" style="text-align: center" data-x="6500" data-y="4000" data-rotate="0" data-scale="0.5" >
+	<div class="step" style="text-align: center" data-x="5000" data-y="4000" data-rotate="0" data-scale="0.5" >
         <ul style="font-size: 30px">
 			<li>line A: a1*x + b1 - y = 0</li>
 			<li>line B: a2*x + b2 - y = 0</li>
 		</ul>
 		<img src="images/coll4.png" /><br/>
 		<img src="images/coll5.png" />
+    </div>
+	
+	<div class="step" style="text-align: center" data-x="5500" data-y="4000" data-rotate="0" data-scale="0.5" >
+        <ul style="font-size: 30px">
+			<li>或者利用 三角 外积，类似的思路...</li>
+			<li style="color:#ccc">S_abc * S_abd < 0 </li>
+			<li style="color:#ccc">S_acd * S_bcd < 0</li>
+		</ul>
+		<img src="images/coll6.png" /><br/>
+		<img src="images/coll7.png" />
+		<pre style="text-align: left; color:#79AEDD;font-size:20px; width:700px; word-break:break-word; margin:0 auto">
+function signed2DTriArea(pointA, pointB, pointC) {
+    return ((pointA.x - pointC.x) * (pointB.y - pointC.y) 
+	        - (pointA.y - pointC.y) * (pointB.x - pointC.x));
+}		
+		</pre>
+    </div>
+	
+	<div class="step" style="text-align: center" data-x="5500" data-y="4000" data-rotate="0" data-scale="0.5" >
+		<pre style="text-align: left; color:#79AEDD;font-size:20px; width:700px; word-break:break-word; margin:0 auto">
+function signed2DTriArea(pointA, pointB, pointC) {
+    return ((pointA.x - pointC.x) * (pointB.y - pointC.y) 
+	        - (pointA.y - pointC.y) * (pointB.x - pointC.x));
+}		
+		</pre>
     </div>
 	
 
