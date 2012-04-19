@@ -22,13 +22,18 @@
 			display: inline-block;
 			min-width: 200px;
 			margin: 5px 0;
+			padding: 0 20px;
 		}
+		a {color: #FE9DDB; text-decoraion: none}
+		a:hover {color:#fa4a00; text-decoration:underline}
+		.red { color:#E2270A }
+		.blue {color:#1B64B4}
 	</style>
 </head>
 <body>
 
 <div id="impress" class="impress-not-supported">
-    <div id="title" class="step" data-x="-1500" data-y="-2200" data-scale="5" data-rotate-x="-40" data-rotate-y="10">
+    <div id="title" class="step" style="width:600px; margin:0 auto" data-x="-1500" data-y="-2200" data-scale="5" data-rotate-x="-40" data-rotate-y="10">
         <h1>HTML5<sup class="r">*</sup></h1>
 		<h2>- 走近曾遥远的梦</h2>
     </div>
@@ -173,38 +178,162 @@ function signed2DTriArea(pointA, pointB, pointC) {
 		</pre>
     </div>
 	
-	<div class="step" style="text-align: center" data-x="5500" data-y="4000" data-rotate="0" data-scale="0.5" >
-		<pre style="text-align: left; color:#79AEDD;font-size:20px; width:700px; word-break:break-word; margin:0 auto">
-function signed2DTriArea(pointA, pointB, pointC) {
-    return ((pointA.x - pointC.x) * (pointB.y - pointC.y) 
-	        - (pointA.y - pointC.y) * (pointB.x - pointC.x));
-}		
-		</pre>
-    </div>
-	
-
-	<div class="step" data-x="5000" data-y="2325" data-z="-4000" data-rotate="0" data-scale="0.5" >
-        <h2>Laro Test Cases</h2>
-		<ul class="my-list">
-			<li><a target="_blank" href="http://hongru.github.com/proj/laro/test/canvas.transform.html">Canvas Transform</a></li>
-			<li><a target="_blank" href="http://hongru.github.com/proj/laro/test/laro.chaikin_curve.html">Chaikin Curve</a></li>
-			<li><a target="_blank" href="http://hongru.github.com/proj/laro/test/laro.animation.html">Laro Animation</a></li>
-			<li><a target="_blank" href="http://hongru.github.com/proj/laro/test/laro.background.html">Laro Background</a></li>
-			<li><a target="_blank" href="http://hongru.github.com/proj/laro/test/laro.fighter2.html">Laro Animation 2</a></li>
-			<li><a target="_blank" href="http://hongru.github.com/proj/laro/test/laro.resource.html">Laro Resource Loader</a></li>
-			<li><a target="_blank" style="color:#59BD0C" href="http://hongru.github.com/proj/laro/examples/emberwind/">Demo 1</a></li>
-			<li><a target="_blank" style="color:#59BD0C" href="http://hongru.github.com/proj/laro/examples/typeshot/index.html">Demo 2</a></li>
-		</ul>
-		
-    </div>
-	
-	<div class="step" data-x="4000" data-y="2325" data-z="-4000" data-rotate="0" data-scale="0.5" >
+	<div class="step" style="text-align: center" data-x="6000" data-y="4000" data-rotate="0" data-scale="0.5" >
+		简单的，比如：
 		<ul>
-			<li>关于有限状态机FSM</li>
-			<li>Game Editor [to be continue...]</li>
+			<li><a href="http://hongru.github.com/proj/laro/test/laro.collision.test2.html" target="_blank">Simple Collision 1</a></li>
+			<li><a href="http://hongru.github.com/proj/laro/test/laro.collision.test3.html" target="_blank">Simple Collision 2</a></li>
 		</ul>
     </div>
 	
+	<div class="step" style="text-align: center" data-x="-2000" data-y="4500" data-rotate="180" data-scale="1" >
+		Web Game - <span class="red">红海</span> or <span class="blue">蓝海</span>？
+    </div>
+	
+	<div class="step" style="text-align: center" data-x="4000" data-y="-5000" data-rotate="0" data-scale="14" >
+		About 3D
+    </div>
+	
+	<div class="step" style="text-align: center" data-x="6400" data-y="-5000" data-rotate="0" data-scale="1" >
+		WebGL <span class="red">or</span> not ?
+    </div>
+
+	<div class="step" style="text-align: center" data-x="7000" data-y="-5000" data-rotate="0" data-scale="1" >
+		<span class="blue">Google ?</span>
+    </div>
+	
+	<div class="step" style="width:400px; margin:0 auto" data-x="7500" data-y="-5000" data-rotate="0" data-scale="1" >
+		<h2>For Example</h2>
+		<ul class="my-list">
+			<li>No WebGL
+				<ul class="my-list">
+					<li><a href="http://hongru.github.com/proj/laro/examples/jxhome/" target="_blank">JxHome</a></li>
+					<li><a href="http://hongru.github.com/share/3D/clock.html" target="_blank">Clock</a></li>
+					<li><a href="http://hongru.github.com/share/3D/math2.html" target="_blank">Math 1</a></li>
+					<li><a href="http://hongru.github.com/share/3D/math4.html" target="_blank">Math 2</a></li>
+				</ul>
+			</li>
+			<li>WebGL
+				<ul class="my-list">
+					<li><a href="http://hongru.github.com/share/3D/webgl/cube_texture.html" target="_blank">Cube</a></li>
+					<li><a href="http://hongru.github.com/share/3D/webgl/sandy.room.html" target="_blank">Room</a></li>
+				</ul>
+			</li>
+		</ul>
+    </div>
+	
+	<div class="step" style="text-align: center" data-x="8000" data-y="-5000" data-rotate="0" data-scale="1" >
+		<h2>Step by Step</h2>
+		<img alt="" src="images/1.gif" />
+    </div>
+	
+	<div class="step" style="text-align: center" data-x="8500" data-y="-5000" data-rotate="0" data-scale="1" >
+		<h2><a href="http://hongru.github.com/share/3D/rotate3D.html" target="_blank">Scale Demo</a></h2>
+		<img alt="" src="images/2.jpg" />
+    </div>
+	
+	<div class="step" style="text-align: center" data-x="9000" data-y="-5000" data-rotate="0" data-scale="1" >
+		<h2>三维旋转</h2>
+		<img alt="" src="images/3.png" style="background:#fff" />
+    </div>
+	
+	<div class="step" style="text-align: center" data-x="10000" data-y="-5000" data-rotate="0" data-scale="1" >
+		<h2>三维旋转后降到二维</h2>
+		<img alt="" src="images/5.png" style="background:#fff" />
+    </div>
+	
+	<div class="step" style="text-align: center" data-x="10000" data-y="-4000" data-rotate="90" data-scale="1" >
+		<h2>Go Easy :)</h2>
+		<ul class="dme">
+			<li>
+				<a class="bga" href="http://hongru.github.com/share/3D/rotate3D_Y.html" target="_blank">绕y轴旋转</a>
+			</li>
+			<li>
+				<a class="bga" href="http://hongru.github.com/share/3D/rotate3D_XY.html" target="_blank">绕x,y轴旋转</a>
+			</li>
+		</ul>
+    </div>
+	
+	<div class="step" style="text-align: center" data-x="10000" data-y="-3500" data-rotate="90" data-scale="1" >
+		<h2>Next Step</h2>
+		<ul class="dme">
+			<li>
+				<a class="bga" href="http://hongru.github.com/share/3D/rotate3D_lines.html" target="_blank">由点到线</a>
+			</li>
+			<li>
+				<a class="bga" href="http://hongru.github.com/share/3D/cube3.html" target="_blank">由线到面</a>
+			</li>
+		</ul>
+    </div>
+	
+	<div class="step" style="text-align: center" data-x="10000" data-y="-3000" data-rotate="90" data-scale="1" >
+		<h2>Next Step</h2>
+		<ul class="dme">
+			<li>
+				<a class="bga" href="http://hongru.github.com/share/3D/vanish_point.html" target="_blank">Vanish Point(视线消逝点)</a>
+			</li>
+			<li>
+				<a class="bga" href="http://hongru.github.com/share/3D/view_point.html" target="_blank">View Point(观察点)</a>
+			</li>
+		</ul>
+    </div>
+	
+	<div class="step" style="text-align: center" data-x="10000" data-y="0" data-rotate="90" data-scale="15" >
+		<h2>About WebGL</h2>
+    </div>
+	
+	<div class="step" style="text-align: center" data-x="10000" data-y="3000" data-rotate="90" data-scale="1" >
+		<ul class="dme">
+			<li>
+				<a class="bga" href="http://www.khronos.org/registry/gles/specs/2.0/GLSL_ES_Specification_1.0.17.pdf" target="_blank">OpenGL ES</a>
+			</li>
+			<li>
+				<a class="bga" href="http://hongru.github.com/share/3D/webgl/gl_flow.html" target="_blank">gl_flow Docs</a>
+			</li>
+		</ul>
+    </div>
+	
+	<div class="step" style="text-align: center" data-x="10000" data-y="3500" data-rotate="90" data-scale="1" >
+		<ul class="dme">
+			<li>
+				<a class="bga" href="http://learningwebgl.com/" target="_blank">http://learningwebgl.com/</a>
+			</li>
+		</ul>
+    </div>
+	
+	<div class="step" style="text-align: center" data-x="10000" data-y="4000" data-rotate="90" data-scale="1" >
+		<h2>关于光照的处理</h2>
+		<ul class="dme">
+			<li>
+				<a class="bga" href="http://hongru.github.com/share/3D/webgl/intro_lighting.html" target="_blank">冯氏反射模型</a>
+			</li>
+			<li>
+				<a class="bga" href="http://hongru.github.com/share/3D/webgl/lighting.html" target="_blank">Example</a>
+			</li>
+		</ul>
+    </div>
+	
+	<div class="step" style="text-align: center" data-x="10000" data-y="5000" data-rotate="90" data-scale="1" >
+		<h2>webGL 的优势</h2>
+		<ul class="dme">
+			<li>
+				GPU并行计算
+			</li>
+			<li>
+				对纹理的处理
+			</li>
+			<li>More ...</li>
+		</ul>
+    </div>
+	
+	<div class="step" style="text-align: center" data-x="10000" data-y="6000" data-rotate="90" data-scale="1" >
+		<h2>WebGL 除了3D之外，还能做什么？</h2>
+		<ul class="dme">
+			<li>
+				<a class="bga" href="http://hongru.github.com/test/FiPhoto/fiphoto.html" target="_blank">Mr.Photo</a>
+			</li>
+		</ul>
+    </div>
 
     <div id="overview" class="step" data-x="3000" data-y="1500" data-scale="20" style="font-family: 'PT Serif', georgia, serif;color:#ff4a00;"> Thanks
     </div>
