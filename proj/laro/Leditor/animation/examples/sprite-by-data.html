@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<meta charset="utf-8" />
+<script src="../../../build/laro.0.2.js"></script>
+<script src="../../js/leditor.js"></script>
+
+<canvas id="canvas" width="600" height="400"></canvas>
+<script src="g_data.js"></script>
+<script>
+Laro.register('ST', function (La) {
+	var pkg = this;
+	var images = [
+		'RYU2_wait.gif',
+		'RYU2_light_kick.gif'
+	];
+	function loadCallback (p) {
+		if (p >= 1) { pkg.done(); }
+	}
+	
+	this.init = function () {
+		this.render = new La.CanvasRender(document.getElementById('canvas'), 1, false);
+		this.loader = new La.ResourceLoader('images/');
+		this.loader.preload(images, loadCallback)	
+	};
+	this.done = function () {
+		La.$lea.setLoader(this.loader);
+		La.$lea.setSourceObj(g_data);
+		
+		this.sprite = La.$lea.getAnimation('kick');
+		this.looper = new La.Loop(this.tick, this);
+		this.sprite.play();
+	};
+	this.tick = function (dt) {
+		this.update(dt);
+		this.draw(this.render);
+	};
+	this.update = function (dt) {
+		this.sprite.update(dt);
+	};
+	this.draw = function (render) { 
+		render.clear();
+		this.sprite.draw(render, render.getWidth()/2, render.getHeight()/2, 0, 1, false);
+	}
+});
+
+ST.init();
+</script>
+</html>
