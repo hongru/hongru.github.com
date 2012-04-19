@@ -95,6 +95,11 @@ canvas {
 }
 .fl {float: left}
 .fr {float: right}
+.reset-btn-wrap {
+	width: 600px;
+	margin: 0 auto;
+	text-align: right;
+}
 </style>
 </head>
 
@@ -112,6 +117,7 @@ canvas {
 		</div>
 		
 		<div id="edit-area" class="edit-area hide">
+			
 			<canvas id="frame-canvas"></canvas>
 			<div class="ea-show">
 				<ul class="ea-setting">
@@ -139,6 +145,7 @@ canvas {
 				
 				</div>
 			</div>
+			<div class="reset-btn-wrap"><button id="reset-btn">Reset</button></div>
 		</div>
 		
 		<div id="output-wrap" class="output-wrap hide">
@@ -175,6 +182,7 @@ Leta.NS('LAE', function ($L) {
 		els.$btngo = $('#btn-go');
 		els.$aname = $('#anim-name');
 		els.$filename = $('#filename');
+		els.$reset = $('#reset-btn');
 		
 		els.$animData = $('#anim-data');
 		
@@ -195,8 +203,24 @@ Leta.NS('LAE', function ($L) {
 		$E.on(els.$fsel[0], 'change', function (e) {
 			//alert($(this).val())
 			pkg.setPivotDefaultValue();
-		})
+		});
+		$E.on(els.$reset[0], 'click', function (e) {
+			pkg.reset();
+		});
 	};
+	
+	this.reset = function () {
+		LAE.test && LAE.test.looper && LAE.test.looper.stop();
+		LAE.test && LAE.test.render && LAE.test.render.clear();
+		
+		$('.tab-wrap').show('block');
+		els.$ea.hide();
+		$('#output-wrap').hide();
+		els.$fnum.val('');
+		els.$pivotx.val('');
+		els.$pivoty.val('');
+	};
+	
 	this.setPivotDefaultValue = function () {
 		if (els.$fsel.val() == 'h') {
 			unitH = picH;
