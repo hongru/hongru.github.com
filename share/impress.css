@@ -111,7 +111,7 @@ a.bga:hover {
 }
 
 .step:not(.active) {
-    opacity: 0.1;
+    opacity: 0;
 }
 
 /* STEP SPECIFIC STYLES */
