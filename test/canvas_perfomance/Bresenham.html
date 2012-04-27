@@ -1,0 +1,222 @@
+<html>
+<body>
+<div id="fps"></div>
+<script>
+	var circles = [];
+
+	var height, width, imageData;
+
+	var canvas,timerid;
+
+	var linePi;
+	
+	var lastT = (+ new Date);
+
+	function init() {
+		canvas = document.createElement("canvas");
+
+		canvas.width = 500;
+
+		canvas.height = 500;
+
+		width = 500;
+
+		height = 500;
+
+		linePi = width * 4;
+
+		document.body.appendChild(canvas);
+
+		var x,y,vx,vy,r;
+
+		for(var i = 0; i<10000; i++) {
+
+			x = parseInt(Math.random() * 500);
+
+			y = parseInt(Math.random() * 500);
+
+			vx = parseInt(Math.random() * 4 - 2);
+
+			vy = parseInt(Math.random() * 4 - 2);
+
+			r = 2;
+
+			circles.push({x: x, y:y, vx:vx, vy: vy, radius: r});
+
+		}
+
+	}
+
+	
+
+	function drawSence() {
+		var nt = +new Date;
+		var tt = nt - lastT;
+		lastT = nt;
+		document.getElementById('fps').innerHTML = Math.floor(1000/tt);
+		drawCircle(canvas, circles);
+
+		if(timerid) {
+
+			clearTimeout(timerid);
+
+		}		
+
+		timerid = setTimeout(drawSence,0);
+
+	}
+
+	
+
+	function drawCircle(canvas,circles) {
+
+		var cxt= canvas.getContext("2d");
+
+		cxt.clearRect(0, 0, width, height);
+
+		var data = cxt.getImageData(0, 0,width, height);
+
+		imageData = data.data;
+
+		for(var i =0, len = circles.length; i<len; i++) {
+
+			var circle = circles[i];
+
+			drawC(circle.x, circle.y, circle.radius, 20);			
+
+			circle.x += circle.vx;
+
+			circle.y += circle.vy;
+
+			if(circle.x < 5){
+
+				circle.x = 5;
+
+				circle.vx *= -1;
+
+			}else if(circle.x > 495){
+
+				circle.x = 495;
+
+				circle.vx *= -1;
+
+			}
+
+			if(circle.y < 5){
+
+				circle.y = 5;
+
+				circle.vy *= -1;
+
+			}else if(circle.y > 495){
+
+				circle.y = 495;
+
+				circle.vy *= -1;
+
+			}
+
+		}
+
+		cxt.putImageData(data, 0, 0);
+
+	}
+
+
+
+
+
+	// 中点画圆法
+
+	function drawC(x, y, r, color) {
+
+		var tx = 0, ty = r, d = 1 - r;
+
+
+
+		while(tx <= ty){
+
+			// 利用圆的八分对称性画点
+
+			putpixel(x + tx, y + ty, color);
+
+			putpixel(x + tx, y - ty, color);
+
+			putpixel(x - tx, y + ty, color);
+
+			putpixel(x - tx, y - ty, color);
+
+			putpixel(x + ty, y + tx, color);
+
+			putpixel(x + ty, y - tx, color);
+
+			putpixel(x - ty, y + tx, color);
+
+			putpixel(x - ty, y - tx, color);
+
+
+
+			if(d < 0){
+
+				d += 2 * tx + 3;
+
+			}else{
+
+				d += 2 * (tx - ty) + 5;
+
+				ty--;
+
+			}
+
+			
+
+			tx++;
+
+		}
+
+	}
+
+
+
+	function putpixel(x, y, color){
+
+		var index = getStartIndex(x, y);
+
+		imageData[index + 3] = 255;
+
+	}
+
+
+
+	function getStartIndex(x, y) {
+
+		return y * linePi + x * 4;
+
+	}
+
+	
+
+	function begin() {
+
+		if(!canvas){
+
+			init();
+
+		}
+
+		drawSence();
+
+	}
+
+	
+
+	function stop() {
+
+		clearTimeout(timerid);
+
+	}
+
+	onload = begin;
+</script>
+</body>
+</html>

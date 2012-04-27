@@ -382,6 +382,7 @@ $.NS('FiPhoto', function () {
 	
 	function generateCanvas(succFunc, errFunc) {
 		pkg.$con = $('#container');
+		pkg.$fxCon = $('#fx-container');
 		pkg.$wrap = pkg.$con.parent();
 		pkg.$imgWrap = $('#image-wrap');
 		pkg.$tabWrap = $('#fx-tab-container');
@@ -453,13 +454,13 @@ $.NS('FiPhoto', function () {
 	this.init = function () {
 		generateCanvas(_init, errCallback);
 		FiPhoto.operation.init();
-		/*
+		
 		FiPhoto.tab.init();
 		FiPhoto.toolbar.init();
 		FiPhoto.cut.init();
 		FiPhoto.roll.init();
 		FiPhoto.share.init();
-		*/
+		
 	};
 	this.setMode = function (mode) {
 		if (mode == undefined) {
@@ -552,12 +553,12 @@ $.NS('FiPhoto', function () {
 			FiPhoto.toolbar.show();
 		})
 		//$(pkg.image).hide();
-		/*
+		
 		FiPhoto.fx[type]();
 		FiPhoto.tab.show();
 		FiPhoto.tab.update(type);
 		FiPhoto.toolbar.show();
-		*/
+		
 	};
 	
 	// save image
@@ -680,6 +681,8 @@ $.NS('FiPhoto.operation', function () {
 					case 'scale':
 						pkg.toggleScaleBtn($(el));
 						break;
+					case 'next':
+						FiPhoto.setFx('normal', pkg.cvs.toDataURL())
 				}
 			}
 			
@@ -954,7 +957,10 @@ $.NS('FiPhoto.fx', function () {
 		function imgLoadCallback () {
 			var texture = canvas.texture(image);
 			canvas.draw(texture).brightnessContrast(0, 0).update();
-			FiPhoto.$con.empty().append(canvas);
+			
+			FiPhoto.$con.hide();
+			FiPhoto.$fxCon.empty().append(canvas);
+			FiPhoto.$fxCon.show();
 			
 			var ww = Math.max(800, canvas.width + 100);
 			FiPhoto.$doc.animate({width: ww}, function () {
@@ -980,7 +986,10 @@ $.NS('FiPhoto.fx', function () {
 			canvas.draw(texture).sepia(0.4).update();
 			texture = canvas.texture(canvas);
 			canvas.draw(texture).vignette(0.2, 0.4).update();
-			FiPhoto.$con.empty().append(canvas);
+			
+			FiPhoto.$con.hide();
+			FiPhoto.$fxCon.empty().append(canvas);
+			FiPhoto.$fxCon.show();
 		}
 		if (image.complete) {
 			setTimeout(imgLoadCallback, 0)
@@ -1001,7 +1010,10 @@ $.NS('FiPhoto.fx', function () {
 			canvas.draw(texture).sepia(0.6).update();
 			texture = canvas.texture(canvas);
 			canvas.draw(texture).vignette(0.12, 0.4).update();
-			FiPhoto.$con.empty().append(canvas);
+			
+			FiPhoto.$con.hide();
+			FiPhoto.$fxCon.empty().append(canvas);
+			FiPhoto.$fxCon.show();
 		}    
 		if (image.complete) {
 			setTimeout(imgLoadCallback, 0)
@@ -1019,7 +1031,10 @@ $.NS('FiPhoto.fx', function () {
 			canvas.draw(texture).hueSaturation(0, 0.15).update();
 			texture = canvas.texture(canvas);
 			canvas.draw(texture).vignette(0.2, 0.5).update();
-			FiPhoto.$con.empty().append(canvas);
+			
+			FiPhoto.$con.hide();
+			FiPhoto.$fxCon.empty().append(canvas);
+			FiPhoto.$fxCon.show();
 		}    
 		if (image.complete) {
 			setTimeout(imgLoadCallback, 0)
@@ -1037,7 +1052,10 @@ $.NS('FiPhoto.fx', function () {
 			canvas.draw(texture).hueSaturation(0, 0.2).update();
 			texture = canvas.texture(canvas);
 			canvas.draw(texture).vignette(0, 0.5).update();
-			FiPhoto.$con.empty().append(canvas);
+			
+			FiPhoto.$con.hide();
+			FiPhoto.$fxCon.empty().append(canvas);
+			FiPhoto.$fxCon.show();
 		}    
 		if (image.complete) {
 			setTimeout(imgLoadCallback, 0)
@@ -1057,7 +1075,10 @@ $.NS('FiPhoto.fx', function () {
 			canvas.draw(texture).sepia(0.4).update();
 			texture = canvas.texture(canvas);
 			canvas.draw(texture).vignette(0, 0.5).update();
-			FiPhoto.$con.empty().append(canvas);
+			
+			FiPhoto.$con.hide();
+			FiPhoto.$fxCon.empty().append(canvas);
+			FiPhoto.$fxCon.show();
 		}    
 		if (image.complete) {
 			setTimeout(imgLoadCallback, 0)
@@ -1075,7 +1096,10 @@ $.NS('FiPhoto.fx', function () {
 			canvas.draw(texture).hueSaturation(0, -1).update();
 			texture = canvas.texture(canvas);
 			canvas.draw(texture).vignette(0.15, 0.5).update();
-			FiPhoto.$con.empty().append(canvas);
+			
+			FiPhoto.$con.hide();
+			FiPhoto.$fxCon.empty().append(canvas);
+			FiPhoto.$fxCon.show();
 		}    
 		if (image.complete) {
 			setTimeout(imgLoadCallback, 0)

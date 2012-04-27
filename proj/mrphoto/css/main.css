@@ -22,6 +22,11 @@ body {
 	left: -6px;
 	top: 80px;
 }
+.fx-wrap canvas {
+	position: absolute;
+	left: 1px;
+	top: 1px;
+}
 .mode li {
 	margin-bottom: 10px;
 	line-height: 40px;
@@ -216,7 +221,7 @@ h1 {
 .btn2 {
 	display: inline-block;
 	background-repeat: none;
-	background-image: url(../images/btn2.png);
+	background-image: url(../images/btn2_03.png);
 	background-position: 0 0;
 	width: 130px;
 	height: 48px;
