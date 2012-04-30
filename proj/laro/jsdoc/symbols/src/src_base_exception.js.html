@@ -1,0 +1,121 @@
+<html><head><meta http-equiv="content-type" content="text/html; charset=utf-8"> <style>
+	.KEYW {color: #933;}
+	.COMM {color: #bbb; font-style: italic;}
+	.NUMB {color: #393;}
+	.STRN {color: #393;}
+	.REGX {color: #339;}
+	.line {border-right: 1px dotted #666; color: #666; font-style: normal;}
+	</style></head><body><pre><span class='line'>  1</span> <span class="COMM">/** 
+<span class='line'>  2</span>  * Laro (Game Engine Based on Canvas) 
+<span class='line'>  3</span>  * Code licensed under the MIT License:
+<span class='line'>  4</span>  *
+<span class='line'>  5</span>  * @fileOverview Laro
+<span class='line'>  6</span>  * @version 1.0
+<span class='line'>  7</span>  * @author  Hongru
+<span class='line'>  8</span>  * @description 
+<span class='line'>  9</span>  * 
+<span class='line'> 10</span>  */</span><span class="WHIT">
+<span class='line'> 11</span> </span><span class="WHIT"> </span><span class="WHIT">
+<span class='line'> 12</span> </span><span class="COMM">/** 
+<span class='line'> 13</span>  * @description
+<span class='line'> 14</span>  * Package: Laro.err
+<span class='line'> 15</span>  */</span><span class="WHIT">
+<span class='line'> 16</span> 
+<span class='line'> 17</span> </span><span class="NAME">Laro.register</span><span class="PUNC">(</span><span class="STRN">'.err'</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="NAME">La</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'> 18</span> </span><span class="WHIT">	</span><span class="WHIT">
+<span class='line'> 19</span> </span><span class="WHIT">	</span><span class="COMM">/**
+<span class='line'> 20</span>      * RuntimeException类
+<span class='line'> 21</span>      * @class 
+<span class='line'> 22</span> 
+<span class='line'> 23</span> 	 * @memberOf Laro
+<span class='line'> 24</span>      * @name RuntimeException
+<span class='line'> 25</span>      * @constructor
+<span class='line'> 26</span>      * 
+<span class='line'> 27</span>      * @param {String} msg: 错误信息
+<span class='line'> 28</span> 
+<span class='line'> 29</span>      * @return RuntimeException类 实例
+<span class='line'> 30</span>      */</span><span class="WHIT">
+<span class='line'> 31</span> </span><span class="WHIT">	</span><span class="COMM">/* runtime Error 扩展 */</span><span class="WHIT">
+<span class='line'> 32</span> </span><span class="WHIT">	</span><span class="KEYW">function</span><span class="WHIT"> </span><span class="NAME">RuntimeException</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="NAME">msg</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'> 33</span> </span><span class="WHIT">		</span><span class="NAME">this.assign</span><span class="PUNC">(</span><span class="NAME">msg</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 34</span> </span><span class="WHIT">	</span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'> 35</span> 
+<span class='line'> 36</span> </span><span class="WHIT">	</span><span class="NAME">RuntimeException.prototype</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="KEYW">new</span><span class="WHIT"> </span><span class="NAME">Error</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 37</span> </span><span class="WHIT">	</span><span class="NAME">RuntimeException.prototype.constructor</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">RuntimeException</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 38</span> </span><span class="WHIT">	</span><span class="WHIT">
+<span class='line'> 39</span> </span><span class="WHIT">	</span><span class="COMM">/**
+<span class='line'> 40</span>      * @lends Laro.RuntimeException.prototype
+<span class='line'> 41</span>      */</span><span class="WHIT"> </span><span class="WHIT">
+<span class='line'> 42</span> </span><span class="WHIT">	</span><span class="NAME">RuntimeException.prototype.assign</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="NAME">msg</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'> 43</span> </span><span class="WHIT">		</span><span class="NAME">this.message</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">msg</span><span class="WHIT"> </span><span class="PUNC">===</span><span class="WHIT"> </span><span class="NAME">undefined</span><span class="WHIT"> </span><span class="PUNC">?</span><span class="WHIT"> </span><span class="STRN">''</span><span class="WHIT"> </span><span class="PUNC">:</span><span class="WHIT"> </span><span class="NAME">msg</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 44</span> </span><span class="WHIT">	</span><span class="PUNC">}</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 45</span> 
+<span class='line'> 46</span> </span><span class="WHIT">	</span><span class="COMM">/**
+<span class='line'> 47</span>      * AssertionError
+<span class='line'> 48</span>      * @class 
+<span class='line'> 49</span> 
+<span class='line'> 50</span> 	 * @memberOf Laro
+<span class='line'> 51</span>      * @name AssertionError
+<span class='line'> 52</span>      * @constructor
+<span class='line'> 53</span> 	 * @extends Laro.RuntimeException
+<span class='line'> 54</span>      * 
+<span class='line'> 55</span>      * @param {String} msg: 错误信息
+<span class='line'> 56</span> 
+<span class='line'> 57</span>      * @return AssertionError 实例
+<span class='line'> 58</span>      */</span><span class="WHIT">
+<span class='line'> 59</span> </span><span class="WHIT">	</span><span class="COMM">/* AssertionError */</span><span class="WHIT">
+<span class='line'> 60</span> </span><span class="WHIT">	</span><span class="KEYW">function</span><span class="WHIT"> </span><span class="NAME">AssertionError</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="NAME">msg</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'> 61</span> </span><span class="WHIT">		</span><span class="NAME">this.assign</span><span class="PUNC">(</span><span class="NAME">msg</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 62</span> </span><span class="WHIT">	</span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'> 63</span> 
+<span class='line'> 64</span> </span><span class="WHIT">	</span><span class="NAME">AssertionError.prototype</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="KEYW">new</span><span class="WHIT"> </span><span class="NAME">RuntimeException</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 65</span> </span><span class="WHIT">	</span><span class="NAME">AssertionError.prototype.constructor</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">AssertionError</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 66</span> 
+<span class='line'> 67</span> </span><span class="WHIT">	</span><span class="COMM">/**
+<span class='line'> 68</span>      * Exception
+<span class='line'> 69</span>      * @class 
+<span class='line'> 70</span> 
+<span class='line'> 71</span> 	 * @memberOf Laro
+<span class='line'> 72</span>      * @name Exception
+<span class='line'> 73</span>      * @constructor
+<span class='line'> 74</span> 	 * @extends Laro.RuntimeException
+<span class='line'> 75</span>      * 
+<span class='line'> 76</span>      * @param {String} msg: 错误信息
+<span class='line'> 77</span> 
+<span class='line'> 78</span>      * @return Exception 实例
+<span class='line'> 79</span>      */</span><span class="WHIT">
+<span class='line'> 80</span> </span><span class="WHIT">	</span><span class="COMM">/* Exception */</span><span class="WHIT">
+<span class='line'> 81</span> </span><span class="WHIT">	</span><span class="KEYW">function</span><span class="WHIT"> </span><span class="NAME">Exception</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="NAME">msg</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'> 82</span> </span><span class="WHIT">		</span><span class="NAME">this.assign</span><span class="PUNC">(</span><span class="NAME">msg</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 83</span> </span><span class="WHIT">	</span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'> 84</span> 
+<span class='line'> 85</span> </span><span class="WHIT">	</span><span class="NAME">Exception.prototype</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="KEYW">new</span><span class="WHIT"> </span><span class="NAME">RuntimeException</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 86</span> </span><span class="WHIT">	</span><span class="NAME">Exception.prototype.constructor</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">Exception</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 87</span> 
+<span class='line'> 88</span> </span><span class="WHIT">	</span><span class="WHIT">
+<span class='line'> 89</span> </span><span class="WHIT">	</span><span class="COMM">/**
+<span class='line'> 90</span>      * 根据条件抛异常
+<span class='line'> 91</span>      * 
+<span class='line'> 92</span>      * @memberOf Laro
+<span class='line'> 93</span>      * @function
+<span class='line'> 94</span>      * 
+<span class='line'> 95</span>      * @param {Boolean} condition: 抛异常的条件
+<span class='line'> 96</span>      * @param {String} msg: 异常信息
+<span class='line'> 97</span>      * @return AssertionError 实例
+<span class='line'> 98</span>      */</span><span class="WHIT">
+<span class='line'> 99</span> </span><span class="WHIT">	</span><span class="COMM">/* interface */</span><span class="WHIT">
+<span class='line'>100</span> </span><span class="WHIT">	</span><span class="COMM">// 根据条件抛异常</span><span class="WHIT">
+<span class='line'>101</span> </span><span class="WHIT">	</span><span class="NAME">this.assert</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="NAME">condition</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">msg</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>102</span> </span><span class="WHIT">		</span><span class="KEYW">if</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="PUNC">!</span><span class="NAME">condition</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>103</span> </span><span class="WHIT">			</span><span class="KEYW">throw</span><span class="WHIT"> </span><span class="KEYW">new</span><span class="WHIT"> </span><span class="NAME">AssertionError</span><span class="PUNC">(</span><span class="NAME">msg</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>104</span> </span><span class="WHIT">		</span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'>105</span> </span><span class="WHIT">	</span><span class="PUNC">}</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>106</span> </span><span class="WHIT">	</span><span class="NAME">this.RuntimeException</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">RuntimeException</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>107</span> </span><span class="WHIT">	</span><span class="NAME">this.AssertionError</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">AssertionError</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>108</span> </span><span class="WHIT">	</span><span class="NAME">this.Exception</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">Exception</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>109</span> </span><span class="WHIT">    </span><span class="WHIT">
+<span class='line'>110</span> </span><span class="WHIT">    </span><span class="COMM">// export to Laro</span><span class="WHIT">
+<span class='line'>111</span> </span><span class="WHIT">    </span><span class="NAME">Laro.extend</span><span class="PUNC">(</span><span class="KEYW">this</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>112</span> 
+<span class='line'>113</span> </span><span class="PUNC">}</span><span class="PUNC">)</span><span class="WHIT">
+<span class='line'>114</span> </span></pre></body></html>
