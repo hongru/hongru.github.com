@@ -91,7 +91,7 @@ h1 {
 	border-bottom: 1px solid #424346;
 	border-top: 1px solid #18181A;
 	-webkit-border-radius: 4px;
-	margin-bottom: 68px;
+	margin-bottom: 30px;
 	text-align: center;
 	position: relative;
 }
@@ -132,7 +132,8 @@ h1 {
 	display: none;
 }
 
-.edit-area {
+.edit-area,
+.filter-area {
     position: relative;
     overflow: hidden;
     min-height: 175px;
@@ -175,6 +176,11 @@ h1 {
     width: 564px;
     height: 34px;
     background: url(../images/edit_03.png) no-repeat;
+}
+.ea-title.filter {
+	height: 28px;
+	background: url(../images/fi-title.png) no-repeat 50% 50%;
+	margin-bottom: 20px;
 }
 
 .limit {
@@ -268,4 +274,36 @@ h1 {
 	left: 50%;
 	margin-left: -160px;
 	display: none;
+}
+.fx-tab li {
+	display: inline-block;
+	background: url(../images/fx-btn.png) no-repeat 50% 50%;
+	width: 80px;
+	height: 80px;
+	text-indent: -9999px;
+	margin: 0 6px;
+	
+}
+.fx-tab ul {
+	text-align: center;
+}
+.toolbar {
+	text-align: center;
+	padding: 60px 0;
+}
+.save-btn {
+	width: 112px;
+	height: 40px;
+	background-image: url(../images/ss.png);
+	background-repeat: no-repeat;
+	background-position: 0 0;
+	display: inline-block;
+	text-indent: -9999px;
+	overflow: hidden;
+}
+.save-btn:hover {
+	background-position: -132px 0;
+}
+.save-btn:active {
+	
 }

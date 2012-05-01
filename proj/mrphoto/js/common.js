@@ -547,17 +547,15 @@ $.NS('FiPhoto', function () {
 			pkg.image.width = newW;
 			pkg.image.height = newH;
 			
-			FiPhoto.fx[type]();
 			FiPhoto.tab.show();
+			FiPhoto.fx[type]();
 			FiPhoto.tab.update(type);
-			FiPhoto.toolbar.show();
 		})
 		//$(pkg.image).hide();
 		
 		FiPhoto.fx[type]();
-		FiPhoto.tab.show();
 		FiPhoto.tab.update(type);
-		FiPhoto.toolbar.show();
+		FiPhoto.tab.show();
 		
 	};
 	
@@ -565,7 +563,7 @@ $.NS('FiPhoto', function () {
 	this.save = function () {
 		var dataURL = pkg.canvas.toDataURL();
 		document.location.href = dataURL.replace(/image\/png/i, downloadMime);
-		$('<a href="'+dataURL+'">img</a>').appendTo('body');
+		//$('<a href="'+dataURL+'">img</a>').appendTo('body');
 	}
 	this.createImage = function (src) {
 		var img = document.createElement('img');
@@ -594,6 +592,11 @@ $.NS('FiPhoto', function () {
 		} else if (el.parentNode && el.parentNode.nodeType == 1) {
 			return arguments.callee.call(this, el.parentNode, toEl, filterAttr);
 		}
+	};
+	
+	// btn 移动到第二步
+	this.goStep2 = function () {
+		$('#edit-area').hide();
 	};
 });
 
@@ -682,7 +685,8 @@ $.NS('FiPhoto.operation', function () {
 						pkg.toggleScaleBtn($(el));
 						break;
 					case 'next':
-						FiPhoto.setFx('normal', pkg.cvs.toDataURL())
+						FiPhoto.setFx('normal', pkg.cvs.toDataURL());
+						FiPhoto.goStep2();
 				}
 			}
 			
@@ -718,6 +722,12 @@ $.NS('FiPhoto.operation', function () {
 					}
 
 				}
+			});
+			
+			// fx-container
+			$('#fx-container').css({
+				width: pkg.limitInfo[pkg.limitMode][0],
+				height: pkg.limitInfo[pkg.limitMode][1]
 			});
 			
 		} 
@@ -961,6 +971,7 @@ $.NS('FiPhoto.fx', function () {
 			FiPhoto.$con.hide();
 			FiPhoto.$fxCon.empty().append(canvas);
 			FiPhoto.$fxCon.show();
+			FiPhoto.tab.show();
 			
 			var ww = Math.max(800, canvas.width + 100);
 			FiPhoto.$doc.animate({width: ww}, function () {
@@ -1137,7 +1148,8 @@ $.NS('FiPhoto.tab', function () {
 		})
 	};
 	this.show = function () {
-		FiPhoto.$tabWrap.slideDown();
+
+		$('#filter-area').fadeIn();
 	};
 	this.update = function (type) {
 		pkg.$li.removeClass('current');
