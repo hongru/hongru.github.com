@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<meta charset="utf-8" />
+<style>
+    td {background: #333}
+    .blue td {
+        background: blue;
+    }
+    .red td {
+        background: red;
+    }
+    table {
+        width: 100%;
+        height: 400px;
+    }
+    p {font-size: 12px}
+</style>
+<body>
+<h2>5万个dom元素 repaint 耗时直观测试</h2>
+<p>为了把js执行效率对这个repaint测试的影响降到最低，这里是直接修改顶级的className，让浏览器repaint。所以感知到的切换时的延时就是真真切切的repaint的耗时！！</p>
+<button onclick="cg('blue')">blue</button>
+<button onclick="cg('red')">red</button>
+<div id="table"></div>
+
+
+<script>
+    (function () {
+        var arr = [];
+        arr.push('<table>');
+        for (var i = 0; i < 500; i ++) {
+            arr.push('<tr>');
+            for (var j = 0; j < 100; j ++) {
+                arr.push('<td></td>');
+            }
+            arr.push('</tr>');
+        }
+        arr.push('</table>');
+        document.getElementById('table').innerHTML = arr.join('');
+    })();
+    function cg (c) {
+        document.getElementById('table').className = c;
+    }
+</script>
+</body>
+</html>
