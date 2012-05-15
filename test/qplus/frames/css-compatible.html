@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <title>CSS兼容性</title>
+        <link href="../css/frames-common.css" rel="stylesheet"/>
+    </head>
+    
+    <body>
+        <div class="doc">
+            <h2>CSS兼容性</h2>
+            <ul>
+                <li>
+                    <strong>测试重点：</strong>
+                    <ul>
+                        <li>对于Css3和Css2标准选择器的支持程度</li>
+                    </ul>
+                </li>
+                
+                <li>
+                    <strong>测试用例：</strong>http://tools.css3.info/selectors-test/test.html
+                </li>
+
+                <li><a href="#result">测试结果</a></li>
+                <li><a href="#summary">总结</a></li>
+            </ul>
+            
+            
+            <div id="result">
+                <h3>关于测试过程和结果</h3>
+                    <ul>
+                        <li>系统IE版本低于9时，这时候Q+ 的selector支持程度跟系统IE一致</li>
+                        <li>系统IE版本大于等于9时，Q+ IE内核由于渲染模式和UA都是IE7.0，所以理论上选择器测试结果应该跟IE7一致</li>
+                        <li>Q+ webkit内核使用chronium10.0的版本，对于selector的支持程度相比新版本chrome和IE9，还不够完备。</li>
+                    </ul>
+                    
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>平台(系统装IE9)</th>
+                                <th>IE7</th>
+                                <th>IE8</th>
+                                <th>IE9</th>
+                                <th>Q+(IE)</th>
+                                <th>Q+(webkit)</th>
+                                <th>chrome</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>selector测试通过率（共41个）</td>
+                                <td>11/41</td>
+                                <td>20/41</td>
+                                <td>41/41</td>
+                                <td>11/41</td>
+                                <td>37/41</td>
+                                <td>41/41</td>
+                            </tr>
+                            <tr>
+                                <td>test cases通过率（共574项）</td>
+                                <td>327/574</td>
+                                <td>346/574</td>
+                                <td>574/574</td>
+                                <td>327/574</td>
+                                <td>558/574</td>
+                                <td>574/574</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+            </div>
+            
+            <div id="summary">
+                <h3>【总结】</h3>
+                <ul>
+                    <li>可以看到，即便系统IE版本为9时，Q+IE内核和webkit内核对于selector支持程度都不完备。</li>
+                    <li>Q+ IE内核停留在IE7的程度。</li>
+                    <li>Q+ webkit停留在chronium10.0的程度。</li>
+                    <li>IE9和chrome13以上的版本都已经完全支持标准41个selector。</li>
+                    <li>
+                        Q+ webkit 暂不支持的几个选择器：
+                        <ul>
+                            <li><img src="../images/sel-1.png" /></li>
+                            <li><img src="../images/sel-2.png" /></li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+            
+        </div>
+    </body>
+</html>

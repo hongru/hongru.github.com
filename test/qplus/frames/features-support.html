@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <title>HTML5 Support</title>
+        <link href="../css/frames-common.css" rel="stylesheet"/>
+    </head>
+    
+    <body>
+        <div class="doc">
+            <h2>HTML5新特性支持度</h2>
+            <ul>
+                <li>
+                    <strong>测试重点：</strong>
+                    <ul>
+                        <li>webkit内核下对于HTML5新特性的支持度</li>
+                    </ul>
+                </li>
+                <li>
+                    <strong>测试工具用例</strong>
+                    <ul>
+                        <li><strong>http://html5test.com/</strong>
+                        <p>
+                            可以看看现在Q+ 所用的webkit版本和chrome新版本的一些差距。
+                            </p>
+                            <p>测试地址: http://html5test.com/</p>
+                        </li>
+                    </ul>
+                </li>
+
+                <li><a href="#result">测试结果</a></li>
+                <li><a href="#summary">总结</a></li>
+            </ul>
+            
+            
+            <div id="result">
+                <h3>关于测试过程和结果</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>平台</th>
+                            <th>Q+ 3.6(webkit)</th>
+                            <th>Chrome 18</th>
+                            <th>360(webkit)</th>
+                            <th>IE9</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>html5test 分数</td>
+                            <td>327</td>
+                            <td>412</td>
+                            <td>396</td>
+                            <td>138</td>
+                        </tr>
+                    </tbody>
+                </table>
+                
+                <div class="img-wrap">
+                    <img src="../images/html5/html5-1.jpg" />
+                    <img src="../images/html5/html5-2.jpg" />
+                    <img src="../images/html5/html5-3.jpg" />
+                    <img src="../images/html5/html5-4.jpg" />
+                    <img src="../images/html5/html5-5.jpg" />
+                </div>
+                
+            </div>
+            
+            <div id="summary">
+                <h3>【总结】</h3>
+                <ul>
+                    <li>由于使用的chronium的内核版本较老的原因，Q+ webkit对于HTML5新特性的支持相比chrome新版本，还是落后一些。</li>
+                    <li>但是有一些html5的api，我们这边通过vm api的方式实现了，比如全屏fullScreen的api。</li>
+                    <li>尚未实现但较为重要的api：
+                        <ul>
+                            <li>Video 方面MPEG-4 和H.264 编码格式的支持</li>
+                            <li>Geolocation 的支持</li>
+                            <li>WebGL 3D context 的支持</li>
+                            <li>浏览器原生notification的支持</li>
+                            <li>...</li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+            
+        </div>
+    </body>
+</html>

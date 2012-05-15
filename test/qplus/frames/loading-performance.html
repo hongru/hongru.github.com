@@ -1,0 +1,565 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <title>Loading Performance</title>
+        <link href="../css/frames-common.css" rel="stylesheet"/>
+    </head>
+    <body>
+        <div class="doc">
+            <h2>加载性能 (Loading performance)</h2>
+            <ul>
+                <li>测试重点：<strong>并发连接数</strong></li>
+                <li><a href="#affect">并发连接数对加载性能的影响</a> <br/>
+                    具体的影响分析可以看下这个<a href="http://site-perf.com/" target="_blank"> site-perf.com</a>
+                </li>
+                <li>检测方法:<br/>
+                    <ul>
+                        <li><a href="#detect-by-config">查看浏览器CONFIG或者注册表</a></li>
+                        <li><a href="#detect-by-script">前台并发请求，后台sleep，来检验</a> <a href="http://developer.oncecode.com/comet/" target="_blank"> Test Demo </a> </li>
+                    </ul>
+                </li>
+
+                <li>
+                    <a href="#ie">IE 内核</a>
+                    <ul>
+                        <li><a href="#ie6">Q+(IE6.0) vs IE6.0</a></li>
+                        <li><a href="#ie7">Q+(IE7.0+) vs IE7.0</a></li>
+                        <li><a href="#ie8">Q+(IE7.0+) vs IE8.0</a></li>
+                        <li><a href="#ie9">Q+(IE7.0+) vs IE9.0</a></li>
+                        <li><a href="#ie-360">Q+(IE7.0+) vs 360浏览器</a></li>
+                        <li><a href="#ie-sougou">Q+(IE7.0+) vs 搜狗浏览器</a></li>
+                    </ul>
+                </li>
+                <li>
+                    <a href="#webkit">Webkit 内核</a>
+                    <ul>
+                        <li><a href="#webkit">Q+ vs Chrome</a></li>
+                        <li><a href="#webkit">Q+ vs 360浏览器</a></li>
+                        <li><a href="#webkit">Q+ vs 搜狗浏览器</a></li>
+                    </ul>
+                </li>
+                
+                <li><a href="#app-case">App 实例对比测试</a></li>
+                <li><a href="#summary">【总结】</a></li>
+            </ul>
+            
+            
+            <div id="affect">
+                <h3>并发连接数对加载性能的影响</h3>
+                <p>众所周知，浏览器解析和加载一个页面的资源的方式，首先是载入HTML文档，当HTML文档载入完毕的时候（通常这时就是我们前台常用的DomReady的时候，亦即DomContentLoaded），浏览器解析HTML文档，获取页面所需资源，css文件，js文件，img图片等等。在这些资源中，除了图片之外，css文件和js文件通常都是顺序获取的，而且css资源保持在js文件之前。</p>
+                <p>当然，这些资源在保持顺序加载和执行的的时候，如果浏览器提供了并发连接，那么这些顺序的资源亦可以并发同时下载，这也就是浏览器中的并发下载，顺序执行的机制。此时，并发连接数对于加载速度的影响就表现出来了，并发连接数少，意味着可以同时进行下载的资源数就越少。</p>
+                <p>
+                    PS: 这里的并发连接数，是指 同域资源下的。亦即 MaxConnectionsPerServer 或者 MaxConnectionsPerHost。 <br/>
+                    而还有一种说法叫做 MaxConnectionsPerProcess 或者 MaxConnectionsPerThread，即同一进程下的并发连接会话数。通常可以理解为一个窗口或者一个tab页即为一个新的进程（process）， 在IE 和webkit 下<br/> MaxConnectionsPerProcess(Thread) = n * MaxConnectionsPerServer(Host) -- n为域名总数(total host)<br/>
+                </p>
+                <p>
+                    另：Firefox(2.0~4.0)，一直都没有把进程和tab独立开来，所以在Firefox下面，MaxConnectionsPerHost和network.http.max-connections 都是固定的。比如Firefox3.5+的MaxConnectionsPerHost为6，而network.http.max-connections也固定为30。由于Q+ 和Firefox内核关系不大，暂不作为对比分析用例。
+                </p>
+                <p>想要直观的了解并发连接数对页面资源加载造成的影响，可以看这个测试网站<a href="http://site-perf.com/" target="_blank">http://site-perf.com/</a></p>
+                <p>比如对QQ官网 http://www.qq.com/ 进行测试，分别选择2个并发连接数和8个并发连接数的测试结果如下：</p>
+                <ul>
+                    <li>
+                        <h5>两个并发连接数</h5>
+                        <img alt="" src="../images/perf-2.png" />
+                    </li>
+                    <li>
+                        <h5>8个并发连接数</h5>
+                        <img alt="" src="../images/perf-8.png" />
+                    </li>
+                </ul>
+                <p>可以直观看到，同样网络条件，2个并发数和8个并发数对于加载时间的影响，从2个的14.8s降到的5.6s</p>
+            </div>
+            
+            <div id="detect">
+                <h3>检测方法</h3>
+                <ul>
+                    <li id="detect-by-config">
+                        <h4>查看浏览器CONFIG或者注册表</h4>
+                        <ul>
+                            <li>
+                                <h5>IE: windows下查看对同一域名的并发链接数，可以在注册表中直接看到：</h5>
+                                <ol>
+                                    <li>在开始菜单中的运行对话框中输入 regedit 打开注册表编辑器</li>
+                                    <li>依次打开注册表项：[HKEY_CURRRENT_USER\Software\Microsoft\Windows\CurrentVersion\Internet Settings]</li>
+                                    <li>然后可以查看MaxConnectionsPerServer或者MaxConnectionsPer1_0Server这两个key的value，比如IE8，9中的值就为10；<br/>
+                                        <img alt="" src="../images/perserver.png" />
+                                    </li>
+                                    <li>PS：直接修改注册表中MaxConnectionsPerServer和MaxConnectionsPer1_0Server这两个key的值也可以生效，目前Q+中针对IE6增加并发连接数也就是通过直接修改注册表的方式</li>
+                                </ol>
+                            </li>
+                            
+                            <li>
+                                <h5>Firefox: 通过about:config</h5>
+                                <ol>
+                                    <li>地址栏中输入about:config</li>
+                                    <li>搜索“connections”，可以看到以下几个key的值，类似<br/>
+                                        <img alt="" src="../images/ff.png" />
+                                    </li>
+                                </ol>
+                            </li>
+                                  
+                            <li>
+                                <h5>Chrome和其他webkit内核浏览器</h5>
+                                <ol>
+                                    <li>暂没发现可以通过config直接查看并发连接数配置的地方...</li>
+                                    <li>Chrome支持的about:***
+                                        <ul>
+                                            <li>about:version</li>
+                                            <li>about:plugins</li>
+                                            <li>about:memory</li>
+                                            <li>about:stats</li>
+                                            <li>about:histograms</li>
+                                            <li>about:crash</li>
+                                            <li>about:dns</li>
+                                            <li>about:cache</li>
+                                            <li>about:network</li>
+                                            <li>about:hang</li>
+                                        </ul>
+                                    </li>
+                                </ol>
+                            </li>    
+                        </ul>
+                        
+                    </li>
+                    
+                    <li id="detect-by-script">
+                        <h4>技术手段，脚本检测</h4>
+                        <ul>
+                            <li>
+                               <p> 前台同时发送多个Ajax请求，后台对应的响应页面做延迟响应，看同一时间浏览器可以同时处理多少个来自同一域名（server）的连接</p>
+                               <p>
+                                 这里有个简单的demo <a href="http://developer.oncecode.com/comet/" target="_blank">http://developer.oncecode.com/comet/</a>
+                               </p>
+                               <p>例如：<br/>
+                                我机器上装的chrome13，结果如下：<br/>
+                                <img alt="" src="../images/longpoll-chrome.png" />
+                                后来证明，chrome5.0+ 的最大并发连接数都是6
+                               </p>
+                            </li>
+                            <li>
+                                <p>亦可用普通的请求或者图片等等做测试，但是需要将网速降低或者block，才有可能。</p>
+                            </li>
+                        </ul>
+                    </li>
+                </ul>
+                
+            </div>
+            
+            <div id="vs">
+                <h3>并发连接数对比</h3>
+                <ul>
+                    <li id="ie">
+                        <h4>IE内核下</h4>
+                        <p>注：以下Q+内核 和 浏览器的对比，在使用IE内核的情况下，Q+的IE内核来自系统原生自带IE，而且IE7.0以上的版本都带低版本兼容模式，所以即便是系统已经升级为IE9或者更高版本，Q+中的内核表现依旧会是IE7.0的兼容模式。（下面的测试数据会有体现）</p>
+                        <ul>
+                            <li id="ie6">
+                                <h5>系统装IE6.0</h5>
+                                <table>
+                                    <thead>
+                                        <tr>
+                                            <th width="22%">客户端平台</th>
+                                            <th width="23%">浏览器（内核）UserAgent</th>
+                                            <th width="23%">同域最大连接数</th>
+                                            <th>进程内最大连接数</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>Q+</td>
+                                            <td>MSIE6.0</td>
+                                            <td>6</td>
+                                            <td>6*n (n为当前进行加载的资源域名数)</td>
+                                        </tr>
+                                        <tr>
+                                            <td>MS IE6.0</td>
+                                            <td>MSIE6.0</td>
+                                            <td>2</td>
+                                            <td>2*n</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                                <p>
+                                    附图：<br/>
+                                    <img alt="" src="../images/ie6.jpg" />
+                                </p>
+                                <p>
+                                    注：由于一次并发出去的请求每个响应的时间点不同，所以理论上看第一并发的请求数是最准确的，由于IE下第一次并发的时候，html页会占一个连接，所以把以上测试结果第一次并发数+1 即为正确的结果。
+                                </p>
+                            </li>
+                            <li id="ie7">
+                                <h5>系统装IE7.0</h5>
+                                <p>
+                                    IE7,我在不同的电脑上测试过好几次，网上资料和文档上都记录和IE6.0版本的并发连接数一致，都为2，但是经过几次测试，发现不同windows补丁包下的IE7的并发连接数也不一致，有一部分是2，有一部分测试结果是3。（在默认情况下，不人为修改注册表）以下按3来记录
+                                </p>
+                                <table>
+                                    <thead>
+                                        <tr>
+                                            <th width="22%">客户端平台</th>
+                                            <th width="23%">浏览器（内核）UserAgent</th>
+                                            <th width="23%">同域最大连接数</th>
+                                            <th>进程内最大连接数</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>Q+</td>
+                                            <td>MSIE7.0</td>
+                                            <td>6</td>
+                                            <td>6*n (n为当前进行加载的资源域名数)</td>
+                                        </tr>
+                                        <tr>
+                                            <td>MS IE7.0</td>
+                                            <td>MSIE7.0</td>
+                                            <td>3</td>
+                                            <td>3*n</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                                <p>
+                                    附图：<br/>
+                                    <img alt="" src="../images/ie7.jpg" />
+                                </p>
+                            </li>
+                            <li id="ie8">
+                                <h5>系统装IE8</h5>
+                                <p>由于自IE8.0起，IE就提供了兼容模式，IE8或者以上版本可以兼容IE7.0的浏览器和文本模式。这也意味着提供兼容模式的IE必然也有多个内核机制在其内部，而Q+所取用的，正好是较低的那一版本，所以，即使系统升级IE到8.0或者9.0或者更高版本，Q+中使用的IE内核依旧为IE7.0的渲染模式。但是并发数始终按照注册表的的数值</p>
+                                <p>有些文档和资料上记录IE8的默认并发连接数是6，这是在纯正IE8的系统下的数据</p>
+                                <table>
+                                    <thead>
+                                        <tr>
+                                            <th width="22%">客户端平台</th>
+                                            <th width="23%">浏览器（内核）UserAgent</th>
+                                            <th width="23%">同域最大连接数</th>
+                                            <th>进程内最大连接数</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>Q+</td>
+                                            <td>MSIE7.0</td>
+                                            <td>6</td>
+                                            <td>6*n (n为当前进行加载的资源域名数)</td>
+                                        </tr>
+                                        <tr>
+                                            <td>MS IE8.0</td>
+                                            <td>MSIE8.0</td>
+                                            <td>6</td>
+                                            <td>6*n</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </li>
+                            <li id="ie9">
+                                <h5>系统装IE9</h5>
+                                <p>IE9貌似对并发连接数又做了调整，IE升级到IE9后，注册表中MaxConnectionsPerServer统一被增加到了10，比chrome，safari等webkit内核还要高。</p>
+                                <table>
+                                    <thead>
+                                        <tr>
+                                            <th width="22%">客户端平台</th>
+                                            <th width="23%">浏览器（内核）UserAgent</th>
+                                            <th width="23%">同域最大连接数</th>
+                                            <th>进程内最大连接数</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>Q+</td>
+                                            <td>MSIE7.0</td>
+                                            <td>10</td>
+                                            <td>10*n (n为当前进行加载的资源域名数)</td>
+                                        </tr>
+                                        <tr>
+                                            <td>MS IE9.0</td>
+                                            <td>MSIE9.0</td>
+                                            <td>10</td>
+                                            <td>10*n</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </li>
+                            <li>
+                                <h5>系统装IE10+</h5>
+                                暂未测试
+                            </li>
+                            <li id="ie-sougou">
+                                <h5>Q+ vs 搜狗浏览器（IE模式）</h5>
+                                <p>
+                                    经初步测试，sougou双核浏览器中的IE模式也是直接用的系统IE内核。并未做任何特殊的优化。<br/>
+                                    在并发连接数方面，也和普通的IE保持一致。具体数据可以参考上面Q+ vs IE 各版本的数据。
+                                </p>
+                            </li>
+                            <li id="ie-360">
+                                <h5>Q+ vs 360浏览器（IE模式）</h5>
+                                <p>
+                                    我在家里做了初步的测试，360浏览器较国内其他“双核”浏览器，还额外多出了一个选择。360浏览器有三种模式：
+                                </p>
+                                <ul>
+                                    <li>极速模式（Chrome18内核）</li>
+                                    <li>兼容模式（传统IE模式）</li>
+                                    <li>IE9模式（强制渲染模式为IE9，仅在系统装了IE9才能使用）</li>
+                                </ul>
+                                <p>可以看到，即便在IE模式下，360浏览器也分为了【传统IE】和【IE9模式】，两者的区别：</p>
+                                <ul>
+                                    <li>
+                                        <h6>在系统没装IE9以上版本时:</h6>
+                                        <p>360的IE9模式也不可用，这时候，可用的传统IE模式自动取自系统IE内核版本，和Q+的机制一致。不过我在一个只装有IE6的的电脑上装了360浏览器之后，发现注册表中的MaxConnectionsPerServer同样被修改到了6...</p>
+                                        <p>
+                                            也就是说：360浏览器也是有强制修改注册表的最大并发连接数的。一旦安装之后，注册表并发连接数就会自动被修改到最小为6。
+                                        </p>
+                                    </li>
+                                    <li>
+                                        <h6>系统装IE9极其以上版本时：</h6>
+                                        <p>
+                                            360浏览器【传统IE模式】和【IE9模式】区别：
+                                        </p>
+                                        <ul>
+                                            <li>
+                                                并发连接数：这一点上不会有区别，都是取自注册表中的MaxConnectionsPerServer的值，不管是传统模式和IE9模式，最大并发连接数都是IE9默认的10。
+                                                
+                                            </li>
+                                            <li>
+                                                渲染模式：目前来看，360的【IE9模式】是把渲染模式强制拉回到IE9，因为IE9自带兼容模式，如果直接用的话，渲染模式好像都还是IE7.0的表现，这也是Q+中的表现。也就是装了IE9的系统，使用Q+中IE内核的app，IE内核的渲染模式依旧是IE7.0兼容模式。
+                                            </li>
+                                            <li>
+                                                渲染模式对用户感知的页面性能表现有什么影响在后续【渲染性能】中详细分析。
+                                            </li>
+                                        </ul>
+                                    </li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </li>
+                </ul>
+                
+                <h3 id="webkit">Webkit内核下</h3>
+                <p>
+                    并发连接数对于webkit内核来说，各大浏览器内核，包括Q+在内，在这一点上差别不大，以下是最近对于各个webkit内核的浏览器各个版本做的测试数据。
+                </p>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>浏览器（内核）</th>
+                            <th>Q+ 3.4+</th>
+                            <th>Chrome10+</th>
+                            <th>Safari10+</th>
+                            <th>搜狗（webkit）</th>
+                            <th>360(极速模式)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>并发连接数（Per Host）</td>
+                            <td>6</td>
+                            <td>6</td>
+                            <td>8</td>
+                            <td>6</td>
+                            <td>6</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <p>
+                    除了safari和Opera之外，基本上其它使用chomium开源内核的平台基本都维持在默认6个并发连接。但看这一点上，基本没什么差距。后续会集中分析关于渲染性能和js计算效率的方面。
+                </p>
+            </div>
+            
+            <div id="app-case">
+                <h3>App 实例测试</h3>
+                <p>以下分别在IE和webkit内核下选取一款app在不同平台下进行加载性能的测试，清除cache之后，网络环境4M带宽。</p>
+                <ul>
+                    <li>
+                        <h4><a href="http://nontroppo.org/timer/" target="_blank">http://nontroppo.org/timer/</a></h4>
+                        <p>这个网站可以直观看到DomReady，onload，第一眼看到页面的时间。</p>
+                    </li>
+                    <li>
+                        <h4>IE内核下 - 【爱奇艺视频】</h4>
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th colspan="2">浏览器（内核）</th>
+                                    <th>页面文档加载完毕（domready）（10次平均值）</th>
+                                    <th>所有静态资源完毕（onload）（10次平均值）</th>
+                                </tr>
+
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td rowspan="5">系统装IE6.0</td>
+                                    <td>MS IE</td>
+                                    <td>1.8s</td>
+                                    <td>12.2s</td>
+                                </tr>
+                                <tr>
+                                    <td>Q+ 3.1</td>
+                                    <td>2.1s</td>
+                                    <td>14.6s</td>
+                                </tr>
+                                <tr>
+                                    <td>Q+ 3.6</td>
+                                    <td>1.7s</td>
+                                    <td>8.6</td>
+                                </tr>
+                                <tr>
+                                    <td>360</td>
+                                    <td>1.7s</td>
+                                    <td>8.2s</td>
+                                </tr>
+                                <tr>
+                                    <td>sougou</td>
+                                    <td>2.0s</td>
+                                    <td>14.8s</td>
+                                </tr>
+                                
+                                <tr>
+                                    <td rowspan="5">系统装IE7.0</td>
+                                    <td>MS IE</td>
+                                    <td>1.8s</td>
+                                    <td>13.0s</td>
+                                </tr>
+                                <tr>
+                                    <td>Q+ 3.1</td>
+                                    <td>2.4s</td>
+                                    <td>12.6s</td>
+                                </tr>
+                                <tr>
+                                    <td>Q+ 3.6</td>
+                                    <td>1.9s</td>
+                                    <td>7.8s</td>
+                                </tr>
+                                <tr>
+                                    <td>360</td>
+                                    <td>1.4s</td>
+                                    <td>8.0s</td>
+                                </tr>
+                                <tr>
+                                    <td>sougou</td>
+                                    <td>1.6s</td>
+                                    <td>11.2s</td>
+                                </tr>
+                                
+                                <tr>
+                                    <td rowspan="5">系统装IE8.0</td>
+                                    <td>MS IE</td>
+                                    <td>1.6s</td>
+                                    <td>8.6s</td>
+                                </tr>
+                                <tr>
+                                    <td>Q+ 3.1</td>
+                                    <td>1.8s</td>
+                                    <td>10.8s</td>
+                                </tr>
+                                <tr>
+                                    <td>Q+ 3.6</td>
+                                    <td>1.5s</td>
+                                    <td>7.2s</td>
+                                </tr>
+                                <tr>
+                                    <td>360</td>
+                                    <td>1.4s</td>
+                                    <td>7.4s</td>
+                                </tr>
+                                <tr>
+                                    <td>sougou</td>
+                                    <td>1.6s</td>
+                                    <td>8.5s</td>
+                                </tr>
+                                
+                                <tr>
+                                    <td rowspan="5">系统装IE9.0+</td>
+                                    <td>MS IE</td>
+                                    <td>1.3s</td>
+                                    <td>7.9s</td>
+                                </tr>
+                                <tr>
+                                    <td>Q+ 3.1</td>
+                                    <td>1.6s</td>
+                                    <td>8.6s</td>
+                                </tr>
+                                <tr>
+                                    <td>Q+ 3.6</td>
+                                    <td>1.4s</td>
+                                    <td>7.1s</td>
+                                </tr>
+                                <tr>
+                                    <td>360（IE9模式）</td>
+                                    <td>1.3s</td>
+                                    <td>7.7s</td>
+                                </tr>
+                                <tr>
+                                    <td>sougou</td>
+                                    <td>1.4s</td>
+                                    <td>8.0s</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </li>
+                    
+                    <li>
+                        <h4>Webkit 内核 - App【应用工厂】</h4>
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>浏览器（内核）</th>
+                                    <th>页面文档加载完毕（domready）（10次平均值）</th>
+                                    <th>所有静态资源完毕（onload）（10次平均值）</th>
+                                </tr>
+
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Chrome 18</td>
+                                    <td>0.8s</td>
+                                    <td>7.9s</td>
+                                </tr>
+                                <tr>
+                                    <td>Q+ 3.1</td>
+                                    <td>1.2s</td>
+                                    <td>10.1s</td>
+                                </tr>
+                                <tr>
+                                    <td>Q+ 3.6</td>
+                                    <td>1.0s</td>
+                                    <td>8.2</td>
+                                </tr>
+                                <tr>
+                                    <td>360（极速模式）</td>
+                                    <td>0.9s</td>
+                                    <td>7.4s</td>
+                                </tr>
+                                <tr>
+                                    <td>sougou（webkit）</td>
+                                    <td>1.1s</td>
+                                    <td>8.8s</td>
+                                </tr>
+                                
+                            </tbody>
+                        </table>
+                    </li>
+                </ul>
+            </div>
+            
+            <div>
+                <p>大家注意，以上的测试包含了Q+3.2 和 Q+3.6的版本进行的，我们知道，自从Q+3.2版本之后，客户端同事是对IE67的并发连接数进行了优化的，都强制改成了6个。同时菊花移除时机在也做了修正，所以这里把Q+3.1版本也拿来做了对比。</p>
+                <p>下面是plutoxiong在第二期微报上的总结分析：
+                    <img alt="" src="../images/3.2.jpg" />
+                </p>
+            </div>
+            
+            <div id="summary">
+                <h3>【总结】</h3>
+                <ol>
+                    <li>资源加载性能是影响用户对于页面载入速度感知的其中一个重要的点。</li>
+                    <li>单就加载性能这一单方面来看，影响页面资源加载速度的，除了网络环境，app质量，服务器好坏等客观因素外，最大的就是客户端的并发连接数。</li>
+                    <li>IE内核下： Q+3.2版本之前，由于没做优化，尤其是IE6，7环境下。资源加载速度明显低于对并发连接数做过优化的浏览器，比如360浏览器。甚至也略低于同版本的原生IE浏览器。</li>
+                    <li>IE内核下：Q+3.2版本之前，以上的数据表中domReady时间不一定是用户感知的菊花移除时间，Q+3.2版本之前因为IE下removeLoading时机有问题，会导致菊花移除时机在domReady之后一点，也是使用户感知加载时间变长的一个原因。</li>
+                    <li>IE内核下：3.6版本经过优化后，IE6，7下的表现单方面已经优于原生的IE，基本和国内其他双核浏览器，比如360等持平。(菊花消失时间比360，搜狗等浏览器的DomReady略高0.5s左右)</li>
+                    <li>Webkit内核下：各浏览器，包括Q+webkit内核，并发连接数都一致，加载性能上面，360浏览器最新版本和Chrome 18 基本一致，略高于 sougou 的webkit， 也略高于Q+ 的webkit版本。高的不多，从以上数据来看，大致高 5% ~ 10% 左右。</li>
+                    <li>综上，Q+3.6版本相比3.2版本，单从加载性能来看，有较大提升，尤其是在IE6，7版本的环境下。在webkit下和其他webkit内核基本一致，还有少许提升空间。</li>
+                    <li>
+                        除加载性能外，影响用户感知载入时间和体验的，还有渲染性能，js效率等，后续继续分析。
+                    </li>
+                </ol>
+            </div>
+        </div>
+    </body>
+</html>

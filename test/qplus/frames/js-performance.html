@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <title>JS Performance</title>
+        <link href="../css/frames-common.css" rel="stylesheet"/>
+    </head>
+    
+    <body>
+        <div class="doc">
+            <h2>JS执行效率（Javascript Performance）</h2>
+            <ul>
+                <li>
+                    <strong>测试重点：</strong>
+                    <ul>
+                        <li>JS在不同浏览器平台的执行效率</li>
+                    </ul>
+                </li>
+                <li>
+                    <strong>测试工具用例</strong>
+                    <ul>
+                        <li><strong>Google V8 Benchmark</strong>
+                        <p>
+                            Google放出的Javascript测试集。V8 Benchmark Suite会载入JavaScript代码，对系统的内核、加密、解密、渲染等进行速度测试。
+                            </p>
+                            <p>测试地址: http://v8.googlecode.com/svn/data/benchmarks/v7/run.html</p>
+                        </li>
+                        <li>
+                        <strong>Slickspeed</strong>
+                        <p>
+                            mootools团队开发的用于测试各大js框架解析和执行速度的工具。主要是针对选择器的，我们这里也可用来测试浏览器js引擎的性能。
+                            </p>
+                            <p>测试地址: http://mootools.net/slickspeed/</p>
+                        </li>
+                        <li>
+                            <strong>Peacekeeper Benchmark</strong>
+                            <p>
+                                Futuremark公司的JavaScript测试，侧重压力测试功能，如动画，导航，表格等。
+                            </p>
+                            <p>
+                                测试地址: http://clients.futuremark.com/peacekeeper/
+                            </p>
+                        </li>
+                        <li>
+                            <strong>Kraken Benchmark</strong>
+                            <p>Mozilla开发的基于SunSpider 的JavaScript标准，将重点放在现实性工作负荷和未来将出现的应用程序上，侧重JavaScript执行速度的测试。</p>
+                            <p>测试地址：http://krakenbenchmark.mozilla.org/kraken-1.1/driver.html</p>
+                        </li>
+                        <li>
+                            <strong>SunSpider</strong>
+                            <p>一个JavaScript基准测试平台，它可以衡量一款浏览器的JavaScript引擎性能。</p>
+                            <p>测试地址：http://www.webkit.org/perf/sunspider/sunspider.html</p>
+                        </li>
+                    </ul>
+                </li>
+
+                <li><a href="#result">测试结果</a></li>
+                <li><a href="#summary">总结</a></li>
+            </ul>
+            
+            
+            <div id="result">
+                <h3>关于测试过程和结果</h3>
+                <p>首先，不妨先直接用之前测试渲染效率的简单页面，直观的看一下IE下不同版本的内核对于循环执行的效率（同一台电脑上对于IE789的测试），5w次循环，主要看下面蓝色框住的部分。</p>
+                <ul>
+                    <li>
+                        <strong>IE7</strong><br/>
+                        <img src="../images/js-ie7.png" />
+                    </li>
+                    <li>
+                        <strong>IE8</strong><br/>
+                        <img src="../images/js-ie8.png" />
+                    </li>
+                    <li>
+                        <strong>IE9</strong><br/>
+                        <img src="../images/js-ie9.png" />
+                    </li>
+                </ul>
+                <p>相信，从上面直观的就能看出来，同一台电脑上对于同样一段5w次循环的js代码执行效率在IE7，8，9不同内核下的表现。</p>
+                <ul>
+                    <li>IE7 和 IE8 下面的 解析 和执行都很接近。 基本可以推断出他们就是用的同样的js引擎。</li>
+                    <li>
+                        IE9 采用新的Chakra JavaScript引擎，提升就相当明显。对于同样一段js的解析效率，几乎是IE7和IE8的2~3倍，而5w次循环的执行时间，从原来的接近500ms 直接 降到30ms左右。提高了16倍左右。
+                    </li>
+                    <li>根据之前的测试可知，Q+ IE内核中由于userAgent最多只能保持在IE7.0，所以渲染性能和js性能基本也就最多只能和IE7持平，那么Q+ IE内核在js效率上也就会低于IE9 的16倍。以下会用各种主流的TestCase来验证。</li>
+                </ul>
+                
+                <h3>各种 Benchmark Case的 测试结果，包括Q+3.6，IE6~9，chrome18，360浏览器</h3>
+                <p>注：Benchmark属于 js 引擎的综合测试，不仅包括js的执行效率，还包括加密，解密等一系列的测试。不同工具的侧重点不一样。</p>
+                <table>
+                    <thead>
+                        <tr>
+                            <th colspan="2"></th>
+                            <th>Google V8（数值越高越好）</th>
+                            <th>Slickspeed（单位：ms，越低越好）</th>
+                            <th>SunSpider（单位：ms，越低越好）</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td rowspan="3">系统装IE6</td>
+                            <td>MSIE6</td>
+                            <td>1256分</td>
+                            <td>3842ms</td>
+                            <td>不支持</td>
+                        </tr>
+                        <tr class="bgred">
+                            <td>Q+(IE)</td>
+                            <td>1205分</td>
+                            <td>3910ms</td>
+                            <td>不支持</td>
+                        </tr>
+                        <tr>
+                            <td>360(IE)</td>
+                            <td>1245分</td>
+                            <td>3885ms</td>
+                            <td>不支持</td>
+                        </tr>
+                        
+                        <tr>
+                            <td rowspan="3">系统装IE7</td>
+                            <td>MSIE7</td>
+                            <td>1541分</td>
+                            <td>3663ms</td>
+                            <td>12514ms</td>
+                        </tr>
+                        <tr class="bgred">
+                            <td>Q+(IE)</td>
+                            <td>1582分</td>
+                            <td>3741ms</td>
+                            <td>12898ms</td>
+                        </tr>
+                        <tr>
+                            <td>360(IE)</td>
+                            <td>1520分</td>
+                            <td>3710ms</td>
+                            <td>12054ms</td>
+                        </tr>
+                        
+                        <tr>
+                            <td rowspan="3">系统装IE8</td>
+                            <td>MSIE8</td>
+                            <td>1557分</td>
+                            <td>1339ms</td>
+                            <td>9564ms</td>
+                        </tr>
+                        <tr class="bgred">
+                            <td>Q+(IE)</td>
+                            <td>1562分</td>
+                            <td>3752ms</td>
+                            <td>12451ms</td>
+                        </tr>
+                        <tr>
+                            <td>360(IE)</td>
+                            <td>1580分</td>
+                            <td>1420ms</td>
+                            <td>10598ms</td>
+                        </tr>
+                        
+                        <tr>
+                            <td rowspan="3">系统装IE9</td>
+                            <td>MSIE9</td>
+                            <td>1995分</td>
+                            <td>579ms</td>
+                            <td>284ms</td>
+                        </tr>
+                        <tr class="bgred">
+                            <td>Q+(IE)</td>
+                            <td>1542分</td>
+                            <td>3652ms</td>
+                            <td>10896ms</td>
+                        </tr>
+                        <tr>
+                            <td>360(IE)</td>
+                            <td>1922分</td>
+                            <td>864ms</td>
+                            <td>496ms</td>
+                        </tr>
+                        
+                        <tr>
+                            <td rowspan="3">Webkit内核</td>
+                            <td>Chrome18</td>
+                            <td>9252分</td>
+                            <td>989ms</td>
+                            <td>368ms</td>
+                        </tr>
+                        <tr class="bgred">
+                            <td>Q+(webkit)</td>
+                            <td>7187分</td>
+                            <td>1245ms</td>
+                            <td>432ms</td>
+                        </tr>
+                        <tr>
+                            <td>360(webkit)</td>
+                            <td>9026分</td>
+                            <td>1086ms</td>
+                            <td>399ms</td>
+                        </tr>
+                        
+                    </tbody>
+                </table>
+                
+                <p>
+                    由于测试众多，截图太多，这里不一一列出，详细截图请<a href="#">移步这里</a>
+                </p>
+            </div>
+            
+            <div id="summary">
+                <h3>【总结】</h3>
+                <ul>
+                    <li><strong>IE下</strong><br/>
+                        <ul>
+                            <li>单从js脚本执行层来看，IE内核下IE7和IE8很接近，但是都远低于IE9，IE9的脚本parse效率是IE78的2~3倍，执行效率是IE78的15+倍</li>
+                            <li>Q+中IE内核 在系统IE为 IE6和IE7 的时候，跟系统基本一致。</li>
+                            <li>当系统IE版本高于7时，比如为IE8或者IE9，这时候因为Q+ 中始终保持IE7的浏览器模式，所以会比系统浏览器低很多。</li>
+                            <li>比如一个用户，他的系统IE已经是IE9版本，但是使用Q+ 的IE 内核app时还是只能使用比IE9 的效率 低 好几倍 上10倍的IE7 模式。</li>
+                        </ul>
+                    </li>
+                    <li>
+                        <strong>Webkit</strong><br/>
+                        <ul>
+                            <li>Q+ 使用chrome10 版本的webkit， 在js执行效率方面，大致是chrome18的1/2。有一定的提升空间</li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+            
+        </div>
+    </body>
+</html>

@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <title>Acid3标准测试</title>
+        <link href="../css/frames-common.css" rel="stylesheet"/>
+    </head>
+    
+    <body>
+        <div class="doc">
+            <h2>Acid3标准测试</h2>
+            <ul>
+                <li>
+                    <strong>测试重点：</strong>
+                    <ul>
+                        <li>测试焦点集中在ECMAScript、DOM Level 3、Media Queries和data: URL</li>
+                    </ul>
+                </li>
+                
+                <li>
+                    <strong>测试用例：</strong>http://acid3.acidtests.org/
+                    <p>
+                    Acid3测试是检测浏览器与Web标准兼容性的主要方法，也是目前行业中最权威的测试。相比Acid2，新的网络规范测试标准Acid3在测试标准上更严格更全面，它能测试一个浏览器的DOMScript能力及CSS渲染、SVG等。
+                    </p>
+                </li>
+
+                <li><a href="#result">测试结果</a></li>
+                <li><a href="#summary">总结</a></li>
+            </ul>
+            
+            
+            <div id="result">
+                <h3>关于测试过程和结果</h3>
+                    <ul>
+                        <li>
+                            <p>IE67，直接运行不了这个测试，得分按0计算。</p>
+                            <img src="../images/acid3/ie7.png" />
+                        </li>
+                        <li>
+                            <p>IE8 得分24，页面有少许错位，出现了部分不该出现的元素</p>
+                            <img src="../images/acid3/ie8.png" />
+                        </li>
+                        <li>
+                            <p>IE9 和chrome18 得分和流畅度都很完整。</p>
+                            <img src="../images/acid3/full.png" />
+                        </li>
+                        <li>
+                            Q+ IE内核运行和IE7一样，无法正常运行...无论系统自带IE版本为多少
+                        </li>
+                        <li>
+                            <p>Q+ webkit内核运行结果虽然也是100分，但是在左上角出现了不该出现了元素。</p>
+                            <img src="../images/acid3/qplus.png" />
+                        </li>
+                    </ul>
+                    
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>平台(系统装IE9)</th>
+                                <th>IE7</th>
+                                <th>IE8</th>
+                                <th>IE9</th>
+                                <th>Q+(IE)</th>
+                                <th>Q+(webkit)</th>
+                                <th>chrome</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Acid3测试得分</td>
+                                <td>0</td>
+                                <td>24</td>
+                                <td>100</td>
+                                <td>0</td>
+                                <td>100（有瑕疵）</td>
+                                <td>100</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+            </div>
+            
+            <div id="summary">
+                <h3>【总结】</h3>
+                <ul>
+                    <li>
+                        Acid3标准测试，IE9和chrome基本完美。
+                    </li>
+                    <li>IE8,得分就很低，而且页面有些错乱。</li>
+                    <li>IE8以下版本不能正常使用这个测试</li>
+                    <li>Q+ IE内核依旧和IE7一样，不能正常通过</li>
+                    <li>Q+ webkit 内核得分虽然为满分，但是在左上角有瑕疵</li>
+                </ul>
+            </div>
+            
+        </div>
+    </body>
+</html>

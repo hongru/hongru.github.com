@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<style>
+    .blue td {
+        background: blue;
+    }
+    .red td {
+        background: red;
+    }
+    table {
+        width: 100%;
+        height: 400px;
+    }
+</style>
+<body>
+<button onclick="cg('blue')">blue</button>
+<button onclick="cg('red')">red</button>
+<div id="table" class="blue"></div>
+
+
+<script>
+    (function () {
+        var arr = [];
+        arr.push('<table>');
+        for (var i = 0; i < 1000; i ++) {
+            arr.push('<tr>');
+            for (var j = 0; j < 100; j ++) {
+                arr.push('<td></td>');
+            }
+            arr.push('</tr>');
+        }
+        arr.push('</table>');
+        document.getElementById('table').innerHTML = arr.join('');
+    })();
+    function cg (c) {
+        document.getElementById('table').className = c;
+    }
+</script>
+</body>
+</html>

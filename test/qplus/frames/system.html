@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <title>系统资源占用</title>
+        <link href="../css/frames-common.css" rel="stylesheet"/>
+    </head>
+    
+    <body>
+        <div class="doc">
+            <h2>系统资源占用</h2>
+            <ul>
+                <li>
+                    <strong>测试重点：</strong>
+                    <ul>
+                        <li>开一个tab的时候进程占用数,这里Q+就用开一个空白app来测试</li>
+                        <li>一个about:blank页面进程占用内存资源和cpu资源</li>
+                    </ul>
+                </li>
+
+                <li><a href="#result">测试结果</a></li>
+                <li><a href="#summary">总结</a></li>
+            </ul>
+            
+            
+            <div id="result">
+                <h3>关于测试过程和结果</h3>
+                    <p>在浏览器默认设置下面打开一个tab时的情况。</p>
+                    <p>IE6、Firefox只有一个进程，IE7、IE8、IE9和Chrome都有2个进程，我们所列成绩为进程所占的资源总数。尽管IE7、IE8在很多方面都比不上IE9和其它现代浏览器，不过在内存占用方面却值得夸奖，浏览器开启一个空白页面后仅占用8MB左右内存。</p>
+                    <p>
+                        Q+ 启动时，有个Q+ 主进程 Qplus.exe，和一个默认的QplusApp.exe的app进程，应该是widget一类的自启动的app模块进程。
+                    </p>
+                    <p>之后Q+ 每启动一个app，都会新开一个进程来处理，这里我们都只算打开一个空白页面时所占的内存和cpu资源。</p>
+                    
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>平台</th>
+                                <th>IE7</th>
+                                <th>IE8</th>
+                                <th>IE9</th>
+                                <th>Q+(IE)</th>
+                                <th>Q+(webkit)</th>
+                                <th>chrome</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>内存占用（空白页）</td>
+                                <td>7.90M</td>
+                                <td>8.22M</td>
+                                <td>18.20M</td>
+                                <td>10.60M</td>
+                                <td>22.40M</td>
+                                <td>14.40M</td>
+                            </tr>
+                            <tr>
+                                <td>cpu占用（空白页）</td>
+                                <td>0.1%</td>
+                                <td>0.3%</td>
+                                <td>1.2%</td>
+                                <td>0.6%</td>
+                                <td>1.1%</td>
+                                <td>0.8%</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <p>为了保证公平性，以上数据在同一条电脑上进行测试，因为虚拟机可能影响测试结果，暂没把ie6的结果放进去对比。</p>
+                    <p>可以看到，在系统资源占用方面，Q+ app进程和IE9 还是略高</p>
+            </div>
+            
+            <div id="summary">
+                <h3>【总结】</h3>
+                <ul>
+                    <li>系统资源占用方面，古老一些的IE78 做的好一些，可能那时候的PC性能没现在那么强大，浏览器厂商也会有所顾虑吧</li>
+                    <li>IE9，Q+ app， chrome ，总体来说差别不算太大，Q+ IE内核相对来说资源占用低一些，可能是由于内核和渲染模式都是用IE7的原因吧。</li>
+                    <li>Q+ webkit 内核比IE9 和 chrome 都略高一点。</li>
+                </ul>
+            </div>
+            
+        </div>
+    </body>
+</html>

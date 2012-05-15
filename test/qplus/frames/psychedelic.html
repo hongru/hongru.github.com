@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <title>硬件加速测试</title>
+        <link href="../css/frames-common.css" rel="stylesheet"/>
+    </head>
+    
+    <body>
+        <div class="doc">
+            <h2>硬件加速测试</h2>
+            <ul>
+                <li>
+                    <strong>测试重点：</strong>
+                    <ul>
+                        <li>测试浏览器端通过硬件的协助进行的渲染能力，主要是GPU的协助渲染。本测试只针对IE9和webkit平台进行</li>
+                    </ul>
+                </li>
+                
+                <li>
+                    <strong>测试用例：</strong>
+                    <p>
+                    当前微软和Google都有提供部分用于测试GPU硬件加速的案例。分别选取几个典型的案例进行测试。
+                    </p>
+                    <ul>
+                        <li><a target="_blank" href="http://ie.microsoft.com/testdrive/Performance/FishIETank/Default.html">FishIE Tank</a></li>
+                        <li><a target="_blank" href="http://ie.microsoft.com/testdrive/Performance/ParticleAcceleration/">Particle Acceleration</a></li>
+                        <li><a target="_blank" href="http://ie.microsoft.com/testdrive/Performance/PsychedelicBrowsing/Default.html">Psychedelic Browsing</a></li>
+                        <li>更多的微软测试用例，可以在 <a href="http://ie.microsoft.com/testdrive/Views/SiteMap/" target="_blank">http://ie.microsoft.com/testdrive/Views/SiteMap/</a> 这里体验。</li>
+                    </ul>
+                </li>
+
+                <li><a href="#result">测试结果</a></li>
+                <li><a href="#summary">总结</a></li>
+            </ul>
+            
+            
+            <div id="result">
+                <h3>关于测试过程和结果</h3>
+                    <p>保证测试的准确性，在同一台电脑上，窗口大小（重绘区域）都保持一致，进行测试</p>
+                    <ul>
+                        <li>
+                            FishIE Tank
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>平台</th>
+                                        <th>Q+ webkit</th>
+                                        <th>IE 9</th>
+                                        <th>Chrome 20</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>250条鱼FPS</td>
+                                        <td>23</td>
+                                        <td>52</td>
+                                        <td>60</td>
+                                    </tr>
+                                    <tr>
+                                        <td>500条鱼FPS</td>
+                                        <td>11</td>
+                                        <td>35</td>
+                                        <td>44</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <p>以下是500条鱼的时候测试截图</p>
+                            <ul>
+                                <li>Q+ webkit <br/>
+                                    <img width="600" src="../images/fishie/qplus-500.png" />
+                                </li>
+                                <li>IE9 <br/>
+                                    <img width="600" src="../images/fishie/ie9-500.png" />
+                                </li>
+                                <li>Chrome 20 <br/>
+                                    <img width="600" src="../images/fishie/chrome-500.png" />
+                                </li>
+                            </ul>
+                        </li>
+                        
+                        <li>
+                            Particle Acceleration
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>平台</th>
+                                        <th>Q+ webkit</th>
+                                        <th>IE 9</th>
+                                        <th>Chrome 20</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>FPS</td>
+                                        <td>24</td>
+                                        <td>60</td>
+                                        <td>60</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Score</td>
+                                        <td>52</td>
+                                        <td>179898</td>
+                                        <td>130859</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <p>以下是测试截图</p>
+                            <ul>
+                                <li>Q+ webkit <br/>
+                                    <img width="600" src="../images/particle/qplus.png" />
+                                </li>
+                                <li>IE9 <br/>
+                                    <img width="600" src="../images/particle/ie9.png" />
+                                </li>
+                                <li>Chrome 20 <br/>
+                                    <img width="600" src="../images/particle/chrome.png" />
+                                </li>
+                            </ul>
+                        </li>
+                        
+                        <li>
+                            Psychedelic Browsing
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>平台</th>
+                                        <th>Q+ webkit</th>
+                                        <th>IE 9</th>
+                                        <th>Chrome 20</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>Psychedelic每分钟计算次数</td>
+                                        <td>457</td>
+                                        <td>4499</td>
+                                        <td>3514</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <p>以下是测试截图</p>
+                            <ul>
+                                <li>Q+ webkit <br/>
+                                    <img width="600" src="../images/psychedelic/qplus.png" />
+                                </li>
+                                <li>IE9 <br/>
+                                    <img width="600" src="../images/psychedelic/ie9.png" />
+                                </li>
+                                <li>Chrome 20 <br/>
+                                    <img width="600" src="../images/psychedelic/chrome.png" />
+                                </li>
+                            </ul>
+                        </li>
+
+                    </ul>
+                    
+
+            </div>
+            
+            <div id="summary">
+                <h3>【总结】</h3>
+                <ul>
+                    <li>从上面几个测试可以很明显的看出来，Q+ webkit的硬件加速渲染能力跟IE9或者新版本的chrome相比，差距很大</li>
+                    <li>
+                        第一个鱼缸测试，在texture纹理渲染方面，新版chrome更胜一筹，在250条鱼的时候依然能够保持最理想的60 fps 的状态，加到500条也能维持在44 fps左右。而Q+ webkit在250条鱼的时候已经只有23 fps， 到500条的时候降到了11，已经相当不流畅了。
+                    </li>
+                    <li>
+                        第二个3D矢量粒子渲染，IE9大获全胜，fps保持在最佳的60， 而且得分达到了惊人的接近18w。而Q+ webkit fps 只有24，视觉上感受得到卡，而且程序给出的得分仅仅只有52...
+                    </li>
+                    <li>
+                        第三个属于色彩通道转换渲染。IE9在这一方面依旧优秀，chrome略逊一点，不多差距不大。IE9 在这个测试中色彩转换计算次数每分钟4500次左右，Q+ 的webkit 仅仅只有457次.
+                    </li>
+                    
+                    <li>
+                        结合我们之前对于HTML5 特性支持的测试，我们知道，Q+ webkit目前是暂时不支持WebGL 3D context的，自然也不支持 GPU 的并行计算与渲染。如果硬件辅助加速这一块能得到支持的话，在某些特殊场合性能会得到质的提升。
+                    </li>
+                </ul>
+            </div>
+            
+        </div>
+    </body>
+</html>
