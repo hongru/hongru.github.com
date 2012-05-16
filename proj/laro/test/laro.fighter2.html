@@ -156,17 +156,9 @@
         
         // loader
         var loader = new Laro.ResourceLoader();
-		var imgs = [
-			'fighter/RYU1_wait.gif',
-			'fighter/RYU1_after_impact_boxing.gif',
-			'fighter/RYU1_before_whirl_kick.gif',
-			'fighter/RYU1_whirl_kick.gif',
-			'fighter/RYU1_after_whirl_kick.gif',
-			'fighter/RYU1_crouch_heavy_boxing.gif',
-			'fighter/RYU1_crouch_heavy_kick.gif',
-			'fighter/RYU1_near_heavy_kick.gif'
-		];
-        loader.preloadImages(imgs, loaderCallback);
+        loader.preloadImages([
+            animData.filename
+        ], loaderCallback);
         Laro.ResourceLoader.instance = loader;
         
         function loaderCallback(p) {

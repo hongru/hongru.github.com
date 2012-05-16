@@ -1,5 +1,15 @@
-
-(function (win, undefined) {
+/** 
+ * Laro (Game Engine Based on Canvas) 
+ * Code licensed under the MIT License:
+ *
+ * @fileOverview Laro
+ * @version 1.0
+ * @author  Hongru
+ * @description 
+ * 
+ */
+ 
+;(function (win, undefined) {
     
     var toString = Object.prototype.toString,
         nativeIsArray = Array.isArray,
@@ -20,14 +30,31 @@
 	}
 
     /**
-     * Method 使用模块的主函数
-     * @param (String or Array) 要使用的模块名
-     * @param (Function) *optional 加载模块后的回调函数
-     * @param (Object) *optional 回调绑定对象
-     * @return undefined
-     * xhr同步的方式由于http请求，暂不能支持跨域模块loader
+     * 模块的主函数，
+		xhr同步的方式由于http请求，暂不能支持跨域模块loader
      * 默认register为异步
-    **/ 
+	 * @memberOf Laro
+     * @function
+	 * @name module
+	 *
+	 * @example
+		Laro.module('moduleA', function () {
+			// todo
+		});
+		// 或者
+		Laro.use('moduleB', function () {
+			//todo
+		});
+		
+		// register module
+		Laro.module.register('moduleA', '../moduleA.js')
+			.register('moduleB', 'moduleB.js').require('moduleA')
+	 *
+     * @param {String} moduleName: 要使用的模块名,也可以是一个数组列表
+     * @param {Function} callback[optional]: 加载模块后的回调函数
+     * @param {Object} context[optional] 回调上下文对象
+     * 
+     */ 
     var _module = function (moduleName, callback, context) {
         var argIndex=-1;
         
@@ -318,7 +345,12 @@
      * Laro.module('b');
      * --> Laro.multiModule('a','b') or Leta.multiModule(['a', 'b'])
      * 本方法暂只提供“组回调”，每个并发模块也有回调的请分开写
+	 * @memberOf Laro
+     * @function
      * 
+	 * @param {Array} moduleNames 并发模块列表
+	 * @param {Function} cb: 异步回调
+	 * @param {Object} context: 回调上下文
      */
     var multiModule = function (moduleNames, cb, context) {
         var argInd = -1,

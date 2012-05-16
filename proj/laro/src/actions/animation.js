@@ -1,7 +1,17 @@
-/**
- * Animation
- * {Class}
- * ¶¯»­Àà
+/** 
+ * Laro (Game Engine Based on Canvas) 
+ * Code licensed under the MIT License:
+ *
+ * @fileOverview Laro
+ * @version 1.0
+ * @author  Hongru
+ * @description 
+ * 
+ */
+ 
+/** 
+ * @description
+ * Package: Laro.action
  */
 
 Laro.register('.action', function (La) {
@@ -10,7 +20,14 @@ Laro.register('.action', function (La) {
 		extend = La.extend;
 
 	/**
-	 * @param anim {Object} ´ÓjsonÅäÖÃÀïÃæ»ñÈ¡µÄanim ÅäÖÃ
+     * å¸§åŠ¨ç”»ä¿¡æ¯ ç±»
+     * @class 
+
+	 * @memberOf Laro
+     * @name Animation
+     * @constructor
+     * 
+     * @param {Object} anim: ä»jsoné…ç½®é‡Œé¢è·å–çš„anim é…ç½®
 			{
 				"nbrOfFrames": 73,
 				"name": "TimeTrap",
@@ -22,17 +39,28 @@ Laro.register('.action', function (La) {
 				"pivotx": 256,
 				"events": []
 			}
-	 * @param frames {Array} ´ÓjsonÅäÖÃÎÄ¼şÀïÃæ»ñµÃµÄÃ¿Ö¡µÄÎ»ÖÃĞÅÏ¢
-	 */
+     * @param {Array} frames: ä»jsoné…ç½®æ–‡ä»¶é‡Œé¢è·å¾—çš„æ¯å¸§çš„ä½ç½®ä¿¡æ¯
+     * @return å¸§åŠ¨ç”»ä¿¡æ¯å®ä¾‹
+     */
+
 	var Animation = Class(function (anim, frames) {
 		extend(this, anim);
 
 		this.frames = frames;
 		if (anim.framerate == undefined) anim.framerate = 20;
-		// Õâ¸ö¶¯»­Ö´ĞĞĞèÒªµÄÊ±¼ä
+		// è¿™ä¸ªåŠ¨ç”»æ‰§è¡Œéœ€è¦çš„æ—¶é—´
 		this.animationLength = frames.length / anim.framerate;
 	}).methods({
-		// »ñÈ¡¶¯»­Ê±¼äÄÚÖ¸¶¨Ê±¼ä¶Î[from, to]ÖĞ²åÈëµÄÊÂ¼ş
+	/**
+     * @lends Laro.Animation.prototype
+     */ 
+
+		/**
+		 * è·å–åŠ¨ç”»æ—¶é—´å†…æŒ‡å®šæ—¶é—´æ®µ[from, to]ä¸­æ’å…¥çš„äº‹ä»¶
+		 * @param {Number} from: èµ·å§‹æ—¶é—´
+		 * @param {Number} to: ç»“æŸæ—¶é—´
+		 * @return {Array} æŒ‡å®šæ—¶é—´åŒºé—´å†…äº‹ä»¶åˆ—è¡¨
+		 */
 		getEvents: function (from, to) {
 			var events = [];
 			for (var e = 0; e < this.events.length; e ++) {
@@ -43,7 +71,12 @@ Laro.register('.action', function (La) {
 			}
 			return events;
 		},
-		// »ñÈ¡ÏÂÒ»¸ö¶¯»­ÄÚ£¨Ö¸¶¨Ê±¼ä¶ÎÄÚ£©²åÈëÊÂ¼şµÄ´¥·¢¾ßÌåÊ±¼ä
+		/**
+		 * è·å–ä¸‹ä¸€ä¸ªåŠ¨ç”»å†…ï¼ˆæŒ‡å®šæ—¶é—´æ®µå†…ï¼‰æ’å…¥äº‹ä»¶çš„è§¦å‘å…·ä½“æ—¶é—´
+		 * @param {Number} from: èµ·å§‹æ—¶é—´
+		 * @param {Number} to: ç»“æŸæ—¶é—´
+		 * @return {Number} æ’å…¥äº‹ä»¶çš„è§¦å‘å…·ä½“æ—¶é—´ç‚¹
+		 */
 		getTimeForNextEvent: function (from, to) {
 			var first = -1;
 			for (var e = 0; e < this.events.length; e ++) {
@@ -55,7 +88,9 @@ Laro.register('.action', function (La) {
 			}
 			return first;
 		},
-		// ¸ø¶¨Á½¸öÊ±¼äÇø¼ä£¬Èç¹ûÓĞ½»¼¯£¬½»¼¯ÖĞµÄÊÂ¼şpushÁ½´Î
+		/**
+		 * ç»™å®šä¸¤ä¸ªæ—¶é—´åŒºé—´ï¼Œå¦‚æœæœ‰äº¤é›†ï¼Œäº¤é›†ä¸­çš„äº‹ä»¶pushä¸¤æ¬¡
+		 */ 
 		getEventsSlow: function (from, to, start, end, dt) {
 			var events = [],
 				e,

@@ -39,13 +39,10 @@ Laro.use('resource', function () {
     
     function myCallback (progress) {
         console.log(progress);
-        document.write(Math.floor(progress*100) + '% loaded!<br/>');
+        document.write(progress*100 + '% loaded!');
         if (progress == 1) {
-            //alert('all resources loaded');
+            alert('all resources loaded');
             console.log(loader.loadedImages)
-			for (var i in loader.loadedImages) {
-				document.body.appendChild(loader.loadedImages[i])
-			}
         }
     }
     

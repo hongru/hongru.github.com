@@ -2,29 +2,21 @@
 <script src="../src/base/module.js"></script>
 <script src="../src/laro.seed.js"></script>
 <canvas width="600" height="400" id="canvas"></canvas>
-<div id="log"></div>
 <script>
-Laro.multiModule('canvasRender', 'pixel32', 'loop', 'resource', function () {
+Laro.multiModule('canvasRender', 'loop', 'resource', function () {
    
     // loader
     var loader = new Laro.ResourceLoader();
-	var imgs = [
+    loader.preloadImages([
         'background/0.png',
         'background/1.png',
         'background/2.png'
-    ];
-    loader.preloadImages(imgs, loaderCallback);
+    ], loaderCallback);
     Laro.ResourceLoader.instance = loader;
     
     function loaderCallback(p) {
-		document.getElementById('log').innerHTML = 'loading... ' + Math.floor(p*100) + '%';
         if (p == 1) {
-			document.getElementById('log').innerHTML = '';
             new BG('canvas');
-			/*for (var i in loader.loadedImages) {
-				document.body.appendChild(loader.loadedImages[i]);
-			}*/
-			console.log(loader.loadedImages)
         }
     }
     
@@ -32,57 +24,14 @@ Laro.multiModule('canvasRender', 'pixel32', 'loop', 'resource', function () {
         var canvas = document.getElementById(id);
         this.canvas = canvas;
         this.render = new Laro.CanvasRender(canvas, 1, false);
-		this.imgs = loader.loadedImages;
-		this.data = {};
-		this.imgW = {};
-		this.pos = [0, 0, 0];
-		this.getImgW();
         this.loop = new Laro.Loop(this.update, this);
-
     }).methods({
-		getImgW: function () {
-			this.getSource();
-		},
-		getSource: function () {
-			for (var k in this.imgs) {
-				this.data[k] = [0, 0, this.imgs[k].width-1, this.imgs[k].height - 1, 0, 0, this.imgs[k].width - 1, this.imgs[k].height - 1];
-				
-				this.imgW[k] = this.getEMBImage(this.data[k], this.imgs[k]);
-			}
-		},
-		getEMBImage: function (source, image) {
-		    var width = source[2] - source[0] + 1;
-  			var height = source[3] - source[1] + 1;
- 
-  			var xOffset = source[0] - source[4];
- 			var yOffset = source[1] - source[5];
- 
-    		var textureWidth = xOffset + width + source[6] - source[2];
-    		var textureHeight = yOffset + height + source[7] - source[3];
- 
-    		return new Laro.EMBImage(image, source[0], source[1], width, height, xOffset, yOffset, textureWidth, textureHeight);
-						 
-		},
         update: function (dt) {
-			this.pos[0] -= dt*30;
-			this.pos[1] -= dt*100;
-			this.pos[2] -= dt*120;
-			if (this.pos[0] < -this.imgW[imgs[0]].width) { this.pos[0] = 0 }
-			if (this.pos[1] < -this.imgW[imgs[1]].width) { this.pos[1] = 0 }
-			if (this.pos[2] < -this.imgW[imgs[2]].width) { this.pos[2] = 0 }
             this.draw();
         },
         draw: function () {
             this.render.clear();
-			for (var i = 0; i < 2; i ++) {
-				this.render.drawParticle(this.imgW['background/0.png'], i*this.imgW['background/0.png'].width + this.render.getWidth()/2+this.pos[0], this.render.getHeight()/2, 0, 1, 1, 1, new Laro.Pixel32(0xff, 0xff, 0xff, 0xff), false)
-			}
-			for (var i = 0; i < 2; i ++) {
-				this.render.drawParticle(this.imgW['background/1.png'], i*this.imgW['background/1.png'].width + this.render.getWidth()/2+this.pos[1], this.render.getHeight()/2, 0, 1, 1, 1, new Laro.Pixel32(0xff, 0xff, 0xff, 0xff), false)
-			}
-			for (var i = 0; i < 2; i ++) {
-				this.render.drawParticle(this.imgW['background/2.png'], i*this.imgW['background/2.png'].width + this.render.getWidth()/2+this.pos[2], this.render.getHeight()/2, 0, 1, 1, 1, new Laro.Pixel32(0xff, 0xff, 0xff, 0xff), false)
-			}
+            this.render
         }
     })
 

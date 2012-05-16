@@ -1,7 +1,14 @@
-/**
- * laro seed for module loader
+/** 
+ * Laro (Game Engine Based on Canvas) 
+ * Code licensed under the MIT License:
+ *
+ * @fileOverview Laro
+ * @version 1.0
+ * @author  Hongru
+ * @description 
+ * 文件module 依赖关系列表
  */
-(function () {
+;(function () {
     var scriptList = document.getElementsByTagName('script');
     var lastScriptNode = scriptList[scriptList.length - 1];
    
@@ -34,11 +41,4 @@
         .register('fsm', base + 'src/game/fsm.js').require(['state'])
         .register('laro', base + 'src/world/world.js').require(['class', 'keyboard', 'sound', 'exception', 'util', 'perlin', 'point2', 'vector2', 'chaikin', 'piexel32', 'rectf', 'imageW', 'layer', 'render', 'canvasRender', 'world', 'animation', 'animationHandle', 'resource', 'loop', 'state', 'fsm'])
         
-        
-        /*Laro.initialize = function (cb) {
-            Laro.multiModule(['class', 'exception', 'util', 'perlin', 'point2', 'vector2', 'chaikin', 'piexel32', 'rectf', 'imageW', 'layer', 'render', 'canvasRender', 'world', 'animation', 'animationHandle', 'resource', 'loop', 'state', 'fsm'], function () {
-                console.log('Laro initialized :)', Laro);
-                cb && cb();
-            });
-        }*/
 })();

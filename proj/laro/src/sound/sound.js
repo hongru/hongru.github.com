@@ -166,6 +166,22 @@ Laro.register('.game', function (La) {
 				};
 			}
 		}
+	}).statics({
+		CAN_PLAY_TYPES: function () {
+			var a = document.createElement('audio'), o = {}, s = "audio\/";
+			if (typeof a.canPlayType === "function") {
+        			o._supported = Boolean(true);
+        			o.mp3 = a.canPlayType(s + "mpeg");
+        			o.wav = a.canPlayType(s + 'wav; codecs="1"');
+        			o.ogg = a.canPlayType(s + 'ogg; codecs="vorbis"');
+        			o.m4a = a.canPlayType(s + "x-m4a") || a.canPlayType(s + "aac");
+        			o.webm = a.canPlayType(s + 'webm; codecs="vorbis"');
+    			} else {
+        			o._supported = Boolean(0);
+    			}
+    			
+			return o;
+		}()
 	})
 
 	this.Sound = Sound;
