@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>Laro 地图编辑器</title>
+    <script src="../js/lib/leta.0.3.js"></script>
+    <style>
+        body {font-size: 14px; font-family: Microsoft Yahei; line-height: 2}
+        .texture-container {border:2px dashed #aaa; min-height: 60px;padding: 10px; margin-bottom: 10px;}
+        .texture-container img { margin-right: 6px; }
+        .edit-area {border-top: 1px solid #ccc; border-left: 1px solid #ccc;}
+        .info {
+            padding: 14px;
+            font-size: 12px;
+            background: #f3f3f3;
+            color:#888;
+            border:1px solid #aaa;
+        }
+    </style>
+</head>
+
+<body>
+    <section class="doc" id="doc">
+        <h1>Laro 地图编辑器</h1>
+        <p class="info">
+            适用于地图场景可以由一定大小的子元素拼接而成的情况。典型的像超级玛丽一类的横版通关游戏。
+        </p>
+        <ul>
+            <li>
+                图片资源相对路径: <input type="text" id="path-rel" />
+                <input type="file" id="input-file" data-cmd="upload" />
+            </li>
+            <li>
+                平铺背景色：<input type="text" id="bgcolor" />(不填为透明) 
+                <button>设置</button>
+            </li>
+
+        </ul>
+
+        <div id="texture-container" class="texture-container"></div>
+        
+        <div id="edit-area" class="edit-area">
+        
+        </div>
+        
+    </section>
+    
+    <script>
+        Leta.NS('Leditor.map', function (L) {
+            var pkg = this,
+                $E = L.event,
+                $ = L.$;
+            var unitW = 0,
+                unitH = 0;
+            
+            function getEls () {
+                var els = {};
+                els.doc = L.$('#doc'),
+                els.inputFile = L.$('#input-file');
+                els.tc = $('#texture-container');
+                
+                pkg.els = els;
+            }
+            function handFiles (files) {
+                console.log(files);
+                for (var i = 0; i < files.length; i++) {
+                    var file = files[i];  
+                    var imageType = /image.*/;  
+                      
+                    if (!file.type.match(imageType)) {  
+                        continue;  
+                    }  
+
+                    var reader = new FileReader();  
+                    reader.onload = function (name) {
+                        return function(e){ 
+                            pkg.els.tc.append($('<img data-imgname="'+name+'" draggable="true" alt="" src="'+e.target.result+'" />'));
+                            if (unitW == 0 || unitH == 0) {
+                                var img = $('img', pkg.els.tc[0]);
+                                unitW = img.width;
+                                unitH = img.height;
+                            }
+                        }
+                    }(file.name);
+                    
+
+                    reader.readAsDataURL(file);  
+                }
+                
+            }
+            
+            function fileInputOnchange (e) {
+                var files = e.target.files;
+                handFiles(files);
+            }
+
+            function bind () {
+                $E.dispatch(pkg.els.doc[0], 'click', {
+                    'upload': function (e, tar) {
+                        
+                    }
+                });
+                $E.on(pkg.els.inputFile[0], 'change', fileInputOnchange);
+                
+                $E.on(pkg.els.tc[0], 'drop', function (e) {
+                    e.preventDefault();
+                    var dt = e.dataTransfer || e.originalEvent.dataTransfer;  
+                    var files = dt.files; 
+
+                    handFiles(files); 
+                })
+            }
+            
+            this.init = function () {
+                getEls();
+                bind();
+            };
+        });
+        
+        
+        
+        Leta.domReady(function () { Leditor.map.init() })
+    </script>
+</body>
+</html>
