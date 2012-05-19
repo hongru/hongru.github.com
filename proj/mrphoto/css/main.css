@@ -132,32 +132,34 @@ h1 {
 	display: none;
 }
 
+
 .edit-area,
 .filter-area {
     position: relative;
     overflow: hidden;
     min-height: 175px;
+    text-align:center;
 }
-.edit-area .ea-title {
-    display: none;
-    position: absolute;
-    top: 0;
-    left: 142px;
+.ea-title {
+    width: 564px;
+    height: 34px;
     text-indent: -9999px;
+    display: inline-block;
+    margin-bottom: 20px;
+}
+.btns-wrap {
+    padding: 20px 0 60px 0;
 }
 .edit-area .btn1 {
-    display: none;
-    position: absolute;
+    display: inline-block;
     width: 118px;
     height: 45px;
     background: url(../images/btn_03.png) no-repeat 0 0;
     overflow:hidden;
+    margin: 0 20px;
 }
 .edit-area .btn2 {
-	display: none;
-	position: absolute;
-	left: 354px;
-	top: 170px;
+	display: inline-block;
 }
 .edit-area .btn1 span {
     display: inline-block;
@@ -173,14 +175,10 @@ h1 {
     background-position: -279px 0;
 }
 .edit {
-    width: 564px;
-    height: 34px;
     background: url(../images/edit_03.png) no-repeat;
 }
 .ea-title.filter {
-	height: 28px;
 	background: url(../images/fi-title.png) no-repeat 50% 50%;
-	margin-bottom: 20px;
 }
 
 .limit {
@@ -306,4 +304,22 @@ h1 {
 }
 .save-btn:active {
 	
+}
+
+.tools-wrap {
+    min-height: 300px;
+    position: relative;
+    width: 100%;
+    overflow: hidden;
+}
+.tools-ul {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+}
+.tools-ul li.panel {
+    float: left;
+    width: 100%;
+    min-height: 300px;
 }

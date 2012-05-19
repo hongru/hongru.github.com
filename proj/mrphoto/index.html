@@ -26,49 +26,61 @@
 				</div>
 				<div id="fx-container" class="fx-wrap drop-inner hide"></div>
 				<div class="ctrl-info" id="ctrl-info">
-					鼠标中键滚动缩放；拖拽移动图片；（按住shift微调）
+					鼠标中键滚动缩放；拖拽移动图片
 				</div>
 			</div>
             
 			
-            <div id="edit-area" class="edit-area">
-                <div id="fx-step1" class="step1">
-                    <h3 class="ea-title edit">Edit</h3>
-                    <a href="#" data-related="limit" data-cmd="limit" class="btn btn1 limit"><span>限制</span></a>
-                    <a href="#" data-cmd="rotate" class="btn btn1 rotate"><span>旋转</span></a>
-                    <a href="#" data-related="border" data-cmd="border" class="btn btn1 pic-border"><span>边框</span></a>
-                    <a href="#" data-related="scale" data-cmd="scale" class="btn btn1 scale"><span>缩放</span></a>
-					<a href="#" data-cmd="next" class="btn btn2"><span class="next-t"></span></a>
-                    <div data-related="limit" class="limit-panel">
-						<span data-cmd="limitin" class="limit-btn limit11">1:1</span>
-						<span data-cmd="limitin" class="limit-btn limit43">4:3</span>
-						<span class="limit-btn limit-btn-bg" id="limit-btn-bg"></span>
-					</div>
-                    <div data-related="border" class="border-panel"></div>
-                    <div data-related="scale" class="scale-panel"></div>
-                </div>
+            <div class="tools-wrap">
+                <ul class="tools-ul" id="tools-ul">
+                    <li class="panel"></li>
+                    <li id="edit-area" class="panel edit-area">
+                        <h3 class="ea-title edit">Edit</h3>
+                        <div class="btns-wrap">
+                            <a href="#" data-related="limit" data-cmd="limit" class="btn btn1 limit"><span>限制</span></a>
+                            <a href="#" data-cmd="rotate" class="btn btn1 rotate"><span>旋转</span></a>
+                            <a href="#" data-related="border" data-cmd="border" class="btn btn1 pic-border"><span>边框</span></a>
+        <!--                     <a href="#" data-related="scale" data-cmd="scale" class="btn btn1 scale"><span>缩放</span></a> -->
+                            <div data-related="limit" class="limit-panel">
+                                <span data-cmd="limitin" class="limit-btn limit11">1:1</span>
+                                <span data-cmd="limitin" class="limit-btn limit43">4:3</span>
+                                <span class="limit-btn limit-btn-bg" id="limit-btn-bg"></span>
+                            </div>
+                            <div data-related="border" class="border-panel"></div>
+                            <div data-related="scale" class="scale-panel"></div>
+                        </div>
+                        <a href="javascript:;" data-cmd="next" class="btn btn2"><span class="next-t"></span></a>
+                    </li>
+                    
+                    <li id="filter-area" class="panel filter-area">
+                        <h3 class="ea-title filter"></h3>
+                        <div id="fx-tab-container" class="fx-tab"></div>
+                        <div id="toolbar" class="toolbar">
+                        <!--	<a href="#" data-cmd="cut">裁剪</a>
+                            <a href="#" data-cmd="roll-left">顺时针旋转</a>
+                            <a href="#" data-cmd="roll-right">逆时针选装</a> -->
+
+                            <a href="#" class="save-btn" data-cmd="save">保存</a>
+                        <!--	<a href="#" data-cmd="share">分享</a> -->
+                        </div>
+                    </li>
+                </ul>
             </div>
-			
-
-			<div id="filter-area" class="filter-area hide">
-				<h3 class="ea-title filter"></h3>
-				<div id="fx-tab-container" class="fx-tab"></div>
-				<div id="toolbar" class="toolbar">
-				<!--	<a href="#" data-cmd="cut">裁剪</a>
-					<a href="#" data-cmd="roll-left">顺时针旋转</a>
-					<a href="#" data-cmd="roll-right">逆时针选装</a> -->
-
-					<a href="#" class="save-btn" data-cmd="save">保存</a>
-				<!--	<a href="#" data-cmd="share">分享</a> -->
-				</div>
-			</div>
 			
 			<div id="image-wrap" class="hide"></div>
 			
-			<div id="test-fx-wrap"></div>
 		</div>
 		
 	</div>	
+    
+    <script src="js/operation.js"></script>
+    <script src="js/roll.js"></script>
+    <script src="js/tab.js"></script>
+    <script src="js/toolbar.js"></script>
+    <script src="js/cut.js"></script>
+    <script src="js/fx.js"></script>
+    <script src="js/share.js"></script>
+    <script src="js/main.js"></script>
 	<script> 
 		$(function () { FiPhoto.init(); });
 	</script>
