@@ -8,7 +8,6 @@
         body {font-size: 14px; font-family: Microsoft Yahei; line-height: 2}
         .texture-container {border:2px dashed #aaa; min-height: 60px;padding: 10px; margin-bottom: 10px;}
         .texture-container img { margin-right: 6px; }
-        .edit-area {border-top: 1px solid #ccc; border-left: 1px solid #ccc;}
         .info {
             padding: 14px;
             font-size: 12px;
@@ -16,6 +15,15 @@
             color:#888;
             border:1px solid #aaa;
         }
+        .edit-area {
+            overflow:hidden;
+            border-left: 1px solid #ccc;
+            border-top: 1px solid #ccc;
+            display: inline-block;
+        }
+        .rows {overflow:hidden; zoom:1}
+        .grid {float: left; overflow:hidden;}
+        .grid-inner {border-right:1px solid #e0e0e0; border-bottom:1px solid #e0e0e0}
     </style>
 </head>
 
@@ -45,80 +53,10 @@
         
     </section>
     
-    <script>
-        Leta.NS('Leditor.map', function (L) {
-            var pkg = this,
-                $E = L.event,
-                $ = L.$;
-            var unitW = 0,
-                unitH = 0;
-            
-            function getEls () {
-                var els = {};
-                els.doc = L.$('#doc'),
-                els.inputFile = L.$('#input-file');
-                els.tc = $('#texture-container');
-                
-                pkg.els = els;
-            }
-            function handFiles (files) {
-                console.log(files);
-                for (var i = 0; i < files.length; i++) {
-                    var file = files[i];  
-                    var imageType = /image.*/;  
-                      
-                    if (!file.type.match(imageType)) {  
-                        continue;  
-                    }  
-
-                    var reader = new FileReader();  
-                    reader.onload = function (name) {
-                        return function(e){ 
-                            pkg.els.tc.append($('<img data-imgname="'+name+'" draggable="true" alt="" src="'+e.target.result+'" />'));
-                            if (unitW == 0 || unitH == 0) {
-                                var img = $('img', pkg.els.tc[0]);
-                                unitW = img.width;
-                                unitH = img.height;
-                            }
-                        }
-                    }(file.name);
-                    
-
-                    reader.readAsDataURL(file);  
-                }
-                
-            }
-            
-            function fileInputOnchange (e) {
-                var files = e.target.files;
-                handFiles(files);
-            }
-
-            function bind () {
-                $E.dispatch(pkg.els.doc[0], 'click', {
-                    'upload': function (e, tar) {
-                        
-                    }
-                });
-                $E.on(pkg.els.inputFile[0], 'change', fileInputOnchange);
-                
-                $E.on(pkg.els.tc[0], 'drop', function (e) {
-                    e.preventDefault();
-                    var dt = e.dataTransfer || e.originalEvent.dataTransfer;  
-                    var files = dt.files; 
-
-                    handFiles(files); 
-                })
-            }
-            
-            this.init = function () {
-                getEls();
-                bind();
-            };
-        });
-        
-        
-        
+    <script src="../js/map/leditor.map.js"></script>
+    <script src="../js/map/leditor.map.editor.js"></script>
+    <script src="../js/map/leditor.map.store.js"></script>
+    <script>  
         Leta.domReady(function () { Leditor.map.init() })
     </script>
 </body>
