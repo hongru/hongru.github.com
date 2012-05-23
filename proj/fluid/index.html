@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <title>Fluid Tests</title>
+        <meta name="author" content="AlloyTeam.Horizon" />
+        <style>
+            html,body {margin: 0; padding: 0; background: #111; overflow: hidden; font-family: Georgia; color:#aaa; font-size:12px;}
+            canvas {
+                display: block;
+                margin: 20px auto;
+                border: 1px solid #333;
+                background: #000;
+                cursor: pointer;
+            }
+            .info {
+                text-align: center; 
+                position: absolute;
+                width: 100px;
+                top: 20px;
+                left: 50%;
+            }
+            #log {
+                margin-left: 150px;
+            }
+            #mouse {
+                margin-left: -220px;
+            }
+            .hide { display: none }
+        </style>
+    </head>
+    
+    <body>
+        <canvas id="canvas" width="500" height="500"></canvas>
+        <canvas class="hide" width="16" height="16" id="pcanvas"></canvas>
+        <p id="log" class="info"></p>
+        <p class="info" id="mouse">Mouse Affect: <input id="ck" type="checkbox" /></p>
+        <p style="text-align:center; color:">Author: AlloyTeam.Horizon</p>
+        
+        <script src="./src/ddra.js"></script>
+        <script src="./src/ddra.class.js"></script>
+        <script src="./src/ddra.util.js"></script>
+        <script src="./src/ddra.vector2.js"></script>
+        <script src="./src/ddra.particle.js"></script>
+        <script src="./src/ddra.collection.js"></script>
+        <script src="./src/ddra.fluidparticle.js"></script>
+        <script src="./src/ddra.fluidcollection.js"></script>
+        <script src="./src/run.js"></script>
+        <script>
+            onload = function () {
+                ddra.init(document.getElementById('canvas'));
+            }
+        </script>
+    </body>
+</html>
