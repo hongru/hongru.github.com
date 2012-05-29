@@ -72,6 +72,7 @@ window.requestAnimationFrame = this.requestAnimationFrame =  (function() {
 		 };
 })();
 var $ = typeof $ == 'undefined' ? {} : $;    
+
 $.Loop = function (callback, that) {
 	var keepUpdating = true,
 		lastLoopTime = new Date();
@@ -113,6 +114,7 @@ $.id = function (s) {
 $.addEvent = function (o, e, f) {
 	return o.addEventListener ? o.addEventListener(e, f, false) : o.attachEvent('on'+e, function () { f.call(o) });
 };
+
 	
 //我们设计个简单api，为了简单起见，只做演示
 // tween(from, to, t)
@@ -160,7 +162,9 @@ function drawMap (t, s) {
 var btn = $.id('btn');
 $.addEvent(btn, 'click', function () {
 	eval(codet.value)
-})
+});
+$.addEvent(window, 'blur', function () { looper && looper.stop() });
+$.addEvent(window, 'focus', function () { looper && looper.resume() });
 </script>
 </body>
 </html>

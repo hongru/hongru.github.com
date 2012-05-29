@@ -27,7 +27,7 @@ Leta.NS('Leditor.map', function (L) {
             var reader = new FileReader();  
             reader.onload = function (name) {
                 return function(e){ 
-                    pkg.els.tc.append($('<img data-imgname="'+name+'" draggable="true" alt="" src="'+e.target.result+'" />'));
+                    pkg.els.tc.append($('<img data-cmd="get-img" data-imgname="'+name+'" draggable="true" alt="" src="'+e.target.result+'" />'));
                     // init editor 主区域
                     Leditor.map.editor.init();
                 }
@@ -64,5 +64,7 @@ Leta.NS('Leditor.map', function (L) {
     this.init = function () {
         getEls();
         bind();
+
+        pkg.event.init();
     };
 });
