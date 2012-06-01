@@ -43,7 +43,7 @@
  
 <script type="text/javascript"> 
  
-var mtx = function () { 
+var AnimText = function () { 
 	/* ==== private variables & methods ==== */ 
 	var stop = false; 
 	var frm, lineDelay, charDelay; 
@@ -280,9 +280,7 @@ var mtx = function () {
  
 /* ==== init text ==== */ 
 onload = function () { 
- 
-//	mtx.init( el, linesDelay, charsDelay, cText, cMatch, cGhost); 
-	mtx.init("frm", 1500, 150, [255,255,255], [255,64,0], [44,44,44]); 
+	AnimText.init("frm", 1500, 150, [255,255,255], [255,64,0], [44,44,44]); 
 } 
  
 </script> 
