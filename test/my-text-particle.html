@@ -46,6 +46,15 @@ var TextParticles = function () {
 				window.setTimeout(fn, 1000/60);
 			};
 	}();
+    
+    var mouseX = 0, mouseY = 0;
+    function onMousemove (e) {
+        mouseX = e.clientX;
+        mouseY = e.clientY;
+    }
+    function onResize (e) {
+        
+    }
 
     var init = function (opt) {
         this.opt = {
@@ -71,7 +80,15 @@ var TextParticles = function () {
             this.setCvsStyle();
             this.fillText();
             this.getImageData();
+            this.bindEvent();
             this.loop();
+        },
+        bindEvent: function () {
+            var _this = this;
+            addEvent(this.canvas, 'mousemove', onMousemove);
+            addEvent(window, 'resize', function (e) {
+                _this.setCvsStyle();
+            });
         },
         loop: function () {
             var _this = this;
@@ -106,7 +123,7 @@ var TextParticles = function () {
             this.ctx.textAlign = 'center';
             this.ctx.textBaseline = 'middle';
             this.ctx.font = '200px sans-serif';
-            this.ctx.fillText('岑安', this.canvas.width/2, this.canvas.height/2);
+            this.ctx.fillText('AlloyTeam', this.canvas.width/2, this.canvas.height/3);
         },
         setCvsStyle: function () {
             this.canvas.width = window.innerWidth;
@@ -139,9 +156,19 @@ var TextParticles = function () {
 			var dis = Math.sqrt(Math.pow(disX, 2) + Math.pow(disY, 2));
 			var force = dis * .01;
 			var angle = Math.atan2(disY, disX); // atan2(x, y) 返回点(x, y)到x 轴的弧度
+            
+            var mouseF = 0, mouseA = 0;
+            if (mouseX > 0 && mouseY > 0) {
+                var dis = Math.pow((this.x - mouseX), 2) + Math.pow((this.y - mouseY), 2);
+                mouseF = Math.min(5000/dis, 5000);
+                mouseA = Math.atan2(this.y - mouseY, this.x - mouseX);
+            } else {
+                mouseF = 0;
+                mouseA = 0;
+            }
 
-			this.vx += force * Math.cos(angle);
-			this.vy += force * Math.sin(angle);
+			this.vx += force * Math.cos(angle) + mouseF * Math.cos(mouseA);
+			this.vy += force * Math.sin(angle) + mouseA * Math.sin(mouseA);
 
 			this.vx *= 0.92;
 			this.vy *= .92;
@@ -151,8 +178,8 @@ var TextParticles = function () {
             this.y += this.vy;
         },
         render: function () {
-            this.ctx.fillStyle = 'red';
-            this.ctx.fillRect(this.x, this.y, 1, 1);
+            this.ctx.fillStyle = '#111';
+            this.ctx.fillRect(this.x, this.y, 2, 2);
         },
         update: function () {
             this.move();
