@@ -10,23 +10,27 @@ $.NS('FiPhoto.toolbar', function () {
     };
     this.bind = function () {
         pkg.$btns.click(function (e) {
-            e.preventDefault();
+            
             var cmd = $(this).attr('data-cmd');
             switch(cmd) {
                 case 'cut':
+                    e.preventDefault();
                     FiPhoto.cut.show();
                     break;
                 case 'roll-left':
+                    e.preventDefault();
                     FiPhoto.roll.left();
                     break;
                 case 'roll-right':
+                    e.preventDefault();
                     FiPhoto.roll.right();
                     break;
                 case 'blur':
+                    e.preventDefault();
                     FiPhoto.blur.show();
                     break;
                 case 'save':
-                    FiPhoto.save();
+                    //FiPhoto.save();
                     break;
             }
         })

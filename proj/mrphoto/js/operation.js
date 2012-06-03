@@ -13,9 +13,70 @@ $.NS('FiPhoto.operation', function () {
     }
     this.limitMode = '11';
     this.limitInfo = {
-        '11': [650, 650],
-        '43': [800, 600]
-    }
+        '11': {
+            normal: {
+                width: 650,
+                height: 650,
+                left: 1,
+                top: 1,
+                borderW: 0,
+                borderH: 0
+            },
+
+            b1: {
+                width: 610,
+                height: 610,
+                left: 21,
+                top: 21,
+                borderW: 20,
+                borderH: 20,
+                borderStyle: '#fff',
+                borderRadius: 0
+            },
+            b2: {
+                width: 610,
+                height: 610,
+                left: 21,
+                top: 21,
+                borderW: 20,
+                borderH: 20,
+                borderStyle: '#000',
+                borderRadius: 0
+            }
+        },
+        '43': {
+            normal: {
+                width: 800,
+                height: 600,
+                left: 1,
+                top: 1,
+                borderW: 0,
+                borderH: 0
+            },
+            
+            b1: {
+                width: 760,
+                height: 560,
+                left: 21,
+                top: 21,
+                borderW: 20,
+                borderH: 20,
+                borderStyle: '#fff',
+                borderRadius: 0
+            },
+            b2: {
+                width: 760,
+                height: 560,
+                left: 21,
+                top: 21,
+                borderW: 20,
+                borderH: 20,
+                borderStyle: '#000',
+                borderRadius: 0
+            }
+        }
+    };
+
 
     this.init = function (oSize) {
         if (oSize == undefined) { oSize = FiPhoto.size11 };
@@ -43,13 +104,13 @@ $.NS('FiPhoto.operation', function () {
     this.bind = function () {
         $('body').unbind('click.dispatch');
         $('body').bind('click.dispatch', function (e) {
-            e.preventDefault();
             // reset
             FiPhoto.CLICKIN = {};
             var bubble = FiPhoto.getCmdInfo(e.target);
             if (bubble) {
                 var cmd = bubble.cmd,
                     el = bubble.el;
+                    cmd != 'save' && e.preventDefault();
                 switch(cmd) {
                     case 'limit':
                         FiPhoto.CLICKIN['limit'] = 1;
@@ -89,22 +150,25 @@ $.NS('FiPhoto.operation', function () {
         var ccur = parseInt($el.css('left'));
         if (cur != ccur) {
             pkg.limitMode = ccur > cur ? '43' : '11';
+            var bk = FiPhoto.BORDER || 'normal';
+            var info = pkg.limitInfo[pkg.limitMode][bk];
+            
             pkg['step1']['$l_btnbg'].stop().animate({'left': ccur});
             pkg.deactiveLimitBtn();
 
-            step1.$dropArea.stop().animate({'width': (pkg.limitInfo[pkg.limitMode][0]+2) });
             step1.$container.stop().animate({
-                'width': pkg.limitInfo[pkg.limitMode][0],
-                'height': pkg.limitInfo[pkg.limitMode][1]
+                'width': info['width'] + 2*info.borderW,
+                'height': info['height'] + 2*info.borderH
             }, {
                 step: function (now, fx) {
                     if (pkg.cvs) {
                         if (fx.prop == 'width') {
-                            pkg.cvs.width = now;
+                            pkg.cvs.width = now - 2*info.borderW;
+                            step1.$dropArea.css('width', now+2);
                             FiPhoto.$doc.width(now + 100);
                             FiPhoto.docWidthChange();
                         } else if (fx.prop == 'height') {
-                            pkg.cvs.height = now;
+                            pkg.cvs.height = now - 2*info.borderH;
                         }
                         pkg.drawImage();
                     }
@@ -114,8 +178,8 @@ $.NS('FiPhoto.operation', function () {
 
             // fx-container
             $('#fx-container').css({
-                width: pkg.limitInfo[pkg.limitMode][0],
-                height: pkg.limitInfo[pkg.limitMode][1]
+                width: info['width'],
+                height: info['height']
             });
 
         } 
@@ -152,20 +216,30 @@ $.NS('FiPhoto.operation', function () {
         FiPhoto.BORDER ? pkg.removeBorder() : pkg.addBorder();
         // todo
     };
+    
+    this.applyInfo = function (info) {
+        pkg.imgInfo.limitW = info.width;
+        pkg.imgInfo.limitH = info.height;
+        this.cvs.width = info.width;
+        this.cvs.height = info.height;
+        this.cvs.style['left'] = parseInt(info.left) + 'px';
+        this.cvs.style['top'] = parseInt(info.top) + 'px';
+        this.cvs.parentNode.style['background'] = info.borderStyle || 'transparent';
+        this.drawImage();   
+    };
     this.addBorder = function (borderType) {
-        if (borderType == undefined) borderType = 1;
+        if (borderType == undefined) borderType = 'b1';
         FiPhoto.BORDER = borderType;
-        pkg.ctx.save();
-        pkg.ctx.fillStyle = '#fff';
-        pkg.ctx.fillRect(0, 0, pkg.cvs.width, pkg.cvs.height);
-        pkg.ctx.beginPath();
-        pkg.ctx.rect(15, 15, pkg.cvs.width-30, pkg.cvs.height-30);
-        pkg.ctx.closePath();
-        pkg.ctx.clip();
+        
+        var info = this.limitInfo[this.limitMode][borderType];
+        info && this.applyInfo(info);
+        
     };
     this.removeBorder = function () {
         FiPhoto.BORDER = 0;
-        pkg.ctx.restore();
+        
+        var info = this.limitInfo[this.limitMode]['normal'];
+        info && this.applyInfo(info);
     };
 
     this.toggleScaleBtn = function () {
@@ -323,7 +397,6 @@ $.NS('FiPhoto.operation', function () {
     this.checkStep = function (step) {
         var easing = 'easeOutBack';
         if (step == undefined) { step = 1; }
-
             this.scrollToBottom(panelMove);
 
             function panelMove () {

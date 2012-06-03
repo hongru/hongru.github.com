@@ -126,7 +126,7 @@ h1 {
 	text-indent: -9999px;
 }
 .noimg .drop-inner {
-	background: url(../images/drag.png) no-repeat 50% 118px;
+	background: url(../images/drag.png) no-repeat 50% 50%;
 }
 .hide {
 	display: none;

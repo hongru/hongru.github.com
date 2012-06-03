@@ -1,5 +1,5 @@
 $.NS('FiPhoto.fx', function () {
-
+    var downloadMime = 'image/octet-stream';
     this.normal = function () {
         var canvas = FiPhoto.canvas,
             image = FiPhoto.image;
@@ -12,16 +12,13 @@ $.NS('FiPhoto.fx', function () {
             FiPhoto.$fxCon.empty().append(canvas);
             FiPhoto.$fxCon.show();
             FiPhoto.tab.show();
+            
+            FiPhoto.setHref();
 
-           /*  var ww = Math.max(845, canvas.width + 100);
-            FiPhoto.$doc.animate({width: ww}, function () {
-                
-            }); */
             $(FiPhoto.canvas).animate({opacity: 1});
         }
         if (image.complete) { 
             setTimeout(imgLoadCallback, 0)
-            //imgLoadCallback();
             return;
         }
         $(image).load(imgLoadCallback)
@@ -41,6 +38,8 @@ $.NS('FiPhoto.fx', function () {
             FiPhoto.$con.hide();
             FiPhoto.$fxCon.empty().append(canvas);
             FiPhoto.$fxCon.show();
+            
+            FiPhoto.setHref();
         }
         if (image.complete) {
             setTimeout(imgLoadCallback, 0)
@@ -65,6 +64,8 @@ $.NS('FiPhoto.fx', function () {
             FiPhoto.$con.hide();
             FiPhoto.$fxCon.empty().append(canvas);
             FiPhoto.$fxCon.show();
+            
+            FiPhoto.setHref();
         }    
         if (image.complete) {
             setTimeout(imgLoadCallback, 0)
@@ -86,6 +87,8 @@ $.NS('FiPhoto.fx', function () {
             FiPhoto.$con.hide();
             FiPhoto.$fxCon.empty().append(canvas);
             FiPhoto.$fxCon.show();
+            
+            FiPhoto.setHref();
         }    
         if (image.complete) {
             setTimeout(imgLoadCallback, 0)
@@ -107,6 +110,8 @@ $.NS('FiPhoto.fx', function () {
             FiPhoto.$con.hide();
             FiPhoto.$fxCon.empty().append(canvas);
             FiPhoto.$fxCon.show();
+            
+            FiPhoto.setHref();
         }    
         if (image.complete) {
             setTimeout(imgLoadCallback, 0)
@@ -130,6 +135,8 @@ $.NS('FiPhoto.fx', function () {
             FiPhoto.$con.hide();
             FiPhoto.$fxCon.empty().append(canvas);
             FiPhoto.$fxCon.show();
+            
+            FiPhoto.setHref();
         }    
         if (image.complete) {
             setTimeout(imgLoadCallback, 0)
@@ -151,6 +158,8 @@ $.NS('FiPhoto.fx', function () {
             FiPhoto.$con.hide();
             FiPhoto.$fxCon.empty().append(canvas);
             FiPhoto.$fxCon.show();
+            
+            FiPhoto.setHref();
         }    
         if (image.complete) {
             setTimeout(imgLoadCallback, 0)

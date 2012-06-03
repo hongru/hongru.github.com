@@ -44,14 +44,13 @@ $.NS('FiPhoto', function () {
     function freeModeBind () {
         pkg.$con.bind('dragenter', function (e) {
             e.preventDefault();
+            
             pkg.$wrap.addClass('dragover');
             pkg.$wrap.addClass('noimg');
             pkg.$con.html('');
-            //$(pkg.canvas).css({opacity: 0});
         }).bind('dragleave', function (e) {
             e.preventDefault();
             pkg.$wrap.removeClass('dragover');
-            //pkg.$con.html('<div class="drop-inner"></div>');
         }).bind('dragover', function (e) {
             e.preventDefault();
 
@@ -152,6 +151,23 @@ $.NS('FiPhoto', function () {
 
     this.setFx = function (type, url) {
         var image = document.getElementById('fx-image');
+        function doUpdate () {
+            if (FiPhoto.BORDER) {
+                var info = FiPhoto.operation.limitInfo[FiPhoto.operation.limitMode][FiPhoto.BORDER];
+                FiPhoto.canvas.style['left'] = info.left + 'px';
+                FiPhoto.canvas.style['top'] = info.top + 'px';
+                FiPhoto.$fxCon.css({
+                    background: (info.borderStyle || 'transparent'),
+                    width: (info.width + 2*info.borderW),
+                    height: (info.height + 2*info.borderH)
+                });
+            }
+            FiPhoto.fx[type]();
+            FiPhoto.tab.show();
+            FiPhoto.tab.update(type);
+            FiPhoto.toolbar.show();
+        }
+        
         if (!image) {
             image = document.createElement('img');
             image.id = 'fx-image';
@@ -168,10 +184,7 @@ $.NS('FiPhoto', function () {
             hh = pkg.image.height,
             mm = Math.max(ww, hh);
         if (!url && mm > 0 && mm <= 1024) {
-            FiPhoto.fx[type]();
-            FiPhoto.tab.show();
-            FiPhoto.tab.update(type);
-            FiPhoto.toolbar.show();
+            doUpdate();
             return;
         }
         $.imgReady(url, function () {
@@ -192,22 +205,41 @@ $.NS('FiPhoto', function () {
             pkg.image.width = newW;
             pkg.image.height = newH;
 
-            FiPhoto.tab.show();
-            FiPhoto.fx[type]();
-            FiPhoto.tab.update(type);
-        })
-        //$(pkg.image).hide();
-
-        FiPhoto.fx[type]();
-        FiPhoto.tab.update(type);
-        FiPhoto.tab.show();
+            doUpdate();
+        });
 
     };
 
     // save image
-    this.save = function () {
-        var dataURL = pkg.canvas.toDataURL();      
-        document.location.href = dataURL.replace(/image\/png/i, downloadMime);
+    this.setHref = function () {
+        this.CANDOWNLOAD = false;
+        $('#save-btn').hide();
+        var _url = pkg.canvas.toDataURL();      
+        //document.location.href = dataURL.replace(/image\/png/i, downloadMime);
+        var border = FiPhoto.BORDER || 'normal',
+            info = FiPhoto.operation.limitInfo[FiPhoto.operation.limitMode][border];
+            
+        var tmpCanvas = document.createElement('canvas'),
+            tmpCtx = tmpCanvas.getContext('2d'),
+            tmpImg = new Image();
+        tmpCanvas.width = info.width + 2*info.borderW;
+        tmpCanvas.height = info.height + 2*info.borderH;
+        if (info.borderStyle) {
+            tmpCtx.fillStyle = info.borderStyle;
+            tmpCtx.fillRect(0, 0, tmpCanvas.width, tmpCanvas.height);
+        }
+        
+        tmpImg.src = _url;
+        tmpImg.onload = function () {
+            tmpCtx.drawImage(tmpImg, info.borderW, info.borderH);
+            $('#save-btn').attr('href', tmpCanvas.toDataURL()).show();
+            this.CANDOWNLOAD = true;
+            
+            tmpCanvas = null;
+            tmpCtx = null;
+            tmpImg = null;
+        }
+        
     }
     this.createImage = function (src) {
         var img = document.createElement('img');
@@ -240,6 +272,10 @@ $.NS('FiPhoto', function () {
 
     // btn 移动到第二步
     this.goStep2 = function () {
+        // 获取生成最终 图像的 canvas
+        if (!$('#output-canvas')[0]) {
+            //$('<canvas id="output-canvas"></canvas>')
+        }
         FiPhoto.operation.checkStep(2);
     };
 });
