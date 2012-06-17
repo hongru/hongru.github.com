@@ -6,7 +6,8 @@ $.NS('FiPhoto', function () {
     this.size11 = {w: 650, h: 650};
     this.size43 = {w: 800, h: 600};
     this.step = 0;
-
+    this.borderClass = 'border1 border2 border3 border4';
+    
     function generateCanvas(succFunc, errFunc) {
         pkg.$con = $('#container');
         pkg.$fxCon = $('#fx-container');
@@ -42,8 +43,13 @@ $.NS('FiPhoto', function () {
     }
 
     function freeModeBind () {
-        pkg.$con.bind('dragenter', function (e) {
+        
+        pkg.$wrap.bind('dragenter', function (e) {
             e.preventDefault();
+            
+            pkg.$fxCon.hide();
+            pkg.operation.cvs && pkg.operation.removeBorder();
+            pkg.$con.show();
             
             pkg.$wrap.addClass('dragover');
             pkg.$wrap.addClass('noimg');
@@ -61,6 +67,15 @@ $.NS('FiPhoto', function () {
             var files = dt.files; 
 
             pkg.handleFiles(files);  
+        });
+        
+        pkg.$con.bind('mousemove', function (e) {
+            if (pkg.$con.find('*').length == 0) {
+                pkg.$inputUpload && pkg.$inputUpload.css({
+                    left: e.offsetX - 20,
+                    top: e.offsetY - 10
+                });
+            }
         });
     }
 
@@ -89,6 +104,16 @@ $.NS('FiPhoto', function () {
             wh = $(window).height();
         pkg.$doc.height(Math.max(wh, doch));
     }
+    function handleFileInput () {
+        var inputFile = document.getElementById('input-upload');
+        if (!inputFile) {
+            $('<input type="file" class="input-upload" title="" id="input-upload" />').appendTo('#drop-area');
+        }
+        pkg.$inputUpload = $('#input-upload');
+        pkg.$inputUpload.bind('change', function (e) {
+            pkg.handleFiles($(this).get(0).files);
+        });
+    }
 
     this.mode = 'limit'; // | limit
     this.docWidthChange = docWidthChange;
@@ -97,6 +122,7 @@ $.NS('FiPhoto', function () {
         generateCanvas(_init, errCallback);
         docWidthChange();
         resize();
+        handleFileInput();
         
         FiPhoto.operation.init();
         FiPhoto.tab.init();
@@ -157,10 +183,10 @@ $.NS('FiPhoto', function () {
                 FiPhoto.canvas.style['left'] = info.left + 'px';
                 FiPhoto.canvas.style['top'] = info.top + 'px';
                 FiPhoto.$fxCon.css({
-                    background: (info.borderStyle || 'transparent'),
                     width: (info.width + 2*info.borderW),
                     height: (info.height + 2*info.borderH)
                 });
+                info.borderStyle ? FiPhoto.$fxCon.addClass(info.borderStyle) : FiPhoto.$fxCon.removeClass('border1')
             }
             FiPhoto.fx[type]();
             FiPhoto.tab.show();
@@ -225,7 +251,12 @@ $.NS('FiPhoto', function () {
         tmpCanvas.width = info.width + 2*info.borderW;
         tmpCanvas.height = info.height + 2*info.borderH;
         if (info.borderStyle) {
-            tmpCtx.fillStyle = info.borderStyle;
+            switch (info.borderStyle) {
+                case 'border1':
+                    tmpCtx.fillStyle = info.borderStyle;
+                    break;
+            }
+            
             tmpCtx.fillRect(0, 0, tmpCanvas.width, tmpCanvas.height);
         }
         
@@ -272,11 +303,13 @@ $.NS('FiPhoto', function () {
 
     // btn 移动到第二步
     this.goStep2 = function () {
-        // 获取生成最终 图像的 canvas
-        if (!$('#output-canvas')[0]) {
-            //$('<canvas id="output-canvas"></canvas>')
-        }
+        FiPhoto.setFx('normal', FiPhoto.operation.cvs.toDataURL());
         FiPhoto.operation.checkStep(2);
     };
+    this.goStep1 = function () {
+        pkg.$fxCon.hide();
+        pkg.$con.show();
+        FiPhoto.operation.checkStep(1);
+    }
 });
 

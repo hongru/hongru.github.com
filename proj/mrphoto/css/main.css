@@ -289,15 +289,21 @@ h1 {
 	text-align: center;
 	padding: 60px 0;
 }
+.fx-btn-wrap {
+    display: inline-block;
+    width: 290px;
+    overflow: hidden;
+}
 .save-btn {
 	width: 112px;
 	height: 40px;
 	background-image: url(../images/ss.png);
 	background-repeat: no-repeat;
 	background-position: 0 0;
-	display: inline-block;
+	float: right;
 	text-indent: -9999px;
 	overflow: hidden;
+    margin-top: 3px;
 }
 .save-btn:hover {
 	background-position: -132px 0;
@@ -322,4 +328,59 @@ h1 {
     float: left;
     width: 100%;
     min-height: 300px;
+}
+.back-btn {
+    width: 126px;
+    height: 46px;
+    overflow:hidden;
+    float: left;
+    background: url(../images/btn-sprite1.png) no-repeat -2px -248px;
+
+}
+
+.input-upload {
+    position: absolute;
+    left: 0;
+    top: 0;
+    opacity: 0;
+    cursor: pointer;
+}
+.border-panel {
+    position: absolute;
+    width: 152px;
+    height: 52px;
+    background: url(../images/border-sel-bg.png) no-repeat -2px -2px;
+    display: none;
+}
+.border-panle-btn {
+    float: left;
+    text-decoration: none;
+    color: #919191;
+    font-size: 8px;
+    font-family: Arial;
+    width: 14px;
+    height: 15px;
+    line-height: 15px;
+    text-align: center;
+    border: 2px solid #919191;
+    -webkit-border-radius: 2px;
+    margin-right: 10px;
+    position: relative;
+    z-index:1;
+}
+.border-panle-btn:hover,
+.border-panle-btn.current {
+    color: #5A81AA;
+    border-color: #5A81AA;
+}
+.border-panel-inner {
+    padding: 18px 0 0 11px;
+}
+
+/* border style */
+.border1 {
+    background: #fff;
+}
+.border2 {
+    background: #000;
 }

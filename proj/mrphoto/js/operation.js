@@ -30,7 +30,7 @@ $.NS('FiPhoto.operation', function () {
                 top: 21,
                 borderW: 20,
                 borderH: 20,
-                borderStyle: '#fff',
+                borderStyle: 'border1',
                 borderRadius: 0
             },
             b2: {
@@ -40,7 +40,7 @@ $.NS('FiPhoto.operation', function () {
                 top: 21,
                 borderW: 20,
                 borderH: 20,
-                borderStyle: '#000',
+                borderStyle: 'border2',
                 borderRadius: 0
             }
         },
@@ -61,7 +61,7 @@ $.NS('FiPhoto.operation', function () {
                 top: 21,
                 borderW: 20,
                 borderH: 20,
-                borderStyle: '#fff',
+                borderStyle: 'border1',
                 borderRadius: 0
             },
             b2: {
@@ -71,7 +71,7 @@ $.NS('FiPhoto.operation', function () {
                 top: 21,
                 borderW: 20,
                 borderH: 20,
-                borderStyle: '#000',
+                borderStyle: 'border2',
                 borderRadius: 0
             }
         }
@@ -131,8 +131,12 @@ $.NS('FiPhoto.operation', function () {
                         pkg.toggleScaleBtn($(el));
                         break;
                     case 'next':
-                        FiPhoto.setFx('normal', pkg.cvs.toDataURL());
                         FiPhoto.goStep2();
+                        break;
+                    case 'back':
+                        // 返回上一步
+                        FiPhoto.goStep1();
+                        break;
                 }
             }
 
@@ -169,6 +173,7 @@ $.NS('FiPhoto.operation', function () {
                             FiPhoto.docWidthChange();
                         } else if (fx.prop == 'height') {
                             pkg.cvs.height = now - 2*info.borderH;
+                            step1.$dropArea.css('height', now+2);
                         }
                         pkg.drawImage();
                     }
@@ -212,9 +217,16 @@ $.NS('FiPhoto.operation', function () {
         pkg.drawImage();
     };
 
-    this.toggleBorderBtn = function () {
+    this.toggleBorderBtn = function ($el) {
         FiPhoto.BORDER ? pkg.removeBorder() : pkg.addBorder();
         // todo
+        var pos = $el.position(), $panel = $('.border-panel');
+        $panel.css('display') == 'none' ?
+        $panel.css({
+            left: (pos.left + 4),
+            top: (pos.top + 50)
+        }).show() :
+        $panel.hide();
     };
     
     this.applyInfo = function (info) {
@@ -224,7 +236,7 @@ $.NS('FiPhoto.operation', function () {
         this.cvs.height = info.height;
         this.cvs.style['left'] = parseInt(info.left) + 'px';
         this.cvs.style['top'] = parseInt(info.top) + 'px';
-        this.cvs.parentNode.style['background'] = info.borderStyle || 'transparent';
+        info.borderStyle ? FiPhoto.$con.addClass(info.borderStyle) : FiPhoto.$con.removeClass(FiPhoto.borderClass);
         this.drawImage();   
     };
     this.addBorder = function (borderType) {
