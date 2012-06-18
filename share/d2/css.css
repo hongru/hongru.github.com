@@ -82,7 +82,6 @@ a.bga:hover {
 
 .step {
     width: 900px;
-    padding: 40px;
 
     -webkit-box-sizing: border-box;
     -moz-box-sizing:    border-box;
@@ -533,4 +532,108 @@ a.bga:hover {
 }
 .pointer li{
 	cursor: pointer;
+}
+
+.webapp-coming {
+    width: 500px;
+    height: 500px;
+    -webkit-border-radius: 260px;
+    background: #fff url(images/walking.gif) no-repeat 50% 50%;
+    position: relative;
+}
+.webapp-coming .pages,
+.webapp-coming .app {
+    position: absolute;
+    font-size: 20px;
+    font-weight: bold;
+    line-height: 1;
+    top: 48%;
+}
+.webapp-coming .pages {
+    left: 20px;
+    color: #aaa;
+}
+.webapp-coming .app {
+    right: 30px;
+    color: #4CB848;
+}
+.aboutme {
+    border: 10px solid #357EC1;
+    -webkit-border-radius: 40px;
+    background: #fff url(images/writing1.jpg) no-repeat right;
+    padding: 40px;
+}
+.aboutpage,
+.aboutapp {
+    border: 10px solid #357EC1;
+    -webkit-border-radius: 40px;
+    background: #F3F4F9;
+  
+}
+.aboutapp img {
+    -webkit-border-radius: 40px;
+}
+.c600 {
+    width: 600px;
+    height: 600px;
+    border: 10px solid #357EC1;
+    -webkit-border-radius: 310px;
+    overflow: hidden;
+}
+.page-demo1 {
+    background: url(images/qq.png) no-repeat 50% 50%;
+    background-size: 600px;
+}
+.app-demo1 {
+    background: url(images/webqq.png) no-repeat 50% 50%;
+    background-size: 600px;
+}
+.turn-around {
+    background:#fff url(images/cool.jpg) no-repeat 50% 50%;
+    display: inline-block;
+    font-size: 36px;
+    text-align: center;
+}
+
+.ta-1 {
+    position: absolute;
+    top: 10%;
+    left: 50%;
+    margin-left: -126px;
+}
+.ta-2 {
+    position: absolute;
+    bottom: 10%;
+    left: 50%;
+    margin-left: -90px;
+}
+.kengdie {
+    width: 375px;
+    height: 375px;
+    -webkit-border-radius: 190px;
+    background: url(images/kengdie.png) no-repeat 50% 50%;
+}
+.tc {
+    text-align: center;
+}
+.lion {
+    width: 268px;
+    height: 268px;
+    -webkit-border-radius: 140px;
+    background: url(images/lion.png) no-repeat 50% 50%;
+}
+.number {
+    background: #649ED4;
+    color: #fff;
+    position: absolute;
+    left: 50%;
+    top: 14px;
+    font-family: Georgia;
+    font-weight: bold;
+    font-size: 32px;
+    width: 50px;
+    height: 50px;
+    margin-left: -25px;
+    line-height: 44px;
+    -webkit-border-radius: 50px;
 }
