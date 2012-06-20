@@ -50,14 +50,14 @@
 				line-height: 80px;
 			}
 			#bd img{
-				width: 100px;
-				height: 100px;
-				padding: 2px;
-				border: 1px solid #CECECE;
-				margin-left: 15px;
 				-webkit-box-shadow:2px 2px 5px #000;
 				-moz-box-shadow:2px 2px 5px #000;
 			}
+            #resultArea {
+                padding: 10px;
+                width: 90%;
+                margin: 0 auto;
+            }
 		</style> 
 	</head> 
 	<body> 
@@ -70,7 +70,10 @@
 			</div> 
 		</div> 
 		<div id="bd"></div> 
- 
+        <div class="result">
+            <h4>Image Src:</h4>
+            <textarea id="resultArea"></textarea>
+        </div>
 	</body> 
 	<script type="text/javascript"> 
 	/*<![CDATA[*/
@@ -81,6 +84,7 @@
 			var img = document.createElement('img');
 			img.src = dataURL;
 			container.appendChild(img);
+            $('resultArea').value = img.src;
 		}
 		function handleFiles(files){
 			for (var i = 0; i < files.length; i++) {  
