@@ -24,23 +24,43 @@ $.NS('FiPhoto.operation', function () {
             },
 
             b1: {
-                width: 610,
-                height: 610,
-                left: 21,
-                top: 21,
-                borderW: 20,
-                borderH: 20,
+                width: 606,
+                height: 606,
+                left: 23,
+                top: 23,
+                borderW: 22,
+                borderH: 22,
                 borderStyle: 'border1',
                 borderRadius: 0
             },
             b2: {
-                width: 610,
-                height: 610,
-                left: 21,
-                top: 21,
-                borderW: 20,
-                borderH: 20,
+                width: 606,
+                height: 606,
+                left: 23,
+                top: 23,
+                borderW: 22,
+                borderH: 22,
                 borderStyle: 'border2',
+                borderRadius: 0
+            },
+            b3: {
+                width: 596,
+                height: 596,
+                left: 28,
+                top: 28,
+                borderW: 27,
+                borderH: 27,
+                borderStyle: 'border3',
+                borderRadius: 0
+            },
+            b4: {
+                width: 596,
+                height: 596,
+                left: 28,
+                top: 28,
+                borderW: 27,
+                borderH: 27,
+                borderStyle: 'border4',
                 borderRadius: 0
             }
         },
@@ -124,8 +144,23 @@ $.NS('FiPhoto.operation', function () {
                         pkg.rotate();
                         break;
                     case 'border':
+                        FiPhoto.CLICKIN['borderPanle'] = 1;
                         pkg.toggleBorderBtn($(el));
-                        pkg.drawImage();
+                        //pkg.drawImage();
+                        break;
+                    case 'inBorderPanel':
+                        FiPhoto.CLICKIN['borderPanle'] = 1;
+                        break;
+                    case 'addBorder':
+                        var param = el.getAttribute('data-param');
+                        $(el).parent().find('.current').removeClass('current');
+                        $(el).addClass('current');
+                        pkg.addBorder(param);
+                        break;
+                    case 'removeBorder':
+                        $(el).parent().find('.current').removeClass('current');
+                        $(el).addClass('current');
+                        pkg.removeBorder();
                         break;
                     case 'scale':
                         pkg.toggleScaleBtn($(el));
@@ -141,6 +176,7 @@ $.NS('FiPhoto.operation', function () {
             }
 
             if (!FiPhoto.CLICKIN['limit']) { pkg.deactiveLimitBtn(); }
+            if (!FiPhoto.CLICKIN['borderPanle']) { pkg.deactiveBorderBtn(); }
 
         });
     };
@@ -207,6 +243,23 @@ $.NS('FiPhoto.operation', function () {
             top: (pos.top + 50)
         }).show();
     };
+    
+    this.toggleBorderBtn = function ($btn) {
+        $btn.hasClass('active') ? this.deactiveBorderBtn($btn) : this.activeBorderBtn($btn);
+    };
+    this.deactiveBorderBtn = function ($btn) {
+        $btn = $btn || $('.btn.pic-border');
+        $btn.removeClass('active');
+        $('.border-panel').hide();
+    };
+    this.activeBorderBtn = function ($btn) {
+        $btn.addClass('active');
+        var pos = $btn.position();
+        $('.border-panel').css({
+            left: (pos.left + 4),
+            top: (pos.top + 50)
+        }).show();
+    };
 
 
     this.rotate = function () {
@@ -217,8 +270,8 @@ $.NS('FiPhoto.operation', function () {
         pkg.drawImage();
     };
 
-    this.toggleBorderBtn = function ($el) {
-        FiPhoto.BORDER ? pkg.removeBorder() : pkg.addBorder();
+ /*   this.toggleBorderBtn = function ($el) {
+        //FiPhoto.BORDER ? pkg.removeBorder() : pkg.addBorder();
         // todo
         var pos = $el.position(), $panel = $('.border-panel');
         $panel.css('display') == 'none' ?
@@ -228,6 +281,7 @@ $.NS('FiPhoto.operation', function () {
         }).show() :
         $panel.hide();
     };
+    */
     
     this.applyInfo = function (info) {
         pkg.imgInfo.limitW = info.width;
@@ -236,7 +290,9 @@ $.NS('FiPhoto.operation', function () {
         this.cvs.height = info.height;
         this.cvs.style['left'] = parseInt(info.left) + 'px';
         this.cvs.style['top'] = parseInt(info.top) + 'px';
-        info.borderStyle ? FiPhoto.$con.addClass(info.borderStyle) : FiPhoto.$con.removeClass(FiPhoto.borderClass);
+        
+        FiPhoto.$con.removeClass(FiPhoto.borderClass);
+        info.borderStyle && FiPhoto.$con.addClass(info.borderStyle);
         this.drawImage();   
     };
     this.addBorder = function (borderType) {

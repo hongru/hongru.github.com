@@ -379,8 +379,14 @@ h1 {
 
 /* border style */
 .border1 {
-    background: #fff;
+    background: #F8F4EF;
 }
 .border2 {
-    background: #000;
+    background: #111;
+}
+.border3 {
+    background: url(../images/border3.png);
+}
+.border4 {
+    background: #111;
 }
