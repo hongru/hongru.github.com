@@ -83,6 +83,9 @@ function init () {
     var ua = navigator.userAgent.toLowerCase();
     var impressSupported = ( pfx("perspective") != null ) &&
                            ( ua.search(/(iphone)|(ipod)|(ipad)|(android)/) == -1 );
+    if (!/webkit/i.test(ua)) {
+        document.body.className += ' not-webkit';
+    }
     
     // DOM ELEMENTS
     

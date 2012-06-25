@@ -513,7 +513,8 @@ a.bga:hover {
 	list-style: circle;
 	padding-left: 60px;
 }
-.my-list li .bg {
+.my-list li .bg,
+.blue-btn {
     display: inline-block;
     background: #3E83C5;
     padding: 4px 10px;
@@ -636,4 +637,78 @@ a.bga:hover {
     margin-left: -25px;
     line-height: 44px;
     -webkit-border-radius: 50px;
+}
+
+#div1 {position:relative; width:450px; height:450px; margin: 20px auto 0; 
+    -webkit-border-radius: 260px;
+    border: 10px solid #61B723;
+}
+#div1 a {position:absolute; top:50%; left:50%; font-size: 16px; color:#FF53C2; font-weight:bold; text-decoration:none; padding: 3px 6px; }
+#div a:hover { color: #FE4EBF;}
+#div1 .blue {color:blue;}
+#div1 .red {color:red;}
+#div1 .yellow {color:yellow;}
+
+.not-webkit-tip {
+    position: absolute;
+    display: none;
+    width: 100%;
+    height: 40px;
+    background: #28333D;
+    border-bottom: 1px solid #272E36;
+    text-shadow: 1px 1px #000;
+    font-size: 16px;
+    line-height: 40px;
+    text-align: center;
+   
+}
+.not-webkit .not-webkit-tip {
+    display: block;
+}
+
+.four {
+    width: 500px;
+    height: 500px;
+    background: #fff url(images/carry.jpg) no-repeat 50% 50%;
+    display: inline-block;
+    border: 10px solid #095DA6;
+    font-size: 20px;
+    -webkit-border-radius: 280px;
+}
+.four .info {
+    line-height: 2;
+    padding-top: 400px;
+}
+
+.jimu {
+    padding: 90px 0;
+    background:#fff url(images/jimu.jpg) no-repeat right 50%;
+    border: 10px solid #0B71BC;
+    -webkit-border-radius: 40px;
+}
+.jian {
+    width: 400px;
+    height: 400px;
+    border: 10px solid #212121;
+    -webkit-border-radius: 210px;
+    background: url(images/jian.jpg) no-repeat 50% 50%;
+    display: inline-block;
+}
+.bang {
+    width: 400px;
+    height: 400px;
+    border: 10px solid #212121;
+    -webkit-border-radius: 210px;
+    background: url(images/bang.jpg) no-repeat 50% 50%;
+    background-size: 400px;
+    display: inline-block;
+}
+pre {
+    background: #f3f3f3;
+    border: 1px solid #999;
+    -webkit-border-radius: 10px;
+    padding: 14px 20px;
+    font-size: 12px;
+    line-height: 2;
+    text-align: left;
 }
