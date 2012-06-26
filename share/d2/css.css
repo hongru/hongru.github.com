@@ -770,3 +770,46 @@ sub {
     min-height: 320px;
     background: #FEFDFB url(images/reflow1.jpg) no-repeat right 50%;
 }
+.webgame {
+    width: 500px;
+    height: 500px;
+    border: 10px solid #121212;
+    -webkit-border-radius: 260px;
+    display: inline-block;
+}
+.webgame .number {
+    background: #373737;
+}
+.webgame h4 {
+    font-size: 24px;
+    color: #444;
+    margin-top: 80px;
+}
+.webgame iframe { 
+    background:#000; 
+    margin-top: 20px;
+    cursor: pointer;
+}
+.fsm {
+    min-height: 250px;
+    padding: 40px 60px;
+    -webkit-border-radius: 40px;
+    border: 10px solid #C53D3F;
+    background: #fff url(images/reflow2.jpg) no-repeat right 50%;
+}
+.game2 {
+    width: 504px;
+    height: 534px;
+    -webkit-border-radius: 40px;
+    border: 10px solid #C53D3F;
+    background: #F3F4F9 url(images/game2.png) no-repeat right 50%;
+    display: inline-block;
+}
+.gamefsm {
+    width: 694px;
+    height: 374px;
+    -webkit-border-radius: 40px;
+    border: 10px solid #C53D3F;
+    background: #F3F4F9 url(images/gamefsm.png) no-repeat right 50%;
+    display: inline-block;
+}
