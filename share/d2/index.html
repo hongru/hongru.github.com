@@ -195,95 +195,88 @@
     </div>
 	
 	<div class="step" style="text-align: center" data-x="5500" data-y="4000" data-rotate="0" data-scale="0.5" >
-        <ul style="font-size: 30px">
-			<li>或者利用 三角 外积，类似的思路...</li>
-			<li style="color:#ccc">S_abc * S_abd < 0 </li>
-			<li style="color:#ccc">S_acd * S_bcd < 0</li>
-		</ul>
-		<img src="images/coll6.png" /><br/>
-		<img src="images/coll7.png" />
-		<pre style="text-align: left; color:#79AEDD;font-size:20px; width:700px; word-break:break-word; margin:0 auto">
-function signed2DTriArea(pointA, pointB, pointC) {
-    return ((pointA.x - pointC.x) * (pointB.y - pointC.y) 
-	        - (pointA.y - pointC.y) * (pointB.x - pointC.x));
-}		
-		</pre>
+        <div class="dr-demo">
+            <iframe frameborder="0" src="dr/index.html"></iframe>
+        </div>
     </div>
 	
 	<div class="step" style="text-align: center" data-x="6000" data-y="4000" data-rotate="0" data-scale="0.5" >
-		简单的，比如：
-		<ul>
-			<li><a href="http://hongru.github.com/proj/laro/test/laro.collision.test2.html" target="_blank">Simple Collision 1</a></li>
-			<li><a href="http://hongru.github.com/proj/laro/test/laro.collision.test3.html" target="_blank">Simple Collision 2</a></li>
-		</ul>
+		<img src="images/dr-tab.png" />
     </div>
 	
 	<div class="step" style="text-align: center" data-x="-2000" data-y="4500" data-rotate="180" data-scale="1" >
-		Web Game - <span class="red">红海</span> or <span class="blue">蓝海</span>？
+		<ul class="my-list" style="text-align:left">
+            <li>接口调用集中化</li>
+            <li>事件处理集中化</li>
+            <li>需要派发的消息通过notify来实现</li>
+        </ul>
     </div>
 	
-	<div class="step" style="text-align: center" data-x="4000" data-y="-5000" data-rotate="0" data-scale="14" >
-		About 3D
+	<div class="step imgs" style="text-align: center" data-x="4000" data-y="-5000" data-rotate="0" data-scale="14" >
+		<img src="images/500-1.png" />
+        <img src="images/500-2.png" />
+        <img src="images/500-3.png" />
+        <img src="images/500-4.png" />
+        <img src="images/500-5.png" />
     </div>
 	
 	<div class="step" style="text-align: center" data-x="6400" data-y="-5000" data-rotate="0" data-scale="1" >
-		WebGL <span class="red">or</span> not ?
+		<span class="blue-btn" style="font-size:24px">{ Director }</span> <br/>
+        <img src="images/about-dr.png" style="margin-top:10px" />
     </div>
 
 	<div class="step" style="text-align: center" data-x="7000" data-y="-5000" data-rotate="0" data-scale="1" >
-		<span class="blue">Google ?</span>
+		<span class="blue-btn" style="font-size:24px">{ Actor }</span> <br/>
+        <img src="images/about-actor.png" style="margin-top:10px" />
     </div>
 	
-	<div class="step" style="width:400px; margin:0 auto" data-x="7500" data-y="-5000" data-rotate="0" data-scale="1" >
-		<h2>For Example</h2>
-		<ul class="my-list">
-			<li>No WebGL
-				<ul class="my-list">
-					<li><a href="http://hongru.github.com/proj/laro/examples/jxhome/" target="_blank">JxHome</a></li>
-					<li><a href="http://hongru.github.com/share/3D/clock.html" target="_blank">Clock</a></li>
-					<li><a href="http://hongru.github.com/share/3D/math2.html" target="_blank">Math 1</a></li>
-					<li><a href="http://hongru.github.com/share/3D/math4.html" target="_blank">Math 2</a></li>
-				</ul>
-			</li>
-			<li>WebGL
-				<ul class="my-list">
-					<li><a href="http://hongru.github.com/share/3D/webgl/cube_texture.html" target="_blank">Cube</a></li>
-					<li><a href="http://hongru.github.com/share/3D/webgl/sandy.room.html" target="_blank">Room</a></li>
-				</ul>
-			</li>
-		</ul>
+	<div id="title5" class="step tc" data-x="7500" data-y="-5000" data-rotate="0" data-scale="1" >
+        
+		<div class="shuangren">
+            <span class="number">5</span>
+            <ul class="fu">
+                <li><span class="blue-btn">data -> view</span></li>
+                <li><span class="blue-btn">灵活的view</span></li>
+            </ul>
+            <ul class="huo">
+                <li><span class="blue-btn">调试</span><sub>基于词法的tpl</sub></li>
+                <li><span class="blue-btn">用户操作历史</span><sub>history</sub></li>
+                <li><span class="blue-btn">事件bind</span><sub>delegate</sub></li>
+            </ul>
+        </div>
+        <h4 style="font-size:26px"><span class="blue-btn">Template</span></h4>
     </div>
 	
 	<div class="step" style="text-align: center" data-x="8000" data-y="-5000" data-rotate="0" data-scale="1" >
-		<h2>Step by Step</h2>
-		<img alt="" src="images/1.gif" />
+		<h4 class="h700">冒泡到指定属性 例如[data-cmd]|[cmd] 的el，以他作为target处理</h4>
+        <img src="images/bodyclick.png" />
     </div>
 	
 	<div class="step" style="text-align: center" data-x="8500" data-y="-5000" data-rotate="0" data-scale="1" >
-		<h2><a href="http://hongru.github.com/share/3D/rotate3D.html" target="_blank">Scale Demo</a></h2>
-		<img alt="" src="images/2.jpg" />
+		<h4 class="h700">适配 command</h4>
+        <img src="images/cmdcase.png" />
     </div>
 	
 	<div class="step" style="text-align: center" data-x="9000" data-y="-5000" data-rotate="0" data-scale="1" >
-		<h2>三维旋转</h2>
-		<img alt="" src="images/3.png" style="background:#fff" />
+		<h4 class="h700">不喜欢 switch case</h4>
+        <img src="images/dispatch.png" />
     </div>
 	
 	<div class="step" style="text-align: center" data-x="10000" data-y="-5000" data-rotate="0" data-scale="1" >
-		<h2>三维旋转后降到二维</h2>
-		<img alt="" src="images/5.png" style="background:#fff" />
+        <div class="bupa">
+            <ul class="my-list" style="font-size: 24px; text-align:left; margin-top: 100px">
+                <li>reflow 你怕不怕？怕不怕我不怕</li>
+                <li>内存泄漏 你怕不怕？怕不怕我不怕</li>
+                <li>事件管理 你怕不怕？怕不怕我不怕</li>
+            </ul>
+        </div>
     </div>
 	
-	<div class="step" style="text-align: center" data-x="10000" data-y="-4000" data-rotate="90" data-scale="1" >
-		<h2>Go Easy :)</h2>
-		<ul class="dme">
-			<li>
-				<a class="bga" href="http://hongru.github.com/share/3D/rotate3D_Y.html" target="_blank">绕y轴旋转</a>
-			</li>
-			<li>
-				<a class="bga" href="http://hongru.github.com/share/3D/rotate3D_XY.html" target="_blank">绕x,y轴旋转</a>
-			</li>
-		</ul>
+	<div id="title6" class="step tc" data-x="10000" data-y="-4000" data-rotate="90" data-scale="1" >
+		<div class="webgame">
+            <span class="number">6</span>
+            <iframe frameborder="0" src="mario/index.html" width="260" height="212" ></iframe>
+        </div>
     </div>
 	
 	<div class="step" style="text-align: center" data-x="10000" data-y="-3000" data-rotate="90" data-scale="1" >

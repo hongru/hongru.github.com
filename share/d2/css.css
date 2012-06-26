@@ -712,3 +712,61 @@ pre {
     line-height: 2;
     text-align: left;
 }
+.dr-demo {
+    width: 400px;
+    height: 400px;
+    display: inline-block;
+}
+.dr-demo iframe{
+    width: 100%;
+    height: 400px;
+}
+.imgs {
+    font-size: 20px;
+}
+.shuangren {
+    width: 500px;
+    height: 500px;
+    border: 10px solid #649ED4;
+    -webkit-border-radius: 260px;
+    background: #fefefe url(images/shuangren.png) no-repeat 50% 60px;
+    background-size: auto 460px;
+    display: inline-block;
+}
+
+.fu, .huo {
+    position: absolute;
+    font-size: 16px;
+    text-align: left;
+    top: 35%;
+}
+.fu li, .huo li {
+    margin-bottom: 8px;
+}
+.fu {
+    right: 40px;
+    margin-top: 20px;
+}
+.huo {
+    left: 0;
+}
+sub {
+    margin-left: 8px;
+    background: #aaa;
+    -webkit-border-radius: 5px;
+    display: inline-block;
+    color: #fff;
+    text-shadow: none;
+    padding: 2px 6px;
+    font-size: 14px;
+}
+
+.h700 {
+    font-size: 20px; color: #fff; text-shadow:none; width:700px; margin: 0 auto; text-align: left;background: #1C64B2;
+}
+.bupa {
+    border: 10px solid #1F63AC;
+    -webkit-border-radius: 40px;
+    min-height: 320px;
+    background: #FEFDFB url(images/reflow1.jpg) no-repeat right 50%;
+}
