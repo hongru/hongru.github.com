@@ -49,7 +49,7 @@ body {
     font-family: 微软雅黑, Georgia, sans-serif;
     
     min-height: 740px;
-	color: #A9865D;
+	color: #333;
 	text-shadow: 1px 1px #fff;
 
     background: -webkit-gradient(radial, 50% 50%, 0, 50% 50%, 800, from(rgb(255, 255, 255)), to(rgb(210, 210, 200)));
