@@ -8,8 +8,10 @@
     var canvas = document.querySelector('canvas');
     var stage = new Laro.Stage(canvas);
     var rect = new Laro.Sprite(stage, function () {
-        this.width = 40;
-        this.height = 40;
+        this.width = 100;
+        this.height = 100;
+        this.x = 100;
+        this.y = 100;
         this.color = '#333';
         this.draw = function () {
             this.ctx.beginPath();
@@ -21,12 +23,17 @@
     });
     
     rect.addEventListener('click', function (e, x, y) {
-        console.log(e)
-    })
+        alert('click');
+    });
     rect.addEventListener('tap', function (e, x, y) {
         alert('tap');
     });
-    
+    rect.addEventListener('panstart', function (e, x, y) {
+        rect.color = "red";
+    });
+    rect.addEventListener('pan', function (e, x, y) {
+
+    });
     setInterval(function () {
         stage.clear();
         stage.dispatchDraw();
