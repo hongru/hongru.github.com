@@ -28,6 +28,9 @@
     rect.addEventListener('tap', function (e, x, y) {
         alert('tap');
     });
+    rect.addEventListener('touchstart', function (e, x, y) {
+        alert('touchstart');
+    });
     rect.addEventListener('panstart', function (e, x, y) {
         rect.color = "red";
     });
