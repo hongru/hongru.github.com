@@ -1,0 +1,91 @@
+<!doctype html>
+<html>
+<meta charset="utf-8" />
+
+<canvas width="600" height="600"></canvas>
+<script>
+
+window.requestAnimFrame = this.requestAnimFrame =  (function() {
+      return window.requestAnimationFrame ||
+             window.webkitRequestAnimationFrame ||
+             window.mozRequestAnimationFrame ||
+             window.oRequestAnimationFrame ||
+             window.msRequestAnimationFrame ||
+             function(/* function FrameRequestCallback */ callback, /* DOMElement Element */ element) {
+               window.setTimeout(callback, 1000/60);
+             };
+    })();
+
+(function () {
+    var cvs, ctx, x = 0, PI = Math.PI;
+    
+    function init () {
+        cvs = document.querySelector('canvas');
+        ctx = cvs.getContext('2d');
+        prepare();
+        
+        tick();
+    }
+    function prepare () {
+        ctx.translate(0, 300);
+    }
+    function tick () {
+        draw();
+        
+        requestAnimFrame(tick);
+    }
+    function draw () {
+        var x1 = x + 5;
+        drawCos(x, x1);
+        drawBallPath(x, x1);
+        x = x1;
+    }
+    function cosFn (x) {
+        return 60*Math.cos(x*PI/180);
+    } 
+    function fcosFn (x) {
+        return -60*Math.sin(x*PI/180)*PI/180;
+    }
+    function drawCos (x, x1) { 
+        ctx.save(); 
+        ctx.beginPath();
+        ctx.moveTo(x, cosFn(x));
+        ctx.lineTo(x1, cosFn(x1));
+        ctx.closePath();
+        ctx.stroke();
+        ctx.restore();
+    }
+    function drawBallPath (x, x1) {
+        var r0 = test(x, 20), r1 = test(x1, 20);
+        ctx.save(); 
+        ctx.beginPath();
+        ctx.strokeStyle = 'red';
+        ctx.moveTo(r0[0], r0[1]);
+        ctx.lineTo(r1[0], r1[1]);
+        ctx.closePath();
+        ctx.stroke();
+        ctx.restore();
+    }
+    function test(x, radius) {
+
+        var y = cosFn(x);
+        var k = fcosFn(x);
+        
+        var angle = Math.atan(k);
+        var x2 = x + radius * Math.sin(angle);
+        var y2 = y - radius * Math.cos(angle) ;
+
+        return [x2, y2];
+    }
+    
+    // ball path
+    function getBallPath (x) {
+
+    }
+    
+    return {
+        init: init
+    };
+})().init();
+</script>
+</html>

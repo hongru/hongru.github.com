@@ -1,0 +1,35 @@
+<!doctype html>
+<html>
+<meta charset="utf-8" />
+<script src="../build/laro.0.4.js"></script>
+
+<canvas width="600" height="600"></canvas>
+<script>
+    var canvas = document.querySelector('canvas');
+    var stage = new Laro.Stage(canvas);
+    var rect = new Laro.Sprite(stage, function () {
+        this.width = 40;
+        this.height = 40;
+        this.color = '#333';
+        this.draw = function () {
+            this.ctx.beginPath();
+            this.ctx.rect(0, 0, this.width, this.height);
+            this.ctx.closePath();
+            this.ctx.fillStyle = this.color;
+            this.ctx.fill();
+        }
+    });
+    
+    rect.addEventListener('click', function (e, x, y) {
+        console.log(e)
+    })
+    rect.addEventListener('tap', function (e, x, y) {
+        alert('tap');
+    });
+    
+    setInterval(function () {
+        stage.clear();
+        stage.dispatchDraw();
+    }, 16);
+</script>
+</html>
