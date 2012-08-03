@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8" />
+<script type="text/javascript"><!--
+/* ========== for svg and vml compatible ========== */
+var __SVG = false;
+var __svgNS = false;
+if (document.createElementNS) {
+	__svgNS = "http://www.w3.org/2000/svg";
+	__svg = document.createElementNS(__svgNS, "svg");
+	__SVG = (__svg.x != null);
+}
+if (__SVG) {
+	/* ============= SVG ============== */
+	vectorGraphics = function(o, antialias) {
+		this.canvas = document.createElementNS(__svgNS, "svg");
+		this.canvas.style.position = "absolute";
+		o.appendChild(this.canvas);
+		this.createLine = function(w, col, linecap) {
+			var o = document.createElementNS(__svgNS, "line");
+			o.setAttribute("shape-rendering", antialias?"auto":"optimizeSpeed");
+			o.setAttribute("stroke-width", Math.round(w)+"px");
+			if (col) o.setAttribute("stroke", col);
+			if (linecap) o.setAttribute("stroke-linecap", linecap);
+			o.move = function(x1, y1, x2, y2) {
+				this.setAttribute("x1", Math.round(x1) + .5);
+				this.setAttribute("y1", Math.round(y1));
+				this.setAttribute("x2", Math.round(x2));
+				this.setAttribute("y2", Math.round(y2));
+			}
+			o.color = function(c){ this.setAttribute("stroke", c); }
+			o.RGBcolor = function(R, G, B){ this.setAttribute("stroke", "rgb("+Math.round(R)+","+Math.round(G)+","+Math.round(B)+")"); }
+			o.stroke_weight = function(s){ this.setAttribute("stroke-width", Math.round(s)+"px"); }
+			this.canvas.appendChild(o);
+			return o;
+		}
+		this.createPolyline = function(w, points, col, fill) {
+			var o = document.createElementNS(__svgNS, "polyline");
+			o.setAttribute("shape-rendering", antialias?"auto":"optimizeSpeed");
+			o.setAttribute("stroke-width", Math.round(w));
+			if (col) o.setAttribute("stroke", col);
+			o.setAttribute("fill", fill?fill:"none");
+			if (points) o.setAttribute("points", points);
+			o.move = function(points) {
+				this.setAttribute("points", points);
+			}
+			this.canvas.appendChild(o);
+			return o;
+		}
+		this.createOval = function(diam, filled) {
+			var o = document.createElementNS(__svgNS, "circle");
+			o.setAttribute("shape-rendering", antialias?"auto":"optimizeSpeed");
+			o.setAttribute("stroke-width", 1);
+			o.setAttribute("r", Math.round(diam / 2));
+            o.setAttribute("fill", filled);
+			o.style.cursor = "pointer";
+			o.move = function(x1, y1, radius) {
+				this.setAttribute("cx", Math.round(x1));
+				this.setAttribute("cy", Math.round(y1));
+				this.setAttribute("r", Math.round(radius));
+			}
+			o.stroke_color = function(col) { this.setAttribute("stroke", col); }
+			o.fill_color = function(col) { this.setAttribute("fill", col); }
+			o.stroke_weight = function(sw) { this.setAttribute("stroke-width", sw); }
+			this.canvas.appendChild(o);
+			return o;
+		}
+	}
+	
+} else if (document.createStyleSheet) {
+	/* ============= VML ============== */
+	vectorGraphics = function(o, antialias) {
+		document.namespaces.add("v", "urn:schemas-microsoft-com:vml");
+		var style = document.createStyleSheet();
+		var VMLel = ['line','stroke','polyline','fill','oval'];
+		for (var i=0,l=VMLel.length;i<l;i++) {
+			style.addRule('v\\:'+VMLel[i], "behavior: url(#default#VML);");
+			style.addRule('v\\:'+VMLel[i], "antialias: "+antialias+";");
+		}
+		this.canvas = o;
+		this.createLine = function(w, col, linecap) {
+			var o = document.createElement("v:line");
+			o.strokeweight = Math.round(w)+"px";
+			if (col) o.strokecolor = col;
+			o.move = function(x1, y1, x2, y2) {
+				this.to   = (Math.round(x1) + .5) + "," + Math.round(y1);
+				this.from = Math.round(x2) + "," + Math.round(y2);
+			}
+			o.color = function(c){ this.strokecolor = c; }
+			o.RGBcolor = function(R, G, B){ this.strokecolor = "rgb("+Math.round(R)+","+Math.round(G)+","+Math.round(B)+")"; }
+			o.stroke_weight = function(s){ this.strokeweight = Math.round(s)+"px"; }
+			if (linecap) {
+				s = document.createElement("v:stroke");
+				s.endcap = linecap;
+				o.appendChild(s);
+			}
+			this.canvas.appendChild(o);
+			return o;
+		}
+		this.createPolyline = function(w, points, col, fill) {
+			var o = document.createElement("v:polyline");
+			o.strokeweight = Math.round(w)+"px";
+			if (col) o.strokecolor = col;
+			o.points = points;
+			if (fill) o.fillcolor = fill;
+			else {
+				s = document.createElement("v:fill");
+				s.on = "false";
+				o.appendChild(s);
+			}
+			o.move = function(points) {
+				this.points.value = points;
+			}
+			this.canvas.appendChild(o);
+			return o;
+		}
+		this.createOval = function(diam, filled) {
+			var o = document.createElement("v:oval");
+			var os = o.style;
+			os.position = "absolute";
+			os.cursor = "pointer";
+			o.strokeweight = 0;
+			o.filled = filled;
+            o.fillcolor = filled;
+			os.width = Math.round(diam) + "px";
+			os.height = Math.round(diam) + "px";
+			o.move = function(x1, y1, radius) {
+				os.left   = Math.round(x1 - radius) + "px";
+				os.top    = Math.round(y1 - radius) + "px";
+				os.width  = Math.round(radius * 2) + "px";
+				os.height = Math.round(radius * 2) + "px";
+			}
+			o.stroke_color = function(col) { this.strokecolor = col; }
+			o.fill_color = function(col) { this.fillcolor = col; }
+			o.stroke_weight = function(sw) { this.strokeweight = sw; }
+			this.canvas.appendChild(o);
+			return o;
+		}
+	}
+} else {
+	/* ==== no script ==== */
+	vectorGraphics = function(o, i) {
+		return false;
+	}
+}
+// --></script>
+<style  _mce_bogus="1"><!--
+#screen {
+    height: 400px;
+    background: #f3f3f3;
+    width: 80%;
+    margin: 20px 10%;
+    border: 1px solid #d5d5d5;
+}
+.hide{display:none}
+--></style>
+</head>
+<body>
+<div id="screen"></div>
+<input id="draw-line" type="button" value="绘制矢量图" />
+<input id="rotate-line" class="hide" type="button" value="变换" />
+<script type="text/javascript"><!--
+var addEvent = function (o, e, f) {
+    o.addEventListener ? o.addEventListener(e, f, false) : o.attachEvent('on'+e, function () {f.call(o)});
+},
+    $ = function (id) { return document.getElementById(id) }
+onload = function () {
+    var scr = document.getElementById('screen'),
+        svg = new vectorGraphics(scr, true),
+        
+        dl = $('draw-line'),
+        rl = $('rotate-line');
+        
+    
+    var Line = function (weight, color, r) {
+        this.o = svg.createLine(weight, color, 'round');
+        this.pl = svg.createPolyline(2, '', color, '#d8e');
+        this.c = svg.createOval(0, color);
+        
+        this.a = 0;
+        this.r = r;
+        this.pos = {x: 20, y: 30};
+        this.pos2 = {x: 400, y: 100};
+    }
+    Line.prototype = {
+        show: function () {
+            this.o.move(this.r*(1+Math.sin(this.a))+this.pos.x, this.r*(1-Math.cos(this.a))+this.pos.y, this.r*(1-Math.sin(this.a))+this.pos.x, this.r*(1+Math.cos(this.a))+this.pos.y);
+            this.pl.move(''+(this.pos2.x-this.r*Math.sin(30+this.a))+','+(this.pos2.y-this.r*Math.cos(30+this.a))+' '+(this.pos2.x+this.r*Math.sin(30+this.a))+','+(this.pos2.y-this.r*Math.cos(30+this.a))+' '+(this.pos2.x+this.r*Math.sin(this.a))+','+(this.pos2.y+this.r*Math.cos(this.a))+'');
+            
+            this.c.move(800, 160, this.r*(Math.cos(this.a)+1.5)/2);
+        },
+        rotate: function () {
+            var _this = this;
+            this._interval = setInterval(function () {
+                _this.show();
+                _this.a += .1;
+            }, 16)
+        },
+        stop: function () {
+            clearInterval(this._interval)
+        }
+    }
+    
+    var line = new Line(10, '#da4901', 80);
+    addEvent(dl, 'click', function () {
+        line.show();
+        rl.style['display'] = 'inline'
+    });
+    addEvent(rl, 'click', function () {
+        if (this.value == '变换') {
+            line.rotate();
+            this.value = '停止';
+        } else if (this.value == '停止') {
+            line.stop();
+            this.value = '变换';
+        }  
+    })
+}
+// --></script>
+</body>
+</html>

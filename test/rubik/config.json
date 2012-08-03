@@ -1,0 +1,14 @@
+{
+    "rubik": {
+        "source": [
+            "js/laro/laro.global.js",
+            "js/laro/exception.js",
+            "js/laro/class.js",
+            "js/laro/pixel32.js",
+            "js/laro/state.js",
+            "js/laro/fsm.js",
+            "js/laro/game.util.js"
+        ],
+        "target": "build/rubik.all.js"
+    }
+}

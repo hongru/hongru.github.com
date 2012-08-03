@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <style type="text/css">
+        html {
+            overflow: hidden;
+        }
+        body {
+            position: absolute;
+            margin: 0px;
+            padding: 0px;
+            background: #000;
+            width: 100%;
+            height: 100%;
+        }
+        #screen {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: #000;
+            overflow: hidden;
+            font-family: Segoe UI, Verdana, Arial, Sans-Serif;
+            color: #fff;
+            font-size: 13px;
+        }
+        #screen canvas {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: #000;
+        }
+        #strokediv {
+            position: absolute;
+        }
+    </style>
+</head>
+
+<body>
+    
+    <div id="screen">
+        <canvas id="canvas"></canvas>
+        <div id="strokediv"><input type="checkbox" id="stroke" /></div>
+    </div>
+    
+    <script src="js/laro/laro.global.js"></script>
+    <script src="js/laro/exception.js"></script>
+    <script src="js/laro/class.js"></script>
+    <script src="js/laro/pixel32.js"></script>
+    <script src="js/laro/state.js"></script>
+    <script src="js/laro/fsm.js"></script>
+    <script src="js/laro/game.util.js"></script>
+    
+    <script src="js/jcanvas.0.4.js"></script>
+    
+    <script src="js/rubik.texture.js"></script>
+    <script src="js/rubik.js"></script>
+    
+<script>
+
+;(function () {
+	var scr, canvas, img;
+	var nx, ny, nw, nh, xm, ym;
+	// ==== canvas constructor ====
+	var Canvas = function (id) {
+		this.container = document.getElementById(id);
+		this.ctx = this.container.getContext("2d");
+		this.resize = function (w, h) {
+			this.container.width = w;
+			this.container.height = h;
+		}
+	};
+	var resize = function () {
+		// ---- screen resize ----
+		nw = scr.offsetWidth;
+		nh = scr.offsetHeight;
+		var o = scr;
+		for (nx = 0, ny = 0; o != null; o = o.offsetParent) {
+			nx += o.offsetLeft;
+			ny += o.offsetTop;
+		}
+		canvas.resize(nw, nh);
+	};
+	var init = function () {
+		// ---- init script ----
+		scr = document.getElementById("screen");
+		canvas  = new Canvas("canvas");
+		// ---- mouse ----
+		scr.onmousemove = function(e) {
+			xm = e.clientX - nx;
+			ym = e.clientY - ny;
+		};
+		// ---- screen size ----
+		resize();
+		window.addEventListener('resize', resize, false);
+		// ---- wireframe ----
+		 document.getElementById("stroke").onchange = function () {
+			if (img) {
+				if (this.checked) img.stroke = "#fff"; else img.stroke = false;
+			}
+		} 
+		// ---- create image ----
+		img = new rubik.texture.Image(canvas.container, "./images/1.jpg", 4);
+		xm = 0;
+		ym = 0;
+		run();
+	};
+	// ---- main loop ----
+	var run = function () { 
+		canvas.ctx.clearRect(0, 0, nw, nh);
+		img.draw3D({X:xm, Y:0}, {X:nw/2, Y:nh/3}, {X:nw/2, Y:nh-nh/3}, {X:xm, Y:nh});
+		setTimeout(run, 16);
+	};
+	return {
+		// ---- onload event ----
+		load : function () {
+			window.addEventListener('load', function () {
+				init();
+			}, false);
+		}
+	}
+})().load();
+</script>
+</body>
+</html>
