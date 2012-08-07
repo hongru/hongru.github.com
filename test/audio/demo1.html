@@ -12,9 +12,11 @@ function log (s) {
 }
 
 var au = new Audio();
+au.controls = 'controls';
 au.src = 'chat.mp3';
 au.addEventListener('ended', function () {log('ended')}, false);
 au.addEventListener('canplay', function () {log('canplay')}, false);
+au.addEventListener('load', function () {log('load')}, false);
 au.addEventListener('canplaythrough', function () {log('canplaythrough'); au.play()}, false);
 au.load();
 document.body.appendChild(au);
