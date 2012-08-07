@@ -18,11 +18,13 @@ au.addEventListener('ended', function () {log('ended')}, false);
 au.addEventListener('canplay', function () {log('canplay')}, false);
 au.addEventListener('load', function () {log('load')}, false);
 au.addEventListener('canplaythrough', function () {log('canplaythrough'); au.play()}, false);
+
+document.body.appendChild(au);
+
 au.load();
 au.play();
 //au.pause();
-console.log('play')
-document.body.appendChild(au);
+console.log('play 1');
 </script>
 </body>
 </html>
