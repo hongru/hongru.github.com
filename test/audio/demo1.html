@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+<meta charset="utf-8" />
+
+<body>
+<div id="log"></div>
+
+<script>
+var logger = document.getElementById('log');
+function log (s) {
+    logger.innerHTML = logger.innerHTML + '<br/>' + s;
+}
+
+var au = new Audio();
+au.src = 'chat.mp3';
+au.addEventListener('ended', function () {log('ended')}, false);
+au.addEventListener('canplay', function () {log('canplay')}, false);
+au.addEventListener('canplaythrough', function () {log('canplaythrough'); au.play()}, false);
+au.load();
+document.body.appendChild(au);
+</script>
+</body>
+</html>
