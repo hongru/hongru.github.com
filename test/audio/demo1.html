@@ -5,12 +5,15 @@
 <body>
 <div id="log"></div>
 
+<a href="#" onclick="play()">play</a>
 <script>
 var logger = document.getElementById('log');
 function log (s) {
     logger.innerHTML = logger.innerHTML + '<br/>' + s;
 }
-
+function play () {
+    au.play();
+}
 var au = new Audio();
 au.controls = 'controls';
 au.src = 'chat.mp3';
