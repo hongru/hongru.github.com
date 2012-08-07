@@ -28,6 +28,25 @@ au.load();
 au.play();
 //au.pause();
 console.log('play 1');
+
+function fakeClick (fn) {
+    var a = document.createElement('a'), evt;
+    a.addEventListener('click', function (e) {
+        fn();
+    }, false);
+    document.body.appendChild(a);
+    
+    if (document.createEvent) {
+        evt = document.createEvent("MouseEvents");
+        if (evt.initMouseEvent) {
+            evt.initMouseEvent("click", true, true, window, 0, 0, 0, 0, 0, false, false, false, false, 0, null);
+            a.dispatchEvent(evt);
+        }
+    }
+};
+fakeClick(function () {
+    au.play();
+})
 </script>
 </body>
 </html>
