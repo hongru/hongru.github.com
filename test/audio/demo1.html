@@ -19,6 +19,8 @@ au.addEventListener('canplay', function () {log('canplay')}, false);
 au.addEventListener('load', function () {log('load')}, false);
 au.addEventListener('canplaythrough', function () {log('canplaythrough'); au.play()}, false);
 au.load();
+au.play();
+au.pause();
 document.body.appendChild(au);
 </script>
 </body>
