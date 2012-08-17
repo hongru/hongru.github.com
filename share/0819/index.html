@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>H5游戏基础</title>
+    <meta name="author" content="Horizon" />
+    <link rel="stylesheet" href="css.css" />
+	<script src="../impress.js"></script>
+</head>
+<body>
+<div class="not-webkit-tip">请使用Webkit内核浏览器浏览以下内容，以获得最佳体验 (^^)</div>
+<div id="impress" class="impress-not-supported">
+    <div id="title" class="step" data-x="-1500" data-y="-2200" data-scale="5" data-rotate-x="-40" data-rotate-y="10">
+        <h1>Game of Html5</h1>
+        <h2>^^</h2>
+    </div>
+	
+	<div class="step aboutme" data-x="5000" data-y="-1000" data-rotate="-90" data-scale="2">
+		<h2>About <span class="me">Me</span>:</h2>
+		<ul class="my-list">
+			<li>陈虹如 - 岑安 - horizon </li>
+			<li><b>blog:</b> hongru.cnblogs.com</li>
+			<li><b>github:</b> github.com/hongru</li>
+			<li><b>e-mail:</b> <ul>
+				<li>hongru.chenhr@gmail.com</li>
+			</ul></li>
+		</ul>
+	</div>
+
+    <div id="bored" class="step" data-x="-1000" data-y="-1500" data-rotate-x="20">
+
+            <ul class="my-list cata" >
+                <li><span class="bg">canvas的动画实现</span></li>
+                <li><span class="bg">简易碰撞监测</span></li>
+                <li><span class="bg">游戏流程的控制</span></li>
+                <li><span class="bg">Dom和canvas混合</span></li>
+            </ul>
+
+    </div>
+	
+	<div id="title1" class="step" data-x="0" data-y="-1500" data-rotate-x="40" style="text-align:center">
+                    <ul>
+                        <li>- 矢量动画</li>
+                        <li>- 帧动画</li>
+                        <li>- 骨骼动画</li>
+                    </ul>
+    </div>
+    
+    <div class="step aboutpage" data-x="850" data-y="3000" data-rotate="90" data-scale="5" style="text-align:center;font-size:30px;padding:100px 0">
+        <p>矢量 - No Textures?</p>
+        <p><a href="https://github.com/hongru/hongru.github.com" target="_blank">For Example</a></p>
+    </div>
+
+    <div class="step c600 page-demo1" data-x="1000" data-y="-1500" data-rotate-x="40" style="padding:200px 0 200px 60px;font-size:30px;">
+        注意：
+        <ol>
+            <li>beginPath & closePath</li>
+            <li>save & restore</li>
+        </ol>
+    </div>
+
+    <div class="step aboutapp" data-x="1000" data-y="-1500" data-scale="2" data-rotate-x="130" style="font-size:30px;padding:100px 0; text-align: center">
+        <h4>Textures 的关键帧动画</h4>
+        <p><a href="https://github.com/hongru/hongru.github.com" target="_blank">For Example</a></p>
+        <p><a href="http://hongru.github.com/proj/laro/Leditor/animation/index.html" target="_blank">Simple Editor</a></p>
+    </div>
+
+    <div class="step" data-x="0" data-y="-5000" data-scale="4" style="">
+        <div style="width:200px;margin: 0 auto">
+        <h4>Pro:</h4>
+        <ul class="my-list cata">
+            <li>实现简单</li>
+            <li>计算消耗小</li>
+        </ul>
+        <h4>Less:</h4>
+        <ul class="my-list cata">
+            <li>大量素材支撑</li>
+            <li>动作可控性低</li>
+        </ul>
+        </div>
+    </div>
+    
+    <div class="step" data-x="0" data-y="-2000" data-scale="4" style="text-align:center;font-size:20px">
+        <h4><strong>骨骼动画</strong></h4>
+        <p>
+            骨骼动画的实现思路是从人体或动物的身体的运动方式而来的。动画人物的身体（肉、皮肤）是一个网格(Mesh)模型，网格的内部是一个骨架结构。当人物的骨架运动时，身体就会跟着骨架一起运动。骨架是由一定数目的骨骼组成的层次结构，每一个骨骼的排列和连接关系对整个骨架的运动有很重要的影响。每一个骨骼数据都包含其自身的动画数据。和每个骨架相关联的是一个“蒙皮”(Skin)模型，它提供动画绘制所需要的几何模型(Vertex,Normal,etc)和纹理材质信息。每个顶点都有相应的权值(Weight)，这些权值定义了骨骼的运动对有关顶点的影响因子。当把动画人物的姿势和全局运动信息作用到骨架上时，这个“蒙皮”模型就会跟随骨架一起运动。
+        </p>
+    </div>
+
+    <div class="step" data-x="0" data-y="-1000" data-scale="1" style="text-align:center">
+        <a href="http://hongru.github.com/skeletal-animation/index.html" target="_blank">Simple Demo</a>
+    </div>
+    
+    <div class="step" data-x="0" data-y="-1000" data-z="-500" data-scale="1" style="text-align:center">
+        <a href="http://hongru.github.com/skeletal-animation/index.html" target="_blank">Simple Demo</a>
+    </div>
+    
+    <div id="title2" class="step" data-x="0" data-y="-1000" data-z="-1000" data-scale="1" data-rotate="180" style="text-align:center">
+        <div class="c600 turn-around">
+            <div style="padding-top:200px">
+            <h4>More...</h4>
+            <ul class="my-list cata" style="padding-left:160px;text-align:left">
+                <li>易用的骨骼动画可视编辑</li>
+                <li>前向动力学(FK)和逆向动力学(IK)</li>
+            </ul>
+            </div>
+        </div>
+    </div>
+	
+		<div class="step" data-x="5000" data-y="2325" data-z="-3000" data-rotate="0" data-scale="1" style="text-align:center">
+        <h2>About Collision</h2>
+		<div style="font-size:20px;">
+			<img alt="" src="../km-html5/images/coll1.png" /><br/>我们只考虑最简单的 (^^)
+		</div>
+    </div>
+	
+	<div class="step" data-x="6000" data-y="2325" data-z="-3000" data-rotate="0" data-scale="1" style="text-align:center">
+		But... <br/>
+        <img src="../km-html5/images/coll2.png" />
+    </div>
+	
+	<div class="step" style="text-align: center" data-x="4500" data-y="4000" data-rotate="0" data-scale="0.5" >
+        <h4>那么，我们换个思路</h4>
+		<img src="../km-html5/images/coll3.png" />
+    </div>
+	
+	<div class="step" style="text-align: center" data-x="5000" data-y="4000" data-rotate="0" data-scale="0.5" >
+        <ul style="font-size: 30px">
+			<li>line A: a1*x + b1 - y = 0</li>
+			<li>line B: a2*x + b2 - y = 0</li>
+		</ul>
+		<img src="../km-html5/images/coll4.png" /><br/>
+		<img src="../km-html5/images/coll5.png" />
+    </div>
+	
+	<div class="step" style="text-align: center" data-x="5500" data-y="4000" data-rotate="0" data-scale="0.5" >
+        <ul style="font-size: 30px">
+			<li>或者利用 三角 外积，类似的思路...</li>
+			<li style="color:#333">S_abc * S_abd < 0 </li>
+			<li style="color:#333">S_acd * S_bcd < 0</li>
+		</ul>
+		<img src="../km-html5/images/coll6.png" /><br/>
+		<img src="../km-html5/images/coll7.png" />
+		<pre style="text-align: left; color:#79AEDD;font-size:20px; width:700px; word-break:break-word; margin:0 auto">
+function signed2DTriArea(pointA, pointB, pointC) {
+    return ((pointA.x - pointC.x) * (pointB.y - pointC.y) 
+	        - (pointA.y - pointC.y) * (pointB.x - pointC.x));
+}		
+		</pre>
+    </div>
+	
+	<div class="step" style="text-align: center" data-x="6000" data-y="4000" data-rotate="0" data-scale="0.5" >
+		简单的，比如：
+		<ul>
+			<li><a href="http://hongru.github.com/proj/laro/test/laro.collision.test2.html" target="_blank">Simple Collision 1</a></li>
+			<li><a href="http://hongru.github.com/proj/laro/test/laro.collision.test3.html" target="_blank">Simple Collision 2</a></li>
+		</ul>
+    </div>
+
+    <div id="html5" style="font-size:20px" class="step" data-x="2825" data-y="6325" data-z="-3000" data-rotate="300" data-scale="6">
+		<p>以上为<strong>寻边碰撞检测</strong>，优点：检测紧凑性好，能拿到碰撞点，可根据碰撞点和质心坐标做碰撞后方向的反馈等。缺点：计算量，复杂度略高</p>
+        <p><strong>AABB:</strong> AABB 包围盒是与坐标轴对齐的包围盒, 简单性好, 紧密性较差(尤其对斜对角方向放置的瘦长形对象)</p>
+        <p><strong>OBB:</strong> 方向包围盒，基于Separating Axis Theorem(SAT)（分离轴定律），紧密型较好，计算量适中，但无法取得具体的碰撞点和角度。适用于不需考虑碰撞后反馈的模型。</p>
+    </div>
+	
+	<div id="title4" style="font-size:20px" class="step tc" data-x="3825" data-y="2325" data-z="-3000" data-rotate="0" data-scale="5">
+          <strong>SAT为一种快速检测不规则凸多边型是否碰撞的算法。</strong><br/>
+概念如下：给予两个凸多边形物体，如果能找到一个轴，使两个物体在该轴上的投影互不重叠，则这两物体可判断为没有碰撞发生。这个轴就是一个分离轴 Separating Axis
+
+    </div>
+	
+	<div class="step jimu tc" data-x="5000" data-y="2325" data-z="-3000" data-rotate="0" data-scale="1">
+		<div>
+			<img src="images/sat1.jpg" />
+		</div>
+    </div>
+	
+	<div class="step jimu tc" data-x="6000" data-y="2325" data-z="-3000" data-rotate="0" data-scale="1" style="text-align:center; font-size:16px">
+        <img src="images/sat2.jpg" />
+    </div>
+	
+	<div class="step jimu tc" style="text-align: center" data-x="5000" data-y="4000" data-rotate="0" data-scale="0.5">
+        <p style="font-size:20px">2D的情况，可能存在的分离轴为垂直于多边形各个边的轴</p>
+        <img src="images/sat4.jpg" width="400"/>
+    </div>
+	
+	<div class="step jimu tc" style="text-align: center" data-x="5500" data-y="4000" data-rotate="0" data-scale="0.5" >
+        <p style="font-size:20px">如果找到一个轴，使两多边形的边在该轴上的投影互补重叠，则可判断为不碰撞，计算可退出。</p>
+        <img src="images/sat5.jpg" width="400"/>
+    </div>
+	
+	<div class="step" style="text-align: center" data-x="6000" data-y="4000" data-rotate="0" data-scale="0.5" >
+		<iframe src="iframes/OBB.html" frameborder="0" width="100%" height="550"></iframe>
+    </div>
+	
+	
+	<div class="step fsm" style="text-align: left" data-x="10000" data-y="-3000" data-rotate="90" data-scale="1" >
+		<h4>FSM 的意义</h4>
+        <ul class="my-list">
+            <li>update [和 draw] 的派发模型</li>
+            <li>流程控制，状态解耦</li>
+            <li>状态流转的事件机制</li>
+        </ul>
+    </div>
+	
+	<div class="step" style="text-align: center; font-size:30px" data-x="10000" data-y="-2000" data-rotate="90" data-scale="1" >
+		<h4>以功能为节点划分</h4>
+        <div class="game2"></div>
+    </div>
+	
+	<div class="step" style="text-align: center; font-size:30px" data-x="10000" data-y="0" data-rotate="90" data-scale="1" >
+		<h4>以流程为节点划分</h4>
+        <div class="gamefsm"></div>
+    </div>
+	
+	<div class="step" style="text-align: center" data-x="10000" data-y="3000" data-rotate="90" data-scale="1" >
+		<iframe frameborder="0" src="http://hongru.github.com/proj/laro/test/laro.fsm.html" width="630" height="450"></iframe>
+    </div>
+	
+	<div class="step" style="text-align: center" data-x="10000" data-y="4000" data-rotate="90" data-scale="1" >
+		<img src="images/fsmrect.png" />
+    </div>
+	
+	<div class="step" style="text-align: center" data-x="10000" data-y="5000" data-rotate="90" data-scale="1" >
+		<img src="images/normal.png" />
+    </div>
+	
+	<div class="step" style="text-align: center" data-x="10000" data-y="6000" data-rotate="90" data-scale="1" >
+		<img src="images/rotate.png" />
+    </div>
+	
+	<div class="step" style="text-align: center" data-x="10000" data-y="7000" data-rotate="90" data-scale="1" >
+		<img src="images/forward.png" />
+    </div>
+
+    <div class="step" style="text-align: center" data-x="9000" data-y="7000" data-rotate="0" data-scale="1" >
+		对待“新技术”和“老技术”，需要宽容的心态，有容乃大
+    </div>
+       
+    <div class="step" style="text-align: center; font-size:30px" data-x="5000" data-y="5000" data-rotate="180" data-scale="1" >
+		<a target="_blank" href="http://codetank.alloyteam.com/" class="blue-btn">CodeTank</a>
+        <a target="_blank" href="http://heroes.github.com/world-of-heroes2/online/" class="blue-btn">大侠的世界</a>
+    </div>
+    
+    <div id="overview" class="step" data-x="3000" data-y="1500" data-scale="20" style="font-family: 'PT Serif', georgia, serif;color:#ff4a00;"> Thanks
+    </div>
+
+</div>
+
+
+</body>
+</html>
