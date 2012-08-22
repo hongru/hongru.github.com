@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+<meta charset="utf-8" />
+<script src="lib/jcanvas.0.4.js"></script>
+<script src="../texturemapping.js"></script>
+<style>
+body {font-size:12px; line-height:2; color:#333; text-align:center;font-family:Georgia}
+canvas {display:block; margin:0 auto; border:1px solid #ccc;}
+</style>
+
+<body>
+<canvas id="canvas" width="800" height="600"></canvas>
+<img src="http://hongru.github.com/test/rubik/images/1.jpg" id="img" style="display: none" />
+<script>
+;(function () {
+    var canvas = document.getElementById('canvas');
+	var stage = new CVS.$stage(canvas);
+    var img = document.getElementById('img');
+
+	var initialize = function () {
+		var focalLength = 900,
+			ballpos = [[-300, -200, 0], [300, -200, 0], [300, 200, 0], [-300, 200, 0]],
+            balls = [],
+			vpx = 0,
+			vpy = 0,
+			angleY = 0,
+			angleX = 0;
+
+        vpx = canvas.width / 2;
+        vpy = canvas.height / 2;
+        
+		for (var i=0; i<ballpos.length; i++) {
+			var ball = CVS.createPoint3D(stage.ctx, {
+				xpos: ballpos[i][0],
+				ypos: ballpos[i][1],
+				zpos: ballpos[i][2],
+				width: 2,
+                focalLength: focalLength,
+				draw: function () {
+                    //todo
+				}
+			});
+			ball.setVanishPoint(vpx, vpy);
+			ball.setCenterPoint(0, 0, 800);
+			stage.addChild(ball);
+			balls.push(ball);
+		}
+
+		stage.addEventListener('mousemove', function (x, y) {
+			angleY = (x - vpx) * .0002;
+            angleX = (y - vpy) * .0002;
+		});
+		
+        
+        function sortZ () {
+            balls.sort(function (a, b) { return b.zpos-a.zpos })
+            stage.children.sort(function (a, b) { return b.zpos-a.zpos })
+        }
+
+        var tmimg = new TextureMapping.Image(canvas, img, 4);
+		stage.onRefresh = function () { 
+			for (var i=0,ball; ball=balls[i]; i++) { 
+			   ball.rotateX(angleX);
+			   var scale = ball.getScale(),
+			   pos = ball.getScreenXY();
+			   ball.x = pos.x;
+			   ball.y = pos.y;
+            }
+            //sortZ();
+            
+            tmimg.draw3D({X:balls[0].x, Y:balls[0].y},{X:balls[1].x, Y:balls[1].y},{X:balls[2].x, Y:balls[2].y},{X:balls[3].x, Y:balls[3].y});
+		}
+
+		stage.start();
+	};
+
+	onload = initialize;
+    
+})();
+</script>
+</body>
+</html>

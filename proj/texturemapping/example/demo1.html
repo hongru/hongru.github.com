@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html>
+<meta charset="utf-8" />
+<script src="lib/jcanvas.0.4.js"></script>
+<script src="../texturemapping.js"></script>
+<style>
+body {font-size:12px; line-height:2; color:#333; text-align:center;font-family:Georgia}
+canvas {display:block; margin:0 auto; border:1px solid #ccc;}
+</style>
+
+<body>
+<p>
+<input type="checkbox" id="ck" />Debug
+<select id="select">
+    <option value="1">1</option>
+    <option value="2">2</option>
+    <option value="3">3</option>
+    <option value="4" selected>4</option>
+    <option value="5">5</option>
+    <option value="6">6</option>
+    <option value="7">7</option>
+    <option value="8">8</option>
+    <option value="9">9</option>
+    <option value="10">10</option>
+</select>
+</p>
+<canvas id="canvas" width="800" height="600"></canvas>
+<img src="http://hongru.github.com/test/rubik/images/3.jpg" id="img" style="display: none" />
+<script>
+;(function () {
+    var canvas = document.getElementById('canvas'),
+        img = document.getElementById('img'),
+        ck = document.getElementById('ck'),
+        select = document.getElementById('select'),
+        tmimg, activeRect, lev = parseInt(select.value),
+        stage = new CVS.$stage(canvas);
+
+    function createRect (x, y) {
+        var s = new CVS.$sprite(stage.ctx, function () {
+            this.x = x;
+            this.y = y;
+            this.width = 6;
+            this.height = 6;
+            this.draw = function () {
+                stage.ctx.strokeRect(0, 0, this.width, this.height);
+            }
+        });
+        s.addEventListener('mouseover', function () {document.body.style.cursor="move"});
+        s.addEventListener('mouseout', function () {document.body.style.cursor="default"});
+        s.addEventListener('mousedown', function () {activeRect = s;});
+        
+        stage.addChild(s);
+        return s;
+    }
+    
+    function drawTexture (p0, p1, p2, p3) {
+        stage.ctx.beginPath();
+        stage.ctx.moveTo(p0.x, p0.y);
+        stage.ctx.lineTo(p1.x, p1.y);
+        stage.ctx.lineTo(p2.x, p2.y);
+        stage.ctx.lineTo(p3.x, p3.y);
+        stage.ctx.lineTo(p0.x, p0.y);
+        stage.ctx.closePath();
+        stage.ctx.stroke();
+        
+        stage.ctx.drawImage(img, 0, 0, img.width, img.height, p0.x, p0.y, p2.x-p0.x, p2.y-p0.y);
+    }
+    
+    function bind () {
+        stage.addEventListener('mousemove', function (x, y) {
+            if (activeRect) {
+                activeRect.x = x;
+                activeRect.y = y;
+            }
+        });
+        stage.addEventListener('mouseup', function (x, y) {
+            activeRect = null;
+        });
+        ck.addEventListener('click', function () {
+            if (tmimg) {
+                tmimg.stroke = this.checked;
+            }
+        });
+        select.addEventListener('change', function () {
+            lev = parseInt(this.value);
+            tmimg = new TextureMapping.Image(canvas, img, lev);
+            tmimg.stroke = ck.checked;
+        });
+    }
+    
+    var run = function () { 
+		stage.render();
+		tmimg.draw3D({X:pa.x+3, Y:pa.y+3}, {X:pb.x+3, Y:pb.y+3}, {X:pc.x+3, Y:pc.y+3}, {X:pd.x+3, Y:pd.y+3});
+		setTimeout(run, 16);
+	};
+    
+    var pa = createRect(100, 100),
+        pb = createRect(300, 100),
+        pc = createRect(300, 300),
+        pd = createRect(100, 300);
+    
+    onload = function () {
+        tmimg = new TextureMapping.Image(canvas, img, lev);
+        bind();
+        run();
+    };
+    
+})();
+</script>
+</body>
+</html>
