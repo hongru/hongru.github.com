@@ -1,0 +1,11 @@
+{
+    "compress-and-merge": {
+        "source": [
+            "library/screenEventsHandler.js",
+            "library/EasingInOut.js",
+            "library/textureMapping.js",
+            "js/room3d.js"
+        ],
+        "target": "./room3d.js"
+    }
+}
