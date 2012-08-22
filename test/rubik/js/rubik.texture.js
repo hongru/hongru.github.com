@@ -1,6 +1,5 @@
 /**
  * textures 3D transform 
- * from Gerard Ferrandez
  */
 Laro.NS('rubik.texture', function (L) {
     var pkg = this;
