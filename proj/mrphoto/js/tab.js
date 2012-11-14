@@ -8,7 +8,7 @@ $.NS('FiPhoto.tab', function () {
         var dom = [];
         dom.push('<ul>');
         for (var k in FiPhoto.fx) {
-            dom.push('<li data-cmd="'+ k +'">'+ k +'</li>');
+            dom.push('<li data-cmd="'+ k +'" class="'+ k +'" title="'+ k +'">'+ k +'</li>');
         }
         dom.push('</ul>');
         FiPhoto.$tabWrap.html(dom.join(''));

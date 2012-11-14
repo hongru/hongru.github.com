@@ -282,6 +282,28 @@ h1 {
 	margin: 0 6px;
 	
 }
+.fx-tab li.normal {
+    background-image: url(../images/normal.png);
+}
+.fx-tab li.amaro {
+    background-image: url(../images/amaro.png);
+}
+.fx-tab li.rise {
+    background-image: url(../images/rise.png);
+}
+.fx-tab li.hudson {
+    background-image: url(../images/hud.png);
+}
+.fx-tab li.xpoll {
+    background-image: url(../images/xpoll.png);
+}
+.fx-tab li.sierra {
+    background-image: url(../images/sierra.png);
+}
+.fx-tab li.inkwell {
+    background-image: url(../images/inkwell.png);
+}
+
 .fx-tab ul {
 	text-align: center;
 }

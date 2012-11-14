@@ -93,6 +93,26 @@ $.NS('FiPhoto.operation', function () {
                 borderH: 20,
                 borderStyle: 'border2',
                 borderRadius: 0
+            },
+            b3: {
+                width: 760,
+                height: 560,
+                left: 21,
+                top: 21,
+                borderW: 20,
+                borderH: 20,
+                borderStyle: 'border3',
+                borderRadius: 0
+            },
+            b4: {
+                width: 760,
+                height: 560,
+                left: 21,
+                top: 21,
+                borderW: 20,
+                borderH: 20,
+                borderStyle: 'border4',
+                borderRadius: 0
             }
         }
     };

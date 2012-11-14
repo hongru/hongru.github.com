@@ -251,16 +251,23 @@ $.NS('FiPhoto', function () {
         tmpCanvas.width = info.width + 2*info.borderW;
         tmpCanvas.height = info.height + 2*info.borderH;
         if (info.borderStyle) {
-            switch (info.borderStyle) {
-                case 'border1':
-                    tmpCtx.fillStyle = info.borderStyle;
-                    break;
+            if (info.borderStyle == 'border1' || info.borderStyle == 'border2' || info.borderStyle == 'border4') {
+                tmpCtx.fillStyle = pkg.$fxCon.css('backgroundColor');
+                tmpCtx.fillRect(0, 0, tmpCanvas.width, tmpCanvas.height);
+                
+            } else if (info.borderStyle == 'border3') {
+                var _img = new Image();
+                _img.src = 'http://hongru.github.com/proj/mrphoto/images/border3.png';
+                _img.onload = function () {
+                    var pp = tmpCtx.createPattern(_img, 'repeat');
+                    tmpCtx.fillStyle = pp;
+                    tmpCtx.fillRect(0, 0, tmpCanvas.width, tmpCanvas.height);
+                }
             }
-            
-            tmpCtx.fillRect(0, 0, tmpCanvas.width, tmpCanvas.height);
         }
         
         tmpImg.src = _url;
+
         tmpImg.onload = function () {
             tmpCtx.drawImage(tmpImg, info.borderW, info.borderH);
             $('#save-btn').attr('href', tmpCanvas.toDataURL()).show();
