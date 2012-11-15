@@ -276,11 +276,14 @@ h1 {
 .fx-tab li {
 	display: inline-block;
 	background: url(../images/fx-btn.png) no-repeat 50% 50%;
-	width: 80px;
-	height: 80px;
+	width: 75px;
+	height: 75px;
 	text-indent: -9999px;
 	margin: 0 6px;
-	
+	-webkit-border-radius: 5px;
+}
+.fx-tab li.current {
+    border: 2px solid #2C6CA5;
 }
 .fx-tab li.normal {
     background-image: url(../images/normal.jpg);
