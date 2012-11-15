@@ -283,25 +283,25 @@ h1 {
 	
 }
 .fx-tab li.normal {
-    background-image: url(../images/normal.png);
+    background-image: url(../images/normal.jpg);
 }
 .fx-tab li.amaro {
-    background-image: url(../images/amaro.png);
+    background-image: url(../images/amaro.jpg);
 }
 .fx-tab li.rise {
-    background-image: url(../images/rise.png);
+    background-image: url(../images/rise.jpg);
 }
 .fx-tab li.hudson {
-    background-image: url(../images/hud.png);
+    background-image: url(../images/hud.jpg);
 }
 .fx-tab li.xpoll {
-    background-image: url(../images/xpoll.png);
+    background-image: url(../images/xpoll.jpg);
 }
 .fx-tab li.sierra {
-    background-image: url(../images/sierra.png);
+    background-image: url(../images/sierra.jpg);
 }
 .fx-tab li.inkwell {
-    background-image: url(../images/inkwell.png);
+    background-image: url(../images/inkwell.jpg);
 }
 
 .fx-tab ul {
