@@ -9,6 +9,7 @@
     
 	<title>fullscreen</title>
     <style>
+        body, h1,h2,h3,h4,h5,h6 {margin:0;}
         body {margin: 0; overflow: hidden;}
         .wrapper {
             width: 100%;
@@ -20,12 +21,22 @@
             color: #fff;
             -webkit-box-align: center;
             -webkit-box-pack: center;
+            overflow: hidden;
+            -webkit-box-orient: vertical;
+            
+            -webkit-transition: -webkit-transform 500ms cubic-bezier(0, 0, 0.25, 1);
+            -webkit-transform: translate3d(0px, 0, 0);
+        }
+        .inner {
+            margin-top: -80px;
+            text-align: center;
+            -webkit-transition: -webkit-transform 250ms cubic-bezier(0, 0, 0.25, 1);
+            padding: 10px 0;
         }
         .text {
             display: inline-block;
-            width: 180px;
+            width: 240px;
             padding: 10px;
-            margin: 0 15px 0 0;
             font-size: 14px;
             line-height: 18px;
             background: #E8F4FC;
@@ -63,28 +74,166 @@
             -webkit-transform: skew(30deg) rotate(-30deg);
             background: #fff;
         }
+        
+        #main {
+            font-size: 16px;
+        }
+        #main p {
+            padding: 20px;
+            color: #666;
+            text-align: center;
+        }
     </style>
+    
   </head>
   <body >
   
     <div id="wrapper" class="wrapper">
-        <div class="search">
-            <input type="text" class="text" placeholder="搜一淘" /><button class="btn">搜索</button>
+        <div id="inner" class="inner">
+            <h1>一淘</h1>
+            <div class="search">
+                <form>
+                <input type="text" class="text" placeholder="搜一淘" />
+                </form>
+            </div>
         </div>
         
         <div class="up"></div>
     </div>
+    
+    <div id="main"></div>
   
     <script>
-        var wrapper = document.querySelector('#wrapper');
-        document.body.addEventListener('touchstart', function (e) {
-            e.preventDefault();
+    ;(function () {
+        var $support = {
+            transform3d: ('WebKitCSSMatrix' in window),
+            touch: ('ontouchstart' in window)
+        };
+
+        var $E = {
+            start: $support.touch ? 'touchstart' : 'mousedown',
+            move: $support.touch ? 'touchmove' : 'mousemove',
+            end: $support.touch ? 'touchend' : 'mouseup'
+        };
+    
+        var wrapper = document.querySelector('#wrapper'), interval,
+            inner = wrapper.querySelector('#inner'),
+            up = wrapper.querySelector('.up'),
+            main = document.querySelector('#main');
+        
+        function getTranslateY(y) {
+            return $support.transform3d ? 'translate3d(0, '+y+'px, 0)' : 'translate(0, '+y+'px)';
+        }
+        function getPage (event, page) {
+            return $support.touch ? event.changedTouches[0][page] : event[page];
+        }
+        function getOffset (el) {
+            var width = el.offsetWidth,
+                height = el.offsetHeight,
+                top = el.offsetTop,
+                left = el.offsetLeft;
+                
+            while (el = el.offsetParent) {
+                top = top + el.offsetTop;
+                left = left + el.offsetLeft;
+            }
+
+            return {
+                top: top,
+                left: left,
+                height: height,
+                width: width
+            }
+        }
+        
+        up.addEventListener('click', function (e) {
+            moveSucc();
         }, false);
         
+        function moveSucc () {
+            var of = getOffset(inner),
+                ofb = wrapper.offsetHeight - of.height - of.top;
+                
+            wrapper.style.webkitTransitionDuration = '500ms';    
+            wrapper.style.webkitTransform = getTranslateY(-wrapper.offsetHeight+of.height);
+            inner.style.webkitTransform = getTranslateY(ofb);
+            up.style.display = 'none';
+            
+            setTimeout(function () {
+                renderContent(of.height);
+            }, 800);
+        }
+        
+        function moveFail () {
+            wrapper.style.webkitTransitionDuration = '500ms'; 
+            wrapper.style.webkitTransform = getTranslateY(0);
+            inner.style.webkitTransform = getTranslateY(0);
+        }
+        
+        function renderContent (dis) {
+            main.style.paddingTop = dis + 'px';
+            main.innerHTML = '<p>加载中...</p>';
+        }
+        
+        //swipe
+        var _ts = {}, _tm = {};
+        wrapper.addEventListener($E.start, function (event) {
+            this.style.webkitTransitionDuration = '0';
+            _ts.touching = true;
+            _ts.moveReady = false;
+            _ts.startPageX = getPage(event, 'pageX');
+            _ts.startPageY = getPage(event, 'pageY');
+            _ts.basePageY = _ts.startPageY;
+            _ts.directionX = 0;
+            _ts.startTime = event.timeStamp;
+        });
+        wrapper.addEventListener($E.move, function (e) {
+            e.preventDefault();
+            if (!_ts.touching) { return; }
+            
+            var pageX = getPage(event, 'pageX'),
+                pageY = getPage(event, 'pageY'),
+                distX,
+                newX,
+                deltaX,
+                deltaY;
+            
+            if (!_tm.lastPageY) {
+                _tm.dir = (pageY - _ts.startPageY < 0) ? 'up' : 'down';
+                _tm.lastPageY = pageY;
+            } else {
+                _tm.dir = (pageY - _tm.lastPageY < 0) ? 'up' : 'down';
+                _tm.lastPageY = pageY;
+            }
+            
+            if (pageY < _ts.startPageY) {
+                wrapper.style.webkitTransform = getTranslateY(pageY - _ts.startPageY);
+            }
+        });
+        wrapper.addEventListener($E.end, function (e) {
+            if (!_ts.touching) { return; }
+            
+            var pageY = getPage(event, 'pageY');
+            if (_tm.dir == 'up' && Math.abs(pageY - _ts.startPageY) > 50) {
+                moveSucc();
+            } else {
+                moveFail();
+            }
+            
+            _ts.touching = false;
+        });
+        
+    })();
+        
+        /*
         window.addEventListener('load', function () {
             window.scroll(0, 1);
-            wrapper.style.height = window.innerHeight + 'px';
+            interval = setInterval(function () {
+                wrapper.style.height = window.innerHeight + 'px';
+            }, 100);
+            
         }, false)
+        */
     </script>
   </body>
 </html>
