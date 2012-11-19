@@ -23,7 +23,7 @@
         }
         .text {
             display: inline-block;
-            width: 248px;
+            width: 180px;
             padding: 10px;
             margin: 0 15px 0 0;
             font-size: 14px;
@@ -76,12 +76,14 @@
     </div>
   
     <script>
+        var wrapper = document.querySelector('#wrapper');
         document.body.addEventListener('touchstart', function (e) {
             e.preventDefault();
         }, false);
         
         window.addEventListener('load', function () {
             window.scroll(0, 1);
+            wrapper.style.height = window.innerHeight + 'px';
         }, false)
     </script>
   </body>
