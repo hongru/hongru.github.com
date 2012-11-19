@@ -14,16 +14,65 @@
             width: 100%;
             display: -webkit-box;
             -webkit-box-sizing: border-box;
-            border: 10px solid #ccc;
-            height: 1000px;
+            height: 100%;
             position: absolute;
+            background: -webkit-gradient(radial, 50% 50%, 0, 50% 50%, 500, from(#6FA6D9), to(#0D7BD5));
+            color: #fff;
+            -webkit-box-align: center;
+            -webkit-box-pack: center;
+        }
+        .text {
+            display: inline-block;
+            width: 248px;
+            padding: 10px;
+            margin: 0 15px 0 0;
+            font-size: 14px;
+            line-height: 18px;
+            background: #E8F4FC;
+            border: 1px solid #0D7BD5;
+            color: #888;
+            cursor: text;
+            box-shadow: 0 1px 0 rgba(255, 255, 255, .3),0 1px 3px rgba(0, 0, 0, .3) inset;
+            background-clip: padding-box;
+            border-radius: 5px;
+        }
+        .btn {
+            background: #1E95E5;
+            color: #B7D4EC;
+            color: rgba(255, 255, 255, .8);
+            box-shadow: 0 1px 0 rgba(0, 0, 0, .05),0 1px 0 rgba(255, 255, 255, .15) inset;
+            border: 1px solid #147DCD;
+            cursor: pointer;
+            display: inline-block;
+            font-size: 14px;
+            line-height: 18px;
+            text-shadow: 0 1px 0 rgba(0, 0, 0, .2);
+            padding: 6px 15px;
+            text-align: center;
+            vertical-align: middle;
+            border-radius: 5px;
+            -webkit-appearance: none;
+        }
+        .up {
+            position: absolute;
+            bottom: -40px;
+            left: 50%;
+            margin-left: -50px;
+            width: 100px;
+            height: 60px;
+            -webkit-transform: skew(30deg) rotate(-30deg);
+            background: #fff;
         }
     </style>
   </head>
   <body >
   
     <div id="wrapper" class="wrapper">
-        test
+        <div class="search">
+            <input type="text" class="text" placeholder="搜一淘" /><button class="btn">搜索</button>
+        </div>
+        
+        <div class="up"></div>
     </div>
   
     <script>
