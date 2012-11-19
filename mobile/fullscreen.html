@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+  <head>
+	<meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+    <meta name="apple-touch-fullscreen" content="yes" />
+    <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport" />
+    <meta content="yes" name="apple-mobile-web-app-capable" />
+    <meta content="black" name="apple-mobile-web-app-status-bar-style" />
+    
+	<title>fullscreen</title>
+    <style>
+        body {margin: 0; overflow: hidden;}
+        .wrapper {
+            width: 100%;
+            display: -webkit-box;
+            -webkit-box-sizing: border-box;
+            border: 10px solid #ccc;
+            height: 100%;
+            position: absolute;
+        }
+    </style>
+  </head>
+  <body >
+  
+    <div id="wrapper" class="wrapper">
+        
+    </div>
+  
+    <script>
+        document.body.addEventListener('touchstart', function (e) {
+            e.preventDefault();
+        }, false);
+
+    </script>
+  </body>
+</html>
