@@ -8,13 +8,30 @@
     <meta content="black" name="apple-mobile-web-app-status-bar-style" />
     
 	<title>no scroll</title>
-    
+    <style>
+        .wrapper {
+            width: 100%;
+            display: -webkit-box;
+            -webkit-box-sizing: border-box;
+            border: 10px solid #ccc;
+            height: 300px;
+        }
+    </style>
   </head>
   <body >
   
-    <div class="wrapper">
+    <div id="wrapper" class="wrapper">
         
     </div>
   
+    <script>
+        document.body.addEventListener('touchstart', function (e) {
+            e.preventDefault();
+        }, false);
+        
+        document.querySelector('#wrapper').addEventListener('touchstart', function (e) {
+            this.innerHTML += 'touch';
+        }, false);
+    </script>
   </body>
 </html>
