@@ -30,7 +30,10 @@
         document.body.addEventListener('touchstart', function (e) {
             e.preventDefault();
         }, false);
-
+        
+        window.addEventListener('load', function () {
+            window.scroll(0, 1);
+        }, false)
     </script>
   </body>
 </html>
