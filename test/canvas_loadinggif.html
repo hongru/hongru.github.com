@@ -1,0 +1,41 @@
+<!doctype html>
+<html>
+<canvas width="128" height="128" id="canvas"></canvas>
+<script>
+window.onload = function(){
+    var canvas = document.getElementById('canvas');
+    var ctx = canvas.getContext('2d');
+    if(!ctx){
+        return;
+    }
+    ctx.clearRect(0,0,128,128);//擦除画布
+    ctx.fillStyle = 'transparent';
+    ctx.fillRect(0,0,128,128);
+    ctx.fillStyle = 'black'; //定义点的颜色
+    var base = 0;
+    var update = function(){
+        ctx.save(); //把当前的绘图状态保存起来(如旋转角度的初始位置, 填充颜色, 坐标原点等)
+        ctx.clearRect(0,0,128,128);//擦除画布
+        ctx.translate(64, 64);//把坐标原点移动到画布中央
+        base = (++base === 13) ? (base - 12) : base;//使用base来指示最大的圆点所在的位置, 实现旋转动画的效果
+        var angle = Math.PI / 6;//画12个点, 所以每个点之间的角度是 1/6 PI
+        var beginAngle = angle * base ;
+        for(var i = 1; i <= 12; i ++){
+            ctx.beginPath();//开始一个路径
+            if(i === 1){
+                ctx.rotate(beginAngle);
+            }else{
+                ctx.rotate(angle);//每次调用rotate之后, 其旋转角度并不会还原, 而是接着上一次的位置
+            }
+            ctx.arc(0, -48, i * 0.8 + 1, 0, 2 * Math.PI, true);//绘制一个圆点
+            ctx.closePath();//闭合路径
+            //如果不是用beginPath和closePath, 在调用fill方法时, 会导致画布上的所有圆都重叠在一起了
+            ctx.fill();//填充(使用上面最后定义的fillStyle)
+        }
+        ctx.restore();//还原绘图状态, 如果不还原, 则下一次调用rotate时会接着这次的位置旋转, 而不是初始位置
+    }
+    update();
+    setInterval(update, 50);
+};
+</script>
+</html>

@@ -159,6 +159,8 @@
             inner.style.webkitTransform = getTranslateY(ofb);
             up.style.display = 'none';
             
+            hasSucc = true;
+            
             setTimeout(function () {
                 renderContent(of.height);
             }, 800);
@@ -176,8 +178,10 @@
         }
         
         //swipe
-        var _ts = {}, _tm = {};
+        var _ts = {}, _tm = {}, hasSucc = false;
         wrapper.addEventListener($E.start, function (event) {
+            if (hasSucc) { return; }
+            
             this.style.webkitTransitionDuration = '0';
             _ts.touching = true;
             _ts.moveReady = false;
