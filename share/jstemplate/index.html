@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8" />
+<link rel="stylesheet" href="./trans.css" />
+
+<style>
+    body {font-family: Microsoft Yahei; line-height: 1.6}
+    h1 {
+        font-size: 3em;
+        font-weight: bold;
+        font-family: Georgia;
+        color: #666;
+    }
+    h4 {
+        font-size: 1.6em;
+    }
+    h1 em {
+        font-size: 3.5em;
+        color: #F96600;
+    }
+    .cc {
+        display: -webkit-box;
+        -webkit-box-align: center;
+        -webkit-box-pack: center;
+        min-height: 540px;
+    }
+    .circle-b {
+        width: 500px;
+        height: 500px;
+        border: 10px solid #ccc;
+        -webkit-border-radius: 260px;
+        font-size: 2em;
+        display: -webkit-box;
+        -webkit-box-align: center;
+        -webkit-box-pack: center;
+        font-weight: bold;
+    }
+    .circle-s {
+        width: 200px;
+        height: 200px;
+        border: 10px solid #FF8100;
+        -webkit-border-radius: 110px;
+        font-size: 1em;
+        display: -webkit-box;
+        -webkit-box-align: center;
+        -webkit-box-pack: center;
+        color: #333;
+    }
+    .tl {
+        text-align:left;
+    }
+    .reveal .slides section {
+        line-height: 1.6;
+        color: #666;
+    }
+    
+    .c1 {color:#0094EF}
+    .c2 {color:#DB403C}
+    .c3 {color:#EDA247}
+</style>
+</head>
+
+<body>
+
+    <div class="reveal">
+        <div class="slides">
+                <section>
+                <div class="cc">
+					<h1><em>js</em>template</h1>
+                </div>
+				</section>
+
+				<section>
+                    <div class="cc">
+					<div class="circle-b">
+                        template
+                        <div class="circle-s">
+                            js-tmpl
+                        </div>
+                    </div>
+                    </div>
+				</section>
+                
+                <section>
+                    <div class="cc">
+                        <ul class="tl" style="font-size:2.5em">
+                            <li>Less Logic</li>
+                            <li>Language Logic</li>
+                        </ul>
+                    </div>
+				</section>
+                
+                <section>
+                    <div class="cc tl">
+                        <h4><b class="c1">Less</b> Logic</h4>
+                        <ul class="" style="font-size:1.5em">
+                            <li>通用，迁移方便</li>
+                            <li>无逻辑，模版即模版，干净，整洁</li>
+                            <li>代码漂亮，复用二次parse</li>
+                        </ul>
+                    </div>
+				</section>
+                
+                <section>
+                    <div class="cc tl">
+                        <h4><b class="c2">Full</b> Logic</h4>
+                        <ul class="" style="font-size:1.5em">
+                            <li>方便...</li>
+                            <li>方便...</li>
+                            <li>方便...</li>
+                            <li>可以省一些循环，你懂的...</li>
+                        </ul>
+                    </div>
+				</section>
+                
+                <section>
+                <div class="cc">
+					<h4>then, <em style="color:#0096EF;font-size:1.4em">javascript</em> template</h4>
+                </div>
+				</section>
+                
+                <section>
+                    <div class="cc tl">
+                        <h4>About <b class="c3">JS</b>-tmpl</h4>
+                        <ul class="" >
+                            <li class="c2">what</li>
+                            <li>how</li>
+                            <li>why</li>
+                        </ul>
+                    </div>
+				</section>
+                
+                <section>
+                    <div class="cc tl">
+                        <h4><b class="c3">How?</b></h4>
+                        <ul class="" >
+                            <li><a href="http://ejohn.org/blog/javascript-micro-templating/" target="_blank">micro-templating[John Resig]</a></li>
+                            <li><a href="http://documentcloud.github.com/underscore/docs/underscore.html" target="_blank">underscore</a></li>
+                            <li><a href="https://github.com/visionmedia/ejs" target="_blank">ejs</a></li>
+                            <li>...</li>
+                        </ul>
+                    </div>
+                </section>
+                
+                <section>
+                    <div class="cc tl">
+                        <h4><b class="c3">How?</b></h4>
+                        <ol class="" >
+                            <li>Template String Parse</li>
+                            <li>[pure str], [js code], [data key]</li>
+                            <li>join them</li>
+                        </ol>
+                    </div>
+                </section>
+                
+                <section>
+                    <div class="cc">
+                        <h4><a href="https://github.com/hongru/jstemplate" target="_blank"><b class="c1">Read Code</b></a></h4>
+                    </div>
+                </section>
+        </div>
+    </div>
+    
+    
+    <script src="https://raw.github.com/hongru/Trans/master/src/js/trans.js"></script>
+    <script>
+        Trans.initialize({
+				history: true,
+				center: true,
+				transition: 'cube' // default/cube/page/concave/zoom/linear/none
+			});
+    </script>
+    <script>
+        window.addEventListener('keyup', function (e) {
+            var reg = /^#\/(\d+)/,
+                maxPage = document.querySelectorAll('.reveal .slides section').length;
+            
+            function tryNext() {
+                var m = location.hash.match(reg) || ['#/0', 0];
+                m[1] = parseInt(m[1]);
+                location.hash = '#/' + (m[1] >= maxPage-1 ? maxPage-1 : m[1]+1);
+            }
+            function tryPrev() {
+                var m = location.hash.match(reg) || ['#/0', 0];
+                m[1] = parseInt(m[1]);
+                location.hash = '#/' + (m[1] <= 0 ? 0 : m[1] - 1);
+            }
+            
+            switch (e.keyCode) {
+                case 37:
+                    tryPrev();
+                    break;
+                case 39:
+                    tryNext();
+                    break;
+            }
+        });
+    </script>
+</body>
+</html>
