@@ -1484,6 +1484,29 @@ Handlebars.compile = function(string, options) {
   };
 };
 ;
+
+//=== true compile for test [asdf]
+Handlebars.compile4test = function(string, options) {
+  options = options || {};
+
+  var compiled;
+  function compile() {
+    var ast = Handlebars.parse(string);
+    var environment = new Handlebars.Compiler().compile(ast, options);
+    var templateSpec = new Handlebars.JavaScriptCompiler().compile(environment, options, undefined, true);
+    return Handlebars.template(templateSpec);
+  }
+
+  return compile();
+  // Template is only compiled on first use and cached after that point.
+/*   return function(context, options) {
+    if (!compiled) {
+      compiled = compile();
+    }
+    return compiled.call(this, context, options);
+  }; */
+};
+
 // lib/handlebars/runtime.js
 Handlebars.VM = {
   template: function(templateSpec) {

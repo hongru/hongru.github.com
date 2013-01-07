@@ -20,6 +20,7 @@
 <script src="./template_speed_test_files/jquery.tmpl.js"></script>
 <script src="./template_speed_test_files/easytemplate.js"></script>
 <script src="./template_speed_test_files/jstemplate.js"></script>
+<script src="./template_speed_test_files/ejs.js"></script>
 
 
 <script>
@@ -64,6 +65,15 @@ var testList = [
             }
         }
     },
+    {
+        name: 'ejs',
+        tester: function () {
+            var source = document.getElementById('template').innerHTML;
+            for (var i = 0; i < number; i ++) {
+                ejs.compile(source);
+            }
+        }
+    },
     
     {
         name: 'juicer',
@@ -91,6 +101,7 @@ var testList = [
         name: 'Handlebars',
         tester: function () {
             var source = document.getElementById('Handlebars').innerHTML;
+            console.log(Handlebars.compile(source))
             for (var i = 0; i < number; i ++) {
                 Handlebars.compile(source);
             }
@@ -396,7 +407,7 @@ var startTest = function () {
 <h2>--compile性能</h2>
 <p><strong><script>document.write(length)</script></strong> 条数据 × <strong><script>document.write(number)</script></strong> 次compile测试 </p>
 <p><em>建议在拥有 v8 javascript 引擎的 chrome 浏览器上进行测试，避免浏览器停止响应</em></p>
-<p><button id="button-test" onclick="this.disabled=true;startTest()" style="padding: 5px;">开始测试»</button> <span id="log" style="font-size:12px"><script>for (var i = 0; i < testList.length; i ++) {document.write(testList[i].name + '; ')}</script>artTemplate; juicer; doT; Handlebars; tmpl; easyTemplate; baiduTemplate; Mustache; kissyTemplate; </span></p>
+<p><button id="button-test" onclick="this.disabled=true;startTest()" style="padding: 5px;">开始测试»</button> <span id="log" style="font-size:12px"><script>for (var i = 0; i < testList.length; i ++) {document.write(testList[i].name + '; ')}</script></span></p>
 <div id="container" style="min-width: 400px; margin: 0 auto"></div>
 
 
