@@ -91,6 +91,10 @@ h1 {text-align: center}
             btn2 = document.querySelector('#btn2'),
             con1 = document.querySelector('#con1'),
             con2 = document.querySelector('#con2');
+            
+        var scroller = new EScroll({
+            element: '#wrapper'
+        });
         function active1 () {
             con1.style.display = 'block';
             con2.style.display = 'none';
@@ -105,9 +109,7 @@ h1 {text-align: center}
         btn2.addEventListener('click', active2, false);
         active1();
         
-        var scroller = new EScroll({
-            element: '#wrapper'
-        });
+        
     </script>
 </body>
 </html>
