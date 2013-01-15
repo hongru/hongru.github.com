@@ -1,0 +1,534 @@
+html,
+body {
+	width: 100%;
+	height: 100%;
+	overflow: hidden;
+    margin: 0;
+}
+
+body {
+	position: relative;
+	line-height: 1;
+}
+
+::selection {
+	background: #FF5E99;
+	color: #fff;
+	text-shadow: none;
+}
+
+@media screen and (max-width: 900px), (max-height: 600px) {
+	.reveal .slides {
+		font-size: 0.82em;
+	}
+}
+
+@media screen and (max-width: 700px), (max-height: 400px) {
+	.reveal .slides {
+		font-size: 0.66em;
+	}
+}
+
+.reveal {
+	position: relative;
+	width: 100%;
+	height: 100%;
+	min-height: 640px; /* min height + 40 to account for padding */
+}
+
+.reveal .slides {
+	position: absolute;
+	max-width: 900px;
+	min-height: 600px;
+	width: 80%;
+	left: 50%;
+	top: 50%;
+
+	overflow: visible;
+	z-index: 1;
+	text-align: center;
+
+	-webkit-transition: -webkit-perspective .4s ease;
+	   -moz-transition: -moz-perspective .4s ease;
+	    -ms-transition: -ms-perspective .4s ease;
+	     -o-transition: -o-perspective .4s ease;
+	        transition: perspective .4s ease;
+
+	-webkit-perspective: 600px;
+	   -moz-perspective: 600px;
+	    -ms-perspective: 600px;
+	        perspective: 600px;
+
+	-webkit-perspective-origin: 0px -100px;
+	   -moz-perspective-origin: 0px -100px;
+	    -ms-perspective-origin: 0px -100px;
+	        perspective-origin: 0px -100px;
+}
+
+.reveal .slides>section,
+.reveal .slides>section>section {
+	display: none;
+	position: absolute;
+	width: 100%;
+	padding: 20px 0px;
+
+	z-index: 10;
+	line-height: 1.2em;
+	font-weight: normal;
+
+	-webkit-transform-style: preserve-3d;
+	   -moz-transform-style: preserve-3d;
+	    -ms-transform-style: preserve-3d;
+	        transform-style: preserve-3d;
+
+	-webkit-transition: -webkit-transform-origin 800ms cubic-bezier(0.260, 0.860, 0.440, 0.985),
+						-webkit-transform 800ms cubic-bezier(0.260, 0.860, 0.440, 0.985),
+	                    visibility 800ms cubic-bezier(0.260, 0.860, 0.440, 0.985),
+	                    opacity 800ms cubic-bezier(0.260, 0.860, 0.440, 0.985);
+	   -moz-transition: -moz-transform-origin 800ms cubic-bezier(0.260, 0.860, 0.440, 0.985),
+	   					-moz-transform 800ms cubic-bezier(0.260, 0.860, 0.440, 0.985),
+	                    visibility 800ms cubic-bezier(0.260, 0.860, 0.440, 0.985),
+	                    opacity 800ms cubic-bezier(0.260, 0.860, 0.440, 0.985);
+	    -ms-transition: -ms-transform-origin 800ms cubic-bezier(0.260, 0.860, 0.440, 0.985),
+	    				-ms-transform 800ms cubic-bezier(0.260, 0.860, 0.440, 0.985),
+	                    visibility 800ms cubic-bezier(0.260, 0.860, 0.440, 0.985),
+	                    opacity 800ms cubic-bezier(0.260, 0.860, 0.440, 0.985);
+	     -o-transition: -o-transform-origin 800ms cubic-bezier(0.260, 0.860, 0.440, 0.985),
+	     				-o-transform 800ms cubic-bezier(0.260, 0.860, 0.440, 0.985),
+	                    visibility 800ms cubic-bezier(0.260, 0.860, 0.440, 0.985),
+	                    opacity 800ms cubic-bezier(0.260, 0.860, 0.440, 0.985);
+	        transition: transform-origin 800ms cubic-bezier(0.260, 0.860, 0.440, 0.985),
+	        			transform 800ms cubic-bezier(0.260, 0.860, 0.440, 0.985),
+	                    visibility 800ms cubic-bezier(0.260, 0.860, 0.440, 0.985),
+	                    opacity 800ms cubic-bezier(0.260, 0.860, 0.440, 0.985);
+}
+
+.reveal .slides>section {
+	left: -50%;
+	top: -50%;
+}
+
+.reveal .slides>section.present,
+.reveal .slides>section>section.present {
+	display: block;
+	z-index: 11;
+	opacity: 1;
+}
+
+.reveal.center,
+.reveal.center .slides,
+.reveal.center .slides section {
+	min-height: auto !important;
+}
+
+
+/*********************************************
+ * DEFAULT TRANSITION
+ *********************************************/
+
+.reveal .slides>section.past {
+	display: block;
+	opacity: 0;
+
+	-webkit-transform: translate3d(-100%, 0, 0) rotateY(-90deg) translate3d(-100%, 0, 0);
+	   -moz-transform: translate3d(-100%, 0, 0) rotateY(-90deg) translate3d(-100%, 0, 0);
+	    -ms-transform: translate3d(-100%, 0, 0) rotateY(-90deg) translate3d(-100%, 0, 0);
+	        transform: translate3d(-100%, 0, 0) rotateY(-90deg) translate3d(-100%, 0, 0);
+}
+.reveal .slides>section.future {
+	display: block;
+	opacity: 0;
+
+	-webkit-transform: translate3d(100%, 0, 0) rotateY(90deg) translate3d(100%, 0, 0);
+	   -moz-transform: translate3d(100%, 0, 0) rotateY(90deg) translate3d(100%, 0, 0);
+	    -ms-transform: translate3d(100%, 0, 0) rotateY(90deg) translate3d(100%, 0, 0);
+	        transform: translate3d(100%, 0, 0) rotateY(90deg) translate3d(100%, 0, 0);
+}
+
+.reveal .slides>section>section.past {
+	display: block;
+	opacity: 0;
+
+	-webkit-transform: translate3d(0, -300px, 0) rotateX(70deg) translate3d(0, -300px, 0);
+	   -moz-transform: translate3d(0, -300px, 0) rotateX(70deg) translate3d(0, -300px, 0);
+	    -ms-transform: translate3d(0, -300px, 0) rotateX(70deg) translate3d(0, -300px, 0);
+	        transform: translate3d(0, -300px, 0) rotateX(70deg) translate3d(0, -300px, 0);
+}
+.reveal .slides>section>section.future {
+	display: block;
+	opacity: 0;
+
+	-webkit-transform: translate3d(0, 300px, 0) rotateX(-70deg) translate3d(0, 300px, 0);
+	   -moz-transform: translate3d(0, 300px, 0) rotateX(-70deg) translate3d(0, 300px, 0);
+	    -ms-transform: translate3d(0, 300px, 0) rotateX(-70deg) translate3d(0, 300px, 0);
+	        transform: translate3d(0, 300px, 0) rotateX(-70deg) translate3d(0, 300px, 0);
+}
+
+
+/*********************************************
+ * CONCAVE TRANSITION
+ *********************************************/
+
+.reveal.concave  .slides>section.past {
+	-webkit-transform: translate3d(-100%, 0, 0) rotateY(90deg) translate3d(-100%, 0, 0);
+	   -moz-transform: translate3d(-100%, 0, 0) rotateY(90deg) translate3d(-100%, 0, 0);
+	    -ms-transform: translate3d(-100%, 0, 0) rotateY(90deg) translate3d(-100%, 0, 0);
+	        transform: translate3d(-100%, 0, 0) rotateY(90deg) translate3d(-100%, 0, 0);
+}
+.reveal.concave  .slides>section.future {
+	-webkit-transform: translate3d(100%, 0, 0) rotateY(-90deg) translate3d(100%, 0, 0);
+	   -moz-transform: translate3d(100%, 0, 0) rotateY(-90deg) translate3d(100%, 0, 0);
+	    -ms-transform: translate3d(100%, 0, 0) rotateY(-90deg) translate3d(100%, 0, 0);
+	        transform: translate3d(100%, 0, 0) rotateY(-90deg) translate3d(100%, 0, 0);
+}
+
+.reveal.concave  .slides>section>section.past {
+	-webkit-transform: translate3d(0, -80%, 0) rotateX(-70deg) translate3d(0, -80%, 0);
+	   -moz-transform: translate3d(0, -80%, 0) rotateX(-70deg) translate3d(0, -80%, 0);
+	    -ms-transform: translate3d(0, -80%, 0) rotateX(-70deg) translate3d(0, -80%, 0);
+	        transform: translate3d(0, -80%, 0) rotateX(-70deg) translate3d(0, -80%, 0);
+}
+.reveal.concave  .slides>section>section.future {
+	-webkit-transform: translate3d(0, 80%, 0) rotateX(70deg) translate3d(0, 80%, 0);
+	   -moz-transform: translate3d(0, 80%, 0) rotateX(70deg) translate3d(0, 80%, 0);
+	    -ms-transform: translate3d(0, 80%, 0) rotateX(70deg) translate3d(0, 80%, 0);
+	        transform: translate3d(0, 80%, 0) rotateX(70deg) translate3d(0, 80%, 0);
+}
+
+
+/*********************************************
+ * ZOOM TRANSITION
+ *********************************************/
+
+.reveal.zoom .slides>section.past {
+	opacity: 0;
+	visibility: hidden;
+
+	-webkit-transform: scale(16);
+	   -moz-transform: scale(16);
+	    -ms-transform: scale(16);
+	     -o-transform: scale(16);
+	        transform: scale(16);
+}
+.reveal.zoom .slides>section.future {
+	opacity: 0;
+	visibility: hidden;
+
+	-webkit-transform: scale(0.2);
+	   -moz-transform: scale(0.2);
+	    -ms-transform: scale(0.2);
+	     -o-transform: scale(0.2);
+	        transform: scale(0.2);
+}
+
+.reveal.zoom .slides>section>section.past {
+	-webkit-transform: translate(0, -150%);
+	   -moz-transform: translate(0, -150%);
+	    -ms-transform: translate(0, -150%);
+	     -o-transform: translate(0, -150%);
+	        transform: translate(0, -150%);
+}
+.reveal.zoom .slides>section>section.future {
+	-webkit-transform: translate(0, 150%);
+	   -moz-transform: translate(0, 150%);
+	    -ms-transform: translate(0, 150%);
+	     -o-transform: translate(0, 150%);
+	        transform: translate(0, 150%);
+}
+
+
+/*********************************************
+ * LINEAR TRANSITION
+ *********************************************/
+
+.reveal.linear .slides>section.past {
+	-webkit-transform: translate(-150%, 0);
+	   -moz-transform: translate(-150%, 0);
+	    -ms-transform: translate(-150%, 0);
+	     -o-transform: translate(-150%, 0);
+	        transform: translate(-150%, 0);
+}
+.reveal.linear .slides>section.future {
+	-webkit-transform: translate(150%, 0);
+	   -moz-transform: translate(150%, 0);
+	    -ms-transform: translate(150%, 0);
+	     -o-transform: translate(150%, 0);
+	        transform: translate(150%, 0);
+}
+
+.reveal.linear .slides>section>section.past {
+	-webkit-transform: translate(0, -150%);
+	   -moz-transform: translate(0, -150%);
+	    -ms-transform: translate(0, -150%);
+	     -o-transform: translate(0, -150%);
+	        transform: translate(0, -150%);
+}
+.reveal.linear .slides>section>section.future {
+	-webkit-transform: translate(0, 150%);
+	   -moz-transform: translate(0, 150%);
+	    -ms-transform: translate(0, 150%);
+	     -o-transform: translate(0, 150%);
+	        transform: translate(0, 150%);
+}
+
+
+/*********************************************
+ * CUBE TRANSITION
+ *********************************************/
+
+.reveal.cube .slides {
+	-webkit-perspective: 1300px;
+	   -moz-perspective: 1300px;
+	    -ms-perspective: 1300px;
+	        perspective: 1300px;
+}
+
+.reveal.cube .slides section {
+	padding: 30px;
+	min-height: 600px;
+
+	-webkit-backface-visibility: hidden;
+	   -moz-backface-visibility: hidden;
+	    -ms-backface-visibility: hidden;
+	        backface-visibility: hidden;
+
+	-webkit-box-sizing: border-box;
+	   -moz-box-sizing: border-box;
+	        box-sizing: border-box;
+}
+	.reveal.center.cube .slides section {
+		min-height: auto;
+	}
+	.reveal.cube .slides section:not(.stack):before {
+		content: '';
+		position: absolute;
+		display: block;
+		width: 100%;
+		height: 100%;
+		left: 0;
+		top: 0;
+		background: rgba(0,0,0,0.1);
+		border-radius: 4px;
+
+		-webkit-transform: translateZ( -20px );
+		   -moz-transform: translateZ( -20px );
+		    -ms-transform: translateZ( -20px );
+		     -o-transform: translateZ( -20px );
+		        transform: translateZ( -20px );
+	}
+	.reveal.cube .slides section:not(.stack):after {
+		content: '';
+		position: absolute;
+		display: block;
+		width: 90%;
+		height: 30px;
+		left: 5%;
+		bottom: 0;
+		background: none;
+		z-index: 1;
+
+		border-radius: 4px;
+		box-shadow: 0px 95px 25px rgba(0,0,0,0.2);
+
+		-webkit-transform: translateZ(-90px) rotateX( 65deg );
+		   -moz-transform: translateZ(-90px) rotateX( 65deg );
+		    -ms-transform: translateZ(-90px) rotateX( 65deg );
+		     -o-transform: translateZ(-90px) rotateX( 65deg );
+		        transform: translateZ(-90px) rotateX( 65deg );
+	}
+
+.reveal.cube .slides>section.stack {
+	padding: 0;
+	background: none;
+}
+
+.reveal.cube .slides>section.past {
+	-webkit-transform-origin: 100% 0%;
+	   -moz-transform-origin: 100% 0%;
+	    -ms-transform-origin: 100% 0%;
+	        transform-origin: 100% 0%;
+
+	-webkit-transform: translate3d(-100%, 0, 0) rotateY(-90deg);
+	   -moz-transform: translate3d(-100%, 0, 0) rotateY(-90deg);
+	    -ms-transform: translate3d(-100%, 0, 0) rotateY(-90deg);
+	        transform: translate3d(-100%, 0, 0) rotateY(-90deg);
+}
+
+.reveal.cube .slides>section.future {
+	-webkit-transform-origin: 0% 0%;
+	   -moz-transform-origin: 0% 0%;
+	    -ms-transform-origin: 0% 0%;
+	        transform-origin: 0% 0%;
+
+	-webkit-transform: translate3d(100%, 0, 0) rotateY(90deg);
+	   -moz-transform: translate3d(100%, 0, 0) rotateY(90deg);
+	    -ms-transform: translate3d(100%, 0, 0) rotateY(90deg);
+	        transform: translate3d(100%, 0, 0) rotateY(90deg);
+}
+
+.reveal.cube .slides>section>section.past {
+	-webkit-transform-origin: 0% 100%;
+	   -moz-transform-origin: 0% 100%;
+	    -ms-transform-origin: 0% 100%;
+	        transform-origin: 0% 100%;
+
+	-webkit-transform: translate3d(0, -100%, 0) rotateX(90deg);
+	   -moz-transform: translate3d(0, -100%, 0) rotateX(90deg);
+	    -ms-transform: translate3d(0, -100%, 0) rotateX(90deg);
+	        transform: translate3d(0, -100%, 0) rotateX(90deg);
+}
+
+.reveal.cube .slides>section>section.future {
+	-webkit-transform-origin: 0% 0%;
+	   -moz-transform-origin: 0% 0%;
+	    -ms-transform-origin: 0% 0%;
+	        transform-origin: 0% 0%;
+
+	-webkit-transform: translate3d(0, 100%, 0) rotateX(-90deg);
+	   -moz-transform: translate3d(0, 100%, 0) rotateX(-90deg);
+	    -ms-transform: translate3d(0, 100%, 0) rotateX(-90deg);
+	        transform: translate3d(0, 100%, 0) rotateX(-90deg);
+}
+
+
+/*********************************************
+ * PAGE TRANSITION
+ *********************************************/
+
+.reveal.page .slides {
+	-webkit-perspective-origin: 0% 50%;
+	   -moz-perspective-origin: 0% 50%;
+	    -ms-perspective-origin: 0% 50%;
+	        perspective-origin: 0% 50%;
+
+	-webkit-perspective: 3000px;
+	   -moz-perspective: 3000px;
+	    -ms-perspective: 3000px;
+	        perspective: 3000px;
+}
+
+.reveal.page .slides section {
+	padding: 30px;
+	min-height: 600px;
+
+	-webkit-box-sizing: border-box;
+	   -moz-box-sizing: border-box;
+	        box-sizing: border-box;
+}
+	.reveal.page .slides section.past {
+		z-index: 12;
+	}
+	.reveal.page .slides section:not(.stack):before {
+		content: '';
+		position: absolute;
+		display: block;
+		width: 100%;
+		height: 100%;
+		left: 0;
+		top: 0;
+		background: rgba(0,0,0,0.1);
+
+		-webkit-transform: translateZ( -20px );
+		   -moz-transform: translateZ( -20px );
+		    -ms-transform: translateZ( -20px );
+		     -o-transform: translateZ( -20px );
+		        transform: translateZ( -20px );
+	}
+	.reveal.page .slides section:not(.stack):after {
+		content: '';
+		position: absolute;
+		display: block;
+		width: 90%;
+		height: 30px;
+		left: 5%;
+		bottom: 0;
+		background: none;
+		z-index: 1;
+
+		border-radius: 4px;
+		box-shadow: 0px 95px 25px rgba(0,0,0,0.2);
+
+		-webkit-transform: translateZ(-90px) rotateX( 65deg );
+	}
+
+.reveal.page .slides>section.stack {
+	padding: 0;
+	background: none;
+}
+
+.reveal.page .slides>section.past {
+	-webkit-transform-origin: 0% 0%;
+	   -moz-transform-origin: 0% 0%;
+	    -ms-transform-origin: 0% 0%;
+	        transform-origin: 0% 0%;
+
+	-webkit-transform: translate3d(-40%, 0, 0) rotateY(-80deg);
+	   -moz-transform: translate3d(-40%, 0, 0) rotateY(-80deg);
+	    -ms-transform: translate3d(-40%, 0, 0) rotateY(-80deg);
+	        transform: translate3d(-40%, 0, 0) rotateY(-80deg);
+}
+
+.reveal.page .slides>section.future {
+	-webkit-transform-origin: 100% 0%;
+	   -moz-transform-origin: 100% 0%;
+	    -ms-transform-origin: 100% 0%;
+	        transform-origin: 100% 0%;
+
+	-webkit-transform: translate3d(0, 0, 0);
+	   -moz-transform: translate3d(0, 0, 0);
+	    -ms-transform: translate3d(0, 0, 0);
+	        transform: translate3d(0, 0, 0);
+}
+
+.reveal.page .slides>section>section.past {
+	-webkit-transform-origin: 0% 0%;
+	   -moz-transform-origin: 0% 0%;
+	    -ms-transform-origin: 0% 0%;
+	        transform-origin: 0% 0%;
+
+	-webkit-transform: translate3d(0, -40%, 0) rotateX(80deg);
+	   -moz-transform: translate3d(0, -40%, 0) rotateX(80deg);
+	    -ms-transform: translate3d(0, -40%, 0) rotateX(80deg);
+	        transform: translate3d(0, -40%, 0) rotateX(80deg);
+}
+
+.reveal.page .slides>section>section.future {
+	-webkit-transform-origin: 0% 100%;
+	   -moz-transform-origin: 0% 100%;
+	    -ms-transform-origin: 0% 100%;
+	        transform-origin: 0% 100%;
+
+	-webkit-transform: translate3d(0, 0, 0);
+	   -moz-transform: translate3d(0, 0, 0);
+	    -ms-transform: translate3d(0, 0, 0);
+	        transform: translate3d(0, 0, 0);
+}
+
+/*********************************************
+ * NO TRANSITION
+ *********************************************/
+
+.reveal.none .slides section {
+	-webkit-transform: none;
+	   -moz-transform: none;
+	    -ms-transform: none;
+	     -o-transform: none;
+	        transform: none;
+
+	-webkit-transition: none;
+	   -moz-transition: none;
+	    -ms-transition: none;
+	     -o-transition: none;
+	        transition: none;
+}
+
+.reveal a{
+	-webkit-perspective: 400px;
+	   -moz-perspective: 400px;
+	    -ms-perspective: 400px;
+	        perspective: 400px;
+            
+    display: inline-block;
+
+}
+
