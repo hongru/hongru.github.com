@@ -1,0 +1,41 @@
+<script type="text/javascript" src="http://code.jquery.com/jquery-1.9.1.min.js"></script>
+<script type="text/javascript" src="/socket.io/socket.io.js"></script>
+<script>
+var url = window.location.protocol+'//'+window.location.host;
+//alert(url);
+var socket = io.connect(url);
+socket.on('msg', function (data) {
+showMsg(data);
+});
+var showMsg = function (data){};
+$(function(){
+showMsg = function(data){
+var time = $('<span style="color:red;"></span>').html(data.time+'&nbsp;&nbsp;');
+var username = $('<span style="color:blue;"></span>').html(data.username+'&nbsp;&nbsp;');
+var say = $('<span style="color:black;"></span>').html('say:&nbsp;&nbsp;');
+var msg = $('<span style="color:green;"></span>').text(data.msg);
+var div = $('<div style="display:none;"></div>').append(time).append(username).append(say).append(msg);
+div.insertAfter('#demo span:eq(0)').slideDown();//fadeIn();
+//div.appendTo('#demo').fadeIn();
+};
+$('#butt_login').click(function(){
+socket.emit('login',$('#username').val());
+});
+$('#butt_logout').click(function(){
+socket.emit('logout',$('#username').val());
+});
+$('#butt_send').click(function(){
+socket.emit('msg',$('#message').val());
+});
+});
+
+</script>
+Name: <input type="text" id='username' value=""/>
+<input type="button" value="join" id="butt_login"/>
+<input type="button" value="leave" id="butt_logout"/>
+<br>
+message: <input type="text" id='message' value=""/>
+<input type="button" value="send" id="butt_send"/>
+<div id='demo' style="boder:1px;border-style:dotted;width:800px;height:300px;overflow:auto;">
+<span>...</span>
+</div> 
