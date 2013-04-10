@@ -1,0 +1,620 @@
+/*	Resets
+	------	*/
+
+html, body, div, span, object, iframe, h1, h2, h3, h4, h5, h6, 
+p, blockquote, pre, a, abbr, address, cite, code, del, dfn, em, 
+img, ins, kbd, q, samp, small, strong, sub, sup, var, b, i, hr, 
+dl, dt, dd, ol, ul, li, fieldset, form, label, legend, 
+table, caption, tbody, tfoot, thead, tr, th, td,
+article, aside, canvas, details, figure, figcaption, hgroup, 
+menu, footer, header, nav, section, summary, time, mark, audio, video {
+	margin: 0;
+	padding: 0;
+	border: 0;
+}
+
+article, aside, canvas, figure, figure img, figcaption, hgroup,
+footer, header, nav, section, audio, video {
+	display: block;
+}
+
+a img {border: 0;}
+
+
+
+/*	Typography presets
+	------------------	*/
+
+.gigantic {
+	font-size: 110px;
+	line-height: 120px;
+	letter-spacing: -2px;
+}
+
+.huge, h1 {
+	font-size: 68px;
+	line-height: 72px;
+	letter-spacing: -1px;
+}
+
+.large, h2 {
+	font-size: 42px;
+	line-height: 48px;
+}
+
+.bigger, h3 {
+	font-size: 26px;
+	line-height: 36px;
+}
+
+.big, h4 {
+	font-size: 22px;
+	line-height: 30px;
+}
+
+body {
+	font: 16px/24px Georgia, serif;
+}
+
+.small, small {
+	font-size: 13px;
+	line-height: 18px;
+}
+
+/* Selection colours (easy to forget) */
+
+::selection 	 	{background: rgb(255,255,158);}
+::-moz-selection 	{background: rgb(255,255,158);}
+img::selection 		{background: transparent;}
+img::-moz-selection	{background: transparent;}
+body {-webkit-tap-highlight-color: rgb(255,255,158);}
+
+
+
+/*		Default Layout: 992px. 
+		Gutters: 24px.
+		Outer margins: 48px.
+		Leftover space for scrollbars @1024px: 32px.
+-------------------------------------------------------------------------------
+cols    1     2      3      4      5      6      7      8      9      10
+px      68    160    252    344    436    528    620    712    804    896    */
+
+body {
+	width: 896px;
+	padding: 50px 48px 0;
+	background: rgb(232,232,232);
+	color: rgb(60,60,60);
+	-webkit-text-size-adjust: 100%; /* Stops Mobile Safari from auto-adjusting font-sizes */
+    
+    margin: 0 auto;
+}
+
+#header {
+    float: left;
+    overflow: hidden;
+    
+    width: 150px;
+    margin-bottom: 20px;
+}
+#bd {
+    float: right;
+    overflow: hidden;
+    
+    width: 732px;
+}
+#nav {list-style: none}
+#nav li {
+    background: #666;
+    padding: 8px 0 8px 12px;
+    color: #fff;
+    
+    margin-bottom: 10px;
+}
+
+.logo {
+    width: 120px;
+    height: 120px;
+    -webkit-transition: all .3s ease;
+    -webkit-border-radius: 60px;
+    background: #000;
+    color: #eee;
+    font-size: 20px;
+    text-align: center;
+    line-height: 120px;
+    margin-bottom: 25px;
+}
+
+.hd-more p {
+    background: #B61E1E;
+    padding: 20px 0;
+    text-align: center;
+    border: 5px solid #000;
+    color: #fff;
+    margin-bottom: 10px;
+}
+
+
+#gallery { margin-bottom: 25px; }
+.gallery-con li { 
+    color: #fff;
+    font-size: 40px;
+    display: -webkit-box;
+    -webkit-box-pack: center;
+    -webkit-box-align: center;
+    
+    height: 500px;
+    display: none;
+}
+.gallery-con li.current {
+    display: -webkit-box;
+}
+.gc-1 {
+    background: #C7250E;
+}
+.gc-2 {
+    background: #5D844F;
+}
+.gc-3 {
+    background: #E89B17;
+}
+.gc-4 {
+    background: #A12527;
+}
+
+.gallery-ctrl {
+    overflow: hidden;
+    list-style: none;
+}
+.gallery-ctrl li{
+    background: #363739;
+    color: #aaa;
+    float: left;
+    width: 181px;
+    border: 1px solid #aaa;
+    text-align: center;
+    padding: 6px 0;
+}
+.gallery-ctrl li.current {
+    background: #242424;
+}
+
+.special {
+    border: 5px solid #539182;
+    padding: 10px;
+    background: #DF920E;
+    color: #fff;
+    margin-bottom: 25px;
+}
+
+.items-list-wrapper ul {
+    list-style: none;
+}
+.items-list-wrapper li {
+    overflow: hidden;
+    padding: 16px 0;
+    border-bottom: 1px solid #ccc;
+}
+.items-list-wrapper li:nth-child(4) {
+    border-bottom: 0 none;
+}
+
+.item-banner {
+    float: left;
+
+    color: #fff;
+    background: #4CB848;
+    border: 4px solid #fff;
+    -webkit-box-shadow: 0 0 1px #333;
+    width: 197px;
+    height: 120px;
+    margin-bottom: 6px;
+}
+.item-info {
+    margin-left: 220px;
+}
+
+.hd-bd-wrapper {
+    overflow: hidden;
+    margin-bottom: 20px;
+}
+
+#footer {
+    clear: both;
+    overflow: hidden;
+    border-top: 1px solid #fff;
+    -webkit-box-shadow: 0 -1px 0px #ccc;
+    padding: 10px 0;
+}
+
+.copyright {
+    float: left;
+}
+.social {
+    float: right;
+}
+.social ul { list-style: none; }
+.social li {
+    border: 4px solid #fff;
+    -webkit-box-shadow: 0 0 1px #333;
+    width: 30px;
+    height: 30px;
+    float: left;
+    margin-right: 10px;
+    color: #fff;
+    text-align: center;
+    font-weight: bold;
+    font-size: 20px;
+    line-height: 30px;
+}
+.facebook {
+    background: #2E79BB;
+}
+.twitter {
+    background: #849EB6;
+}
+.email {
+    background: #B81414;
+}
+
+
+/* WIDE DESKTOP LAYOUT
+----------------------------------------------- */
+@media only screen and (min-width: 1176px) {
+    body {
+        width: 1080px;
+    }
+    
+    #header {
+        width: 160px;
+        margin-bottom: 25px;
+    }
+    
+    #bd {
+        width: 896px;
+    }
+    
+    #nav {
+        
+    }
+    #nav li {
+        margin-bottom: 18px;
+        line-height: 1.3em;
+    }
+    
+    .gallery-con li {
+        height: 560px;
+        width: 100%;
+    }
+    
+    .gallery-ctrl li{
+        width: 222px;
+        padding: 26px 0;
+    }
+    
+    
+    .items-list-wrapper li {
+        width: 206px;
+        float: left;
+        margin: 0 24px 25px 0;
+        padding: 0;
+        border-bottom: 0 none;
+    }
+    .items-list-wrapper li:nth-child(4) {
+        margin-right: 0;
+    }
+    
+    .item-info {
+        margin-left: 0;
+    }
+
+}
+
+
+/*		Tablet Layout: 768px.
+		Gutters: 24px.
+		Outer margins: 28px.
+		Inherits styles from: Default Layout.
+-----------------------------------------------------------------
+cols    1     2      3      4      5      6      7      8
+px      68    160    252    344    436    528    620    712    */
+
+@media only screen and (min-width: 768px) and (max-width: 991px) {
+	
+	body {
+		width: 712px;
+        padding: 20px 28px 0;
+	}
+    
+    #header {
+        width: 100%;
+        float: none;
+        position: relative;
+    }
+    #bd {
+        width: 100%;
+        float: none;
+    }
+    
+    #nav {
+        position: absolute;
+        right: 0;
+        top: 30px;
+    }
+    #nav li {
+        float: left;
+        background: none;
+        border-bottom: 2px solid #000;
+        margin-right: 20px;
+        padding: 0 10px;
+        line-height: 40px;
+        color: #333;
+        font-weight: bold;
+    }
+    
+    .hd-more {display: none}
+    
+    .gallery-con li {
+        height: 400px;
+        width: 100%;
+    }
+    
+    .gallery-ctrl li {
+        width: 176px;
+    }
+    
+    .items-list-wrapper li {
+        width: 166px;
+        float: left;
+        margin: 0 16px 20px 0;
+        padding: 0;
+        border-bottom: 0 none;
+    }
+    .items-list-wrapper li:nth-child(4n) {
+        margin-right: 0;
+    }
+    
+    .item-banner {
+        float: none;
+        width: 157px;
+        height: 120px;
+    }
+    
+    .item-info {
+        margin-left: 0;
+    }
+}
+
+
+
+/*		Mobile Layout: 320px.
+		Gutters: 24px.
+		Outer margins: 34px.
+		Inherits styles from: Default Layout.
+---------------------------------------------
+cols    1     2      3
+px      68    160    252    */
+
+@media only screen and (max-width: 767px) {
+	
+	body {
+		width: 320px;
+        padding: 0;
+	}
+	
+    #header {
+        width: 100%;
+        float: none;
+        position: relative;
+        padding: 58px 0 20px 0;
+        margin: 0;
+    }
+    .logo {
+        margin: 0 auto;
+    }
+    .hd-more {display: none}
+    #bd {
+        width: 100%;
+        float: none;
+    }
+    
+    #nav {
+        position: absolute;
+        right: 0;
+        top: 0;
+    }
+    #nav li {
+        float: left;
+        background: none;
+        border-bottom: 2px solid #000;
+        width: 62px;
+        margin: 0 1px;
+        padding: 0;
+        line-height: 30px;
+        color: #333;
+        font-size: 12px;
+        text-align: center;
+    }
+    
+    #gallery {
+        width: 100%;
+        height: 200px;
+        position: relative;
+    }
+    .gallery-con li {
+        position: absolute;
+        left: 0;
+        top: 0;
+        height: 200px;
+        width: 100%;
+    }
+    
+    .gallery-ctrl {
+        position: absolute;
+        left: 0;
+        bottom: 0;
+        width: 100%;
+    }
+    .gallery-ctrl li {
+        width: 100%;
+        display: none;
+        border-left: 0 none;
+        border-right: 0 none;
+    }
+    .gallery-ctrl li.current {
+        background: rgba(0,0,0,0.8);
+        display: block;
+        line-height: 20px;
+    }
+    
+    .items-list-wrapper li {
+        width: 100%;
+        margin: 0 0 20px 0;
+        padding: 0;
+        border-bottom: 0 none;
+    }
+    
+    .item-banner {
+        float: none;
+        width: 310px;
+        height: 160px;
+    }
+    
+    .item-info {
+        margin-left: 0;
+    }
+    
+    #footer {
+        position: relative;
+        padding: 60px 0 20px 0;
+    }
+    .social {
+        position: absolute;
+        top: 16px;
+        left: 50%;
+        margin-left: -72px;
+    }
+    .copyright {
+        float: none;
+        text-align: center;
+        font-size: 12px;
+    }
+}
+
+
+
+/*		Wide Mobile Layout: 480px.
+		Gutters: 24px.
+		Outer margins: 22px.
+		Inherits styles from: Default Layout, Mobile Layout.
+------------------------------------------------------------
+cols    1     2      3      4      5
+px      68    160    252    344    436    */
+
+@media only screen and (min-width: 480px) and (max-width: 767px) {
+	
+	body {
+		width: 480px;
+		padding: 0;
+	}
+	#header {
+        width: 100%;
+        float: none;
+        position: relative;
+        padding: 0;
+        margin: 20px 0;
+    }
+    .logo {
+        margin: 0;
+    }
+    #bd {
+        width: 100%;
+        float: none;
+    }
+    
+    #nav {
+        position: absolute;
+        right: 0;
+        top: 40px;
+    }
+    #nav li {
+        float: left;
+        background: none;
+        border-bottom: 1px solid #000;
+        margin-right: 10px;
+        padding: 0;
+        line-height: 30px;
+        color: #333;
+        font-weight: bold;
+        font-size: 14px;
+        width: auto;
+    }
+    
+    .hd-more {display: none}
+    
+    #gallery {
+        width: 100%;
+        height: 300px;
+        position: relative;
+    }
+    .gallery-con li {
+        position: absolute;
+        left: 0;
+        top: 0;
+        height: 300px;
+        width: 100%;
+    }
+    
+    .gallery-ctrl {
+        position: absolute;
+        left: 0;
+        bottom: 0;
+        width: 100%;
+    }
+    .gallery-ctrl li {
+        width: 100%;
+        display: none;
+        border-left: 0 none;
+        border-right: 0 none;
+    }
+    .gallery-ctrl li.current {
+        background: rgba(0,0,0,0.8);
+        display: block;
+    }
+    
+    .items-list-wrapper li {
+        width: 230px;
+        float: left;
+        margin: 0 20px 20px 0;
+        padding: 0;
+        border-bottom: 0 none;
+    }
+    .items-list-wrapper li:nth-child(2n) {
+        margin-right: 0;
+    }
+    
+    .item-banner {
+        float: none;
+        width: 220px;
+        height: 140px;
+    }
+    
+    .item-info {
+        margin-left: 0;
+    }
+}
+
+
+/*	Retina media query.
+	Overrides styles for devices with a 
+	device-pixel-ratio of 2+, such as iPhone 4.
+-----------------------------------------------    */
+
+@media 
+	only screen and (-webkit-min-device-pixel-ratio: 2),
+	only screen and (min-device-pixel-ratio: 2) {
+	
+	body {
+	
+	}
+	
+}
