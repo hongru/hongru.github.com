@@ -70,6 +70,37 @@
     .c1 {color:#0094EF}
     .c2 {color:#DB403C}
     .c3 {color:#EDA247}
+    
+    .page-tit {
+        padding: 8px 16px;
+        font-size: 1.8em;
+        border-left: 0.5em solid #FF8100;
+        color: #fff;
+        text-align: left;
+    }
+    
+    .page-tit-s {
+        padding: 4px 10px;
+        font-size: 1.4em;
+        border-left: 0.2em solid #F8DC99;
+        color: #fff;
+        text-align: left;
+    }
+    
+    .tip-question {
+        width:208px;height:330px;position:absolute;background:url(./images/question.png) no-repeat -291px -237px; right: 60px;bottom:60px;
+    }
+    
+    section.bgw {
+        background-color: #fff;
+        color: #464646;
+    }
+    section.bgw .page-tit {
+        color: #333;
+    }
+    section.bgw .tag {
+        background: #cecece;
+    }
 </style>
 </head>
 
@@ -84,9 +115,9 @@
                 </div>
 				</section>
                 
-                <section>
+                <section class="bgw" style="background-color:#FBFAF8">
                     <div class="">
-                        <h4>说在前面的话</h4>
+                        <h2 class="page-tit">说在前面的话</h2>
                         <ul class="tl" style="width: 38%; margin: 20px auto; font-size:1.5em; line-height: 2">
                             <li>“单终端响应”，意义？</li>
                             <li>Mobile - Resize? No!</li>
@@ -98,42 +129,92 @@
 
 				<section class="tl">
                     <div>
-                        <ul>
-                            <li>Reg & Login <span class="tag">ignore</span></li>
-                            <li>Create Repository  <span class="tag">ignore</span></li>
-                            <li>Fork & Pull Requests</li>
-                            <li><a target="_blank" href="https://github.com/lifesinger/lifesinger.github.com/issues">Issues</a></li>
-                            <li><a href="https://github.com/bebraw/jswiki/wiki" target="_blank">Wiki</a></li>
-                            <li>Github pages > <a target="_blank" href="http://www.ruanyifeng.com/blog/2012/08/blogging_with_jekyll.html">used as blog</a></li>
-                            <li>Gist</li>
-                            <li>Organizations</li>
-                        </ul>
-                    </div>
-				</section>
-                
-                <section>
-                    <div class="cc tl">
-                        <h2 class="c2" style="font-size:3em">身为前端，如何写PPT</h2>
+                        <h2 class="page-tit">Topic List</h2>
+                        <ol style="font-size: 1.8em; line-height:2;margin-left: 2em">
+                            <li>关于响应式</li>
+                            <li>Design or Development</li>
+                            <li>基于Media Query</li>
+                            <li>从Mobile走向PC</li>
+                            <li>体验一致性的响应</li>
+                            <li>响应一体化</li>
+                        </ol>
                         
                     </div>
+                    
+                    <span class="tip-question"></span>
+				</section>
+                
+                <section class="bgw">
+                    <div class="">
+                        <h2 class="page-tit">关于响应式</h2>
+                        <ul style="font-size: 1.8em; line-height:2;margin-left: 2em;text-align:left">
+                            <li>What</li>
+                            <li>Why</li>
+                            <li>How</li>
+                            <li>演化方向</li>
+                            <li>实现方式</li>
+                        </ul>
+                    </div>
+                    
+                    <img alt="gloden circle" src="images/golden_circle.png" style="position:absolute;width:15em; bottom:60px; right:60px" />
                 </section>
                 
                 <section>
-                    <div class="c1">
-                        <p>DIY</p>
-                        <p>impress</p>
-                        <p>reveal</p>
-                        <p>web socket</p>
+                    <div>
+                        <h4 class="page-tit">Design or Development</h4>
+                        <img alt="Design Dev" src="images/design-dev.png" style="position:absolute;width:30em; left:60px; top:200px" />
                     </div>
+                    <img alt="Design Dev" src="images/design-development-image.png" style="position:absolute;width:15em; bottom:60px; right:60px" />
                 </section>
-                
                 
                 <section>
-                    <div class="cc tl">
-                        <h2 class="c3" style="font-size:3em">Thanks!!</h2>
+                    <div>
+                        <h2 class="page-tit">基于 Media Query</h2>
+                        <a href="https://github.com/hongru/ResponsiveWeb/wiki/%E5%9F%BA%E4%BA%8EMedia-Query" target="_blank">
+                            <img src="./images/media-query.png" style="width:300px; margin-top:100px" />
+                        </a>
                     </div>
                 </section>
                 
+                <section>
+                    <div>
+                        <h2>举个栗子...</h2>
+                        <a href="http://hongru.github.io/test/responsive-web/" target="_blank">
+                            <img src="./images/eg.jpg" style="width:400px; margin-top:40px" />
+                        </a>
+                    </div>
+                </section>
+                
+                <section>
+                    <div>
+                        <h2 class="page-tit">从Mobile走向PC</h2>
+                        <ul style="font-size: 1.8em; line-height:2;margin-left: 2em;text-align:left">
+                            <li>有区别吗？</li>
+                            <li>Mobile端的 resize？</li>
+                            <li>数据的冗余和分发
+                                <ul>
+                                    <li>How@OPOA的形态</li>
+                                    <li>How@server吐页面</li>
+                                </ul>
+                            </li>
+                            <li>从“小而简”开始做起 <a href="http://hongru.github.io/test/ResponsiveWeb/demos/resize-getPackage/" target="_blank"><span class="tag">For Example</span></a>
+                            </li>
+                        </ul>
+                    </div>
+                </section>
+
+                
+                <section>
+                    <div>
+                        <h2 class="page-tit">体验一致性的响应</h2>
+                    </div>
+                </section>
+                
+                <section>
+                    <div>
+                        <h2 class="page-tit">响应一体化</h2>
+                    </div>
+                </section>
         </div>
     </div>
     
