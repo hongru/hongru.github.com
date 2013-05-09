@@ -27,22 +27,7 @@ Let('#test')
     .end()
     
 </script>
-<script>
-    onload = function () {
-        setTimeout(function () {
-            var tr = document.getElementById('test').style.getPropertyValue('-webkit-transition')
-        
-            document.getElementById('test').style.setProperty('-webkit-transition', 'none');
-            document.getElementById('test').style.setProperty('-webkit-transform', 'translate(600px, 0)')
-            console.log(document.getElementById('test').style.getPropertyValue('-webkit-transform'), tr);
-            setTimeout(function () {
-                document.getElementById('test').style.setProperty('-webkit-transition', tr)
-            }, 0)
-            
-            
-        }, 4000)
-    }
-</script>
+
 <input type="button" value="remove duration" onclick="document.getElementById('test').style.removeProperty('-webkit-transition-duration')" />
 <input type="button" value="set transition-property:none" onclick="document.getElementById('test').style.setProperty('-webkit-transition-property', 'none')" />
 <input type="button" value="set transition:none" onclick="document.getElementById('test').style.setProperty('-webkit-transition', 'none')" />
