@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8" />
+<style>
+*{margin:0;padding:0}
+ul,li{list-style:none}
+li{height:150px;width:470px;float:left}
+.navwrap {position:absolute;bottom:5px;right:5px;}
+.navwrap li.nav{background:#ffb442;}
+.navwrap li{border:1px solid #f47500; color:#d94b01; background:#fff;font-size:12px; height:15px;width:15px;float:left;margin-left:4px;display:inline;text-align:center}
+</style>
+</head>
+
+<body>
+
+<div id="slider" style="overflow:hidden;width:470px;height:150px;position:relative">
+	<ul style="width:470px;height:150px">
+		<li><img alt="" src="http://images.cnblogs.com/cnblogs_com/hongru/262693/o_1.jpg" /></li>
+		<li><img alt="" src="http://images.cnblogs.com/cnblogs_com/hongru/262693/o_2.jpg" /></li>
+		<li><img alt="" src="http://images.cnblogs.com/cnblogs_com/hongru/262693/o_3.jpg" /></li>
+		<li><img alt="" src="http://images.cnblogs.com/cnblogs_com/hongru/262693/o_4.jpg" /></li>
+		<li><img alt="" src="http://images.cnblogs.com/cnblogs_com/hongru/262693/o_5.jpg" /></li>
+	</ul>
+	<ul id="nav" class="navwrap" >
+		<li data-ind="0">1</li>
+		<li data-ind="1">2</li>
+		<li data-ind="2">3</li>
+		<li data-ind="3">4</li>
+		<li data-ind="4">5</li>
+	</ul>
+</div>
+
+<div id="slider2" style="overflow:hidden;width:470px;height:150px;position:relative">
+	<ul style="width:470px;height:150px">
+		<li><img alt="" src="http://images.cnblogs.com/cnblogs_com/hongru/262693/o_1.jpg" /></li>
+		<li><img alt="" src="http://images.cnblogs.com/cnblogs_com/hongru/262693/o_2.jpg" /></li>
+		<li><img alt="" src="http://images.cnblogs.com/cnblogs_com/hongru/262693/o_3.jpg" /></li>
+		<li><img alt="" src="http://images.cnblogs.com/cnblogs_com/hongru/262693/o_4.jpg" /></li>
+		<li><img alt="" src="http://images.cnblogs.com/cnblogs_com/hongru/262693/o_5.jpg" /></li>
+	</ul>
+	<ul id="nav2" class="navwrap">
+		<li data-ind="0">1</li>
+		<li data-ind="1">2</li>
+		<li data-ind="2">3</li>
+		<li data-ind="3">4</li>
+		<li data-ind="4">5</li>
+	</ul>
+</div>
+
+<script>
+;(function (name, definition) {
+    if (typeof define == 'function') define(definition);
+    else if (typeof module != 'undefined') module.exports = definition();
+    else this[name] = definition();
+})('ESlider', function () {
+    //privite
+    var $id = function(id){return document.getElementById(id)}, 
+        $tag = function(c,p){return p.getElementsByTagName(c)};
+
+    var context = this;
+    
+    /*
+        @param conf {object}
+        {
+            
+        }
+    */
+    function ESlider (id, options) {    
+        var ul = this.u = $tag('ul',$id(id))[0], li = $tag('li',ul); this.l=li.length; this.index = 0;
+        this.el_wrap = $id(id);
+
+        if(options.navId&&options.curClass){this.nav = $tag('li',$id(options.navId)), this.c = options.curClass;}
+        this.a=options.auto||0; this.v=options.vertical||0;this.el_wrap.style.overflow = 'hidden';this.el_wrap.style.position = 'relative';ul.style.position='absolute';
+        if(this.v){ul.style.top=0; this.h=options.height||li[0].offsetHeight; ul.style.height=(this.l*this.h)+'px';}
+        else{ul.style.left=0; this.w=options.width||li[0].offsetWidth; ul.style.width=(this.l*this.w)+'px';}
+        this.pos(options.index||0,this.a?1:0);
+
+    }
+    
+    ESlider.prototype = {
+
+        pos:function(pos,a){
+            var me = this;
+			clearInterval(this.u.posAnim); clearInterval(this.u.auto);
+			var curPos=this.v?parseInt(this.u.style.top):parseInt(this.u.style.left),
+			correctPos=this.v?pos*this.h:pos*this.w, 
+			direction = correctPos>Math.abs(curPos)?1:-1;
+			correctPos*=-1; 
+			this.index = pos;
+			if(this.nav){for(var i=0;i<this.l;i++){this.nav[i].className = i==pos?this.c:''}}
+			this.u.posAnim = setInterval(function(){me.anim(correctPos,direction,a)},10);
+		},
+		
+		anim:function(des,dir,a){
+            var me = this;
+			var curPos=this.v?parseInt(this.u.style.top):parseInt(this.u.style.left);
+			if(curPos == des){
+				clearInterval(this.u.posAnim);
+				if(a||this.a){me.auto()}
+			}
+			else{
+				var v=curPos-Math.ceil(Math.abs(des-curPos)*.07)*dir+'px';
+				this.v?this.u.style.top=v:this.u.style.left=v;
+			}
+		},
+		
+		auto:function(){
+            var me = this;
+			this.u.auto=setInterval(function(){me.move(1,1)},this.a*1000)
+		},
+		
+		move:function(n,a){
+            var me = this;
+			var num=this.index+n, i=n==1?num==this.l?0:num:num<0?this.l-1:num; me.pos(i,a);
+		}
+    }
+    
+    context.ESlider = ESlider;
+    return ESlider;
+  
+});
+
+
+;(function () {
+    var g_slider1, g_slider2;
+    var _addEvent = function (o,e,f) {
+        return o.addEventListener ? o.addEventListener(e, f, false) : o.attachEvent('on'+e, function () {f.call(o)});
+    };
+    
+    function __init() {
+        g_slider1 = new ESlider('slider',{	
+            auto:3,
+            vertical:1,
+            navId:'nav',
+            curClass:'nav',
+            index:0
+        });
+        
+        g_slider2 = new ESlider('slider2',{	
+            auto:3,
+            vertical:1,
+            navId:'nav2',
+            curClass:'nav',
+            index:0
+        });
+        
+        
+        function _proxyClick (o) {
+            return function (e) {
+                e.preventDefault && e.preventDefault();
+                var tar = e.target || e.srcElement;
+                if (tar.nodeName == 'LI') {
+                    var ind = parseInt(tar.getAttribute('data-ind'));
+                    o.pos && o.pos(ind);
+                }
+            }
+            
+        }
+        _addEvent(g_slider1.el_wrap, 'click', _proxyClick(g_slider1));
+        _addEvent(g_slider2.el_wrap, 'click', _proxyClick(g_slider2));
+        
+    }
+    //start
+    __init();
+})();
+
+</script>
+</body>
+</html>
