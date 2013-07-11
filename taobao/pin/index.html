@@ -2,11 +2,37 @@
 <html>
 <head>
 <meta charset="utf-8" />
+
+<script src="js/jquery-2.0.3.min.js"></script>
 <style>
     html,body {background: #f7f7f7; font-family:Microsoft Yahei,Arail; color:#333}
-    .wrapper { width:800px; margin:0 auto; }
+    ul {list-style:none}
     h2 {text-align: center;}
-    .ctrl-wrap {text-align:right}
+    .ctrl-wrap {
+        position: fixed;
+        top: 80px;
+        right: 60px;
+    }
+    #cont {
+        margin: 40px auto;
+        padding: 8px 8px 0 8px;
+        overflow: hidden;
+        position: relative;
+        -webkit-box-shadow: 0 0 6px #666;
+        display: none;
+        background-color: #fff;
+    }
+    #cont .c {
+        position: absolute;
+        background-repeat: no-repeat;
+        background-position: 50% 50%;
+        
+        background-color: #f0f0f0;
+    }
+    .pin-wrap {
+        position:relative;
+        margin-bottom: 8px;
+    }
 </style>
 </head>
 
@@ -17,9 +43,125 @@
         <div id="cont"></div>
         
         <div class="ctrl-wrap">
-            <select></select>
-            <button id="btn">随机重排</button>
+            <ul>
+                <li><label>图片数量：</label><select id="sel_img_num"></select></li>
+                <li><label>容器宽度：</label><select id="sel_cont_w"></select></li>
+            </ul>
         </div>
     </div>
+    
+    <script src="js/imageReady.js"></script>
+    <script src="js/pin3.js"></script>
+    <script src="js/pinsys.js"></script>
+    <script>
+
+    // main
+    $(function () {
+        
+        $._cache = {};
+        
+        $.on = function (ev, fn) {
+            if ($._cache[ev] == undefined) {
+                $._cache[ev] = [];
+            }
+            $._cache[ev].push(fn);
+        };
+        $.off = function (ev) {
+            delete $._cache[ev];
+        };
+        $.trigger = function (ev) {
+            var args = Array.prototype.slice.call(arguments, 1);
+            if ($._cache[ev]) {
+                $._cache[ev].forEach(function (fn, ind) {
+                    fn.apply(null, args);
+                });
+            }
+        };
+    
+        var imgList = [
+            "http://img02.taobaocdn.com/imgextra/i2/15784026113667837/T1cEJcFflcXXXXXXXX_!!1721165784-0-tstar.jpg",
+            "http://img04.taobaocdn.com/imgextra/i4/15784026113827546/T1UiVcFiVcXXXXXXXX_!!1721165784-0-tstar.jpg",
+            "http://img01.taobaocdn.com/imgextra/i1/15784024203571268/T1otiSXp0iXXXXXXXX_!!1721165784-0-tstar.jpg",
+            "http://img03.taobaocdn.com/imgextra/i3/15784024026174058/T1W8pbFlleXXXXXXXX_!!1721165784-0-tstar.jpg",
+            "http://img02.taobaocdn.com/imgextra/i2/15784024204858529/T1WrVcFXpeXXXXXXXX_!!1721165784-0-tstar.jpg",
+            "http://img04.taobaocdn.com/imgextra/i4/15784026114031559/T1E9JdFnFaXXXXXXXX_!!1721165784-0-tstar.jpg",
+            "http://img03.taobaocdn.com/imgextra/i3/15784024214112912/T1urxdFiFcXXXXXXXX_!!1721165784-0-tstar.jpg",
+            "http://img02.taobaocdn.com/imgextra/i2/15784024113573831/T1MKlnFi4aXXXXXXXX_!!1721165784-0-tstar.jpg",
+            "http://img01.taobaocdn.com/imgextra/i1/15784024113585724/T1yxxnFl4aXXXXXXXX_!!1721165784-0-tstar.jpg",
+            "http://img03.taobaocdn.com/imgextra/i3/15784024535463413/T1sr4mFaXbXXXXXXXX_!!1721165784-0-tstar.jpg",
+            "http://img04.taobaocdn.com/imgextra/i4/15784024113641855/T1oEllFl0bXXXXXXXX_!!1721165784-0-tstar.jpg",
+            "http://img04.taobaocdn.com/imgextra/i4/15784026446355742/T1pwFmFcJaXXXXXXXX_!!1721165784-0-tstar.jpg",
+            "http://img02.taobaocdn.com/imgextra/i2/15784024357534205/T1BndkFfhdXXXXXXXX_!!1721165784-0-tstar.jpg",
+            "http://img01.taobaocdn.com/imgextra/i1/15784024535254902/T1CLVkFfdfXXXXXXXX_!!1721165784-0-tstar.jpg"
+            ];
+        var sizeList = [40, 20, 30, 60, 70, 90, 110, 80, 100, 120, 170, 190, 130, 160, 180, 230, 200, 240, 210, 220, 250, 310, 290, 270, 320, 300, 350, 360, 400, 430, 480, 490, 460, 540, 560, 580, 570, 600, 640, 670, 720, 760, 970, 960];
+        var a_sizeList = [300, 310, 320, 350, 360, 400, 430, 460, 480, 490, 540, 560, 570, 580, 600, 640, 670, 720, 760, 960, 970];
+        
+        function _ri () {
+            return Math.floor(Math.random()*imgList.length);
+        }
+        function _rs () {
+            return Math.floor(Math.random()*a_sizeList.length);
+        }
+        function _ris () {
+            var b = imgList[_ri()],
+                s = a_sizeList[_rs()];
+            return b + '_' + s + 'x' + s + '.jpg';
+        }
+        function _risl (n) {
+            var arr = [];
+            for (var i = 0; i < n; i ++) {
+                arr.push(_ris());
+            }
+            return arr;
+        }
+        function _ril (n) {
+            var arr = [];
+            for (var i = 0; i < n; i ++) {
+                imgReady(_ris(), function () {
+                    arr.push(this);
+                    if (arr.length == n) {
+                        $.trigger(('ready:'+n), arr);
+                    }
+                });
+            }
+            
+        }
+        
+        // set select
+        function setSelImg () {
+            var s = [];
+            for (var i = 1; i <= 20; i ++) {
+                s.push('<option value="'+i+'">'+i+'</option>');
+            }
+            $('#sel_img_num').html(s).val(20).bind('change', function (e) {
+                __do();
+            });;
+        }
+        function setSelCont () {
+            var l = [600, 800, 1000], s = [];
+            for (var i = 0; i < l.length; i ++) {
+                s.push('<option value="'+l[i]+'">'+l[i]+'</option>');
+            }
+            $('#sel_cont_w').html(s).val(800).bind('change', function (e) {
+                __do();
+            });
+        }
+        setSelImg();
+        setSelCont();
+        __do();
+        // act
+        function __do () {
+            var n = parseInt($('#sel_img_num').val()),
+                w = parseInt($('#sel_cont_w').val());
+            _ril(n);
+            $.on(('ready:'+n), function (arr) {
+                window._pinSys = new $.PinSys(arr, {cont_w:w});
+                $.off('ready:'+n);
+            });
+        }
+    
+    });
+    </script>
 </body>
 </html>
