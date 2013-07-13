@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8" />
+<style>
+body{
+    font-family:Microsoft Yahei;
+}
+.doc {
+    width: 804px;
+    margin: 0 auto;
+}
+#cont {
+    border: 2px solid #999;
+    height: 600px;
+    position: relative;
+}
+.dot {
+    position: absolute;
+    width:1px;
+    height: 1px;
+    overflow: hidden;
+    font-size:0;
+    line-height: 0;
+    background: #333;
+}
+</style>
+</head>
+
+<body>
+    <div class="doc">
+    <h4>【题一】</h4>
+    <p>
+请实现以下需求，要做一个活动页面，页面上有一张图片（假设是800x600），图片正中心有一个椭圆形的可点击区域，假设椭圆长轴为200px（横向），短轴160px（纵向），请实现点击这个椭圆区域弹出“我被点击了”的字样，而其他区域点击无效。（不一定要兼容低端浏览器，能兼容当然更好）</p>
+
+        <div id="cont"></div>
+    </div>
+    
+    <script>
+        ;(function () {
+            var win = window,
+                doc = document,
+                OFFSET;
+                
+            function _bind (el, ev, fn) {
+                return el.addEventListener ? el.addEventListener(ev, fn, false) : el.attachEvent('on'+ev, function () { fn.call(el); });
+            }
+            function _$ (id) {
+                return doc.getElementById(id) || id;
+            }                               
+            
+            function _drawElipse (id, a, b) {
+                var el = _$(id);
+                var docfrag = doc.createDocumentFragment();
+                for (var i = 0; i < 360; i ++) {
+                    var dot = doc.createElement('div');
+                    dot.className = 'dot';
+                    
+                    var l = a*Math.sin(i) + (el.offsetWidth - 4)/2,
+                        t = b*Math.cos(i) + (el.offsetHeight - 4)/2;
+                    
+                    dot.style.left = l + 'px';
+                    dot.style.top = t + 'px';
+                    
+                    docfrag.appendChild(dot);
+                }
+                el.appendChild(docfrag);
+            }
+            
+            function offset (el) {
+                 var width = el.offsetWidth,
+                    height = el.offsetHeight,
+                    top = el.offsetTop,
+                    left = el.offsetLeft;
+                while (el = el.offsetParent) {
+                    top = top + el.offsetTop;
+                    left = left + el.offsetLeft;
+                }
+
+                return {
+                    top: top,
+                    left: left,
+                    height: height,
+                    width: width
+                }
+            }
+            
+            function clickCheck (e) {
+                e = e || win.event;
+                var tar = e.target || e.srcElement,
+                    x = e.clientX + doc.body.scrollLeft + doc.documentElement.scrollLeft - OFFSET.left - (tar.offsetWidth/2),
+                    y = e.clientY + doc.body.scrollTop + doc.documentElement.scrollTop - OFFSET.top - (tar.offsetHeight/2);
+                
+                var r = Math.pow((x/100), 2) + Math.pow((y/80), 2);
+                console && console.log(x, y, r);
+                if (r < 1) {
+                    alert('椭圆被点击了！');
+                }
+            }
+            
+            function __init() {
+                _drawElipse('cont', 100, 80);
+                
+                var el = _$('cont');
+                OFFSET = offset(el);
+                _bind(el, 'click', clickCheck);
+            }
+            __init();
+        })();
+    </script>
+</body>
+</html>
