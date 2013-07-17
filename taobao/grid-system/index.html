@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>grid system</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<style>
+html {
+	overflow: hidden;
+	-ms-touch-action: none;
+	-ms-content-zooming: none;
+}
+body {
+	position: absolute;
+	margin: 0;
+	padding: 0;
+	background: #222;
+	width: 100%;
+	height: 100%;
+}
+#screen {
+	position: absolute;
+	width: 100%;
+	height: 100%;
+	background: #000;
+	cursor: pointer;
+}
+.search {
+	background:#0065CB !important;
+}
+</style>
+<script src="./ge1doot.js"></script>
+<script>
+
+(function () {
+	var scr, ctx, pointer, grid, npart, ipart, pdiam, gw, gh, ax = 0, ay = 0;
+	var obj = [];
+	/* ==== particle constructor ==== */
+	var Particle = function () {
+		this.x = Math.random() * scr.width;
+		this.y = Math.random() * scr.height;
+		this.vx = 0;
+		this.vy = 0;
+		this.dx = 0;
+		this.dy = 0;
+		this.w = pdiam * .5;
+	}
+	/* ==== move particle ==== */
+	Particle.prototype.move = function () {
+		this.x  += this.dx;
+		this.y  += this.dy;
+		this.vx += this.dx;
+		this.vy += this.dy;
+		this.dx  = 0;
+		this.dy  = 0;
+		/* ---- draw particle ---- */
+		ctx.drawImage(ipart, this.x - this.w, this.y - this.w, this.w * 2, this.w * 2);
+	}
+	/* ==== fluid simulation ==== */
+	Particle.prototype.physics = function () {
+		/* ---- mouse ---- */
+		if (pointer.isDown) {
+			var dx = this.x - pointer.X;
+			var dy = this.y - pointer.Y;
+			var d = Math.sqrt(dx * dx + dy * dy);
+			if (d < Math.min(scr.width, scr.height) / 2) {
+				this.dx += dx / d * 0.5;
+				this.dy += dy / d * 0.5;
+			}
+		}
+		/* ---- gravity and acceleration ---- */
+		this.vx += ax;
+		this.vy += ay;
+		//this.vy += .1;
+		this.x += this.vx;
+		this.y += this.vy;
+		/* ---- screens limits ---- */
+		if (this.x < pdiam * .5) this.dx += (pdiam * .5 - this.x);
+		else if (this.x > scr.width - pdiam * .5) this.dx -= (this.x - scr.width + pdiam * .5);
+		if (this.y < pdiam * .5) this.dy += (pdiam * .5 - this.y);
+		else if (this.y > scr.height - pdiam * .5) this.dy -= (this.y - scr.height + pdiam * .5);
+		/* ---- grid coordinates ---- */
+		var gx = Math.round(this.x / (pdiam * 4));
+		var gy = Math.round(this.y / (pdiam * 4));
+		/* ---- neightbors constraints ---- */
+		for (var ix = gx - 1; ix <= gx + 1; ix++) {  
+			for (var iy = gy - 1; iy <= gy + 1; iy++) {
+				var g = grid[iy * gw + ix] || [];
+				for (var j = 0, l = g.length; j < l; j++) {
+					var that = g[j];
+					var dx = that.x - this.x;
+					var dy = that.y - this.y;
+					var d = Math.sqrt(dx * dx + dy * dy);
+					if (d < pdiam) {
+						dx = (dx / d) * (pdiam - d) * .25;
+						dy = (dy / d) * (pdiam - d) * .25;
+						this.dx -= dx;
+						this.dy -= dy;
+						that.dx += dx;
+						that.dy += dy;
+					}
+				}
+			}
+		}
+		/* ---- update neighbors list ---- */
+		if (!grid[gy * gw + gx]) grid[gy * gw + gx] = [this];
+		else grid[gy * gw + gx].push(this);
+	}
+	/* ==== main loop ==== */
+	var run = function () {
+		// ---- clear screen ----
+		ctx.clearRect(0, 0, scr.width, scr.height);
+		grid = new Array(gw * gh);
+		for(var i = 0; i < npart; i++) obj[i].physics();
+		for(var i = 0; i < npart; i++) obj[i].move();
+		// ---- next frame ----
+		requestAnimFrame(run);
+	}
+	/* ==== init script ==== */
+	var init = function (p) {
+		pdiam = p.particleSize;
+		// ---- canvas ----
+		scr = new ge1doot.Screen({
+			container: "screen",
+			resize: function () {
+				gw = Math.round(scr.width  / (pdiam * 4));
+				gh = Math.round(scr.height / (pdiam * 4));
+			}
+		});
+		ctx = scr.ctx;
+		scr.resize();
+		// ---- pointer ----
+		pointer = new ge1doot.Pointer({});
+		// ---- particle image ----
+		ipart = new Image();
+		ipart.src = p.particleImg;
+		// ---- create particles ----
+		npart = Math.round(((scr.width * scr.height) / (pdiam * pdiam)) * 0.6);
+		for (var i = 0; i < npart; i++) {
+			obj[i] = new Particle();
+		}
+		// ---- more fun on iPad :-) ----
+		if (window.DeviceMotionEvent != undefined) {
+			window.ondevicemotion = function(e) {
+				ax = e.accelerationIncludingGravity.x * 0.1;
+				ay = -e.accelerationIncludingGravity.y * 0.1;
+				if (ax > 0.1) ax = 0.1; else if (ax < -0.1) ax = -0.1;
+				if (ay > 0.1) ay = 0.1; else if (ay < -0.1) ay = -0.1;
+				if (window.innerWidth / window.innerHeight > 1) {
+					var t = ay;
+					ay = ax;
+					ax = -t;
+				}
+			}
+		} else ay = 0.1;
+		run();
+	}
+	return {
+		// ---- launch script -----
+		load : function (p) {
+			window.addEventListener('load', function () {
+				init(p);
+			}, false);
+		}  
+	}
+})().load({
+	particleImg: "./sp32r.gif",
+	particleSize: 32
+});
+</script>
+</head>
+<body>
+<canvas id="screen"></canvas>
+
+</body>
+</html>
