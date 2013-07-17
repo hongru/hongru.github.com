@@ -37,14 +37,23 @@ body {
 	var scr, ctx, pointer, grid, npart, ipart, pdiam, gw, gh, ax = 0, ay = 0;
 	var obj = [];
 	/* ==== particle constructor ==== */
-	var Particle = function () {
-		this.x = Math.random() * scr.width;
-		this.y = Math.random() * scr.height;
+	var Particle = function (opt) {
+		this.cont = opt.cont || document.getElementById('screen');
+		this.hasScreenLimit = opt.hasScreenLimit;
+
+		this.x = opt.x || Math.random() * scr.width ;
+		this.y = opt.y || Math.random() * scr.height;
+		//this.x = this.cont.offsetWidth;
+		//this.y = this.cont.offsetHeight;
+		this.a = 0.1;
 		this.vx = 0;
 		this.vy = 0;
 		this.dx = 0;
 		this.dy = 0;
-		this.w = pdiam * .5;
+		//this.w = pdiam * .5;
+		this.w = 50 + Math.random()*50;
+
+		this.space = 50;
 	}
 	/* ==== move particle ==== */
 	Particle.prototype.move = function () {
@@ -57,6 +66,15 @@ body {
 		/* ---- draw particle ---- */
 		ctx.drawImage(ipart, this.x - this.w, this.y - this.w, this.w * 2, this.w * 2);
 	}
+	Particle.prototype.getAc = function () {
+		var ac = {};
+		var cx = this.cont.offsetWidth/2,
+			cy = this.cont.offsetHeight/2;
+		ac.x = this.x > cx ? -this.a : this.a;
+		ac.y = this.y > cy ? -this.a : this.a;
+		return ac;
+	}
+
 	/* ==== fluid simulation ==== */
 	Particle.prototype.physics = function () {
 		/* ---- mouse ---- */
@@ -69,6 +87,12 @@ body {
 				this.dy += dy / d * 0.5;
 			}
 		}
+
+		//get ax,ay
+		var ac = this.getAc();
+		ax = ac.x;
+		ay = ac.y;
+
 		/* ---- gravity and acceleration ---- */
 		this.vx += ax;
 		this.vy += ay;
@@ -76,13 +100,16 @@ body {
 		this.x += this.vx;
 		this.y += this.vy;
 		/* ---- screens limits ---- */
-		if (this.x < pdiam * .5) this.dx += (pdiam * .5 - this.x);
-		else if (this.x > scr.width - pdiam * .5) this.dx -= (this.x - scr.width + pdiam * .5);
-		if (this.y < pdiam * .5) this.dy += (pdiam * .5 - this.y);
-		else if (this.y > scr.height - pdiam * .5) this.dy -= (this.y - scr.height + pdiam * .5);
+		if (this.hasScreenLimit) {
+			if (this.x < this.w * .5) this.dx += (this.w * .5 - this.x);
+			else if (this.x > scr.width - this.w * .5) this.dx -= (this.x - scr.width + this.w * .5);
+			if (this.y < this.w * .5) this.dy += (this.w * .5 - this.y);
+			else if (this.y > scr.height - this.w * .5) this.dy -= (this.y - scr.height + this.w * .5);
+		}
+		
 		/* ---- grid coordinates ---- */
-		var gx = Math.round(this.x / (pdiam * 4));
-		var gy = Math.round(this.y / (pdiam * 4));
+		var gx = Math.round(this.x / (this.w *20));
+		var gy = Math.round(this.y / (this.w *20));
 		/* ---- neightbors constraints ---- */
 		for (var ix = gx - 1; ix <= gx + 1; ix++) {  
 			for (var iy = gy - 1; iy <= gy + 1; iy++) {
@@ -92,9 +119,11 @@ body {
 					var dx = that.x - this.x;
 					var dy = that.y - this.y;
 					var d = Math.sqrt(dx * dx + dy * dy);
-					if (d < pdiam) {
-						dx = (dx / d) * (pdiam - d) * .25;
-						dy = (dy / d) * (pdiam - d) * .25;
+
+					var min = this.w + that.w + this.space;
+					if (d < min) {
+						dx = (dx / d) * (min - d) * .2;
+						dy = (dy / d) * (min - d) * .2;
 						this.dx -= dx;
 						this.dy -= dy;
 						that.dx += dx;
@@ -136,24 +165,21 @@ body {
 		ipart = new Image();
 		ipart.src = p.particleImg;
 		// ---- create particles ----
-		npart = Math.round(((scr.width * scr.height) / (pdiam * pdiam)) * 0.6);
+		//npart = Math.round(((scr.width * scr.height) / (pdiam * pdiam)) * 0.6);
+		npart = 20;
 		for (var i = 0; i < npart; i++) {
-			obj[i] = new Particle();
+			var ix = scr.width/2 + scr.width/2 * Math.sin(360*i/npart),
+				iy = scr.height/2 + scr.width/2 * Math.cos(360*i/npart);
+
+			obj[i] = new Particle({
+				cont: document.getElementById('screen'),
+				//x: ix,
+				//y: iy,
+				hasScreenLimit: true
+			});
 		}
-		// ---- more fun on iPad :-) ----
-		if (window.DeviceMotionEvent != undefined) {
-			window.ondevicemotion = function(e) {
-				ax = e.accelerationIncludingGravity.x * 0.1;
-				ay = -e.accelerationIncludingGravity.y * 0.1;
-				if (ax > 0.1) ax = 0.1; else if (ax < -0.1) ax = -0.1;
-				if (ay > 0.1) ay = 0.1; else if (ay < -0.1) ay = -0.1;
-				if (window.innerWidth / window.innerHeight > 1) {
-					var t = ay;
-					ay = ax;
-					ax = -t;
-				}
-			}
-		} else ay = 0.1;
+
+
 		run();
 	}
 	return {
@@ -166,7 +192,7 @@ body {
 	}
 })().load({
 	particleImg: "./sp32r.gif",
-	particleSize: 32
+	particleSize: (parseInt(Math.random()*100)+100)
 });
 </script>
 </head>
