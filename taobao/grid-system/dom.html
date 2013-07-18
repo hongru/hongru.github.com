@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>grid system - dom</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<style>
+html {
+	overflow: hidden;
+	-ms-touch-action: none;
+	-ms-content-zooming: none;
+}
+body {
+	margin: 0;
+	padding: 0;
+	background: #f1f1f1;
+}
+
+#container {
+    position: relative;
+    margin: 60px;
+    background: #fff;
+    border: 1px solid #999;
+}
+
+.it {
+    position: absolute;
+    display:none;
+    -webkit-border-radius: 100px;
+}
+
+</style>
+</head>
+
+<body>
+
+<div id="container">
+    <div class="it"></div>
+    <div class="it"></div>
+    <div class="it"></div>
+    <div class="it"></div>
+    <div class="it"></div>
+    <div class="it"></div>
+    <div class="it"></div>
+    <div class="it"></div>
+    <div class="it"></div>
+    <div class="it"></div>
+    <div class="it"></div>
+    <div class="it"></div>
+    <div class="it"></div>
+    <div class="it"></div>
+</div>
+
+<script>
+window.requestAnimFrame = (function(){
+		return  window.requestAnimationFrame || 
+		window.webkitRequestAnimationFrame   || 
+		window.mozRequestAnimationFrame      || 
+		window.oRequestAnimationFrame        || 
+		window.msRequestAnimationFrame       || 
+		function( run ){
+			window.setTimeout(run, 16);
+		};
+})();
+
+//main
+;(function () {
+    
+    var global = window || this;
+    
+    function _extend (t, s, i) {
+        if (i == undefined) { i = true }
+        for (var k in s) {
+            if (!(k in t) || i) {
+                t[k] = s[k];
+            }
+        }
+        return t;
+    }
+    
+    //GridSystem
+    /* 
+    opt: {
+        container,
+        gridSize,
+        domList,
+        hasScreenLimit,
+    }
+    */
+    var GridSystem = function (opt) {
+        var defaults = {
+            container: null,
+            gridSize: 100,
+            domList: null,
+            hasScreenLimit: true,
+            width: 'auto',
+            height: 'auto'
+        }
+        this._opt = _extend(defaults, opt || {});
+        this._objs = [];
+        this._ct = this._opt.container;
+        this.n = this._opt.domList.length;
+        
+        this.gw = 0;
+        this.gh = 0;
+        this.grid = [];
+        
+        this.start();
+    };
+    GridSystem.prototype = {
+        _prepare: function () {
+            this._ct.width = typeof this._opt.width == 'number' ? this._opt.width + 'px' : this._opt.width;
+            this._ct.style.height = typeof this._opt.height == 'number' ? this._opt.height + 'px' : this._opt.height;
+            this.gw = Math.round(this._ct.offsetWidth  / this._opt.gridSize);
+            this.gh = Math.round(this._ct.offsetHeight / this._opt.gridSize);
+        },
+        start: function () {
+            this._prepare();
+
+            for (var i = 0; i < this._opt.domList.length; i++) {
+                this._objs[i] = new Particle ({
+                    parent: this,
+                    cont: this._opt.container,
+                    dom: this._opt.domList[i],
+                    hasScreenLimit: this._opt.hasScreenLimit
+                });
+            }
+            this.loop();
+        },
+        loop: function () {
+            this.grid = new Array(this.gw * this.gh);
+            for(var i = 0; i < this.n; i++) this._objs[i].physics();
+            for(var i = 0; i < this.n; i++) this._objs[i].move();
+            
+            var me = this;
+            requestAnimFrame(function () {me.loop()});
+        }
+    }
+    
+    //Particle
+    var Particle = function (opt) {
+        _extend(this, opt || {});
+        this.x = this.cont.offsetWidth * Math.random();
+        this.y = this.cont.offsetHeight * Math.random();
+        
+        this.a = 0.1;
+		this.vx = 0;
+		this.vy = 0;
+		this.dx = 0;
+		this.dy = 0;
+        
+        this.w = 50 + Math.random()*50;
+        this.dom.style.width = this.w*2 + 'px';
+        this.dom.style.height = this.w*2 + 'px';
+        
+        this.color = 'rgb('+parseInt(Math.random()*256)+', '+parseInt(Math.random()*256)+', '+parseInt(Math.random()*256)+')';
+        this.dom.style.background = this.color;
+        this.dom.style.display = 'block';
+        
+        this.space = this.w;
+    };
+    Particle.prototype = {
+        getAc: function () {
+            var ac = {};
+            var cx = this.cont.offsetWidth/2,
+                cy = this.cont.offsetHeight/2;
+            ac.x = this.x > cx ? -this.a : this.a;
+            ac.y = this.y > cy ? -this.a : this.a;
+            return ac;
+        },
+        move: function () {
+            this.x  += this.dx;
+            this.y  += this.dy;
+            this.vx += this.dx;
+            this.vy += this.dy;
+            this.dx  = 0;
+            this.dy  = 0;
+            
+            this.dom.style.left = this.x - this.w + 'px';
+            this.dom.style.top = this.y - this.w + 'px';
+        },
+        physics: function () {
+            //get ax,ay
+            var ac = this.getAc();
+            ax = ac.x;
+            ay = ac.y;
+
+            /* ---- gravity and acceleration ---- */
+            this.vx += ax;
+            this.vy += ay;
+            //this.vy += .1;
+            this.x += this.vx;
+            this.y += this.vy;
+            /* ---- screens limits ---- */
+            if (this.hasScreenLimit) {
+                if (this.x < this.w) this.dx += (this.w - this.x);
+                else if (this.x > this.parent._ct.offsetWidth - this.w) this.dx -= (this.x - this.parent._ct.offsetWidth + this.w);
+                if (this.y < this.w) this.dy += (this.w - this.y);
+                else if (this.y > this.parent._ct.offsetHeight - this.w) this.dy -= (this.y - this.parent._ct.offsetHeight + this.w);
+            }
+            
+            /* ---- grid coordinates ---- */
+            var gx = Math.round(this.x / (this.w *20));
+            var gy = Math.round(this.y / (this.w *20));
+            /* ---- neightbors constraints ---- */
+            for (var ix = gx - 1; ix <= gx + 1; ix++) {  
+                for (var iy = gy - 1; iy <= gy + 1; iy++) {
+                    var g = this.parent.grid[iy * this.parent.gw + ix] || [];
+                    for (var j = 0, l = g.length; j < l; j++) {
+                        var that = g[j];
+                        var dx = that.x - this.x;
+                        var dy = that.y - this.y;
+                        var d = Math.sqrt(dx * dx + dy * dy);
+
+                        var min = this.w + that.w + this.space;
+                        if (d < min) {
+                            dx = (dx / d) * (min - d) * .2;
+                            dy = (dy / d) * (min - d) * .2;
+                            this.dx -= dx;
+                            this.dy -= dy;
+                            that.dx += dx;
+                            that.dy += dy;
+                        }
+                    }
+                }
+            }
+            /* ---- update neighbors list ---- */
+            if (!this.parent.grid[gy * this.parent.gw + gx]) this.parent.grid[gy * this.parent.gw + gx] = [this];
+            else this.parent.grid[gy * this.parent.gw + gx].push(this);
+        }
+    };
+    
+    global.GridSystem = GridSystem;
+    
+})();
+
+//active
+new GridSystem({
+    container: document.querySelector('#container'),
+    domList: document.querySelectorAll('#container .it'),
+    width: 'auto',
+    height: 600
+});
+</script>
+</body>
+</html>
