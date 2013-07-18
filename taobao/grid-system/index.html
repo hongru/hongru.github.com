@@ -23,18 +23,16 @@ body {
 	position: absolute;
 	width: 100%;
 	height: 100%;
-	background: #000;
+	background: #fff;
 	cursor: pointer;
 }
-.search {
-	background:#0065CB !important;
-}
+
 </style>
-<script src="./ge1doot.js"></script>
+<script src="./st.js"></script>
 <script>
 
 (function () {
-	var scr, ctx, pointer, grid, npart, ipart, pdiam, gw, gh, ax = 0, ay = 0;
+	var scr, ctx, pointer, grid, npart, pdiam, gw, gh, ax = 0, ay = 0;
 	var obj = [];
 	/* ==== particle constructor ==== */
 	var Particle = function (opt) {
@@ -43,8 +41,7 @@ body {
 
 		this.x = opt.x || Math.random() * scr.width ;
 		this.y = opt.y || Math.random() * scr.height;
-		//this.x = this.cont.offsetWidth;
-		//this.y = this.cont.offsetHeight;
+
 		this.a = 0.1;
 		this.vx = 0;
 		this.vy = 0;
@@ -52,8 +49,9 @@ body {
 		this.dy = 0;
 		//this.w = pdiam * .5;
 		this.w = 50 + Math.random()*50;
+        this.color = 'rgb('+parseInt(Math.random()*256)+', '+parseInt(Math.random()*256)+', '+parseInt(Math.random()*256)+')';
 
-		this.space = 50;
+		this.space = this.w;
 	}
 	/* ==== move particle ==== */
 	Particle.prototype.move = function () {
@@ -64,12 +62,16 @@ body {
 		this.dx  = 0;
 		this.dy  = 0;
 		/* ---- draw particle ---- */
-		ctx.drawImage(ipart, this.x - this.w, this.y - this.w, this.w * 2, this.w * 2);
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.w, 0, Math.PI*2, true);
+        ctx.closePath();
+        ctx.fillStyle = this.color;
+        ctx.fill();
 	}
 	Particle.prototype.getAc = function () {
 		var ac = {};
-		var cx = this.cont.offsetWidth/2,
-			cy = this.cont.offsetHeight/2;
+		var cx = this.cont.width/2,
+			cy = this.cont.height/2;
 		ac.x = this.x > cx ? -this.a : this.a;
 		ac.y = this.y > cy ? -this.a : this.a;
 		return ac;
@@ -101,10 +103,10 @@ body {
 		this.y += this.vy;
 		/* ---- screens limits ---- */
 		if (this.hasScreenLimit) {
-			if (this.x < this.w * .5) this.dx += (this.w * .5 - this.x);
-			else if (this.x > scr.width - this.w * .5) this.dx -= (this.x - scr.width + this.w * .5);
-			if (this.y < this.w * .5) this.dy += (this.w * .5 - this.y);
-			else if (this.y > scr.height - this.w * .5) this.dy -= (this.y - scr.height + this.w * .5);
+			if (this.x < this.w) this.dx += (this.w - this.x);
+			else if (this.x > scr.width - this.w) this.dx -= (this.x - scr.width + this.w);
+			if (this.y < this.w) this.dy += (this.w - this.y);
+			else if (this.y > scr.height - this.w) this.dy -= (this.y - scr.height + this.w);
 		}
 		
 		/* ---- grid coordinates ---- */
@@ -148,9 +150,9 @@ body {
 	}
 	/* ==== init script ==== */
 	var init = function (p) {
-		pdiam = p.particleSize;
+		pdiam = p.gridSize;
 		// ---- canvas ----
-		scr = new ge1doot.Screen({
+		scr = new ST.Screen({
 			container: "screen",
 			resize: function () {
 				gw = Math.round(scr.width  / (pdiam * 4));
@@ -160,19 +162,16 @@ body {
 		ctx = scr.ctx;
 		scr.resize();
 		// ---- pointer ----
-		pointer = new ge1doot.Pointer({});
-		// ---- particle image ----
-		ipart = new Image();
-		ipart.src = p.particleImg;
+		pointer = new ST.Pointer({});
 		// ---- create particles ----
-		//npart = Math.round(((scr.width * scr.height) / (pdiam * pdiam)) * 0.6);
+
 		npart = 20;
 		for (var i = 0; i < npart; i++) {
 			var ix = scr.width/2 + scr.width/2 * Math.sin(360*i/npart),
 				iy = scr.height/2 + scr.width/2 * Math.cos(360*i/npart);
 
 			obj[i] = new Particle({
-				cont: document.getElementById('screen'),
+				cont: scr,
 				//x: ix,
 				//y: iy,
 				hasScreenLimit: true
@@ -191,8 +190,7 @@ body {
 		}  
 	}
 })().load({
-	particleImg: "./sp32r.gif",
-	particleSize: (parseInt(Math.random()*100)+100)
+	gridSize: 100
 });
 </script>
 </head>
