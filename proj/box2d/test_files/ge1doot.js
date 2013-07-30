@@ -1,10 +1,3 @@
-////////////////////////////////////////////////////////////
-// ============= micro HTML5 library =====================
-// @author Gerard Ferrandez / http://www.dhteumeuleu.com/
-// last update: Apr 28, 2013
-// Released under the MIT license
-// http://www.dhteumeuleu.com/LICENSE.html
-////////////////////////////////////////////////////////////
 
 // ===== ge1doot global =====
 
