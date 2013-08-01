@@ -1,6 +1,4 @@
-<style>
-img {background: #fff; padding: 5px; border:1px solid #eee}
-</style>
+
 
 ### Test Cases
 
