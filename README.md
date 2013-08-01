@@ -57,6 +57,6 @@ img {background: #fff; padding: 5px; border:1px solid #eee}
 <a href="http://hongru.github.com/test/rubik/zoom/index.html"><img width="150" height="150" alt="" src="http://hongru.github.io/images/readme/zoom.jpg" /></a>
 <a href="http://hongru.github.io/proj/svg_treegraph/"><img width="150" height="150" alt="" src="http://hongru.github.com/images/readme/svg-tree.jpg" /></a>
 <a href="http://hongru.github.io/proj/fisheye/"><img width="150" height="150" alt="" src="http://hongru.github.com/images/readme/fisheye.jpg" /></a>
-<a href="http://hongru.github.io/taobao/grid-system/index.html"><img width="150" height="150" alt="" src="http://hongru.github.com/images/readme/grid.jpg" /></a>
+<a href="http://hongru.github.io/taobao/grid-system/index.html"><img width="150" height="150" alt="" src="http://hongru.github.com/images/readme/gird.jpg" /></a>
 <a href="http://hongru.github.io/taobao/pin/index.html"><img width="150" height="150" alt="" src="http://hongru.github.com/images/readme/mm.jpg" /></a>
 <a href="http://hongru.github.io/proj/poco/poly.html"><img width="150" height="150" alt="" src="http://hongru.github.com/images/readme/poco.jpg" /></a>
