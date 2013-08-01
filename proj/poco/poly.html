@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8" />
+<script src="http://rawgithub.com/hongru/Poco/master/build/1.0.0/poco.js"></script>
+
+
+<style>
+html {
+	overflow: hidden;
+	-ms-touch-action: none;
+	-ms-content-zooming: none;
+}
+body {
+	position: absolute;
+	margin: 0;
+	padding: 0;
+	background: #111;
+	width: 100%;
+	height: 100%;
+}
+#screen {
+	position: absolute;
+	width: 100%;
+	height: 100%;
+    cursor: pointer;
+    -webkit-user-select: none;
+}
+</style>
+</head>
+
+<body>
+<canvas id="screen">HTML5 CANVAS box 2D demo</canvas>
+
+<script>
+window.requestAnimFrame = (function(){
+		return  window.requestAnimationFrame || 
+		window.webkitRequestAnimationFrame   || 
+		window.mozRequestAnimationFrame      || 
+		window.oRequestAnimationFrame        || 
+		window.msRequestAnimationFrame       || 
+		function( run ){
+			window.setTimeout(run, 16);
+		};
+})();
+
+;(function () {
+    
+    var world = new Poco.World(),
+        canvas,
+        ctx,
+        dropc = 0;
+    
+    function rr (n) {
+        return (n*0.9 + Math.random()*n*0.2);
+    } 
+    function range (a, b) {
+        return (a + Math.random() * (b-a));
+    }
+    function createPoly (n, a, b, c) {
+        n = n < 3 ? 3 : n;
+        var p = [], nn = 360/n, total = 0;
+        for (var i = 0; i < n; i ++) {
+            var r = rr(nn);
+            total += r;
+            var d = 360-total;
+            p.push([a*Math.cos(d*Math.PI/180), b*Math.sin(d*Math.PI/180)]);
+        }
+        
+        var poly = new Poco.Polygon({
+            pos: [range(canvas.width*0.2, canvas.width*0.8), -60],
+            points: p
+        });
+        if (c) poly.color = c;
+        world.addObject(poly);
+    }
+    
+    function initObjs () {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+        
+        world.objects = [];
+        
+        world.addObject(new Poco.Polygon({
+            pos: [canvas.width/2, canvas.height - 60],
+            points: [
+                [-0.3*canvas.width, -20],
+                [-0.3*canvas.width, 20],
+                [0.3*canvas.width, 20],
+                [0.3*canvas.width, -20]
+            ],
+            invMass: 0
+        }));
+        
+        world.addObject(new Poco.Polygon({
+            pos: [canvas.width*0.4, canvas.height-300],
+            points: [
+                [-200, -20],
+                [-200, 20],
+                [200, 20],
+                [200, -20]
+            ],
+            invMass: 0,
+            angularVel: -1
+        }));
+        world.addObject(new Poco.Polygon({
+            pos: [canvas.width*0.4, canvas.height-300],
+            points: [
+                [-200, -20],
+                [-200, 20],
+                [200, 20],
+                [200, -20]
+            ],
+            invMass: 0,
+            angularVel: -1,
+            angle: Math.PI/2
+        }));
+    }
+    function init () {
+        canvas = document.getElementById('screen');
+        ctx = canvas.getContext('2d');
+        
+        initObjs();
+        
+        window.addEventListener('resize', function () {
+            initObjs();
+        }, false);
+        canvas.addEventListener('click', function () {
+            createPoly(Math.round(range(3,6)), 50, 50, 'rgb('+Math.round(range(0,255))+', '+Math.round(range(0,255))+', '+Math.round(range(0,255))+')');
+        }, false);
+        
+        run();
+    }
+    
+    function clean () {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        for (var i = 0, rb; rb = world.objects[i++];) {
+			if (rb.pos[1] > canvas.height && rb.invMass) {
+				i--;
+				world.objects.splice(i, 1);
+			}
+		}
+		if (world.objects.length < 20 - dropc) drop();
+    }
+    function drop () {
+        for (var i = 0; i < 20; i++) {
+			dropc++;
+			setTimeout(function() {
+				dropc--;
+                createPoly(parseInt(Math.random()*9), rr(50), rr(60));
+			}, i * 500);
+
+		}
+    }
+    function draw () {
+        for (var i = 0, rb; rb = world.objects[i++];) {
+
+            ctx.save();
+            ctx.translate(rb.pos[0], rb.pos[1]);
+            ctx.rotate(rb.angle);
+
+            ctx.beginPath();
+            ctx.moveTo(rb.points[0][0], rb.points[0][1]);
+            for (var c = 1; c < rb.vCount; c ++) {
+                ctx.lineTo(rb.points[c][0], rb.points[c][1]);
+            }
+            ctx.lineTo(rb.points[0][0], rb.points[0][1]);
+            ctx.closePath();
+            ctx.fillStyle = rb.color ? rb.color : (rb.invMass ? '#345' : '#ccc');
+            ctx.fill();
+
+            ctx.restore();
+		}
+    }
+    function run () {
+        clean();
+        world.step();
+        draw();
+        
+        requestAnimFrame(run);
+    }
+
+    init();
+})();
+
+</script>
+</body>
+</html>
