@@ -1,0 +1,123 @@
+<!doctype html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+
+		<title>reveal.js</title>
+
+		<meta name="description" content="A framework for easily creating beautiful presentations using HTML">
+		<meta name="author" content="Hakim El Hattab">
+
+		<meta name="apple-mobile-web-app-capable" content="yes" />
+		<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+		<link rel="stylesheet" href="/reveal.min.css" />
+        <link rel="stylesheet" href="/default.css" />
+        
+        <script type="text/javascript" src="/socket.io/socket.io.js"></script>
+        <style>
+        	.mo info{display: block;}
+        	info {display: none}
+        </style>
+	</head>
+
+	<body>
+		<div class="reveal">
+			<div class="slides">
+				<section>
+					<h1>WebGL</h1>
+					<h2>想触摸的世界</h2>
+				</section>
+
+				<section>
+					<img alt="" src="./assets/hi.jpg" />
+					<info>
+						getContext('webgl') <br/>
+						getContext('experimental-webgl')<br/>
+						openGL<br/>
+						shader language <br/>
+						学习成本：javascript dom基础 canvas opengl<br/>
+						应用价值
+
+					</info>
+				</section>
+
+				<section>
+					<a href="http://www.khronos.org/registry/gles/specs/2.0/GLSL_ES_Specification_1.0.17.pdf" target="blank">OpenGL® ES Shading Languag</a>
+				</section>
+
+				<section>
+					<h2>First - Demos</h2>
+					<ul>
+						<li><a href="http://hongru.github.io/Sandy/demo/texture/" target="_blank">One</a></li>
+						<li><a href="http://hongru.github.io/Sandy/demo/can/" target="_blank">can</a></li>
+						<li><a href="http://hongru.github.io/Sandy/demo/elephant/" target="_blank">elephant</a></li>
+						<li><a href="http://hongru.github.io/Sandy/demo/monkey/" target="_blank">monkey</a></li>
+						<li><a href="http://hongru.github.io/Sandy/demo/particles/" target="_blank">particles</a></li>
+						<li><a href="http://hongru.github.io/Sandy/demo/skull/" target="_blank">skull</a></li>
+					</ul>
+				</section>
+
+				<section>
+					&lt;script type="x-shader/x-vertex"&gt;
+				</section>
+
+				<section>
+					&lt;script type="x-shader/x-fragment"&gt;
+				</section>
+
+				<section>
+					<img alt="" src="./assets/gl_flow.png" />
+				</section>
+
+				<section>
+					
+				</section>
+			</div>
+		</div>
+
+
+
+		<script src="/reveal.min.js"></script>
+
+		<script>
+
+			// Full list of configuration options available here:
+			// https://github.com/hakimel/reveal.js#configuration
+			Reveal.initialize({
+				controls: true,
+				progress: true,
+				history: true,
+				center: true,
+
+				theme: Reveal.getQueryHash().theme, // available themes are in /css/theme
+				transition: Reveal.getQueryHash().transition || 'cube', // default/cube/page/concave/zoom/linear/fade/none
+
+				// Optional libraries used to extend on reveal.js
+				dependencies: [
+
+				]
+			});
+
+		</script>
+        
+        <script>
+            var url = window.location.protocol+'//'+window.location.host;
+            var socket = io.connect(url);
+            socket.on('hash', function (hash) {
+                window.location.hash = hash;
+            });
+            
+            window.addEventListener( 'hashchange', function () {
+                socket.emit('hash', window.location.hash);
+            }, false );
+
+            if (/ios|android|iphone|mobile/i.test(navigator.userAgent)) {
+            	document.body.className = 'mo';
+            }
+        </script>
+	</body>
+</html>
