@@ -7,7 +7,7 @@ var express =  require('express'),
     fs = require('fs'),
     mime = require('mime');
 
-server.listen(8001);
+server.listen(1234);
 app.get('/',function(req,res){
     var realpath = __dirname + '/index.html';
     //console.log(realpath);
