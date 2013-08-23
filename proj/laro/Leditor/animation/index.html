@@ -169,6 +169,50 @@ Leta.NS('LAE', function ($L) {
 		this.getEls();
 		this.bind();
 	};
+    
+    // data = ctx.getImageData(0, 0, canvas.width, canvas.height);
+    // type: 'h', 'v'
+    this.checkSprite = function (data, type) {
+        var w = data.width,
+            h = data.height,
+            id = data.data;
+        
+        if (!type) type = w > h ? 'h' : 'v';
+        
+        var pxs = [];
+        for (var i = 0; i < id.length; i += 4) {
+            var px = (id[i]+id[i+1]+id[i+2]+id[i+3]);
+            pxs.push(px);
+        }
+        
+        if (type == 'h') {
+            var lf = -1, n = 0;
+            for (var i = 0; i < w; i ++) {
+                var r = 0;
+                for (var j = 0; j < h; j ++) {
+                    r += pxs[j*w + i];
+                }
+                var f = r == 0 ? -1 : 1;
+                if (f*lf < 0) n ++;
+                lf = f;
+            }
+        } else if (type == 'v') {
+            var lf = -1, n = 0;
+            for (var i = 0; i < h; i ++) {
+                var r = 0;
+                for (var j = 0; j < w; j ++) {
+                    r += pxs[i*w + j];
+                }
+                var f = r == 0 ? -1 : 1;
+                if (f*lf < 0) n ++;
+                lf = f;
+            }
+        }
+        
+        if (lf == 1) n ++;
+        
+        return (n/2);
+    }
 	this.getEls = function () {
 		els.$con = $('#container');
 		els.$ea = $('#edit-area');
@@ -359,7 +403,11 @@ Leta.NS('LAE', function ($L) {
 		}, function () {
 			ctx.clearRect(0, 0, cvs.width, cvs.height);
 			ctx.drawImage(this, 0, 0);
-			
+            var imageData = ctx.getImageData(0, 0, cvs.width, cvs.height);
+            var n = pkg.checkSprite(imageData);
+            els.$fnum.val(String(n));
+			pkg.setPivotDefaultValue();
+            pkg.go();
 		});
 	}
 	

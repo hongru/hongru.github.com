@@ -10,6 +10,7 @@
 <meta content="telephone=no" name="format-detection" />
 
 <script src="js/scroller.all.js"></script>
+<script src="js/jcanvas.0.4.js"></script>
 <style>
 html,body{margin:0;background:#000;-webkit-user-select:none}
 canvas {display:block;margin: 0 auto; background: #fff;}
@@ -115,6 +116,13 @@ var canvas = document.getElementById('canvas'),
     contentHeight = canvas.height * 1.5,
     tile = new Tiling;
     
+var stage = new CVS.$stage(canvas, {
+    draw: function () {
+        ctx.fillStyle = 'blue';
+        ctx.fillRect(0, 0, canvas.width, 200);
+    }
+})
+    
 function setup() {
     resize();
     window.addEventListener('resize', resize, false);
@@ -130,6 +138,7 @@ function resize () {
 var render = function (left, top, zoom) {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     tile.setup(canvas.width, canvas.height, contentWidth, contentHeight, 40, 40);
+    stage.render();
 	tile.render(left, top, zoom, function(row, col, left, top, width, height, zoom) {
         
         ctx.fillStyle = row%2 + col%2 > 0 ? "#ddd" : "#fff";
@@ -142,6 +151,8 @@ var render = function (left, top, zoom) {
         ctx.fillText(row + "," + col, left + (6 * zoom), top + (18 * zoom));
         
     }); 
+    
+    
 }
 // init scroller
 var scroller = new Scroller(render, {
