@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8" /> 
+<title>canvas scroller</title> 
+<meta content="initial-scale=1.0,user-scalable=no,maximum-scale=1,width=device-width" name="viewport" /> 
+<meta content="initial-scale=1.0,user-scalable=no,maximum-scale=1" media="(device-height: 568px)" name="viewport" /> 
+<meta content="yes" name="apple-mobile-web-app-capable" /> 
+<meta content="black" name="apple-mobile-web-app-status-bar-style" /> 
+<meta content="telephone=no" name="format-detection" />
+
+<script src="js/scroller.all.js"></script>
+<script src="js/jcanvas.0.4.js"></script>
+<style>
+html,body{margin:0;background:#000;-webkit-user-select:none}
+canvas {display:block;margin: 0 auto; background: #fff;}
+
+</style>
+</head>
+
+<body>
+
+<canvas id="canvas"></canvas>
+
+<script>
+//cell render tool
+Tiling = function() {
+
+};
+Tiling.prototype.setup = function(clientWidth, clientHeight, contentWidth, contentHeight, tileWidth, tileHeight) {
+
+	this.__clientWidth = clientWidth;
+	this.__clientHeight = clientHeight;
+	this.__contentWidth = contentWidth;
+	this.__contentHeight = contentHeight;
+	this.__tileWidth = tileWidth;
+	this.__tileHeight = tileHeight;
+
+};
+Tiling.prototype.render = function(left, top, zoom, paint) {
+
+	var clientHeight = this.__clientHeight;
+	var clientWidth = this.__clientWidth;
+
+	// Respect zooming
+	var tileHeight = this.__tileHeight * zoom;
+	var tileWidth = this.__tileWidth * zoom;
+
+	// Compute starting rows/columns and support out of range scroll positions
+	var startRow = Math.max(Math.floor(top / tileHeight), 0);
+	var startCol = Math.max(Math.floor(left / tileWidth), 0);
+
+	// Compute maximum rows/columns to render for content size
+	var maxRows = (this.__contentHeight * zoom) / tileHeight;
+	var maxCols = (this.__contentWidth * zoom) / tileWidth;
+
+	// Compute initial render offsets
+	// 1. Positive scroll position: We match the starting rows/tile first so we
+	//    just need to take care that the half-visible tile is fully rendered
+	//    and placed partly outside.
+	// 2. Negative scroll position: We shift the whole render context
+	//    (ignoring the tile dimensions) and effectively reduce the render
+	//    dimensions by the scroll amount.
+	var startTop = top >= 0 ? -top % tileHeight : -top;
+	var startLeft = left >= 0 ? -left % tileWidth : -left;
+
+	// Compute number of rows to render
+	var rows = Math.floor(clientHeight / tileHeight);
+
+	if ((top % tileHeight) > 0) {
+		rows += 1;
+	}
+
+	if ((startTop + (rows * tileHeight)) < clientHeight) {
+		rows += 1;
+	}
+
+	// Compute number of columns to render
+	var cols = Math.floor(clientWidth / tileWidth);
+
+	if ((left % tileWidth) > 0) {
+		cols += 1;
+	}
+
+	if ((startLeft + (cols * tileWidth)) < clientWidth) {
+		cols += 1;
+	}
+
+	// Limit rows/columns to maximum numbers
+	rows = Math.min(rows, maxRows - startRow);
+	cols = Math.min(cols, maxCols - startCol);
+
+	// Initialize looping variables
+	var currentTop = startTop;
+	var currentLeft = startLeft;
+
+	// Render new squares
+	for (var row = startRow; row < (rows + startRow); row++) {
+		for (var col = startCol; col < (cols + startCol); col++) {
+			paint(row, col, currentLeft, currentTop, tileWidth, tileHeight, zoom);
+			currentLeft += tileWidth;
+		}
+
+		currentLeft = startLeft;
+		currentTop += tileHeight;
+	}
+	
+};
+
+
+//main
+var canvas = document.getElementById('canvas'),
+    ctx = canvas.getContext('2d'),
+    isMobile = (/iphone|ipod|android|blackberry|opera|mini|windows\sce|palm|smartphone|iemobile/i).test(navigator.userAgent.toLowerCase()),
+    contentWidth = canvas.width * 1.5,
+    contentHeight = canvas.height * 1.5,
+    tile = new Tiling;
+    
+var stage = new CVS.$stage(canvas, {
+    draw: function () {
+        ctx.fillStyle = 'blue';
+        ctx.fillRect(0, 0, canvas.width, 200);
+    }
+})
+    
+function setup() {
+    resize();
+    window.addEventListener('resize', resize, false);
+}
+function resize () {
+    canvas.width = isMobile ? window.innerWidth : 320;
+    canvas.height = window.innerHeight;
+    contentWidth = canvas.width * 1.5;
+    contentHeight = canvas.height * 1.5;
+    scroller && scroller.setDimensions(canvas.width, canvas.height, contentWidth, contentHeight);
+}
+
+var render = function (left, top, zoom) {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    tile.setup(canvas.width, canvas.height, contentWidth, contentHeight, 40, 40);
+    stage.render();
+	tile.render(left, top, zoom, function(row, col, left, top, width, height, zoom) {
+        
+        ctx.fillStyle = row%2 + col%2 > 0 ? "#ddd" : "#fff";
+        ctx.fillRect(left, top, width, height);
+        
+        ctx.fillStyle = "black";
+        ctx.font = (14 * zoom).toFixed(2) + 'px "Helvetica Neue", Helvetica, Arial, sans-serif';
+        
+        // Pretty primitive text positioning :)
+        ctx.fillText(row + "," + col, left + (6 * zoom), top + (18 * zoom));
+        
+    }); 
+    
+    
+}
+// init scroller
+var scroller = new Scroller(render, {
+	zooming: true
+});
+var rect = canvas.getBoundingClientRect();
+scroller.setPosition(rect.left + canvas.clientLeft, rect.top + canvas.clientTop);
+scroller.setDimensions(canvas.width, canvas.height, contentWidth, contentHeight);
+// bind event for scroller
+if ('ontouchstart' in window) {
+
+	canvas.addEventListener("touchstart", function(e) {
+		// Don't react if initial down happens on a form element
+		if (e.touches[0] && e.touches[0].target && e.touches[0].target.tagName.match(/input|textarea|select/i)) {
+			return;
+		}
+
+		scroller.doTouchStart(e.touches, e.timeStamp);
+		e.preventDefault();
+	}, false);
+
+	document.addEventListener("touchmove", function(e) {
+		scroller.doTouchMove(e.touches, e.timeStamp, e.scale);
+	}, false);
+
+	document.addEventListener("touchend", function(e) {
+		scroller.doTouchEnd(e.timeStamp);
+	}, false);
+
+	document.addEventListener("touchcancel", function(e) {
+		scroller.doTouchEnd(e.timeStamp);
+	}, false);
+
+} else {
+
+	var mousedown = false;
+
+	canvas.addEventListener("mousedown", function(e) {
+		if (e.target.tagName.match(/input|textarea|select/i)) {
+			return;
+		}
+		
+		scroller.doTouchStart([{
+			pageX: e.pageX,
+			pageY: e.pageY
+		}], e.timeStamp);
+
+		mousedown = true;
+	}, false);
+
+	document.addEventListener("mousemove", function(e) {
+		if (!mousedown) {
+			return;
+		}
+		
+		scroller.doTouchMove([{
+			pageX: e.pageX,
+			pageY: e.pageY
+		}], e.timeStamp);
+
+		mousedown = true;
+	}, false);
+
+	document.addEventListener("mouseup", function(e) {
+		if (!mousedown) {
+			return;
+		}
+		
+		scroller.doTouchEnd(e.timeStamp);
+
+		mousedown = false;
+	}, false);
+
+	canvas.addEventListener(navigator.userAgent.indexOf("Firefox") > -1 ? "DOMMouseScroll" :  "mousewheel", function(e) {
+		scroller.doMouseZoom(e.detail ? (e.detail * -120) : e.wheelDelta, e.timeStamp, e.pageX, e.pageY);
+	}, false);
+
+}
+
+setup();
+</script>
+</body>
+</html>

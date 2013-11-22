@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<meta content="initial-scale=1.0,user-scalable=no,maximum-scale=1,width=device-width" name="viewport" /> 
+<meta content="initial-scale=1.0,user-scalable=no,maximum-scale=1" media="(device-height: 568px)" name="viewport" />
+ <script src="http://g.tbcdn.cn/kissy/k/1.3.0/kissy-min.js" charset="utf-8"></script>
+
+---- Top
+<div style="background: #f50; height: 1000px"></div>
+<a id="testA" href="#"># touchstart</a>
+
+<a id="testB" href="#"># click</a>
+
+<a id="testC" href="#"># tap</a>
+
+<script>
+/*
+var a = document.getElementById('testA');
+a.addEventListener('click', function (e) {
+    e.preventDefault();
+    
+}, false);
+*/
+
+KISSY.use('node', function (S, Node) {
+    var $ =  Node.all;
+    $('#testA').on('touchstart', function (e) {
+        alert('touchstart')
+        e.preventDefault();
+        e.returnValue = false;
+        
+        return false;
+    });
+    
+    $('#testB').on('click', function (e) {
+        alert('click')
+        e.preventDefault();
+        e.returnValue = false;
+        
+        return false;
+    });
+    
+    $('#testC').on('tap', function (e) {
+        alert('tap')
+        e.preventDefault();
+        e.returnValue = false;
+        
+        return false;
+    });
+});
+</script>
