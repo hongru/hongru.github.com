@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8" />
+        <meta name="apple-touch-fullscreen" content="yes"/>
+        <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport" />
+        <meta content="yes" name="apple-mobile-web-app-capable" />
+        <meta content="black" name="apple-mobile-web-app-status-bar-style" />
+        <meta name="format-detection" content="telephone=no" />
+
+        <title>30line 3D</title>
+        <style>
+        html,body{background: #000; margin: 0;padding: 0;}
+        </style>
+	</head>
+
+	<body>
+		<script>
+			;(function () {
+				var W = window.innerWidth, H = window.innerHeight, HW = W/2, HH = H/2, cvs = document.createElement('canvas'), ctx = cvs.getContext('2d'), f = 250, points = [], ro = 2, d = Math.PI/180, sy, cy;
+				init();
+				setInterval(loop, 16);
+				function init () {
+					cvs.width = W;
+					cvs.height = H;
+					document.body.appendChild(cvs);
+					ctx.translate(HW, HH);
+					for (var i = 0; i < 500; i ++) {
+						points.push(new Point3D(rr(-100,100),rr(-100,100),rr(-100,100)));
+					}
+				}
+				function rr (min, max) {
+					return ((Math.random()*(max-min)) + min); 
+				}
+				function Point3D (x, y, z) {
+					this.x = x;
+					this.y = y;
+					this.z = z;
+					this.rotateY = function (a) {
+						cy = Math.cos(a * d);
+						sy = Math.sin(a * d);	
+						var _z = this.z, _x = this.x;
+						this.x = (_x*cy) + (_z*sy);
+						this.z = (_x*-sy) + (_z*cy);	
+					}
+				}
+				function loop () {
+					ctx.fillStyle = 'rgba(0,0,0,0.1)';
+					ctx.fillRect(-HW,-HH, W, H);
+					for (i = 0; i < points.length; i ++) {
+						points[i].rotateY(ro);
+						var scale = f/(f + points[i].z), x2d = (points[i].x * scale), y2d = (points[i].y * scale);
+						ctx.strokeStyle = 'rgb(255,255,255)'; 	
+						ctx.beginPath();
+						ctx.moveTo(x2d,y2d); 
+						ctx.lineTo(x2d+2,y2d); 
+						ctx.stroke(); 
+					}
+				}
+			})();
+			
+		</script>
+	</body>
+</html>
