@@ -1,0 +1,30 @@
+<body><script>
+var W = window.innerWidth, H = window.innerHeight, HW = W/2, HH = H/2, cvs = document.createElement('canvas'), ctx = cvs.getContext('2d'), f = 250, points = [], ro = 2, d = Math.PI/180, sy, cy, rd = Math.random;
+cvs.width = W;
+cvs.height = H;
+document.body.appendChild(cvs);
+ctx.translate(HW, HH);
+for (var i = 0; i < 500; i ++) {points.push(new Point3D(rd()*200-100, rd()*200-100, rd()*200-100)) }
+setInterval(function () {
+	ctx.fillStyle = 'rgba(0,0,0,0.1)';
+	ctx.fillRect(-HW,-HH, W, H);
+	for (i = 0; i < points.length; i ++) {
+		points[i].rotateY(ro);
+		var scale = f/(f + points[i].z), x2d = (points[i].x * scale), y2d = (points[i].y * scale);
+		ctx.strokeStyle = 'rgb(255,255,255)'; 	
+		ctx.beginPath();
+		ctx.arc(x2d,y2d,1,0,Math.PI*2,true);
+		ctx.stroke(); 
+	}
+}, 16);
+function Point3D (x, y, z) {
+	this.x = x; this.y = y; this.z = z;
+	this.rotateY = function (a) {
+		cy = Math.cos(a * d);
+		sy = Math.sin(a * d);	
+		var _z = this.z, _x = this.x;
+		this.x = (_x*cy) + (_z*sy);
+		this.z = (_x*-sy) + (_z*cy);	
+	}
+}
+</script>
