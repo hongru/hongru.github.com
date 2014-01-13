@@ -156,14 +156,17 @@ Laro.register('JxHome', function (La) {
 		
 		var imageData = this.ctx.getImageData(this.canvas.width/2-w/4, this.canvas.height/2-h/4, w/2, h/2);
 		var ret = [];
+		var range = this.range;
+		var r = range(0,255), g = range(0, 255), b = range(0, 255);
 		for (var x = 0; x < imageData.width; x ++) {
 			for (var y = 0; y < imageData.height; y ++) {
 				//var i = 4*(x * imageData.height + y);
 				var i = 4*(y * imageData.width + x);
 				if (imageData.data[i + 3] > 128) { // 半透以上就算
-					var r = imageData.data[i],
-						g = imageData.data[i + 1],
-						b = imageData.data[i + 2];
+					// var r = imageData.data[i],
+					// 	g = imageData.data[i + 1],
+					// 	b = imageData.data[i + 2];
+					
 					ret.push(new JxHome.Particle(this.stage, this.canvas, id, w, h, x, y, z, r, g, b));
 				}
 			}
@@ -195,8 +198,8 @@ Laro.register('JxHome', function (La) {
 			vpy = canvas.height/2;
 
 		var ball =  CVS.createPoint3D(stage.ctx, function () {
-			var color = 'rgb('+ range(200, 255) +', '+ range(200, 255) +', '+ range(200, 255) +')';
-			//var color = 'rgb('+r+', '+g+', '+b+')';
+			//var color = 'rgb('+ range(200, 255) +', '+ range(200, 255) +', '+ range(200, 255) +')';
+			var color = 'rgb('+r+', '+g+', '+b+')';
 			
 			/*	this.xpos = range(-10*vpx, 10*vpx);
 				this.ypos = range(-10*vpy, 10*vpy);
