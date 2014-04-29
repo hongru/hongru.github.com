@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8" />
+        <meta name="apple-touch-fullscreen" content="yes"/>
+        <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport" />
+        <meta content="yes" name="apple-mobile-web-app-capable" />
+        <meta content="black" name="apple-mobile-web-app-status-bar-style" />
+        <meta name="format-detection" content="telephone=no" />
+
+        <title>Image Cross Origin</title>
+	</head>
+
+	<body>
+		<p>http://g.tbcdn.cn/mtb/app-wish38/1.0.0/images/gamebg.jpg</p>
+		<canvas id="canvas"></canvas>
+		<p id="log1"></p>
+		<br/>
+		<p>http://gtms04.alicdn.com/tps/i4/T1Z3azFK4cXXapDmbI-400-300.jpg</p>
+		<canvas id="canvas2"></canvas>
+		<p id="log2"></p>
+		<script>
+		function TestCrosCanvas (canvas, log, src) {
+			var canvas = document.getElementById(canvas),
+			ctx = canvas.getContext('2d');
+
+			var img = document.createElement('img');
+			img.onload = function(e) {
+				ctx.drawImage(img, 0, 0);
+				var url = canvas.toDataURL(); // Read succeeds, canvas won't be dirty.
+				document.getElementById(log).innerHTML = url;
+			};
+			img.crossOrigin = '';
+			img.src = src;
+		}
+		
+		TestCrosCanvas('canvas', 'log1', 'http://g.tbcdn.cn/mtb/app-wish38/1.0.0/images/gamebg.jpg');
+		TestCrosCanvas('canvas2', 'log2', 'http://gtms04.alicdn.com/tps/i4/T1Z3azFK4cXXapDmbI-400-300.jpg');
+		</script>
+	</body>
+</html>
