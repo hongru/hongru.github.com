@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="HandheldFriendly" content="true">
+<meta name="description" content="CANVAS 3D CUBES experiment">
+<meta name="keywords" content="canvas,3D,cubes">
+
+<title>fascinating - CANVAS 3D CUBES experiment</title>
+<style>
+	html {
+		overflow: hidden;
+		-ms-touch-action: none;
+		-ms-content-zooming: none;
+	}
+	body {
+		position: absolute;
+		margin: 0;
+		padding: 0;
+		background: #000;
+		width: 100%;
+		height: 100%;
+	}
+	#canvas {
+		position: absolute;
+		width: 100%;
+		height: 100%;
+		background: #000;
+		cursor:default;
+		-webkit-user-select:none;
+		-moz-user-select:none;
+		-ms-user-select: none;
+	}
+	#info {
+		position: absolute;
+		text-align: left;
+		bottom: 0px;
+		right: 0px;
+		width: 60px;
+		height: 120px;
+		margin-top:-60px;
+		color: #666;
+		font-size: 11px;
+		font-family: Segoe UI, Verdana, Arial, Sans-Serif;
+		-webkit-user-select:none;
+		-moz-user-select:none;
+		-ms-user-select: none;
+		padding:0;
+	}
+	#info .background {
+		position: absolute;
+		width: 100%;
+		height: 100%;
+		background: #000;
+		opacity: 0.3;
+	}
+	#info .content {
+		position: absolute;
+		padding: 3px;
+		width: 100%;
+		height: 100%;
+	}
+	#info .w {
+		color: #fff;
+	}
+	#info hr {
+		width: 90%;
+		border: none;
+		background-color: #666;
+		height: 1px;
+	}
+	#info h1 {
+		color: #fff;
+		text-align: center;
+	}
+	#info input[type="button"] {
+		font-size:11px;
+		background:#666;
+		color:#FFF;
+		border:none;
+	}
+	.search {
+		background:#0065CB !important;
+	}
+</style>
+<script src="./ge1doot.js"></script>
+<script>
+
+"use strict";
+
+(function () {
+	// ======== private vars ========
+	var scr, ctx, pointer, cubes, faces, cz = 0;
+	var white, alpha, ncube, faceOver, lastOver;
+	var cosY, sinY, cosX, sinX, cosZ, sinZ, minZ, angleY = 0, angleX = 0, angleZ = 0;
+	var bkgColor1 = "rgba(0,0,0,0.1)";
+	var bkgColor2 = "rgba(32,32,32,1)";
+	var autorotate = false, destroy = false;
+	// ---- fov ----
+	var fl = 250;
+	var zoom = 0;
+	// ======== vertex constructor ========
+	var Point = function (parent, xyz, project) {
+		this.project = project;
+		this.xo = xyz[0];
+		this.yo = xyz[1];
+		this.zo = xyz[2];
+		this.cube = parent;
+	};
+	Point.prototype.projection = function () {
+		// ---- 3D rotation ----
+		var u  = sinZ * this.yo + cosZ * this.xo;
+		var t  = cosZ * this.yo - sinZ * this.xo;
+		var s  = cosY * this.zo + sinY * u;
+		this.x = cosY * u - sinY * this.zo;
+		this.y = sinX * s + cosX * t;
+		this.z = cosX * s - sinX * t;
+		if (this.project) {
+			// ---- point visible ----
+			if (this.z < minZ) minZ = this.z;
+			this.visible = (zoom + this.z > 0);
+			// ---- 3D to 2D projection ----
+			this.X = (scr.width * 0.5) + this.x * (fl / (this.z + zoom));
+			this.Y = (scr.height * 0.5) + this.y * (fl / (this.z + zoom));
+		}
+	};
+	// ======= polygon constructor ========
+	var Face = function (cube, index, normalVector) {
+		// ---- parent cube ----
+		this.cube = cube;
+		// ---- coordinates ----
+		this.p0 = cube.points[index[0]];
+		this.p1 = cube.points[index[1]];
+		this.p2 = cube.points[index[2]];
+		this.p3 = cube.points[index[3]];
+		// ---- normal vector ----
+		this.normal = new Point(this, normalVector, false)
+	};
+	Face.prototype.faceVisible = function () {
+		// ---- points visible ----
+		if (this.p0.visible && this.p1.visible && this.p2.visible && this.p3.visible) {
+			// ---- back face culling ----
+			if (
+				(this.p1.Y - this.p0.Y) / (this.p1.X - this.p0.X) < (this.p2.Y - this.p0.Y) / (this.p2.X - this.p0.X) 
+				^ this.p0.X < this.p1.X == this.p0.X > this.p2.X
+				) {
+					// ---- face visible ----
+					this.visible = true;
+					return true;
+			}
+		}
+		// ---- face hidden ----
+		this.visible = false;
+		this.distance = -99999;
+		return false;
+	};
+	Face.prototype.distanceToCamera = function () {
+		// ---- distance to camera ----
+		var dx = (this.p0.x + this.p1.x + this.p2.x + this.p3.x ) * 0.25;
+		var dy = (this.p0.y + this.p1.y + this.p2.y + this.p3.y ) * 0.25;
+		var dz = (zoom + fl) + (this.p0.z + this.p1.z + this.p2.z + this.p3.z ) * 0.25;
+		this.distance = Math.sqrt(dx * dx + dy * dy + dz * dz);
+	};
+	Face.prototype.draw = function () {
+		// ---- shape face ----
+		ctx.beginPath();
+		ctx.moveTo(this.p0.X, this.p0.Y);
+		ctx.lineTo(this.p1.X, this.p1.Y);
+		ctx.lineTo(this.p2.X, this.p2.Y);
+		ctx.lineTo(this.p3.X, this.p3.Y);
+		ctx.closePath();
+		// ---- detection pointer inside ----
+		if (ctx.isPointInPath(pointer.X, pointer.Y)) lastOver = this;
+		// ---- light ----
+		if (this === faceOver) {
+			var r = 256;
+			var g = 0;
+			var b = 0;
+		} else {
+			// ---- flat (lambert) shading ----
+			this.normal.projection();
+			var light = (
+				white ? 
+				this.normal.y + this.normal.z * 0.5 : 
+				this.normal.z
+			) * 256;
+			var r = g = b = light;
+		}
+		// ---- fill ----
+		ctx.fillStyle = "rgba(" + 
+						Math.round(r) + "," +
+						Math.round(g) + "," + 
+						Math.round(b) + "," + this.cube.alpha + ")";
+		ctx.fill();
+	};
+	// ======== Cube constructor ========
+	var Cube = function(parent, nx, ny, nz, x, y, z, w) {
+		if (parent) {
+			// ---- translate parent points ----
+			this.w = parent.w;
+			this.points = [];
+			var i = 0, p;
+			while (p = parent.points[i++]) {
+				this.points.push(
+					new Point(
+						parent, 
+						[p.xo + nx, p.yo + ny, p.zo + nz], 
+						true
+					)
+				);
+			}
+		} else {
+			// ---- create points ----
+			this.w = w;
+			this.points = [];
+			var p = [
+				[x-w, y-w, z-w],
+				[x+w, y-w, z-w],
+				[x+w, y+w, z-w],
+				[x-w, y+w, z-w],
+				[x-w, y-w, z+w],
+				[x+w, y-w, z+w],
+				[x+w, y+w, z+w],
+				[x-w, y+w, z+w]
+			];
+			for (var i in p) this.points.push(
+				new Point(this, p[i], true)
+			);
+		}
+		// ---- faces coordinates ----
+		var f  = [
+			[0,1,2,3],
+			[0,4,5,1],
+			[3,2,6,7],
+			[0,3,7,4],
+			[1,5,6,2],
+			[5,4,7,6]
+		];
+		// ---- faces normals ----
+		var nv = [
+			[0,0,1],
+			[0,1,0],
+			[0,-1,0],
+			[1,0,0],
+			[-1,0,0],
+			[0,0,-1]
+		];
+		// ---- cube transparency ----
+		this.alpha = alpha ? 0.5 : 1;
+		// ---- push faces ----
+		for (var i in f) {
+			faces.push(
+				new Face(this, f[i], nv[i])
+			);
+		}
+		ncube++;
+	};
+	var reset = function () {
+		// ---- create first cube ----
+		cubes = [];
+		faces = [];
+		ncube = 0;
+		cubes.push(
+			new Cube(false,0,0,0,0,0,0,50)
+		);
+	};
+	var click = function () {
+		// ---- click cube ----
+		if (faceOver) {
+			if (destroy) {
+				if (ncube > 1) {
+					var c = faceOver.cube;
+					faceOver.clicked = false;
+					// ---- destroy faces ----
+					var i = 0, f;
+					while ( f = faces[i++] ) {
+						if (f.cube == c) {
+							faces.splice(--i, 1);
+						}
+					}
+					// ---- destroy cube ----
+					var i = 0, o;
+					while ( o = cubes[i++] ) {
+						if (o == c) {
+							cubes.splice(--i, 1);
+							ncube--;
+							break;
+						}
+					}
+				}
+			} else {
+				if (!faceOver.clicked) {
+					// ---- create new cube ----
+					faceOver.clicked = true;
+					var w = -2.25 * faceOver.cube.w;
+					cubes.push(
+						new Cube(
+							faceOver.cube, 
+							w * faceOver.normal.xo, 
+							w * faceOver.normal.yo, 
+							w * faceOver.normal.zo
+						)
+					);
+				}
+			}
+		}
+	};
+	var init = function () {
+		// ---- init script ----
+		scr = new ge1doot.Screen({
+			container: "canvas"
+		});
+		ctx = scr.ctx;
+		pointer = new ge1doot.Pointer({
+			tap: click,
+			wheel: function () {
+				// ---- Z axis rotation
+				cz += pointer.wheelDelta;
+			}
+		});
+		pointer.Xi = 50;
+		pointer.Yi = 50;
+		// ---- some options ----
+		document.getElementById("white").onchange = function () {
+			white = this.checked;
+			if (white) {
+				bkgColor1 = "rgba(256,256,256,0.1)";
+				bkgColor2 = "rgba(192,192,192,1)";
+			} else {
+				bkgColor1 = "rgba(0,0,0,0.1)";
+				bkgColor2 = "rgba(32,32,32,1)";
+			}
+		}
+		document.getElementById("alpha").onchange = function () {
+			alpha = this.checked;
+		}
+		document.getElementById("autor").onchange = function () {
+			autorotate = this.checked;
+		}
+		document.getElementById("destroy").onchange = function () {
+			destroy = this.checked;
+		}
+		document.getElementById("reset").onclick = function () {
+			reset();
+		}
+		// ---- engine start ----
+		reset();
+		run();
+	}
+	// ======== main loop ========
+	var run = function () {
+		// ---- screen background ----
+		ctx.fillStyle = bkgColor1;
+		ctx.fillRect(0, Math.floor(scr.height * 0.15), scr.width, Math.ceil(scr.height * 0.7));
+		ctx.fillStyle = bkgColor2;
+		ctx.fillRect(0, 0, scr.width, Math.ceil(scr.height * 0.15));
+		ctx.fillStyle = bkgColor2;
+		ctx.fillRect(0, Math.floor(scr.height * 0.85), scr.width, Math.ceil(scr.height * 0.15));
+		// ---- easing rotations ----
+		angleX += ((pointer.Yi - angleX) * 0.05);
+		angleY += ((pointer.Xi - angleY) * 0.05);
+		angleZ += ((cz - angleZ) * 0.05);
+		if (autorotate) cz += 1;
+		// ---- pre-calculating trigo ----
+		cosY = Math.cos(angleY * 0.01);
+		sinY = Math.sin(angleY * 0.01);
+		cosX = Math.cos(angleX * 0.01);
+		sinX = Math.sin(angleX * 0.01);
+		cosZ = Math.cos(angleZ * 0.01);
+		sinZ = Math.sin(angleZ * 0.01);
+		// ---- points projection ----
+		minZ = 0;
+		var i = 0, c;
+		while ( c = cubes[i++] ) {
+			var j = 0, p;
+			while ( p = c.points[j++] ) {
+				p.projection();
+			}
+		}
+		// ---- adapt zoom ----
+		var d = -minZ + 100 - zoom;
+		zoom += (d * ((d > 0) ? 0.05 : 0.01));
+		// ---- faces light ----
+		var j = 0, f;
+		while ( f = faces[j++] ) {
+			if ( f.faceVisible() ) {
+				f.distanceToCamera();
+			}
+		}
+		// ---- faces depth sorting ----
+		faces.sort(function (p0, p1) {
+			return p1.distance - p0.distance;
+		});
+		// ---- painting faces ----
+		lastOver = false;
+		j = 0;
+		while ( f = faces[j++] ) {
+				if (f.visible) {
+					f.draw();							
+				} else break;
+		}
+		if (lastOver) faceOver = lastOver;
+		// ---- animation loop ----
+		requestAnimFrame(run);
+	}
+	return {
+		// ---- onload event ----
+		load : function () {
+			window.addEventListener('load', function () {
+				init();
+			}, false);
+		}
+	}
+})().load();
+</script>
+</head>
+<body>
+<canvas id="canvas">HTML5 CANVAS IS REQUIRED</canvas>
+<div id="info">
+	<div class="background"></div>
+	<div class="content">
+		<input type="checkbox" id="white"><label for="white"> WB</label><br>
+		<input type="checkbox" id="alpha"><label for="alpha"> TR</label><br>
+		<input type="checkbox" id="autor"><label for="autor"> AR</label><br>
+		<input type="checkbox" id="destroy"><label for="destroy"> DC</label><br><br>
+		<input type="button" value="RESET" id="reset"></input>
+	</div>
+</div>
+
+</body>
+</html>

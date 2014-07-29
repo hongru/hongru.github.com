@@ -1,0 +1,106 @@
+
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>骨骼动画Demo</title>
+	<style type="text/css" media="screen">
+		html, body { background-color: #f7f7f7;}
+		body { margin:0; padding:0; overflow:hidden; }
+		canvas {
+			background: #fff;
+			border: 1px solid #ccc;
+			display: block;
+		}
+		.wrap {
+			width: 700px;
+			margin: 40px auto;
+			overflow: hidden;
+		}
+		.ctrl {
+			width: 88px;
+			float: left;
+			list-style: none;
+			margin: 0;
+			padding: 0;
+		}
+		.ctrl li {
+			list-style: none;
+			display: block;
+			text-align: center;
+			line-height: 36px;
+			height: 36px;
+			border: 1px solid #aaa;
+			color: #333;
+			margin-bottom: 8px;
+			cursor: pointer;
+		}
+		.ctrl li:hover, .ctrl li.active {
+			background: #fff;
+		}
+		canvas {
+			float: right;
+		}
+	</style>
+
+</head>
+<body>
+	<div class="wrap">
+		<ul class="ctrl">
+			<li>Run</li>
+		</ul>
+		<canvas id="canvas" width="600px" height="500px">抱歉，你的浏览器不支持canvas</canvas>
+	</div>
+	
+	<img src="./texture.png" id="xiaoxiaoImg" style="display:none;">
+</body>
+
+<!-- 注意这里的js加载顺序，先加载游戏引擎，再加载资源js-->
+<script src='./alloystick_v0.4.js'></script>
+<script src='./xx_resource.js'></script>
+<script>
+var player;
+var actions = ['comeon', 'drop', 'jump_kick', 'relax', 'roll', 'run', 'secondHit', 'simpleHit', 'soap'];
+
+var demoApp = function(){
+	
+	var canvas = document.getElementById('canvas'),
+		textureImg = document.getElementById('xiaoxiaoImg');
+
+	var scene = new alloyge.Scene(canvas.getContext('2d'));
+	player = new alloysk.Armature('xiaoxiao',textureImg);
+
+	// animationName ,totalFrames,transitionFrame,isLoop
+	player.playTo('relax',45,20,true);
+	player.setPos(300,200);	
+	player.setEaseType(false);
+
+	scene.addObj(player);
+	// 启动FPS监听器 (辅助功能 非必须)
+	alloyge.monitorFPS(scene);  
+
+	// 开始场景里的动画，并且可以传入callback循环调用
+	scene.start();
+
+	//setup ctrl
+	var html = '';
+	actions.forEach(function (item, n) {
+		html += '<li>'+item+'</li>';
+	});
+	document.querySelector('.ctrl').innerHTML = html;
+
+	//bind
+	document.querySelector('.ctrl').addEventListener('click', function (e) {
+		var tar = e.target;
+		if (tar.nodeName = 'LI') {
+			player.playTo(tar.innerHTML, 45, 20, true);
+		}
+	}, false);
+
+}
+
+window.onload = demoApp;
+	
+</script>
+
+</html>

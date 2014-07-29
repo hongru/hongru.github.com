@@ -1,0 +1,251 @@
+html,body,.reveal,
+.reveal h1, .reveal h2, .reveal h3, .reveal h4, .reveal h5, .reveal h6 {
+	font-family: Microsoft Yahei;
+}
+
+.reveal .tip {
+	font-size: 14px;
+	padding: 10px 20px;
+	list-style: none;
+	background: rgba(0,0,0,0.4);
+	-webkit-border-radius: 6px;
+	margin-top: 10px;
+}
+
+#video_1 {
+	margin: 0 auto;
+	font-size: 10px;
+}
+
+.reveal .hd {
+	position:absolute;
+	width: 250px;
+	height: 250px;
+	left: 0;
+	top: 0;
+	-webkit-border-radius: 125px;
+	background: #fff;
+	color: #73C1EF;
+	line-height: 250px;
+}
+.reveal .zh {
+	font-family: 'kai';
+}
+
+.reveal .hd.center,
+.reveal .c1.center,
+.reveal .center {
+	line-height:1.5;display:-webkit-box;-webkit-box-align:center;-webkit-box-pack:center;position:static;margin:0 auto;
+}
+
+.reveal .c-b {
+	width: 400px;
+	height: 400px;
+	margin: 0 auto;
+	-webkit-border-radius: 200px;
+	font-size: 88px;
+	background: #fff;
+	color: #73C1EF;
+}
+.reveal .c300 {
+	width: 300px;
+	height: 300px;
+	margin: 0 auto;
+	-webkit-border-radius: 150px;
+	font-size: 60px;
+	background: #fff;
+	color: #73C1EF;
+}
+
+.reveal .cont {
+	padding-left: 400px;
+}
+
+.reveal .about-me .cont {
+	padding-top: 100px;
+}
+
+.about-me {
+	min-height: 600px;
+}
+
+.reveal .c1 {
+	width: 160px;
+	height: 160px;
+	-webkit-border-radius: 80px;
+	display: inline-block;
+	margin-right: 100px;
+	margin-bottom: 100px;
+	background-color: #fff;
+	overflow: hidden;
+}
+.reveal .blue {
+	background-color: #71C1D9;
+	color: #fff;
+}
+
+.school {
+	background: #fff url(../lib/images/page2/school.png) no-repeat 50% 50%;
+	background-size: 100% auto;
+}
+
+.b2b {
+	background: #fff url(../lib/images/page2/b2b.png) no-repeat 50% 50%;
+	background-size: 100% auto;
+}
+.tencent {
+	background: #fff url(../lib/images/page2/tencent.png) no-repeat 50% 50%;
+	background-size: 100% auto;
+}
+.taobao {
+	background: #fff url(../lib/images/page2/taobao.png) no-repeat 50% 50%;
+	background-size: 100% auto;
+}
+
+.reveal .job-list-wrap {
+	width: 1000px;
+	margin:  0 auto;
+	overflow: hidden;
+}
+.reveal .item {
+	width: 180px;
+	height: 130px;
+	background: #fff;
+	border: 1px solid #999;
+	float: left;
+	margin-right: 10px;
+	margin-bottom: 10px;
+	-webkit-border-radius: 5px;
+
+}
+.reveal .item:nth-child(5n) {
+	margin-right: 0;
+}
+.reveal .etao {
+	background: url(../lib/images/page3/etao.png) no-repeat 50% 0;
+	background-size: 100% auto;
+}
+.reveal .dpl {
+	background: url(../lib/images/page3/dpl.png) no-repeat 0% 0;
+	background-size: cover;
+}
+.reveal .pad {
+	background: url(../lib/images/page3/pad.png) no-repeat 50% 0;
+	background-size: cover;
+}
+.reveal .md {
+	background: url(../lib/images/page3/md.png) no-repeat 50% 0;
+	background-size: cover;
+}
+.reveal .tmall {
+	background: url(../lib/images/page3/tmall.png) no-repeat 50% 0;
+	background-size: cover;
+}
+.reveal .ninja {
+	background: url(../lib/images/page3/ninja.png) no-repeat 50% 0;
+	background-size: cover;
+}
+.reveal .cec {
+	background: url(../lib/images/page3/cec.png) no-repeat 0 0;
+	background-size: cover;
+}
+.reveal .miandan {
+	background: url(../lib/images/page3/miandan.png) no-repeat 0 0;
+	background-size: cover;
+}
+.reveal .ggk {
+	background: url(../lib/images/page3/ggk.png) no-repeat 0 0;
+	background-size: cover;
+}
+.reveal .star {
+	background: url(../lib/images/page3/38.png) no-repeat 0 0;
+	background-size: cover;
+}
+.reveal .zhaopin {
+	background: url(../lib/images/page3/game.png) no-repeat 0 0;
+	background-size: cover;
+}
+.reveal .gcenter {
+	background: url(../lib/images/page3/game-center.png) no-repeat 0 0;
+	background-size: cover;
+}
+.reveal .hilo {
+	background: url(../lib/images/page3/hilo.png) no-repeat 0 0;
+	background-size: cover;
+}
+.reveal .wc {
+	background: url(../lib/images/page3/beer.jpg) no-repeat 0 0;
+	background-size: cover;
+}
+.reveal .game618 {
+	background: url(../lib/images/page3/618.png) no-repeat 0 0;
+	background-size: cover;
+}
+
+
+.reveal .c-s {
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	width: 160px;
+	height: 160px;
+	text-indent: center;
+	-webkit-border-radius: 80px;
+	margin-top: -200px;
+	margin-left: 80px;
+	background: #FC8A77;
+	color: #fff;
+	font-size: 60px;
+	line-height: 160px;
+}
+.reveal img.no-border {
+	border: 0 none;
+	-webkit-box-shadow: none;
+}
+
+#knife-demo-canvas {
+	background: #999;
+}
+.reveal .knife-mode-btn {
+	overflow: hidden;
+	width: 600px;
+	margin: 0 auto;
+	padding-bottom: 2px;
+	text-align: left;
+}
+.reveal .knife-mode-btn a {
+	display: inline-block;
+	width: 100px;
+	height: 40px;
+	text-align: center;
+	text-decoration: none;
+	background: #777;
+	line-height: 40px;
+	font-size: 20px;
+	color: #eee;
+}
+.reveal .knife-mode-btn a.cur {
+	background: #eee;
+	color: #333;
+}
+
+#knife-intro-canvas {
+	background: rgb(243,244,249);
+}
+
+.reveal .sup {
+	background: rgba(255,255,255,0.6);
+	color: #333;
+	position: absolute;
+	left: 0;
+	top: 50%;
+	margin-top: -300px;
+	margin-left: -40px;
+}
+.reveal .support-list {
+	color: #444;
+	line-height: 1.5;
+}
+.reveal .area {
+	margin-bottom: 30px;
+}

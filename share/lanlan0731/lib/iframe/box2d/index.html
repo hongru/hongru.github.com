@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, target-densityDpi=device-dpi">
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="HandheldFriendly" content="true">
+<meta name="description" content="pile-o-boxes - rigid bodies physics simulation - HTML5 CANVAS Experiment">
+<meta name="keywords" content="canvas,box2D,collision,rigid bodies,physics engine">
+
+<title>Box AABB</title>
+<style>
+html {
+	overflow: hidden;
+	-ms-touch-action: none;
+	-ms-content-zooming: none;
+}
+body {
+	position: absolute;
+	margin: 0;
+	padding: 0;
+	background: #000;
+	width: 100%;
+	height: 100%;
+}
+#screen {
+	position: absolute;
+	width: 100%;
+	height: 100%;
+}
+#textures, .textures {
+	visibility:hidden;
+}
+</style>
+<script src="./js/ge1doot.js"></script>
+<script src="./js/V2.js"></script>
+<script src="./js/PHY2D.js"></script>
+
+<script>
+
+(function () {
+	
+	// private variables
+	var scr, ctx, pointer, boxes, dropc = 0, frames = 0, PHY2D, V2, zoom;
+	var globalN = 0;
+	
+	var clean = function () {
+		
+		frames++;
+		if (frames / 20 === Math.round(frames / 20)) {
+			var k = PHY2D.objects.length;
+			while (k--) {
+				if (PHY2D.objects[k].pos[1] > scr.height) {
+					PHY2D.deleteObject(k);
+				}
+			}
+			if (PHY2D.objects.length < 8 - dropc) drop();
+		}
+
+		//console.log(PHY2D.objects)
+		
+	}
+	
+	var newBox = function (x, y) {
+		
+		if (!x) var x = pointer.X, y = -Math.random() * 512;
+		
+		if (Math.random() > 1) {
+			var img = document.getElementById("triangle");
+			PHY2D.triangle(img, x, y - img.height * 2, img.width * 0.5 * zoom, img.height * 0.7 * zoom, (img.width * img.height), Math.random() * 3 - 1.5)
+		} else {
+			var n = globalN % 9;
+			var img = boxes[n];
+			PHY2D.rectangle(img, x, y - img.height * 2, img.width * zoom, img.height * zoom, (img.width * img.height), Math.random() * 3 - 1.5)
+			
+			globalN ++;
+		}
+		
+	}
+	
+	var resize = function () {
+		
+		zoom = Math.max(0.5, Math.min(scr.width / 1366, 1));
+		PHY2D.deleteStatic();
+		var img = document.getElementById("blade");
+		PHY2D.rectangle(img, scr.width * 0.9, scr.height * 0.9, img.width * zoom, img.height * zoom, 0, 1, Math.PI/2); // blade
+		PHY2D.rectangle(img, scr.width * 0.9, scr.height * 0.9, img.width * zoom, img.height * zoom, 0, 1, 0); // blade
+		PHY2D.rectangle(img, scr.width * 0.1, scr.height * 0.9, img.width * zoom, img.height * zoom, 0, -1, Math.PI/2); // blade
+		PHY2D.rectangle(img, scr.width * 0.1, scr.height * 0.9, img.width * zoom, img.height * zoom, 0, -1, 0); // blade
+		PHY2D.rectangle(false, scr.width * 0.5, scr.height, scr.width * 0.7, 4, 0, 0, 0); // floor
+		
+	}
+	
+	var drop = function () {
+		
+		// for (var i = 0; i < 9; i++) {
+		// 	dropc++;
+		// 	setTimeout(function() {
+		// 		dropc--;
+		// 		newBox(300 + (Math.random() * (scr.width - 600)), 0);
+		// 	}, i * 3000);
+		// }
+		
+	}
+	
+	// ==== init script ====
+	
+	var init = function (data) {
+		
+		// screen
+		scr = new ge1doot.Screen({
+			container: "screen",
+			resize: function () {
+				resize();
+			}
+		});
+		ctx = scr.ctx;
+
+		boxes = document.getElementById("textures").getElementsByTagName('img');
+		
+		// pointer events
+		pointer = new ge1doot.Pointer({
+			down: function() {
+				//newBox();
+			},
+			
+			up: function () {
+				PHY2D.drag(false);
+			}
+		});
+
+		document.addEventListener('dblclick', function (e) {
+			newBox();
+		}, false);
+
+		
+		// load physics engine
+		PHY2D = ge1doot.PHY2D();
+		PHY2D.init(data, ctx, pointer);
+		
+		scr.resize();
+		run();
+	}
+	
+	// ======== main loop ========
+	
+	var run = function () {
+
+		requestAnimFrame(run);
+		ctx.clearRect(0, 0, scr.width, scr.height);
+		clean();
+		PHY2D.render();
+		
+	}
+	return {
+		
+		// ---- onload event ----
+		load : function (data) {
+			window.addEventListener('load', function () {
+				init(data);
+			}, false);
+		}
+		
+	}
+})().load({
+	numIterations: 10,
+	kTimeStep: 1/60,
+	kGravity: 20,
+	kFriction: 0.3
+});
+</script>
+</head>
+<body>
+<canvas id="screen">HTML5 CANVAS box 2D demo</canvas>
+<div id="textures">
+	<img src="./images/1.png" width="250" alt="">
+	<img src="./images/2.png" width="300" alt="">
+	<img src="./images/3.png" width="250" alt="">
+	<img src="./images/4.png" width="320" alt="">
+	<img src="./images/5.png" width="200" alt="">
+	<img src="./images/6.png" width="240" alt="">
+	<img src="./images/7.png" width="240" alt="">
+	<img src="./images/8.png" width="250" alt="">
+	<img src="./images/9.png" width="270" alt="">
+</div>
+<img id="blade" class="textures" src="./images/caisse_coke_f2.jpg" alt="">
+<img id="triangle" class="textures" src="./images/triangle-2.png" alt="">
+
+</body>
+</html>

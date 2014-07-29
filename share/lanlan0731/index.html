@@ -1,0 +1,331 @@
+<!doctype html>
+<html lang="en">
+
+	<head>
+		<meta charset="utf-8">
+
+		<title>木偶匠人</title>
+
+		<meta name="description" content="A framework for easily creating beautiful presentations using HTML">
+		<meta name="author" content="Hakim El Hattab">
+
+		<meta name="apple-mobile-web-app-capable" content="yes" />
+		<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+		<link rel="stylesheet" href="css/reveal.min.css">
+		<link rel="stylesheet" href="css/theme/night.css" id="theme">
+
+		<!-- For syntax highlighting -->
+		<link rel="stylesheet" href="lib/css/zenburn.css">
+
+		<link rel="stylesheet" href="css/custom.css" />
+		<link rel="stylesheet" href="lib/video-js/video-js.min.css" />
+
+		<!-- If the query includes 'print-pdf', include the PDF print sheet -->
+		<script>
+			if( window.location.search.match( /print-pdf/gi ) ) {
+				var link = document.createElement( 'link' );
+				link.rel = 'stylesheet';
+				link.type = 'text/css';
+				link.href = 'css/print/pdf.css';
+				document.getElementsByTagName( 'head' )[0].appendChild( link );
+			}
+		</script>
+
+		<!--[if lt IE 9]>
+		<script src="lib/js/html5shiv.js"></script>
+		<![endif]-->
+	</head>
+
+	<body>
+
+		<div class="reveal">
+
+			<!-- Any section element inside of this container is displayed as a slide -->
+			<div class="slides">
+				<section>
+					<h1>木偶匠人</h1>
+					<h3>岑安 @ 2014</h3>
+		<!-- 			<p>
+						<small>Created by <a href="http://hakim.se">Hakim El Hattab</a> / <a href="http://twitter.com/hakimel">@hakimel</a></small>
+					</p> -->
+					<script src="lib/ppt/Three.js"></script>
+					<script src="lib/ppt/scene.js"></script>
+					<script src="lib/ppt/player.js"></script>
+				</section>
+
+				<section>
+					<h2>算法之于动画 - 提线之于木偶</h2>
+
+				</section>
+
+				<section style="line-height:1.8">
+					<ul>
+						<li>重力与缓动</li>
+						<li>关于碰撞</li>
+						<li>关于帧动画</li>
+						<li>关于骨骼动画</li>
+						<li>三维的简单模拟</li>
+					</ul>
+				</section>
+
+				<section data-background="#4688F1">
+					<section>
+						<h2 class="c-b center zh">重力<br/>缓动</h2>
+						
+					</section>
+					<section>
+						提问：有多少同学还记得高中的<span style="color:#ff9a00">`匀变速运动`</span>的概念和公式？
+					</section>
+					<section style="line-height:1.8">
+						<ul>
+							<li>加速度 a=(v-v0)/t</li>
+							<li>瞬时速度公式 v=v0+at;</li>
+							<li>位移公式 x=vt+1/2at^2;</li>
+							<li>平均速度 v平=x/t=(v0+v)/2</li>
+							<li class="tip">
+								注:自由落体运动是初速度为零的匀加速直线运动，遵循匀变速直线运动规律
+							</li>
+						</ul>
+
+					</section>
+
+					<section>
+						来看一个最简单的<a href="./lib/iframe/ease/gravity.html">例子</a>
+					</section>
+
+					<section>
+						<ul>
+							<li>还有什么值得推荐的方便又简洁的缓动算法？</li>
+							<li class="tip">
+								物体在本次单位时间内需要运动的距离永远等于当前位置到目的位置距离的的固定比例。
+							</li>
+							<li class="tip">
+								有趣的<a href="http://baike.baidu.com/view/91555.htm#3">三角函数</a>
+							</li>
+							<li class="tip">
+								如果你是一个“懒人”，看看 <a href="http://easings.net/">easings.net</a>
+							</li>
+						</ul>
+					</section>
+
+				</section>
+
+				<section data-background="#8BE0AE">
+					<section>
+						<h2 class="c-b center zh">碰撞</h2>
+					</section>
+					<section style="color: #fff; line-height:1.8">
+						<h3>最常用的：</h3>
+						<ul>
+							<li>相对运动的圆和直线（或线段）的碰撞关系</li>
+							<li>相对运动的圆和凸多边形的碰撞关系</li>
+							<li>相对运动的凸多边形和凸多边形的碰撞关系</li>
+						</ul>
+					</section>
+					<section>
+						<h3>圆和直线</h3>
+						<img src="lib/images/coll/cl1.png" width="600" />
+					</section>
+					<section>
+						<h3>圆和线段</h3>
+						<img src="lib/images/coll/cl2.png" width="600" />
+					</section>
+					<section>
+						<h3>圆和凸多边形</h3>
+						<img src="lib/images/coll/cp1.png" width="600" />
+					</section>
+					<section>
+						<h3>多边形和多边形</h3>
+						<img src="lib/images/coll/sat.png" width="400"  style="background:#fff"/>
+						<p style="font-size:26px;color:#fff;line-height:1.6">
+							分离轴定理[SAT]：首先取多边形a的一边，得出该边的法线（即分离轴）。计算出两个多边形在该法线上的投影，如果两个投影没有重叠则说明两个多边形不相交。遍历多边形a所有的边，如果所有法线都不满足条件，则说明两多边形相交。
+						</p>
+						
+					</section>
+					<section>
+						<h3>Tip 1</h3>
+						<p class="tip" style="font-size:26px">方向包围盒OBB本质也就是SAT</p>
+						<p class="tip" style="font-size:26px">AABB是不带方向的包围盒的交叠检测 [通常仅限于粗略过滤性碰撞检测]</p>
+					</section>
+					<section>
+						<h3>Tip 2</h3>
+						<p class="tip" style="font-size:26px;line-height:1.6">以上说的检测方法都是基于单帧的“状态检测”，在运动中，所有基于单帧的碰撞检测都是不严谨的。</p>
+					</section>
+
+					<section>
+						<h3>Tip 3</h3>
+						<p class="tip" style="font-size:26px;line-height:1.6">以上所说的所有事情，都只限于“检测”，<a href="http://hongru.github.io/proj/poco/poly.html">“碰撞模拟”</a>和“物理引擎”则是另一个层面的事情，不要混淆</p>
+					</section>
+				</section>
+
+				<section data-background="#222">
+					<section>
+						<h3>何谓“帧动画”</h3>
+					</section>
+					<section>
+						<video id="video_1" style="margin:0 auto; font-size:10px" class="video-js vjs-default-skin vjs-big-play-centered" data-setup='{}' controls width="900" height="600">
+						  <source src="lib/video-js/flv/sprite.flv" type="video/flv">
+						</video>
+					</section>
+					<section>
+						其实是欺骗眼睛的<a href="http://hongru.github.io/proj/laro/Leditor/animation/">“戏法”</a>
+					</section>
+					<section>
+						大量“帧动画”的<a href="http://h5.m.taobao.com/game/joinus.html">案例</a>
+					</section>
+					<section>
+						<ul>
+							<li>优势：实现简单，快捷</li>
+							<li>劣势：完全依赖资源，加载和维护成本巨大</li>
+						</ul>
+					</section>
+					
+				</section>
+
+				<section data-background="#72C3FD">
+					<section>
+						<h3>何谓<a href="./lib/iframe/skeleton/alloy.html">“骨骼动画”</a></h3>
+					</section>
+					<section style="font-size: 50px; line-height: 1.6">
+						动画一分钟，<br/>
+						准备XXX分钟
+					</section>
+					<section>
+						<h3>本质 1：</h3>
+						<p>
+							变相的空间换时间，所有的动画数据已经生成好。<br/>
+							<img src="lib/images/skeleton/code.png" width="300" />
+						</p>
+					</section>
+					<section>
+						<h3>本质 2：</h3>
+						<p style="line-height:1.6">
+							相比根据数据无脑的渲染出结果，<br/>
+							更重要，更困难的是：<br/>
+							怎么生成这些动作的数据？
+						</p>
+					</section>
+					<section>
+						<ul>
+							<li>优势：依赖资源少，却可以做出极其复杂的动画</li>
+							<li>劣势：动画数据生成成本高</li>
+						</ul>
+					</section>
+				</section>
+
+				<section data-background="#000">
+					<section>
+						<h3>No WebGL - <a href="lib/iframe/3d/cube.html">三维模拟</a></h3>
+					</section>
+					<section>
+						<h3>原理</h3>
+						<ul>
+							<li>远小近大，视觉尽头是一个点</li>
+							<li>z 方向的变化投影到2d上 x, y 方向的变化</li>
+						</ul>
+						<img src="lib/images/3d/intro.jpg" style="display:block;margin: 20px auto"/>
+					</section>
+					<section>
+						<h3>投影公式</h3>
+						<img src="lib/images/page5-4/5.png" />
+					</section>
+					<section>
+						偷懒的同学可以看看 <a href="https://github.com/hongru/jcanvas">这个项目</a>
+					</section>
+				</section>
+
+				<section data-background="#fff">
+					
+				</section>
+
+			</div>
+
+		</div>
+
+		<script src="lib/ppt/zepto.js"></script>
+		<script src="lib/js/head.min.js"></script>
+		<script src="js/reveal.min.js"></script>
+
+		<script src="lib/video-js/video.js"></script>
+		<script src="lib/js/textparticle.js"></script>
+
+		<script>
+
+			// Full list of configuration options available here:
+			// https://github.com/hakimel/reveal.js#configuration
+			Reveal.initialize({
+				controls: true,
+				progress: true,
+				history: true,
+				center: true,
+
+				theme: Reveal.getQueryHash().theme, // available themes are in /css/theme
+				transition: Reveal.getQueryHash().transition || 'default', // default/cube/page/concave/zoom/linear/fade/none
+
+				// Parallax scrolling
+				// parallaxBackgroundImage: 'https://s3.amazonaws.com/hakim-static/reveal-js/reveal-parallax-1.jpg',
+				// parallaxBackgroundSize: '2100px 900px',
+
+				// Optional libraries used to extend on reveal.js
+				dependencies: [
+					{ src: 'lib/js/classList.js', condition: function() { return !document.body.classList; } },
+					{ src: 'plugin/markdown/marked.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+					{ src: 'plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+					{ src: 'plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } },
+					{ src: 'plugin/zoom-js/zoom.js', async: true, condition: function() { return !!document.body.classList; } },
+					{ src: 'plugin/notes/notes.js', async: true, condition: function() { return !!document.body.classList; } },
+
+					{ src: '//cdnjs.cloudflare.com/ajax/libs/socket.io/0.9.10/socket.io.min.js', async: true },
+			        { src: 'plugin/multiplex/master.js', async: true },
+			        { src: 'plugin/multiplex/client.js', async: true }
+				],
+				multiplex: {
+			        // Example values. To generate your own, see the socket.io server instructions.
+			        secret: '14031551196471211994', // null so the clients do not have control of the master presentation
+			        id: '275a03deaeeab3b8', // id, obtained from socket.io server
+			        url: 'http://10.68.184.178:1948/' // Location of your socket.io server
+			    },
+
+			});
+
+
+			var thanks_particle;
+
+			Reveal.addEventListener( 'slidechanged', function( event ) {
+			    // event.previousSlide, event.currentSlide, event.indexh, event.indexv
+			    console.log(event)
+			    if (event.indexh <= 1) {
+			    	__start3D();
+			    } else {
+			    	__stop3D();
+			    }
+
+			    if (event.indexh == 8) {console.log(8)
+			    	if (!thanks_particle) { console.log(9)
+			    		thanks_particle = new TextParticles();
+			    	} else {
+			    		thanks_particle.show();
+			    	}
+			    } else {
+			    	thanks_particle && thanks_particle.hide();
+			    }
+
+			} );
+
+			var indexh = location.hash.match(/^#\/(\d+)/);
+			if (indexh == null || parseInt(indexh) <= 1 ) {
+				__start3D();
+			} else {
+				__stop3D();
+			}
+
+			//video 1
+			var video = videojs('video_1');
+
+		</script>
+
+	</body>
+</html>
