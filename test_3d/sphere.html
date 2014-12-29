@@ -1,0 +1,244 @@
+<!DOCTYPE html> 
+<html>
+    <head>
+        <meta charset="utf8"/>
+        <title> 3D sphere with </title>
+        <script type="text/javascript">
+            var sphere = new Sphere3D();
+            var html5logo = new Image();
+            var html5radius = 50;
+            var html5direction = 0.5;
+            var rotation = 0;
+            var distance = 0;
+
+            function Point3D() {
+                this.x = 0;
+                this.y = 0;
+                this.z = 0;
+                this.visible = true;
+            }
+            
+            function Sphere3D(radius) {
+                this.point = new Array();
+                this.color = "rgb(100,0,255)"
+                this.radius = (typeof(radius) == "undefined") ? 20.0 : radius;
+                this.radius = (typeof(radius) != "number") ? 20.0 : radius;
+                this.numberOfVertexes = 0;
+                this.arrH = [];
+                this.arrV = {};
+
+                function dou (n, m) { return n + (-m + Math.random()*2*m) }
+
+                // Ciclo da 0ø a 360ø con passo di 10ø...calcola la circonf. di mezzo
+                var arr = [];
+
+                for(alpha = 0; alpha <= 2*Math.PI; alpha += 0.314) {
+                    p = this.point[this.numberOfVertexes] = new Point3D();
+                    
+                    p.x = Math.cos(alpha) * this.radius;
+                    p.y = 0;
+                    p.x = dou(p.x, 2);
+                    p.y = dou(p.y, 2);
+                    p.z = Math.sin(alpha) * this.radius;
+
+                    this.numberOfVertexes++;
+                    arr.push(p);
+
+                    // arr v
+                    var arrV = [];
+                    arrV[4] = p;
+                    this.arrV[alpha] = arrV;
+                }
+                this.arrH.push(arr);
+
+                // Ciclo da 0ø a 90ø con passo di 10ø...calcola la prima semisfera (direction = 1)
+                // Ciclo da 0ø a 90ø con passo di 10ø...calcola la seconda semisfera (direction = -1)
+
+                for(var direction = 1; direction >= -1; direction -= 2) {
+                    for(var beta = Math.PI/10; beta < 1.445; beta += 0.314) {
+                        var radius = Math.cos(beta) * this.radius;
+                        var fixedY = Math.sin(beta) * this.radius * direction;
+
+                        var vi = Math.round(beta*10/Math.PI) * direction;
+
+                        var arr = [];
+                        for(var alpha = 0; alpha < 2*Math.PI; alpha += 0.314) {
+                            p = this.point[this.numberOfVertexes] = new Point3D();
+
+                            p.x = Math.cos(alpha) * radius;
+                            p.y = fixedY;
+                            p.x = dou(p.x, 2);
+                            p.y = dou(p.y, 2);
+                            p.z = Math.sin(alpha) * radius;
+
+                            arr.push(p);
+                            this.numberOfVertexes++;
+
+                            this.arrV[alpha][4+vi] = p;
+                        }
+                        this.arrH.push(arr);
+                    }
+                }
+
+            }
+
+            function rotateX(point, radians) {
+                var y = point.y;
+                point.y = (y * Math.cos(radians)) + (point.z * Math.sin(radians) * -1.0);
+                point.z = (y * Math.sin(radians)) + (point.z * Math.cos(radians));
+            }
+            
+            function rotateY(point, radians) {
+                var x = point.x;
+                point.x = (x * Math.cos(radians)) + (point.z * Math.sin(radians) * -1.0);
+                point.z = (x * Math.sin(radians)) + (point.z * Math.cos(radians));
+            }
+
+            function rotateZ(point, radians) {
+                var x = point.x;
+                point.x = (x * Math.cos(radians)) + (point.y * Math.sin(radians) * -1.0);
+                point.y = (x * Math.sin(radians)) + (point.y * Math.cos(radians));
+            }
+
+            function projection(xy, z, xyOffset, zOffset, distance) {
+                return ((distance * xy) / (z - zOffset)) + xyOffset;
+            }
+
+            function render() {
+                var canvas = document.getElementById("sphere3d");
+                var width = canvas.getAttribute("width");
+                var height = canvas.getAttribute("height");
+                var ctx = canvas.getContext('2d');
+                var x, y;
+                var lastX, lastY;
+
+                var p = new Point3D();
+                
+                ctx.save();
+                ctx.clearRect(0, 0, width, height);
+                //drawHtml5Logo(ctx, 10, 10);
+
+                ctx.globalCompositeOperation = "lighter";
+                
+                for(i = 0; i < sphere.numberOfVertexes; i++) {
+                    
+                    var sp = sphere.point[i];
+                    p.x = sphere.point[i].x;
+                    p.y = sphere.point[i].y;
+                    p.z = sphere.point[i].z;
+
+                    rotateX(p, rotation);
+                    rotateY(p, rotation);
+                    rotateZ(p, rotation);
+
+                    x = projection(p.x, p.z, width/2.0, 100.0, distance);
+                    y = projection(p.y, p.z, height/2.0, 100.0, distance);
+                    sp.screenX = x;
+                    sp.screenY = y;
+                    sp.screenZ = p.z;
+
+                    if((x >= 0) && (x < width)) {
+                        if((y >= 0) && (y < height)) {
+                            if(p.z < 0) {
+                                sp.visible && drawPoint(ctx, x, y, 2, "rgba(200,200,200,0.6)");
+                            } else {
+                                sp.visible && drawPointWithGradient(ctx, x, y, p.z, "rgb(255,255,255)", 0.8);
+                            }
+                        }
+                    }                   
+                }
+                ctx.restore();
+
+                //draw lines between points
+                for (var i = 0; i < sphere.arrH.length; i ++) {
+                    var arrH = sphere.arrH[i];
+                    for (var j = 0; j < arrH.length-1; j ++) {
+                        ctx.save();
+                        ctx.beginPath();
+                        ctx.moveTo(arrH[j].screenX, arrH[j].screenY);
+                        ctx.lineTo(arrH[j+1].screenX, arrH[j+1].screenY);
+                        ctx.strokeStyle = arrH[j].screenZ > 0 ? 'rgba(255,255,255,'+Math.min(1, arrH[j].screenZ/20)+')' : 'rgba(255,255,255,.2)';
+                        ctx.lineWidth = Math.max(arrH[j].screenZ/3, 2);
+                        ctx.stroke();
+                        ctx.closePath();
+                        ctx.restore();
+                    }
+
+                }
+                for (var i in sphere.arrV) {
+                    var arrV = sphere.arrV[i];
+                    for (var j = 0; j < arrV.length-1; j ++) {
+                        ctx.save();
+                        ctx.beginPath();
+                        ctx.moveTo(arrV[j].screenX, arrV[j].screenY);
+                        ctx.lineTo(arrV[j+1].screenX, arrV[j+1].screenY);
+                        ctx.strokeStyle = arrV[j].screenZ > 0 ? 'rgba(255,255,255,'+Math.min(1, arrV[j].screenZ/20)+')' : 'rgba(255,255,255,.2)';
+                        ctx.lineWidth = Math.max(arrV[j].screenZ/3, 2);
+                        ctx.stroke();
+                        ctx.closePath();
+                        ctx.restore();
+                    }
+
+                }
+
+
+
+                rotation += Math.PI/90.0;
+
+                if(distance < 1000) {
+                    distance += 10;
+                }
+            }
+
+            
+            function drawPoint(ctx, x, y, size, color) {
+                ctx.save();
+                ctx.beginPath();
+                ctx.fillStyle = color;
+                ctx.arc(x, y, size, 0, 2*Math.PI, true);
+                ctx.fill();
+                ctx.restore();
+            }
+
+            function drawPointWithGradient(ctx, x, y, size, color, gradient) {
+                var reflection;
+
+                reflection = size / 4;
+
+                ctx.save();
+                ctx.translate(x, y);
+                var radgrad = ctx.createRadialGradient(-reflection,-reflection,reflection,0,0,size);
+
+                radgrad.addColorStop(0, '#FFFFFF');
+                radgrad.addColorStop(gradient, color);
+                radgrad.addColorStop(1, 'rgba(1,159,98,0)');
+
+                ctx.fillStyle = radgrad;
+                ctx.fillRect(-size,-size,size*2,size*2);
+                ctx.restore();
+            }
+           
+
+            function init(){
+                // Set framerate to 30 fps
+                setInterval(render, 1000/30);
+                
+                //html5logo.src = "html5-badge-h-solo.png";
+            }
+
+        </script>
+        <style type="text/css">
+            canvas {
+                border: 4px solid #A0A0A0;
+                background: black;
+                display: block;
+            }
+        </style>
+        
+    </head>
+    <body onload="init();">
+    <canvas id="sphere3d" width="500" height="500">
+        Il tuo browser non supporta l'HTML5.
+    </canvas>
+</body>
+</html>
