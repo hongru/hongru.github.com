@@ -316,7 +316,10 @@
                 var SphereSystem = function (opt, sphereList) {
                     var me = this;
                     var defaults = {
-                        root: document.body
+                        root: document.body,
+                        a: 0.8,
+                        b: 0.6,
+                        is3d: true
                     };
                     this.opt = extend(defaults, (opt || {}));
 
@@ -369,8 +372,8 @@
                         this.bgctx.clearRect(0,0,this.bgcanvas.width, this.bgcanvas.height);
                         var cx = this.container.offsetWidth/2;
                         var cy = this.container.offsetHeight/2;
-                        var a = this.container.offsetWidth*0.8;
-                        var b = this.container.offsetHeight*0.4;
+                        var a = this.container.offsetWidth*this.opt.a;
+                        var b = this.container.offsetHeight*this.opt.b;
                         var points = [];
                         for (var i = 0; i < 360; i += 5) {
                             points.push({x: a*Math.cos(i*Math.PI/180)/2+cx, y:b*Math.sin(i*Math.PI/180)/2+cy});
@@ -398,8 +401,8 @@
                     setSpherePos: function () {
                         var cx = this.container.offsetWidth/2;
                         var cy = this.container.offsetHeight/2;
-                        var a = this.container.offsetWidth*0.8;
-                        var b = this.container.offsetHeight*0.4;
+                        var a = this.container.offsetWidth*this.opt.a;
+                        var b = this.container.offsetHeight*this.opt.b;
                         for (var i = 0; i < this.spheres.length; i ++) {
                             var alpha = 360*i/this.spheres.length;
                             var x = a*Math.cos((alpha+this.rotation)*Math.PI/180)/2+cx;
@@ -407,9 +410,12 @@
 
                             var sp = this.spheres[i];
                             var el = sp.canvas;
-                            // scale
-                            el.style.width = Math.max(((y-cy)*2/b + 1) * sp.viewSize/2, 20) + 'px';
-                            el.style.height = Math.max(((y-cy)*2/b + 1) * sp.viewSize/2, 20) + 'px';
+                            if (this.opt.is3d) {
+                                // scale
+                                el.style.width = Math.max(((y-cy)*2/b + 1) * sp.viewSize/2, 20) + 'px';
+                                el.style.height = Math.max(((y-cy)*2/b + 1) * sp.viewSize/2, 20) + 'px';    
+                            }
+                            
                             // pos
                             el.style.left = x - el.offsetWidth/2 + 'px';
                             el.style.top = y - el.offsetHeight/2 + 'px';
@@ -435,12 +441,17 @@
 
 
             // sys init
-            var sys = new SphereSystem({root: document.body}, [
-                {color: 'white', bgcolor:'black', viewSize: 50},
-                {color: 'blue', bgcolor:'black', viewSize: 100,},
-                {color: 'green', bgcolor:'black', viewSize: 150},
-                {color: 'red', bgcolor:'black', viewSize:200},
-                {color: 'yellow', bgcolor:'black', viewSize:100}
+            var sys = new SphereSystem({
+                root: document.body, //星系生成的容器
+                a: 0.8,  // 椭圆横轴相对容器宽度的比例 0-1之间
+                b: 0.6,  // 椭圆竖轴相对容器高度的比例 0-1之间
+                is3d: true // 是否3d透视，星球远小近大
+            }, [
+                {color: 'white', viewSize: 50},
+                {color: 'blue', viewSize: 100,},
+                {color: 'green', viewSize: 150},
+                {color: 'red', viewSize:200},
+                {color: 'yellow', viewSize:100}
             ]);
 
             // loop
