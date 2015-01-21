@@ -379,7 +379,7 @@
                             points.push({x: a*Math.cos(i*Math.PI/180)/2+cx, y:b*Math.sin(i*Math.PI/180)/2+cy});
                         }
 
-                        for (var i = 0; i < points.length; i ++) {
+                        for (var i = 0; i < points.length; i +=3) {
                             var from = points[i];
                             var to = points[i + 1] || points[0];
                             this.bgctx.save();
